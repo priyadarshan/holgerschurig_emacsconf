@@ -1,4 +1,4 @@
-;; -*- mode: emacs-lisp; mode: fold -*-
+;; -x- mode: emacs-lisp; mode: fold -*-
 
 ;; SEE: http://github.com/mina86/dot-files/raw/master/dot-emacs
 ;; SEE: http://www.emacswiki.org/emacs/download/.emacs-thierry.el
@@ -1530,68 +1530,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ Mode: RCIRC
-
-(require 'rcirc)
-
-;; Don't print /away messages.
-;; This does not require rcirc to be loaded already,
-;; since rcirc doesn't define a 301 handler (yet).
-(defun rcirc-handler-301 (process cmd sender args)
-  "/away message handler.")
-
-;; Turn on spell checking.
-;; (add-hook 'rcirc-mode-hook (lambda ()
-;;                              (flyspell-mode 1)))
-
-(add-hook 'rcirc-mode-hook
-          (lambda ()
-            (set (make-local-variable 'scroll-conservatively)
-                 8192)))
-
-;; Set typeface for rcirc buffers; this example uses variable-width Verdana size 10
-;; (dolist (rcirc-face (remove-if-not
-;;                      (lambda (elt) (equal (cadr elt) 'custom-face))
-;;                      (get 'rcirc-faces 'custom-group)))
-;;   (set-face-font (car rcirc-face) "verdana-10"))
-
-
-
-
-(setq ;; list nick
-      rcirc-prompt "%n> "
-      ;; Turn on logging everything to a special buffer, for debugging.
-      ;;rcirc-debug-flag
-      ;; Include date in time stamp.
-      ;;rcirc-time-format "%Y-%m-%d %H:%M "
-      rcirc-fill-prefix "      "
-      rcirc-fill-column 65; side-by-side on my laptop
-      ;; Change user info
-      ;;rcirc-default-nick "schurig"
-      ;;rcirc-default-user-name "schurig"
-      ;;rcirc-default-full-name "Holger Schurig"
-      rcirc-keywords '("schurig")
-      rcirc-server-alist
-      '(("irc.freenode.net"
-	 :channels ("#rcirc"))
-        ;; ("irc.datacomm.ch"
-	;;  :channels ("#drsrm"))
-        ;; ("irc.perl.org"
-	;;  :channels ("#perlde"))
-	)
-      rcirc-decode-coding-system 'undecided
-      ;;rcirc-coding-system-alist '(("#nihongo" undecided . iso-2022-jp))
-      ;;rcirc-ignore-list '()
-      ;;rcirc-log-flag t
-      rcirc-authinfo
-      '(("freenode" nickserv "schurig" "dtgabzi")
-	;;("freenode" chanserv "bob" "#bobland" "passwd99")
-	;;("bitlbee" bitlbee "robert" "sekrit")
-	))
-
-
-
-;;}}}
 ;;{{{ Mode: Perl
 
 ;; Use cperl mode instead of perl mode
@@ -1708,6 +1646,58 @@ Otherwise, kill characters backward until encountering the end of a word."
 	     (define-key calendar-mode-map "<" 'scroll-calendar-right)
 	     (define-key calendar-mode-map "\C-x>" 'scroll-calendar-left)
 	     (define-key calendar-mode-map "\C-x<" 'scroll-calendar-right)))
+
+
+
+;;}}}
+;;{{{ Package: erc
+
+;; This will add an ERC item to the Tools menu
+(require 'erc-menu)
+
+(autoload 'erc-open "erc" "IRC client." t)
+(eval-after-load "erc"
+  '(progn
+     (require 'erc-match)
+     (setq erc-server "irc.freenode.net"
+	   erc-port 6667
+	   ;;erc-email-userid "userid"
+	   erc-keywords '("schurig")
+	   ;; Freenode.net doesn't need a password
+	   erc-prompt-for-password nil
+	   ;; But Nickserv does
+	   erc-prompt-for-nickserv-password nil
+	   erc-nickserv-passwords  '((freenode (("schurig" . "dtgabzi"))))
+	   ;;erc-autojoin-channels-alist '((".*freenode.net" "#emacs"))
+	   erc-button-url-regexp
+	   "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]"
+	   ;; Kill channel after /part
+	   erc-kill-buffer-on-part t
+	   ;; Kill buffers for server messages after quitting the server
+	   erc-kill-server-buffer-on-quit t
+	   )
+     (require 'erc-services)
+     (erc-services-mode 1)
+     (add-hook 'erc-mode-hook
+	       '(lambda ()
+					;(require 'erc-pcomplete)
+		  (pcomplete-erc-setup)
+		  (erc-completion-mode 1)))
+     ;;(load-library "erc-highlight-nicknames")
+     ;;(add-to-list 'erc-modules 'highlight-nicknames)
+     ;;(erc-update-modules)
+     ))
+
+
+(defun irc ()
+  "Calls ERC with freenode.net"
+  (interactive)
+  (erc-open (erc-compute-server)
+	    (erc-compute-port)
+	    (erc-compute-nick)
+	    (erc-compute-full-name)
+	    t ""))
+
 
 
 ;;}}}
@@ -1839,6 +1829,43 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; (require 'pabbrev)
 ;; (global-pabbrev-mode t)
 ;; (setq pabbrev-read-only-error nil)
+
+
+
+;;}}}
+;;{{{ Package: rcirc
+
+(eval-after-load "rcirc"
+  '(progn
+     (setq rcirc-prompt "%t> "
+	   ;; Turn on logging everything to a special buffer, for debugging.
+	   ;;rcirc-debug-flag
+	   rcirc-fill-prefix "      "
+	   ;; Use max. frame width
+	   rcirc-fill-column 'frame-width
+	   ;; Colorize inside text
+	   rcirc-keywords '("schurig")
+	   ;; colorize important :-) nicks
+	   rcirc-bright-nicks '("schurig")
+	   ;; Omit JOIN/PART/QUIT/NICK (from rcirc-omit-responses)
+	   rcirc-omit-mode t
+	   ;; Automatically connect:
+	   rcirc-server-alist
+	   '(("irc.freenode.net"
+	      :channels ("#emacs"))
+	     ;; ("irc.datacomm.ch"
+	     ;;  :channels ("#drsrm"))
+	     ;; ("irc.perl.org"
+	     ;;  :channels ("#perlde"))
+	     )
+	   ;;rcirc-decode-coding-system 'undecided
+	   ;;rcirc-coding-system-alist '(("#nihongo" undecided . iso-2022-jp))
+	   rcirc-authinfo
+	   '(("freenode" nickserv "schurig" "dtgabzi")
+	     ;;("freenode" chanserv "bob" "#bobland" "passwd99")
+	     ;;("bitlbee" bitlbee "robert" "sekrit")
+	     ))
+     ))
 
 
 
