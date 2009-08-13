@@ -1529,6 +1529,67 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 
+;;}}}
+;;{{{ Mode: RCIRC
+
+(require 'rcirc)
+
+;; Don't print /away messages.
+;; This does not require rcirc to be loaded already,
+;; since rcirc doesn't define a 301 handler (yet).
+(defun rcirc-handler-301 (process cmd sender args)
+  "/away message handler.")
+
+;; Turn on spell checking.
+;; (add-hook 'rcirc-mode-hook (lambda ()
+;;                              (flyspell-mode 1)))
+
+(add-hook 'rcirc-mode-hook
+          (lambda ()
+            (set (make-local-variable 'scroll-conservatively)
+                 8192)))
+
+;; Set typeface for rcirc buffers; this example uses variable-width Verdana size 10
+;; (dolist (rcirc-face (remove-if-not
+;;                      (lambda (elt) (equal (cadr elt) 'custom-face))
+;;                      (get 'rcirc-faces 'custom-group)))
+;;   (set-face-font (car rcirc-face) "verdana-10"))
+
+
+
+
+(setq ;; list nick
+      rcirc-prompt "%n> "
+      ;; Turn on logging everything to a special buffer, for debugging.
+      ;;rcirc-debug-flag
+      ;; Include date in time stamp.
+      ;;rcirc-time-format "%Y-%m-%d %H:%M "
+      rcirc-fill-prefix "      "
+      rcirc-fill-column 65; side-by-side on my laptop
+      ;; Change user info
+      ;;rcirc-default-nick "schurig"
+      ;;rcirc-default-user-name "schurig"
+      ;;rcirc-default-full-name "Holger Schurig"
+      rcirc-keywords '("schurig")
+      rcirc-server-alist
+      '(("irc.freenode.net"
+	 :channels ("#rcirc"))
+        ;; ("irc.datacomm.ch"
+	;;  :channels ("#drsrm"))
+        ;; ("irc.perl.org"
+	;;  :channels ("#perlde"))
+	)
+      rcirc-decode-coding-system 'undecided
+      ;;rcirc-coding-system-alist '(("#nihongo" undecided . iso-2022-jp))
+      ;;rcirc-ignore-list '()
+      ;;rcirc-log-flag t
+      rcirc-authinfo
+      '(("freenode" nickserv "schurig" "dtgabzi")
+	;;("freenode" chanserv "bob" "#bobland" "passwd99")
+	;;("bitlbee" bitlbee "robert" "sekrit")
+	))
+
+
 
 ;;}}}
 ;;{{{ Mode: Perl
