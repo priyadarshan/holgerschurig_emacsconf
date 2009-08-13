@@ -1197,6 +1197,18 @@ unless optional argument SOFT is non-nil."
 
 
 ;;}}}
+;;{{{ Mode: Diff
+
+(add-hook 'diff-mode-hook
+	  '(lambda ()
+	     (setq show-trailing-whitespace -1)
+	     (setq def-file-header '((t nil)))
+	     (setq def-header '((t nil)))
+	     ))
+
+
+
+;;}}}
 ;;{{{ Mode: Dired
 
 ;; provide some dired goodies and dired-jump at C-x C-j
@@ -1544,18 +1556,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; (tempo-define-template "perl-s-skeleton" '("s/" p "//;"))
 ;; (tempo-define-template "perl-print-skeleton" '("print \"$_" p "\\n\";"))
 ;; (tempo-define-template "perl-while-skeleton" '("while (<>) {\n  chomp;\n  " p "\n}\n"))
-
-
-
-;;}}}
-;;{{{ Mode: Diff
-
-(add-hook 'diff-mode-hook
-	  '(lambda ()
-	     (setq show-trailing-whitespace -1)
-	     (setq def-file-header '((t nil)))
-	     (setq def-header '((t nil)))
-	     ))
 
 
 
