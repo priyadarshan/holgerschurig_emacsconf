@@ -586,7 +586,7 @@ non-nill or `compile' otherwise."
 (setq mouse-yank-at-point t)
 
 ;; Show the text pointer in text areas
-;; (setq void-text-area-pointer nil)
+;;(setq void-text-area-pointer nil)
 
 (eval-after-load "avoid"
   '(progn
@@ -759,6 +759,7 @@ non-nill or `compile' otherwise."
 	  '(
 	    (background-color . "black")
 	    (foreground-color . "white")
+	    (cursor-color . "white")
 	    (horizontal-scroll-bars . nil)
 	    (vertical-scroll-bars . nil)
 	    (tool-bar-lines . 0)
@@ -922,8 +923,8 @@ non-nill or `compile' otherwise."
     (progn
       ;; Windows systems are fast enought
       (column-number-mode t)
-      ;; On Windows, a blinking cursor is better
-      ;;(blink-cursor-mode ms-windows)
+      ;; Turn off blinking
+      (blink-cursor-mode -1) 
       )
   (progn
     ;; Visial bell only in text mode
