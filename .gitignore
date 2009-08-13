@@ -1,1 +1,15 @@
 ?
+*.elc
+*.org
+/custom.el
+/.org-id-locations
+/auto-save-list
+/history
+/icicles*
+/recentf
+/cedet
+/ecb
+/semanticdb
+/srecode-map
+/elpa/archive-contents
+/elpa/builtin-packages
