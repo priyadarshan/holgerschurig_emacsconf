@@ -586,7 +586,7 @@ non-nill or `compile' otherwise."
 (setq mouse-yank-at-point t)
 
 ;; Show the text pointer in text areas
-(setq void-text-area-pointer nil)
+;; (setq void-text-area-pointer nil)
 
 (eval-after-load "avoid"
   '(progn
@@ -595,7 +595,8 @@ non-nill or `compile' otherwise."
      ;;   (cons (- (frame-width) 1) (- (frame-height) 1)))
      (setq mouse-avoidance-timer-delay 0.1)
      (mouse-avoidance-mode 'banish)))
-(and (display-mouse-p) (require 'avoid nil t))
+(unless ms-windows
+  (when (display-mouse-p) (require 'avoid nil t)))
 
 
 
@@ -756,6 +757,8 @@ non-nill or `compile' otherwise."
 (if ms-windows
     (setq initial-frame-alist
 	  '(
+	    (background-color . "black")
+	    (foreground-color . "white")
 	    (horizontal-scroll-bars . nil)
 	    (vertical-scroll-bars . nil)
 	    (tool-bar-lines . 0)
@@ -919,10 +922,9 @@ non-nill or `compile' otherwise."
     (progn
       ;; Windows systems are fast enought
       (column-number-mode t)
-      (unless ms-windows
-	;; On Windows, a blinking cursor is better
-	(blink-cursor-mode -1)
-	))
+      ;; On Windows, a blinking cursor is better
+      ;;(blink-cursor-mode ms-windows)
+      )
   (progn
     ;; Visial bell only in text mode
     (setq visible-bell t)
