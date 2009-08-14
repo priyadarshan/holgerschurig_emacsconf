@@ -612,8 +612,9 @@ non-nill or `compile' otherwise."
 ;;{{{ X-Windows cut'n'paste
 
 ;; Use clipboard of X
-(setq x-select-enable-clipboard t
-      interprogram-paste-function 'x-cut-buffer-or-selection-value)
+;; (setq x-select-enable-clipboard t
+;;       interprogram-paste-function 'x-cut-buffer-or-selection-value)
+
 
 
 ;;}}}
