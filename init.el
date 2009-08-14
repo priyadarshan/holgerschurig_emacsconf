@@ -1661,13 +1661,12 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Package: erc
 
-;; This will add an ERC item to the Tools menu
-(require 'erc-menu)
-
 (autoload 'erc-open "erc" "IRC client." t)
 (eval-after-load "erc"
   '(progn
      (require 'erc-match)
+     ;; This will add an ERC item to the Tools menu
+     (require 'erc-menu)
      (setq erc-server "irc.freenode.net"
 	   erc-port 6667
 	   ;;erc-email-userid "userid"
