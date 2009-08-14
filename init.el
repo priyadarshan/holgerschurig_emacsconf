@@ -999,6 +999,13 @@ non-nill or `compile' otherwise."
 
 
 ;;}}}
+;;{{{ Web-Browsing
+
+(setq browse-url-browser-function 'browse-url-kde)
+
+
+
+;;}}}
 ;;{{{ Mode: C, C++
 
 ;; Tabs mode
