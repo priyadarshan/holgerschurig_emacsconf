@@ -24,6 +24,7 @@
 	     "~/.emacs.d/cedet/common/"
 	     "~/.emacs.d/ecb/"
 	     "~/.emacs.d/icicles/"
+	     "~/.emacs.d/magit/"
 	     "~/.emacs.d/"
 	   ))
   (when (not (member i load-path))
@@ -1798,6 +1799,22 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;      (ido-completing-read
 ;;       "M-x "
 ;;       (all-completions "" obarray 'commandp))))))
+
+
+
+;;}}}
+;;{{{ Package: magit
+
+;; git clone git://gitorious.org/magit/mainline.git magit
+;; http://zagadka.vm.bytemark.co.uk/magit/magit.html
+
+(autoload 'magit-status "magit" nil t)
+
+(eval-after-load "magit"
+  '(progn
+     (setq magit-save-some-buffers nil)))
+
+;;(require 'magit nil 'noerror)
 
 
 
