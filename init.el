@@ -1955,13 +1955,8 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 ;; Automatically start server, even when run interactively
 (require 'server)
-(unless server-process
+(unless (server-running-p)
   (server-start))
-
-
-;; HINT: /usr/local/bin/e:
-;; #!/bin/sh
-;; emacsclient -c -a "" $*
 
 ;; Make sure the frame pops up as a graphical frame
 (setq server-window '(lambda (buf)
