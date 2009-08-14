@@ -949,6 +949,10 @@ non-nill or `compile' otherwise."
 (or standard-display-table (setq standard-display-table (make-display-table)))
 (aset standard-display-table ?\f (vconcat (make-vector 72 ?-) "^L"))
 
+;; Let emacs react way faster
+(setq echo-keystrokes 0.1
+      idle-update-delay 0.35)
+
 
 
 ;;}}}
