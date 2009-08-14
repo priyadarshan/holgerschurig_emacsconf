@@ -933,7 +933,7 @@ non-nill or `compile' otherwise."
       ;; Windows systems are fast enought
       (column-number-mode t)
       ;; Turn off blinking
-      (blink-cursor-mode -1) 
+      (blink-cursor-mode -1)
       )
   (progn
     ;; Visial bell only in text mode
