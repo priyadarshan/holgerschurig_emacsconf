@@ -1662,6 +1662,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;{{{ Package: erc
 
 (autoload 'erc-open "erc" "IRC client." t)
+
 (eval-after-load "erc"
   '(progn
      (require 'erc-match)
@@ -1695,6 +1696,11 @@ Otherwise, kill characters backward until encountering the end of a word."
      ;;(add-to-list 'erc-modules 'highlight-nicknames)
      ;;(erc-update-modules)
      ))
+
+(autoload 'erc-compute-server "erc" "Return an IRC server name." t)
+(autoload 'erc-compute-port  "erc" "Return a port for an IRC server." t)
+(autoload 'erc-compute-nick "erc" "Return user's IRC nick." t)
+(autoload 'erc-compute-full-name "erc" "Return user's full name." t)
 
 
 (defun irc ()
