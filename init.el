@@ -1127,6 +1127,7 @@ unless optional argument SOFT is non-nil."
   (define-key c-mode-map (kbd "RET") 'c-newline-and-perhaps-comment)
   (turn-on-auto-fill)
   (c-toggle-auto-newline 1)
+  (modify-syntax-entry ?_ "w")
   (setq fill-column 76
 	;; Let RET break and continue a comment
 	comment-line-break-function 'c-newline-and-perhaps-comment
