@@ -1,4 +1,4 @@
-;; -x- mode: emacs-lisp; mode: fold -*-
+;; -*- mode: emacs-lisp; mode: fold -*-
 
 ;; SEE: http://github.com/mina86/dot-files/raw/master/dot-emacs
 ;; SEE: http://www.emacswiki.org/emacs/download/.emacs-thierry.el
