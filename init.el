@@ -1954,7 +1954,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 ;; Automatically start server, even when run interactively
 (require 'server)
-(unless server-mode
+(unless server-process
   (server-start))
 
 
