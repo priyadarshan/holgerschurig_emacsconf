@@ -1221,6 +1221,7 @@ unless optional argument SOFT is non-nil."
 	     (setq def-file-header '((t nil)))
 	     (setq def-header '((t nil)))
 	     ))
+(setq diff-switches "-u")
 
 
 
