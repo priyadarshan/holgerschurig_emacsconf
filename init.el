@@ -1797,33 +1797,29 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; C-c clears minibuffer
 (define-key minibuffer-local-map "\C-c" (lambda () (interactive) (delete-minibuffer-contents)))
 
-;; Don't insert current directory into minubuffer
-(setq insert-default-directory nil)
+(setq
+ ;; Don't insert current directory into minubuffer
+ insert-default-directory nil
+ ;; enable recursive minibuffer
+ enable-recursive-minibuffers t
+ ;; minibuffer window expands vertically as necessary to hold the text that
+ ;; you put in the minibuffer
+ resize-mini-windows t
+ )
 
 ;; dim the ignored part of the file name
 (file-name-shadow-mode 1)
-
-;; minibuffer window expands vertically as necessary to hold the text that
-;; you put in the minibuffer
-(setq resize-mini-windows t)
 
 ;; allow to type space chars in minibuffer input
 ;; (for `timeclock-in', for example)
 (define-key minibuffer-local-completion-map " " nil)
 (define-key minibuffer-local-must-match-map " " nil)
 
-;; minibuffer completion incremental feedback
-;;TODO? (icomplete-mode)
-
-;; enable multiple minibuffers, if you don't set this,
-;; you can't do things like search the minibuffer history with M-s
-;; (cause that requires another minibuffer)
-(setq minibuffer-max-depth nil)
 
 ;; Minibuffer history
 (require 'savehist)
-(setq savehist-file "~/.emacs.d/history")
-(setq history-length 1000)
+(setq savehist-file "~/.emacs.d/history"
+      history-length 1000)
 (savehist-mode 1)
 
 
