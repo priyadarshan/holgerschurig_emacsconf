@@ -1813,7 +1813,8 @@ Otherwise, kill characters backward until encountering the end of a word."
   '(progn
      (setq magit-save-some-buffers nil)))
 
-;;(require 'magit nil 'noerror)
+(global-set-key "\M-g\M-m" 'magit-status)
+(global-set-key "\M-gm" 'magit-status)
 
 
 
