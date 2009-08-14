@@ -1140,8 +1140,9 @@ unless optional argument SOFT is non-nil."
 	c-recognize-knr-p nil
 	;; Jump to errors, please
 	compilation-auto-jump-to-first-error t
-	;; Turn of elect
-	;;c-electric-flag nil
+	;; Turn of elect, TODO: consider hungry-delete
+	c-electric-flag nil
+	;; But if it's on, let a "#" go to the left, for #if/#else/#endif
 	c-electric-pound-behavior '(alignleft)
 	;; No abbrevs
 	abbrev-mode nil
