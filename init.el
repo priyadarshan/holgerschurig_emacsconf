@@ -799,14 +799,13 @@ non-nill or `compile' otherwise."
 	  (width . 90)
 	  (left-fringe . 0)
 	  (right-fringe . 0)
-	  ;;(cursor-color . "red")
 	  (mouse-color . "green")
-	  ))
+	  )))
 
-  ;; default-frame-alist is defined in terms of initial-frame-alist.  Don't
-  ;; use copy-sequence here -- it doesn't copy the list elements, just the
-  ;; list's cons cells.  Use copy-alist instead.
-  (setq default-frame-alist (copy-alist initial-frame-alist)))
+;; default-frame-alist is defined in terms of initial-frame-alist.  Don't
+;; use copy-sequence here -- it doesn't copy the list elements, just the
+;; list's cons cells.  Use copy-alist instead.
+(setq default-frame-alist (copy-alist initial-frame-alist))
 
 
 ;;}}}
