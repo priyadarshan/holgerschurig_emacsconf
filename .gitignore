@@ -1,5 +1,6 @@
 *.elc
 *.org
+diary
 /custom.el
 /.org-id-locations
 /auto-save-list

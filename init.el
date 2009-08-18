@@ -1444,6 +1444,10 @@ Otherwise, kill characters backward until encountering the end of a word."
 (setq org-directory "~/.emacs.d"
       org-agenda-files (list "~/.emacs.d/agenda.org"
 			     )
+
+      ;; Include diary entries
+      org-agenda-include-diary t
+      
       ;; Opening/closing .org mode
       org-agenda-restore-windows-after-quit t
       org-agenda-window-setup 'current-window
@@ -1633,6 +1637,7 @@ Otherwise, kill characters backward until encountering the end of a word."
       calendar-longitude 8.46
       calendar-location-name "Wöllstadt"
       calendar-christian-all-holidays-flag nil
+      calendar-date-style 'european
       holiday-bahai-holidays nil
       holiday-hebrew-holidays nil
       holiday-islamic-holidays nil
@@ -1661,6 +1666,8 @@ Otherwise, kill characters backward until encountering the end of a word."
 	     (define-key calendar-mode-map "<" 'scroll-calendar-right)
 	     (define-key calendar-mode-map "\C-x>" 'scroll-calendar-left)
 	     (define-key calendar-mode-map "\C-x<" 'scroll-calendar-right)))
+
+(add-hook 'calendar-initial-window-hook 'diary-mark-entries)
 
 
 
