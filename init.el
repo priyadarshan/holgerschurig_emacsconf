@@ -650,9 +650,14 @@ non-nill or `compile' otherwise."
 	  (cons custom-file auto-byte-compile-files-list)))
 
 ;; Save recent files
-;(require 'recentf)
-(setq recentf-save-file "~/.emacs.d/recentf")
-(and (fboundp 'recentf-mode) (recentf-mode 1))
+
+(setq recentf-save-file "~/.emacs.d/recentf"
+      recentf-exclude '("bbdb$"
+			"svn-commit.tmp$"
+			".git/COMMIT_EDITMSG$")
+      recentf-max-saved-items 1000)
+(recentf-mode 1)
+
 
 
 ;;}}}
