@@ -1816,6 +1816,14 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: ispell
+
+(setq ispell-program-name "aspell"
+      ispell-extra-args '("--sug-mode=ultra"))
+
+
+
+;;}}}
 ;;{{{ Package: magit
 
 ;; git clone git://gitorious.org/magit/mainline.git magit
