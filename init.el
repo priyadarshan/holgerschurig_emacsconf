@@ -1990,8 +1990,12 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; Make sure the frame pops up as a graphical frame
 (setq server-window '(lambda (buf)
 		       (switch-to-buffer buf)
-		       (raise-frame)
-		       (add-hook 'server-done-hook 'delete-frame t t)))
+		       (raise-frame))
+      server-temp-file-regexp "^/tmp/Re\\|/draft\\|/.git/COMMIT_EDITMSG$")
+
+;; Kill buffers when done (M-x #)
+(add-hook 'server-done-hook (lambda nil (kill-buffer nil)))
+
 
 
 
