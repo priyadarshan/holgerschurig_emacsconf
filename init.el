@@ -559,7 +559,7 @@ non-nill or `compile' otherwise."
   (save-buffer)
   (if (or (eq major-mode 'lisp-mode) (eq major-mode 'emacs-lisp-mode))
       (progn
-	(my--kill-buffer-and-window (get-buffer-create "*Compile-Log*"))
+	(ignore-errors (my--kill-buffer-and-window (get-buffer-create "*Compile-Log*")))
 	(auto-byte-compile-file nil t))
     (progn
       (my--kill-buffer-and-window (get-buffer-create "*compilation*"))
