@@ -1722,9 +1722,16 @@ Otherwise, kill characters backward until encountering the end of a word."
 	   erc-kill-buffer-on-part t
 	   ;; Kill buffers for server messages after quitting the server
 	   erc-kill-server-buffer-on-quit t
+	   ;; Don't show any of this
+	   erc-hide-list '("JOIN" "PART" "QUIT" "NICK")
+	   ;; Tracking
+	   erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
+				     "324" "329" "332" "333" "353" "477")
+
 	   )
      (require 'erc-services)
      (erc-services-mode 1)
+     (erc-track-mode t)
      (add-hook 'erc-mode-hook
 	       '(lambda ()
 					;(require 'erc-pcomplete)
