@@ -380,8 +380,10 @@ command from COMMANDS."
   (let ((case-fold-search isearch-case-fold-search))
     (occur (if isearch-regexp isearch-string (regexp-quote isearch-string))))
   (pop-to-buffer "*Occur*"))
-;; WAS: isearch-other-control-char
 (define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
+;; ORIGINAL: isearch-other-control-char
+
+
 
 ;;}}}
 ;;{{{ Functions: Miscelleanous
@@ -1635,6 +1637,24 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: bs
+
+(require 'bs)
+
+(global-set-key "\C-xb" 'bs-show)
+;; ORIGINAL: switch-to-buffer
+
+(defun list-buffers-other-win ()
+  "Opens list-buffers and put focus on it"
+  (interactive)
+  (bs-show "all"))
+
+(global-set-key "\C-x\C-b" 'list-buffers-other-win)
+;; ORIGINAL: list-buffers
+
+
+
+;;}}}
 ;;{{{ Package: calendar
 
 (setq diary-file  "~/.emacs.d/diary"
@@ -1733,16 +1753,16 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ Package: ibuffer
+;;{{{ Disabled Package: ibuffer
 
-(require 'ibuffer)
+;; (require 'ibuffer)
 
-(global-set-key "\C-x\C-b" 'ibuffer)
+;; (global-set-key "\C-x\C-b" 'ibuffer)
 
-(setq ibuffer-default-sorting-mode 'major-mode
-      ibuffer-always-show-last-buffer t
-      ibuffer-view-ibuffer nil
-      )
+;; (setq ibuffer-default-sorting-mode 'major-mode
+;;       ibuffer-always-show-last-buffer t
+;;       ibuffer-view-ibuffer nil
+;;       )
 
 
 
