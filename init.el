@@ -447,6 +447,11 @@ there are several windows open."
 (global-set-key "\C-xk" 'my--kill-buffer-and-window)
 
 
+(global-set-key (kbd "<M-down>") 'enlarge-window)
+(global-set-key (kbd "<M-up>") 'shrink-window)
+
+
+
 
 ;;}}}
 ;;{{{ Functions: Buffers
