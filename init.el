@@ -1250,6 +1250,17 @@ unless optional argument SOFT is non-nil."
 
 
 ;;}}}
+;;{{{ Mode: ELisp
+
+(add-hook 'emacs-lisp-mode-hook
+	  '(lambda ()
+	     ;;(eldoc-mode t)
+	     ;;(turn-on-auto-fill)
+	     (imenu-add-to-menubar "Imenu")))
+
+
+
+;;}}}
 ;;{{{ Mode: Fold
 
 ;; SEE http://www.emacswiki.org/emacs/download/fold.el
