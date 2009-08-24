@@ -780,8 +780,8 @@ non-nill or `compile' otherwise."
     (setq initial-frame-alist
 	  '(
 	    (background-color . "black")
-	    (foreground-color . "white")
-	    (cursor-color . "white")
+	    (foreground-color . "LightGray")
+	    (cursor-color . "LightGray")
 	    (horizontal-scroll-bars . nil)
 	    (vertical-scroll-bars . nil)
 	    (tool-bar-lines . 0)
@@ -797,7 +797,8 @@ non-nill or `compile' otherwise."
 	  ;;	   ;; X's 6x10 font ...  Why not use "6x10" here?
 	  ;;	   "-Misc-Fixed-Medium-R-Normal--10-100-75-75-C-60-ISO8859-1"))
 	  (background-color . "black")
-	  (foreground-color . "white")
+	  (foreground-color . "LightGray")
+	  (mouse-color . "green")
 	  (horizontal-scroll-bars . nil)
 	  (vertical-scroll-bars . nil)
 	  (tool-bar-lines . 0)
@@ -811,13 +812,13 @@ non-nill or `compile' otherwise."
 	  (width . 90)
 	  (left-fringe . 0)
 	  (right-fringe . 0)
-	  (mouse-color . "green")
 	  )))
 
 ;; default-frame-alist is defined in terms of initial-frame-alist.  Don't
 ;; use copy-sequence here -- it doesn't copy the list elements, just the
 ;; list's cons cells.  Use copy-alist instead.
 (setq default-frame-alist (copy-alist initial-frame-alist))
+
 
 
 ;;}}}
@@ -872,8 +873,8 @@ non-nill or `compile' otherwise."
 	 ("\\<\\(FIXME:\\|XXX\\)\\>" 1 'my--fixme-face t)
 	 ("\\<\\(HINT:\\)\\>" 1 'my--hint-face t)
 	 ))))
-
 (add-hook 'font-lock-mode-hook 'my--hint-facify)
+
 
 
 
@@ -956,6 +957,9 @@ non-nill or `compile' otherwise."
 (show-paren-mode 1)
 (setq show-paren-delay 0
       blink-matching-parent nil)
+(set-face-background 'show-paren-match-face "#660000")
+(set-face-foreground 'show-paren-match-face "white")
+
 
 ;; Display page delimiter ^L as a horizontal line
 (or standard-display-table (setq standard-display-table (make-display-table)))
