@@ -661,7 +661,8 @@ non-nill or `compile' otherwise."
 (setq recentf-save-file "~/.emacs.d/recentf"
       recentf-exclude '("bbdb$"
 			"svn-commit.tmp$"
-			".git/COMMIT_EDITMSG$")
+			".git/COMMIT_EDITMSG$"
+			".git/TAG_EDITMSG")
       recentf-max-saved-items 1000)
 (recentf-mode 1)
 
@@ -2038,7 +2039,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 (setq server-window '(lambda (buf)
 		       (switch-to-buffer buf)
 		       (raise-frame))
-      server-temp-file-regexp "^/tmp/Re\\|/draft\\|/.git/COMMIT_EDITMSG$")
+      server-temp-file-regexp "^/tmp/Re\\|/draft\\|/.git/COMMIT_EDITMSG\\|/.git/TAG_EDITMSG$")
 
 ;; Kill buffers when done (M-x #)
 (add-hook 'server-done-hook (lambda nil (kill-buffer nil)))
