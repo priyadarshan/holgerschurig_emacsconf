@@ -557,7 +557,7 @@ To remove this protection, call this command with a negative prefix argument."
   "If touch is non-nil marks buffer as modified.  Saves
 buffer (`save-buffer') and executes `recompile' if recompile is
 non-nill or `compile' otherwise."
-  (interactive "P")
+  (interactive)
   (delete-other-windows)
   (when touch
     (set-buffer-modified-p t))
@@ -568,7 +568,9 @@ non-nill or `compile' otherwise."
 	(auto-byte-compile-file nil t))
     (progn
       (my--kill-buffer-and-window (get-buffer-create "*compilation*"))
-      (if recompile (recompile) (call-interactively 'compile)))))
+      (if recompile
+	  (recompile)
+	(compile compile-command)))))
 (global-set-key [(f7)] 'my-compile)
 (global-set-key [(shift f7)]
 		(function (lambda (a) (interactive "P") (my-compile a t))))
