@@ -993,15 +993,25 @@ non-nill or `compile' otherwise."
 ;;}}}
 ;;{{{ Misc
 
-;; A sentence doesn't end with two spaces (in german)
-(setq sentence-end-double-space nil)
-
 ;; Delete previous identical history entries
 (setq history-delete-duplicates t)
 
-;; Allow german umlaut characters
+
+
+;;}}}
+;;{{{ Language, German localisation
+
+;; A sentence doesn't end with two spaces (in german)
+(setq sentence-end-double-space nil)
+
+;; Allow german umlaut characters, even when called with "emacs -nw"
 (unless ms-windows
-  (set-language-environment "German"))
+  (set-language-environment "latin-1"))
+
+(set-input-mode (car (current-input-mode))
+                (nth 1 (current-input-mode)) 0)
+
+(setq-default default-enable-multibyte-characters nil)
 
 
 
@@ -1476,7 +1486,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 
       ;; Include diary entries
       org-agenda-include-diary t
-      
+
       ;; Opening/closing .org mode
       org-agenda-restore-windows-after-quit t
       org-agenda-window-setup 'current-window
