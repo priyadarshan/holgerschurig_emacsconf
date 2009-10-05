@@ -960,7 +960,7 @@ non-nill or `compile' otherwise."
 (show-paren-mode 1)
 (setq show-paren-delay 0
       blink-matching-parent nil)
-(set-face-background 'show-paren-match-face "#660000")
+(set-face-background 'show-paren-match-face "#e0a0a0")
 (set-face-foreground 'show-paren-match-face "white")
 
 
