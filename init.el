@@ -7,13 +7,20 @@
 
 
 
-;;{{{ Debugging emacs
+;;{{{ Debugging
 
 ;; Provide a useful error trace if loading this monster fails
-(setq debug-on-error t)
+(defun debug-on-error ()
+  "Turn on debug on error"
+  (interactive "P")
+  (setq debug-on-error t))
+
+
+
+;;}}}
+;;{{{ OS - Environment
 
 (defconst ms-windows (equal window-system 'w32))
-
 
 
 ;;}}}
