@@ -1656,6 +1656,14 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: aspell
+
+(setq ispell-program-name "aspell"
+      ispell-extra-args '("--sug-mode=ultra"))
+
+
+
+;;}}}
 ;;{{{ Package: bookmark
 
 (eval-after-load "bookmark"
@@ -1792,97 +1800,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ Disabled Package: ibuffer
-
-;; (require 'ibuffer)
-
-;; (global-set-key "\C-x\C-b" 'ibuffer)
-
-;; (setq ibuffer-default-sorting-mode 'major-mode
-;;       ibuffer-always-show-last-buffer t
-;;       ibuffer-view-ibuffer nil
-;;       )
-
-
-
-;;}}}
-;;{{{ Package: ido
-
-;; (require 'ido)
-
-;; (ido-mode 'buffer)
-;; (setq
-;;  ido-save-directory-list-file  "~/.emacs.d/ido.last"
-;;  ido-work-directory-list '()
-;;  ido-everywhere t			; use for many file dialogs
-;;  ido-case-fold t			; be case-insensitive
-;;  ido-enable-last-directory-history t	; remember last used dirs
-;;  ido-max-work-directory-list 30		; should be enough
-;;  ido-max-work-file-list      50		; remember many
-;;  ido-use-filename-at-point t		; don't use filename at point (annoying)
-;;  ido-use-url-at-point nil		;  don't use url at point (annoying)
-;;  ido-enable-flex-matching t		; be flexible
-;;  ido-max-prospects 5			; don't spam my minibuffer
-;;  ido-confirm-unique-completion t	; wait for RET, even with unique completion
-;;  ido-enable-dot-prefix t		; need "." to select hidden files
-;;  ido-ignore-buffers
-;;  '("\\`"
-;;   "^\*Mess"
-;;   "^\*Help*"
-;;   "^\*Back"
-;;   ".*Completion"
-;;   "^\*Ido")
-;;  ido-ignore-directories
-;;  '("\\`CVS/"
-;;    "\\.svn/"
-;;    "\\.git/"
-;;    "\\`\\.\\./"
-;;    "\\`\\./")
-;; )
-
-
-;; ;; ;; wget -O smex.el http://github.com/nonsequitur/smex/blob/master/smex.el?raw=true
-;; ;; (if (require 'smex nil 'noerror)
-;; ;;     (progn
-;; ;;       (global-set-key (kbd "M-X") 'smex)
-;; ;;       (setq smex-save-file "~/.emacs.d/smex.last")
-;; ;;       (smex-initialize))
-;; ;;   (message "No smex found :-("))
-
-
-;; ;; Use ido for almost everything
-;; ;; (defadvice completing-read
-;; ;;   (around foo activate)
-;; ;;   (if (boundp 'ido-cur-list)
-;; ;;       ad-do-it
-;; ;;     (setq ad-return-value
-;; ;; 	  (ido-completing-read
-;; ;; 	   prompt
-;; ;; 	   (all-completions "" collection predicate)
-;; ;; 	   nil require-match initial-input hist def))))
-
-;; ;; use ido even for M-x
-;; (global-set-key
-;;  "\M-x"
-;;  (lambda ()
-;;    (interactive)
-;;    (call-interactively
-;;     (intern
-;;      (ido-completing-read
-;;       "M-x "
-;;       (all-completions "" obarray 'commandp))))))
-
-
-
-;;}}}
-;;{{{ Package: ispell
-
-(setq ispell-program-name "aspell"
-      ispell-extra-args '("--sug-mode=ultra"))
-
-
-
-;;}}}
 ;;{{{ Package: magit
 
 ;; git clone git://gitorious.org/magit/mainline.git magit
@@ -1985,6 +1902,75 @@ Otherwise, kill characters backward until encountering the end of a word."
 	     ;;("bitlbee" bitlbee "robert" "sekrit")
 	     ))
      ))
+
+
+
+;;}}}
+;;{{{ Disabled Package: ibuffer
+
+;; (require 'ibuffer)
+
+;; (global-set-key "\C-x\C-b" 'ibuffer)
+
+;; (setq ibuffer-default-sorting-mode 'major-mode
+;;       ibuffer-always-show-last-buffer t
+;;       ibuffer-view-ibuffer nil
+;;       )
+
+
+
+;;}}}
+;;{{{ Disabled Package: ido
+
+;; (require 'ido)
+
+;; (ido-mode 'buffer)
+;; (setq
+;;  ido-save-directory-list-file  "~/.emacs.d/ido.last"
+;;  ido-work-directory-list '()
+;;  ido-everywhere t			; use for many file dialogs
+;;  ido-case-fold t			; be case-insensitive
+;;  ido-enable-last-directory-history t	; remember last used dirs
+;;  ido-max-work-directory-list 30		; should be enough
+;;  ido-max-work-file-list      50		; remember many
+;;  ido-use-filename-at-point t		; don't use filename at point (annoying)
+;;  ido-use-url-at-point nil		;  don't use url at point (annoying)
+;;  ido-enable-flex-matching t		; be flexible
+;;  ido-max-prospects 5			; don't spam my minibuffer
+;;  ido-confirm-unique-completion t	; wait for RET, even with unique completion
+;;  ido-enable-dot-prefix t		; need "." to select hidden files
+;;  ido-ignore-buffers
+;;  '("\\`"
+;;   "^\*Mess"
+;;   "^\*Help*"
+;;   "^\*Back"
+;;   ".*Completion"
+;;   "^\*Ido")
+;;  ido-ignore-directories
+;;  '("\\`CVS/"
+;;    "\\.svn/"
+;;    "\\.git/"
+;;    "\\`\\.\\./"
+;;    "\\`\\./")
+;; )
+
+
+
+;; ;; 	  (ido-completing-read
+;; ;; 	   prompt
+;; ;; 	   (all-completions "" collection predicate)
+;; ;; 	   nil require-match initial-input hist def))))
+
+;; ;; use ido even for M-x
+;; (global-set-key
+;;  "\M-x"
+;;  (lambda ()
+;;    (interactive)
+;;    (call-interactively
+;;     (intern
+;;      (ido-completing-read
+;;       "M-x "
+;;       (all-completions "" obarray 'commandp))))))
 
 
 
