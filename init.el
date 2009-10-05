@@ -2072,7 +2072,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; Enable all disabled commands
 (setq disabled-command-function nil)
 
-;; Don´t bother entering search and replace args if the buffer is read-only
+;; Don't bother entering search and replace args if the buffer is read-only
 (defadvice query-replace-read-args (before barf-if-buffer-read-only activate)
   "Signal a `buffer-read-only' error if the current buffer is read-only."
   (barf-if-buffer-read-only))
