@@ -1138,8 +1138,7 @@ unless optional argument SOFT is non-nil."
 	     ;; Otherwise just do a normal newline.
 	     ;;
 	     (message "normal newline")
-	     (if soft (insert ?\n) (newline))
-	     (indent-according-to-mode))
+	     (if soft (insert ?\n) (newline)))
 	    ))))
 
 (defun my-c-mode-common-setup ()
