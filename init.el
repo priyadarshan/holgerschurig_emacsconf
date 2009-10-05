@@ -1011,14 +1011,21 @@ non-nill or `compile' otherwise."
 ;; A sentence doesn't end with two spaces (in german)
 (setq sentence-end-double-space nil)
 
-;; Allow german umlaut characters, even when called with "emacs -nw"
+;; Allow german umlaut characters
 (unless ms-windows
-  (set-language-environment "latin-1"))
+  (set-language-environment "Latin-1"))
 
 (set-input-mode (car (current-input-mode))
-                (nth 1 (current-input-mode)) 0)
+ 		(nth 1 (current-input-mode))
+ 		0
+ 		;; Default for above is 't, which let us not enter
+		;; umlaut characters on a german keyboard
+		(nth 3 (current-input-mode))
+ 		)
 
-(setq-default default-enable-multibyte-characters nil)
+(unless window-system
+  ;; Without this, "emacs -nw" only shows ??? and not הצü
+  (setq-default default-enable-multibyte-characters nil))
 
 
 
