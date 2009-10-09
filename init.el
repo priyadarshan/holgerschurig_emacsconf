@@ -584,6 +584,12 @@ non-nill or `compile' otherwise."
 		(function (lambda (a) (interactive "P") (my-compile a t))))
 
 
+(defun set-compile-command (&optional cmd)
+  "Helper for to set compile-command"
+  (interactive "scmd: ")
+  (setq compile-command cmd))
+
+
 
 ;; Helper for compilation. Close the compilation window if there was
 ;; no error at all.
@@ -679,6 +685,7 @@ non-nill or `compile' otherwise."
 (defun vc-find-file-hook ()
   "Dummy, overriding the one in vc-hooks.el"
   (setq vc-mode nil))
+
 
 
 ;;}}}
