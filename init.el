@@ -1177,7 +1177,7 @@ unless optional argument SOFT is non-nil."
 	    ))))
 
 (defun my-c-mode-common-setup ()
-  ;;(define-key c-mode-map (kbd "RET") 'c-newline-and-perhaps-comment)
+  (define-key c-mode-map (kbd "RET") 'newline)
   (turn-on-auto-fill)
   (c-toggle-auto-newline 1)
   (modify-syntax-entry ?_ "w")
