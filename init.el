@@ -667,7 +667,6 @@ non-nill or `compile' otherwise."
 	  (cons custom-file auto-byte-compile-files-list)))
 
 ;; Save recent files
-
 (setq recentf-save-file "~/.emacs.d/recentf"
       recentf-exclude '("bbdb$"
 			"svn-commit.tmp$"
@@ -676,6 +675,10 @@ non-nill or `compile' otherwise."
       recentf-max-saved-items 1000)
 (recentf-mode 1)
 
+;; Don't run vc-git & friends, we have magit
+(defun vc-find-file-hook ()
+  "Dummy, overriding the one in vc-hooks.el"
+  (setq vc-mode nil))
 
 
 ;;}}}
