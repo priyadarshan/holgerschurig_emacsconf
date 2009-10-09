@@ -1170,13 +1170,13 @@ unless optional argument SOFT is non-nil."
 	    ))))
 
 (defun my-c-mode-common-setup ()
-  (define-key c-mode-map (kbd "RET") 'c-newline-and-perhaps-comment)
+  ;;(define-key c-mode-map (kbd "RET") 'c-newline-and-perhaps-comment)
   (turn-on-auto-fill)
   (c-toggle-auto-newline 1)
   (modify-syntax-entry ?_ "w")
   (setq fill-column 76
 	;; Let RET break and continue a comment
-	comment-line-break-function 'c-newline-and-perhaps-comment
+	;;comment-line-break-function 'c-newline-and-perhaps-comment
 	;; C doesn't start functions with a ( in the first column
 	open-paren-in-column-0-is-defun-start nil
 	;; Insert TABs if needed
