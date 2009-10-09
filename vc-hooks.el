@@ -1,0 +1,2 @@
+;; dummy
+(provide 'vc-hooks)
