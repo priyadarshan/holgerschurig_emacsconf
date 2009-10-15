@@ -200,7 +200,9 @@ Deletes whitespace at join."
 			     (if (and (eolp) (not (bolp)))
 				 (delete-indentation t)
 			       (kill-line arg)))
+
 (global-set-key (kbd "C-k") 'kill-and-join-forward)
+;; ORIGINAL: deleteline
 
 
 
@@ -344,7 +346,10 @@ command from COMMANDS."
 
 ;; Swap RET and \C-j (newline and newline-and-indent)
 (global-set-key (kbd "RET") 'newline-and-indent)
+;; ORIGINAL: newline
+
 (global-set-key (kbd "\C-j") 'newline)
+;; ORIGINAL: newline-and-indent
 
 
 
@@ -379,7 +384,9 @@ command from COMMANDS."
     (let ((needle (or (read-string (concat "grep for '" default "': ")) default)))
       (setq needle (if (equal needle "") default needle))
       (grep (concat "egrep -s -i -n -r " needle " *")))))
+
 (global-set-key (kbd "C-x g") 'my-grep)
+;; ORIGINAL: undefined
 
 
 (defun isearch-occur ()
@@ -388,8 +395,9 @@ command from COMMANDS."
   (let ((case-fold-search isearch-case-fold-search))
     (occur (if isearch-regexp isearch-string (regexp-quote isearch-string))))
   (pop-to-buffer "*Occur*"))
+
 (define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
-;; ORIGINAL: isearch-other-control-char
+;; ORIGINAL: isearch-other-meta-char
 
 
 
@@ -429,8 +437,6 @@ command from COMMANDS."
       ad-do-it (selected-window))))
 
 
-;; (global-set-key "\C-x k" 'kill--buffer-and-window)
-
 ;; Candidate as replacement for `kill-buffer', at least when used
 ;; interactively. Should not just redefine `kill-buffer', because some
 ;; programs count on a specific other buffer taking the place of the
@@ -452,12 +458,46 @@ there are several windows open."
   ;; (when (> (length (frame-list)) 1)
   ;;   (delete-frame))
   )
+
 (global-set-key "\C-xk" 'my--kill-buffer-and-window)
+;; ORIGINAL: kill-buffer
 
 
 (global-set-key (kbd "<M-down>") 'enlarge-window)
-(global-set-key (kbd "<M-up>") 'shrink-window)
+;; ORIGINAL: undefined
 
+(global-set-key (kbd "<M-up>") 'shrink-window)
+;; ORIGINAL: undefined
+
+
+(defun my-explode-window ()
+  "If there is only one window displayed, act like C-x2. If there
+are two windows displayed, act like C-x1:"
+  (interactive)
+  (if (one-window-p t)
+      (progn
+	(split-window-vertically)
+	(other-window 1)
+	(my-zoom-next-buffer)
+	(other-window -1))
+    (delete-other-windows)
+  ))
+
+(defun my-next-window ()
+  "If there is only one window displayed, switch to the next
+  buffer. Otherwise simply toggle the window."
+  (interactive)
+  (if (one-window-p t)
+      (my-zoom-next-buffer)
+    (other-window 1)))
+
+(global-set-key [(f5)] 'my-explode-window)
+;; ORIGINAL: undefined
+
+(global-set-key [(f6)] 'my-next-window)
+;; ORIGINAL: undefined
+
+;; TODO: Shift-F6: prev window?
 
 
 
@@ -500,10 +540,15 @@ big window will be displayed."
       )
   )
 )
+
 (global-set-key "\M-n" 'my-zoom-next-buffer)
+;; ORIGINAL: undefined
+
 
 ;; Insert buffer at current position
 (global-set-key "\C-xI" 'insert-buffer)
+;; ORIGINAL: undefined
+
 
 ;; Protect *scratch*
 ;; http://www.emacswiki.org/emacs/ProtBuf
@@ -607,7 +652,10 @@ non-nill or `compile' otherwise."
       compilation-scroll-output t)
 
 (global-set-key [(f8)] 'next-error)
+;; ORIGINAL: undefined
+
 (global-set-key [(shift f8)] 'previous-error)
+;; ORIGINAL: undefined
 
 
 
@@ -759,7 +807,9 @@ non-nill or `compile' otherwise."
 	(if fn
 	    (describe-function fn)
 	  (man (current-word)))))))
+
 (global-set-key [(f1)] 'my-help)
+;; ORIGINAL: help-command
 
 
 
@@ -1586,6 +1636,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 ;; Key-Bindings
 (define-key global-map "\C-ca" 'org-agenda)
+;; ORIGINAL: undefined
 
 
 
@@ -1608,7 +1659,9 @@ Otherwise, kill characters backward until encountering the end of a word."
       remember-handler-functions 'org-remember-handler
       )
 (add-hook 'remember-mode-hook 'org-remember-apply-template)
+
 (define-key global-map "\C-cr" 'org-remember)
+;; ORIGINAL: undefined
 
 
 
@@ -1837,7 +1890,10 @@ Otherwise, kill characters backward until encountering the end of a word."
      (setq magit-save-some-buffers nil)))
 
 (global-set-key "\M-g\M-m" 'magit-status)
+;; ORIGIN: undefined
+
 (global-set-key "\M-gm" 'magit-status)
+;; ORIGIN: undefined
 
 
 
@@ -2073,12 +2129,20 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;{{{ Key bindings
 
 (global-set-key "\C-xE"		'apply-macro-to-region-lines)
+;; ORIGIN: kmacro-and-and-call-macro (on \C-Xe)
+
 (global-set-key "\C-x\\"	'align-regexp)
+;; ORIGIN: undefined
 
 (global-set-key "\C-c\C-f"	'ff-find-other-file)
+;; ORIGIN: undefined
 
 (global-set-key "\C-cc"		'comment-region)
+;; ORIGIN: undefined
+
 (global-set-key "\C-cu"		'uncomment-region)
+;; ORIGIN: undefined
+
 
 ;; Don't iconify
 (when window-system
