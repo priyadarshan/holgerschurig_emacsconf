@@ -606,14 +606,10 @@ To remove this protection, call this command with a negative prefix argument."
 ;;}}}
 ;;{{{ Functions: Compilation
 
-(defun my-compile (&optional recompile touch)
-  "If touch is non-nil marks buffer as modified.  Saves
-buffer (`save-buffer') and executes `recompile' if recompile is
-non-nill or `compile' otherwise."
+(defun my-compile ()
+  "Compile elisp or cpp"
   (interactive)
   (delete-other-windows)
-  (when touch
-    (set-buffer-modified-p t))
   (save-buffer)
   (if (or (eq major-mode 'lisp-mode) (eq major-mode 'emacs-lisp-mode))
       (progn
@@ -621,12 +617,10 @@ non-nill or `compile' otherwise."
 	(auto-byte-compile-file nil t))
     (progn
       (my--kill-buffer-and-window (get-buffer-create "*compilation*"))
-      (if recompile
-	  (recompile)
-	(compile compile-command)))))
+	(compile compile-command))))
+
 (global-set-key [(f7)] 'my-compile)
-(global-set-key [(shift f7)]
-		(function (lambda (a) (interactive "P") (my-compile a t))))
+;; ORIGINAL: undefined
 
 
 (defun set-compile-command (&optional cmd)
