@@ -1054,8 +1054,8 @@ To remove this protection, call this command with a negative prefix argument."
 
 (defvar srecode-map-save-file nil)
 (defvar semanticdb-default-save-directory nil)
-(setq srecode-map-save-file "~/.emacs.d/srecode-map")
-(setq semanticdb-default-save-directory "~/.emacs.d/semanticdb")
+(setq srecode-map-save-file "~/.emacs.d/tmp/srecode-map"
+      semanticdb-default-save-directory "~/.emacs.d/tmp/semanticdb")
 
 (eval-after-load "cedet"
   '(progn
