@@ -1711,6 +1711,9 @@ Otherwise, kill characters backward until encountering the end of a word."
 (load "eproject/eproject" 'noerror 'nomessage)
 (load "eproject/eproject-extras" 'noerror 'nomessage)
 
+;; Silence compiler
+(flet ((look-for (expr &optional (expr-type :filename)) )))
+
 (define-project-type libertas (generic)
   (look-for "persistcfg.c"))
 
