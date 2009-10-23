@@ -1707,6 +1707,20 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: eproject
+
+(load "eproject/eproject" 'noerror 'nomessage)
+(load "eproject/eproject-extras" 'noerror 'nomessage)
+
+(define-project-type libertas (generic)
+  (look-for "persistcfg.c"))
+
+(add-hook 'libertas-project-file-visit-hook
+          (lambda ()
+            (set (make-local-variable 'compile-command)
+                 "make -C /usr/src/linux-wl SUBDIRS=drivers/net/wireless/libertas")))
+
+;;}}}
 ;;{{{ Package: erc
 
 (autoload 'erc-open "erc" "IRC client." t)
