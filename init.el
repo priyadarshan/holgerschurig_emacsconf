@@ -940,6 +940,20 @@ To remove this protection, call this command with a negative prefix argument."
 	 ))))
 (add-hook 'font-lock-mode-hook 'my--hint-facify)
 
+;; tips from http://www.reddit.com/r/emacs/comments/9nh64/ask_emacs_which_color_theme_do_you_use/
+(custom-set-faces
+
+ '(font-lock-constant-face
+   ((((class color) (min-colors 88) (background light))
+     (:foreground "SlateBlue4"))))
+
+ '(font-lock-string-face
+   ((((class color) (min-colors 88) (background light))
+     (:foreground "Forest Green"))))
+
+ '(font-lock-keyword-face
+   ((t (:weight bold))))
+ )
 
 
 
