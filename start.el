@@ -6,7 +6,7 @@
 					;(setq debug-on-error t)
 (defun debug-on-error ()
   "Turn on debug on error"
-  (interactive "P")
+  (interactive)
   (setq debug-on-error t))
 
 
