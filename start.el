@@ -2014,35 +2014,36 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 ;; (require 'ido)
 
+(eval-after-load "ido"
+  '(setq ido-save-directory-list-file "~/.emacs.d/tmp/ido.last"
+	 ido-work-directory-list '()
+	 ido-everywhere t			; use for many file dialogs
+	 ido-case-fold t			; be case-insensitive
+	 ido-enable-last-directory-history t	; remember last used dirs
+	 ido-max-work-directory-list 30		; should be enough
+	 ido-max-work-file-list      50		; remember many
+	 ido-use-filename-at-point t		; don't use filename at point (annoying)
+	 ido-use-url-at-point nil		;  don't use url at point (annoying)
+	 ido-enable-flex-matching t		; be flexible
+	 ido-max-prospects 5			; don't spam my minibuffer
+	 ido-confirm-unique-completion t	; wait for RET, even with unique completion
+	 ido-enable-dot-prefix t		; need "." to select hidden files
+	 ido-ignore-buffers
+	 '("\\`"
+	   "^\*Mess"
+	   "^\*Help*"
+	   "^\*Back"
+	   ".*Completion"
+	   "^\*Ido")
+	 ido-ignore-directories
+	 '("\\`CVS/"
+	   "\\.svn/"
+	   "\\.git/"
+	   "\\`\\.\\./"
+	   "\\`\\./")
+	 ))
+
 ;; (ido-mode 'buffer)
-;; (setq
-;;  ido-save-directory-list-file  "~/.emacs.d/ido.last"
-;;  ido-work-directory-list '()
-;;  ido-everywhere t			; use for many file dialogs
-;;  ido-case-fold t			; be case-insensitive
-;;  ido-enable-last-directory-history t	; remember last used dirs
-;;  ido-max-work-directory-list 30		; should be enough
-;;  ido-max-work-file-list      50		; remember many
-;;  ido-use-filename-at-point t		; don't use filename at point (annoying)
-;;  ido-use-url-at-point nil		;  don't use url at point (annoying)
-;;  ido-enable-flex-matching t		; be flexible
-;;  ido-max-prospects 5			; don't spam my minibuffer
-;;  ido-confirm-unique-completion t	; wait for RET, even with unique completion
-;;  ido-enable-dot-prefix t		; need "." to select hidden files
-;;  ido-ignore-buffers
-;;  '("\\`"
-;;   "^\*Mess"
-;;   "^\*Help*"
-;;   "^\*Back"
-;;   ".*Completion"
-;;   "^\*Ido")
-;;  ido-ignore-directories
-;;  '("\\`CVS/"
-;;    "\\.svn/"
-;;    "\\.git/"
-;;    "\\`\\.\\./"
-;;    "\\`\\./")
-;; )
 
 
 
