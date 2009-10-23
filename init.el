@@ -979,7 +979,7 @@ To remove this protection, call this command with a negative prefix argument."
 
 
 ;;}}}
-;;{{{ Display: whitespace, 80columns
+;;{{{ Display: whitespace
 
 ;; Let typing errors be obvious
 (add-hook 'find-file-hook
@@ -1024,7 +1024,6 @@ To remove this protection, call this command with a negative prefix argument."
       blink-matching-parent nil)
 (set-face-background 'show-paren-match-face "#e0a0a0")
 (set-face-foreground 'show-paren-match-face "white")
-
 
 ;; Display page delimiter ^L as a horizontal line
 (or standard-display-table (setq standard-display-table (make-display-table)))
