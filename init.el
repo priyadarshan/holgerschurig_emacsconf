@@ -1918,6 +1918,37 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: server
+
+;; Automatically start server, even when run interactively
+(require 'server)
+(unless (server-running-p)
+  (server-start))
+
+;; Make sure the frame pops up as a graphical frame
+(setq server-window '(lambda (buf)
+		       (switch-to-buffer buf)
+		       (raise-frame))
+      server-temp-file-regexp "^/tmp/Re\\|/draft\\|/.git/COMMIT_EDITMSG\\|/.git/TAG_EDITMSG$")
+
+;; Kill buffers when done (M-x #)
+(add-hook 'server-done-hook (lambda nil (kill-buffer nil)))
+
+
+
+
+;;}}}
+;;{{{ Package: uniquify
+
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward-angle-brackets
+      uniquify-separator "/"
+      uniquify-after-kill-buffer-p t
+      uniquify-ignore-buffers-re "^\\*")
+
+
+
+;;}}}
 ;;{{{ Disabled Package: ibuffer
 
 ;; (require 'ibuffer)
@@ -2022,37 +2053,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; (require 'fuzzy-match)
 
 ;; (icicle-mode 1)
-
-
-
-;;}}}
-;;{{{ Uniquify
-
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'post-forward-angle-brackets
-      uniquify-separator "/"
-      uniquify-after-kill-buffer-p t
-      uniquify-ignore-buffers-re "^\\*")
-
-
-
-;;}}}
-;;{{{ Server
-
-;; Automatically start server, even when run interactively
-(require 'server)
-(unless (server-running-p)
-  (server-start))
-
-;; Make sure the frame pops up as a graphical frame
-(setq server-window '(lambda (buf)
-		       (switch-to-buffer buf)
-		       (raise-frame))
-      server-temp-file-regexp "^/tmp/Re\\|/draft\\|/.git/COMMIT_EDITMSG\\|/.git/TAG_EDITMSG$")
-
-;; Kill buffers when done (M-x #)
-(add-hook 'server-done-hook (lambda nil (kill-buffer nil)))
-
 
 
 
