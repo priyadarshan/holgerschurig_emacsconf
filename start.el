@@ -472,16 +472,43 @@ To remove this protection, call this command with a negative prefix argument."
 ;;}}}
 ;;{{{ Functions: Compilation
 
+
+(defun my--bcc-compile-source-file (fullname)
+  "Compiles an elisp file into the byte-cache"
+  (let (cachename
+        hist-ent loaded-from-bcc-cache
+        bcc-loaded-fake-cache-entry)
+
+    (when (and bcc-enabled
+               (not (save-match-data
+                      (bcc-in-blacklist fullname bcc-blacklist))))
+
+      (setq cachename (file-truename (bcc-cache-file-name fullname)))
+      (make-directory (file-name-directory cachename) t)
+
+      (when (and bcc-regenerate-toplevel
+                 (file-newer-than-file-p fullname cachename))
+
+        (bcc-regenerate-cache fullname cachename nil))
+
+      (when (file-readable-p cachename)
+        (unless bcc-loaded-fake-cache-entry
+          (setq loaded-from-bcc-cache t))))
+    ))
+
+
 (defun my-compile ()
   "Compile elisp or cpp"
   (interactive)
   (delete-other-windows)
   (save-buffer)
   ;; disabled for now
-  (if (and (eq major-mode 'lisp-mode) (eq major-mode 'emacs-lisp-mode))
+  (if (or (eq major-mode 'lisp-mode) (eq major-mode 'emacs-lisp-mode))
       (progn
 	(ignore-errors (my--kill-buffer-and-window (get-buffer-create "*Compile-Log*")))
-	(auto-byte-compile-file nil t))
+	; Now try to compile this file
+	(my--bcc-compile-source-file (buffer-file-name))
+	)
     (progn
       (my--kill-buffer-and-window (get-buffer-create "*compilation*"))
 	(compile compile-command))))
@@ -584,9 +611,6 @@ To remove this protection, call this command with a negative prefix argument."
 ;; Custom file
 (setq custom-file "~/.emacs.d/custom.el")
 (if (file-exists-p custom-file) (load-file custom-file))
-;; (if (boundp 'auto-byte-compile-files-list)
-;;     (setq auto-byte-compile-files-list
-;; 	  (cons custom-file auto-byte-compile-files-list)))
 
 ;; Save recent files
 (setq recentf-save-file "~/.emacs.d/tmp/recentf.el"
