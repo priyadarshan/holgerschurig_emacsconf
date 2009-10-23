@@ -1631,24 +1631,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ Package: bs
-
-(require 'bs)
-
-(global-set-key "\C-xb" 'bs-show)
-;; ORIGINAL: switch-to-buffer
-
-(defun list-buffers-other-win ()
-  "Opens list-buffers and put focus on it"
-  (interactive)
-  (bs-show "all"))
-
-(global-set-key "\C-x\C-b" 'list-buffers-other-win)
-;; ORIGINAL: list-buffers
-
-
-
-;;}}}
 ;;{{{ Package: calendar
 
 (setq diary-file  "~/.emacs.d/org/diary"
@@ -1847,6 +1829,65 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: ibuffer
+
+(require 'ibuffer)
+
+(setq ibuffer-display-summary nil
+      ;;ibuffer-use-header-line t
+      ;;ibuffer-default-sorting-mode 'major-mode
+      ;;
+      ibuffer-show-empty-filter-groups nil
+      ibuffer-old-time 4
+      ;; And now my filters:
+      ibuffer-saved-filter-groups
+      '(("default"
+	 ("dired" (mode . dired-mode))
+	 ("erc" (mode . erc-mode))
+	 ("Agenda" (or
+		    (name . "^\\*Calendar\\*$")
+		    (name . "^diary$")
+		    (name . "^\\*Org.*")
+		    (mode . muse-mode)))
+	 ("emacs" (name . "^\\*"))
+	 )))
+
+;; reverse group order
+(defadvice ibuffer-generate-filter-groups (after reverse-ibuffer-groups ()
+						   activate)
+  (setq ad-return-value (nreverse ad-return-value)))
+
+(add-hook 'ibuffer-mode-hook
+	  (lambda ()
+	    (ibuffer-switch-to-saved-filter-groups "default")))
+
+;; Turn off header
+(defadvice ibuffer-update-title-and-summary (after kill-2-lines)
+  (save-excursion
+    (set-buffer "*Ibuffer*")
+    (toggle-read-only 0)
+    (goto-char 1)
+    (search-forward "-\n" nil t)
+    (delete-region 1 (point))
+    (let ((window-min-height 1))
+      ;; save a little screen estate
+      (shrink-window-if-larger-than-buffer))
+    (toggle-read-only)))
+(ad-activate 'ibuffer-update-title-and-summary)
+
+(defun my-ibuffer ()
+  "Open ibuffer with cursour pointed to most recent buffer name"
+  (interactive)
+  (let ((recent-buffer-name (buffer-name)))
+    (ibuffer)
+    (ibuffer-jump-to-buffer recent-buffer-name)))
+
+(global-set-key "\C-x\C-b" 'my-ibuffer)
+;; ORIGINAL: list-buffers
+
+
+
+;;}}}
 ;;{{{ Package: magit
 
 ;; git clone git://gitorious.org/magit/mainline.git magit
@@ -1996,16 +2037,20 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ Disabled Package: ibuffer
+;;{{{ Disabled Package: bs
 
-;; (require 'ibuffer)
+;; (require 'bs)
 
-;; (global-set-key "\C-x\C-b" 'ibuffer)
+;; (global-set-key "\C-xb" 'bs-show)
+;; ;; ORIGINAL: switch-to-buffer
 
-;; (setq ibuffer-default-sorting-mode 'major-mode
-;;       ibuffer-always-show-last-buffer t
-;;       ibuffer-view-ibuffer nil
-;;       )
+;; (defun list-buffers-other-win ()
+;;   "Opens list-buffers and put focus on it"
+;;   (interactive)
+;;   (bs-show "all"))
+
+;; (global-set-key "\C-x\C-b" 'list-buffers-other-win)
+;; ORIGINAL: list-buffers
 
 
 
