@@ -1420,6 +1420,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 ;;(org-remember-insinuate)
 (setq org-default-notes-file (concat org-directory "/agenda.org")
+      remember-data-file (concat org-directory "/notes.org")
       org-remember-store-without-prompt t
       ;; Store remember notes without prompting
       org-remember-store-without-prompt t
