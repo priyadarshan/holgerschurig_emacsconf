@@ -257,9 +257,8 @@ ORIGNAME. NOERROR and NOMESSAGE mean what they do for LOAD."
                 'never
               ad-default-compilation-action)))
 
-;;      (unless nomessage
-;;        (message "Loading %S as %S..." cachename origname))
-;;	(message "Loading %S (compiled)" origname)
+      (unless nomessage
+	(message "Loading %S (compiled)" origname))
 
       (unwind-protect
           (let ((load-file-name origname)
