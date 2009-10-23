@@ -889,7 +889,7 @@ To remove this protection, call this command with a negative prefix argument."
 
 
 ;;}}}
-;;{{{ Display: whitespace
+;;{{{ Display: Whitespace
 
 ;; Let typing errors be obvious
 (add-hook 'find-file-hook
@@ -946,7 +946,40 @@ To remove this protection, call this command with a negative prefix argument."
 
 
 ;;}}}
-;;{{{ Menue
+;;{{{ Display: Minibuffer
+
+;; C-c clears minibuffer
+(define-key minibuffer-local-map "\C-c" (lambda () (interactive) (delete-minibuffer-contents)))
+
+(setq
+ ;; Don't insert current directory into minubuffer
+ insert-default-directory nil
+ ;; enable recursive minibuffer
+ enable-recursive-minibuffers t
+ ;; minibuffer window expands vertically as necessary to hold the text that
+ ;; you put in the minibuffer
+ resize-mini-windows t
+ )
+
+;; dim the ignored part of the file name
+(file-name-shadow-mode 1)
+
+;; allow to type space chars in minibuffer input
+;; (for `timeclock-in', for example)
+(define-key minibuffer-local-completion-map " " nil)
+(define-key minibuffer-local-must-match-map " " nil)
+
+
+;; Minibuffer history
+(require 'savehist)
+(setq savehist-file "~/.emacs.d/tmp/history.el"
+      history-length 1000)
+(savehist-mode 1)
+
+
+
+;;}}}
+;;{{{ Display: Menue
 
 ;; get rid of the Games in the Tools menu
 (define-key menu-bar-tools-menu [games] nil)
@@ -1806,39 +1839,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 (global-set-key "\M-gm" 'magit-status)
 ;; ORIGIN: undefined
-
-
-
-;;}}}
-;;{{{ Package: minibuffer
-
-;; C-c clears minibuffer
-(define-key minibuffer-local-map "\C-c" (lambda () (interactive) (delete-minibuffer-contents)))
-
-(setq
- ;; Don't insert current directory into minubuffer
- insert-default-directory nil
- ;; enable recursive minibuffer
- enable-recursive-minibuffers t
- ;; minibuffer window expands vertically as necessary to hold the text that
- ;; you put in the minibuffer
- resize-mini-windows t
- )
-
-;; dim the ignored part of the file name
-(file-name-shadow-mode 1)
-
-;; allow to type space chars in minibuffer input
-;; (for `timeclock-in', for example)
-(define-key minibuffer-local-completion-map " " nil)
-(define-key minibuffer-local-must-match-map " " nil)
-
-
-;; Minibuffer history
-(require 'savehist)
-(setq savehist-file "~/.emacs.d/tmp/history.el"
-      history-length 1000)
-(savehist-mode 1)
 
 
 
