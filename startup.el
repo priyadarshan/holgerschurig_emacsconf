@@ -600,12 +600,14 @@ To remove this protection, call this command with a negative prefix argument."
 ;; Auto decompress compressed files.
 (auto-compression-mode t)
 
-;; Preserve hard links to the file you´re editing (this is
-;; especially important if you edit system files)
-(setq backup-by-copying-when-linked t)
-
-;; Just never create backup files at all
-(setq make-backup-files nil)
+(setq
+ ;; Preserve hard links to the file you´re editing (this is
+ ;; especially important if you edit system files)
+ backup-by-copying-when-linked t
+ ;; Just never create backup files at all
+ ;;make-backup-files nil
+ backup-directory-alist '(("." . "~/.emacs.d/tmp/bak/"))
+ )
 
 ;; Emacs is a text editor, make sure your text files end in a newline
 (setq require-final-newline t)
