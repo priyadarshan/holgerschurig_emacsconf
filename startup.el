@@ -624,22 +624,23 @@ To remove this protection, call this command with a negative prefix argument."
 
 ;; Auto-saving into some global directory
 
-(defvar autosave-dir
-  (file-name-as-directory "~/.emacs.d/tmp/autosave")
-  "The directory in which to place auto-save (i.e. #foo#) files.")
+;; (defvar autosave-dir
+;;   (file-name-as-directory "~/.emacs.d/tmp/autosave")
+;;   "The directory in which to place auto-save (i.e. #foo#) files.")
 
-(defun auto-save-file-name-p (filename)
-  "Return non-nil if filename can be yielded by `make-auto-save-file-name'.
-filename should lack slashes."
-  (string-match "^#.*#$" (file-name-nondirectory filename)))
+;; (defun auto-save-file-name-p (filename)
+;;   "Return non-nil if filename can be yielded by `make-auto-save-file-name'.
+;; filename should lack slashes."
+;;   (string-match "^#.*#$" (file-name-nondirectory filename)))
 
-(defun make-auto-save-file-name ()
-  (concat autosave-dir
-          (if buffer-file-name
-              (concat "#" (file-name-nondirectory buffer-file-name) "#")
-            (expand-file-name
-             (concat "#%" (buffer-name) "#")))))
+;; (defun make-auto-save-file-name ()
+;;   (concat autosave-dir
+;;           (if buffer-file-name
+;;               (concat "#" (file-name-nondirectory buffer-file-name) "#")
+;;             (expand-file-name
+;;              (concat "#%" (buffer-name) "#")))))
 
+(setq auto-save-list-file-prefix "~/.emacs.d/tmp/auto-save-list/saves-")
 
 ;;}}}
 ;;{{{ Help
