@@ -1,5 +1,37 @@
 ;; -*- mode: emacs-lisp; mode: fold -*-
 
+;;{{{ Debugging
+
+;; Provide a useful error trace if loading this monster fails
+					;(setq debug-on-error t)
+(defun debug-on-error ()
+  "Turn on debug on error"
+  (interactive "P")
+  (setq debug-on-error t))
+
+
+
+;;}}}
+;;{{{ OS - Environment
+
+(defconst ms-windows (equal window-system 'w32))
+
+
+;;}}}
+;;{{{ Load path
+
+(dolist (i '(
+	     "~/.emacs.d/elisp/"
+	     "~/.emacs.d/magit/"
+	     "~/.emacs.d/elpa/"
+	     "~/.emacs.d/"
+	     ))
+  (when (not (member i load-path))
+    (add-to-list 'load-path (expand-file-name i))))
+
+
+
+;;}}}
 ;;{{{ Functions: Deleting
 
 ;; The following may be of interest to people who (a) are happy with
@@ -1823,10 +1855,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ Package: package (Emacs package manager)
-
-;;  Load package before loading startup files, since some of them may depend on
-;;  package being loaded
+;;{{{ Package: package           (Emacs package manager)
 
 (require 'package)
 (package-initialize)
