@@ -1922,8 +1922,10 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Package: package           (Emacs package manager)
 
-(require 'package)
-(package-initialize)
+(eval-after-load "package"
+  '(package-initialize))
+
+(require 'package nil 'noerror)
 
 
 
