@@ -1609,11 +1609,12 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 ;; See also Package: install-elist
 
-(eval-after-load "auto-install"
-  '(setq auto-install-directory "~/.emacs.d/tmp/auto-install/"))
 (eval-after-load "install-elisp"
   '(setq install-elisp-repository-directory "~/.emacs.d/elisp/"))
-(require 'auto-install)
+
+(eval-after-load "auto-install"
+  '(setq auto-install-directory "~/.emacs.d/tmp/auto-install/"))
+(require 'auto-install nil 'nomsg)
 
 
 
