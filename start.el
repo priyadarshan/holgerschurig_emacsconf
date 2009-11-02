@@ -1823,6 +1823,9 @@ Otherwise, kill characters backward until encountering the end of a word."
 		    (name . "^diary$")
 		    (name . "^\\*Org.*")
 		    (mode . muse-mode)))
+	 ("Mail" (or
+		  (name . "^Folder$")
+		  (name . "^Summary$")))
 	 ("emacs" (name . "^\\*"))
 	 )))
 
@@ -2011,6 +2014,157 @@ Otherwise, kill characters backward until encountering the end of a word."
       uniquify-ignore-buffers-re "^\\*")
 
 
+
+;;}}}
+;;{{{ Package: wanderlust
+
+;; http://box.matto.nl/emacsgmail.html
+;; http://emacs-fu.blogspot.com/2009/06/e-mail-with-wanderlust.html
+;; http://repo.or.cz/w/more-wl.git
+
+
+;; ~/.offlineimaprc
+;;
+;; # Sample minimal config file.  Copy this to ~/.offlineimaprc and edit to
+;; # suit to get started fast.
+;;
+;; [general]
+;; accounts = Googlemail
+;;
+;; [Account Googlemail]
+;; localrepository = Local
+;; remoterepository = Remote
+;;
+;; [Repository Local]
+;; type = Maildir
+;; localfolders = ~/Mail
+;;
+;; [Repository Remote]
+;; type = Gmail
+;; remotehost = imap.googlemail.com
+;; remoteuser = holgerschurig@googlemail.com
+;; remotepass = dtgabzg0
+
+
+(autoload 'wl "wl" "Wanderlust" t)
+(autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
+(autoload 'wl-draft "wl-draft" "Write draft with Wanderlust." t)
+
+;; IMAP
+(setq elmo-imap4-default-server "imap.gmail.com"
+      elmo-imap4-default-user "holgerschurig@googlemail.com"
+      elmo-imap4-default-authenticate-type 'clear
+      elmo-imap4-default-port '993
+      elmo-imap4-default-stream-type 'ssl
+      elmo-imap4-use-modified-utf7 t)
+
+;; SMTP
+(setq wl-smtp-connection-type 'starttls
+      wl-smtp-posting-port 587
+      wl-smtp-authenticate-type "plain"
+      wl-smtp-posting-user "holgerschurig"
+      wl-smtp-posting-server "smtp.gmail.com"
+      wl-local-domain "gmail.com")
+
+;; Folders
+(setq elmo-maildir-folder-path "~/Mail"
+      wl-folder-desktop-name "Mails"
+      wl-folders-file "~/Mail/.folders"
+      wl-default-folder ".INBOX"
+      wl-default-spec "%"
+      wl-draft-folder "[Google Mail].Entw&APw-rfe"
+      wl-trash-folder "%[Google Mail]/Papierkorb"
+      ;; wl-spam-folder ".trash"              ;; ...spam as well
+      ;; wl-queue-folder ".queue"             ;; we don't use this
+      ;; wl-fcc ".sent"                       ;; sent msgs go to the "sent"-folder
+      ;; wl-fcc-force-as-read t               ;; mark sent messages as read
+)
+
+;; Folder view
+(setq wl-folder-many-unsync-threshold 1
+      wl-interactive-save-folders nil
+      ;;wl-stay-folder-window t
+      ;;wl-folder-window-width 25
+      )
+
+;; Summary view
+(setq wl-summary-default-view 'thread
+      wl-summary-line-format "%n%T%P%D.%M,%h:%m %t%4(%c%)%17(%f%) %s"
+      wl-summary-mode-line-format "WL: %f (%n/%u)"
+      wl-summary-width nil)
+
+;; Other paths
+(setq elmo-msgdb-directory "~/.emacs.d/tmp/elmo-msgdb"
+      wl-address-file "~/.emacs.d/wl-addresses"
+      wl-alias-file "~/.emacs.d/wl-im-aliases"
+      wl-score-files-directory "~/.emacs.d/tmp/wl-scores/"
+      wl-temporary-file-directory "~/.emacs.d/tmp/wl/")
+
+;; Misc customization
+(setq wl-from "Holger Schurig <h.schurig@mn-solutions.de>"
+      ;;User's mail addresses
+      ;; wl-user-mail-address-list
+      ;; (list (wl-address-header-extract-address wl-from)
+      ;; 	    ;; "e-mail2@example.com"
+      ;; 	    ;; "e-mail3@example.net" ...
+      ;; 	    )
+      ;;Subscribed mailing list.
+      ;; wl-subscribed-mailing-list
+      ;; 	    '("wl@lists.airs.net"
+      ;; 	      "apel-ja@m17n.org"
+      ;; 	      "emacs-mime-ja@m17n.org"
+      ;; 	      ;; "ml@example.com" ...
+      ;; 	      )
+      ;; Stay in offline mode for now
+      wl-plugged nil
+      ;; Keep folder window beside summary. (3 pane)
+      wl-stay-folder-window t
+      ;; Disable inline display of HTML part.
+      ;; Put before load `mime-setup'
+      mime-setup-enable-inline-html nil
+      ;; Don't split large message.
+      mime-edit-split-message nil
+      ;; If lines of message are larger than this value, treat it as `large'.
+      mime-edit-message-default-max-lines 1000
+      )
+
+
+
+;; (setq wl-folder-check-async t)
+;; check this folder periodically, and update modeline
+;; wl-biff-check-folder-list '(".todo") ;; check every 180 seconds
+;; (default: wl-biff-check-interval)
+
+
+;; hide many fields from message buffers
+(setq wl-message-ignored-field-list '("^.*:")
+      wl-message-visible-field-list
+      '("^\\(To\\|Cc\\):"
+	"^Subject:"
+	"^\\(From\\|Reply-To\\):"
+	;;"^Organization:"
+	"^\\(Posted\\|Date\\):"
+	)
+      wl-message-sort-field-list
+      '("^From"
+	"^Organization:"
+	"^X-Attribution:"
+	"^Subject"
+	"^Date"
+	"^To"
+	"^Cc"))
+
+
+(autoload 'wl-user-agent-compose "wl-draft" nil t)
+(if (boundp 'mail-user-agent)
+    (setq mail-user-agent 'wl-user-agent))
+(if (fboundp 'define-mail-user-agent)
+    (define-mail-user-agent
+      'wl-user-agent
+      'wl-user-agent-compose
+      'wl-draft-send
+      'wl-draft-kill
+      'mail-send-hook))
 
 ;;}}}
 ;;{{{ Disabled Package: bs

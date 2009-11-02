@@ -1,0 +1,50 @@
+# WL folders (put the '#' always at the beginning of the line)
+#
+# http://emacs-fu.blogspot.com/2009/06/e-mail-with-wanderlust.html
+#
+# IMAP       "%" MAILBOX [":" USERNAME ["/" AUTHENTICATE-TYPE]]["@" HOSTNAME][":" PORT]["!"]
+# POP3       "&" [USERNAME]["/" AUTHENTICATE-TYPE][":" NUMBERING-METHOD]["@" HOSTNAME][":" PORT]["!"]
+# NNTP       "-" NEWSGROUP [":" USERNAME]["@" HOSTNAME][":" PORT]["!"]
+# MH         "+" DIRECTORY-NAME
+# Maildir    "." [DIRECTORY-NAME]
+# News-Spool "=" DIRECTORY-NAM
+# Archive    "$" PATH-NAME [";" ARCHIVER-TYPE ";" PREFIX]
+# Search     "[" SEARCH CONDITION "]" [ SEARCH TARGET [ "!" SEARCH ENGINE ] ]
+# Multi      "*" FOLDER-1 ["," FOLDER-2] ... ["," FOLDER-N]
+# Filter     "/" CONDITION "/" TARGET-FOLDE
+# Pipe       "|" SOURCE-FOLDER "|" DESTINATION-FOLDER
+# Internal   ""flag" ["/" GLOBAL-FLAG
+#            ""sendlog"
+#            ""cache/00" - ""cache/1F"
+# File/Dir   "file:" PATH-OF-THE-DIRECTOR
+# Access     "access:" ROOT-FOLDER
+
+.INBOX				"Neue Mail"
+.[Google Mail].Entw&APw-rfe	"Entwurf"
+.[Google Mail].Gesendet		"Gesendet"
+
+
+WLAN {
+	.linux-wireless
+	.hostap
+	.ath5k-devel
+	.madwifi-devel
+}
+
+Embedded {
+	.linux-arm-kernel
+	.haret
+	.urjtag
+	.ce-linux
+}
+
+Sonstige {
+	.llvm-cfe-dev
+#	.[Google Mail].Papierkorb	"Gelöscht"
+#	.[Google Mail].Spam		"Spam"
+#	.[Google Mail].Alle Nachrichten/ "Alle"
+#	.[Google Mail].Markiert/	"Markierte"
+}
+
+# hs4233@mail.mn-solutions.de/
+# lost+found/
