@@ -731,15 +731,12 @@ To remove this protection, call this command with a negative prefix argument."
 ;;{{{ Display: Frame display
 
 ;; ~/.Xresources
-;; Emacs*geometry: 90x60+0+0
-;; Emacs.Font: terminus 11
-;; Emacs.verticalScrollBars: off
+;; Emacs.geometry: 120x55
+;; Emacs.Font:	terminus 11
+;; Emacs.verticalScrollBars: right
 ;; Emacs.toolBar: off
 ;; Emacs*Background: #000000
-;; Emacs*Foreground: #ffffff
-;;
-;; xrdb -merge .Xresources
-;; appres Emacs
+;; Emacs*Foreground: #7f7f7f
 
 ;; Automatically merge ~/.Xresources after changes
 (defun merge-x-resources ()
@@ -753,9 +750,7 @@ To remove this protection, call this command with a negative prefix argument."
 ;; Where to position a new frame (C-x 5 2)
 ;; Also where to open a new frame from emacsclient
 ;; (setq default-frame-alist '((xxx . 10)
-;; 			    (width . 90)
-;; 			    (height . 67)
-;; 			    (left-fringe . 0)
+;; 			    (left-fringe . 1)
 ;; 			    (right-fringe . 0)
 ;; 			    (menu-bar-lines . 1)
 ;; 			    (tool-bar-lines . 1)
@@ -766,37 +761,25 @@ To remove this protection, call this command with a negative prefix argument."
 	  '(
 	    ;;(background-color . "black")
 	    ;;(foreground-color . "LightGray")
-	    ;;(cursor-color . "LightGray")
 	    (horizontal-scroll-bars . nil)
-	    (vertical-scroll-bars . nil)
+	    (vertical-scroll-bars . right)
 	    (tool-bar-lines . 0)
-	    ;;(top . 0)
-	    ;;(left . 0)
-	    (left-fringe . 0)
+	    (left-fringe . 1)
 	    (right-fringe . 0)))
   (setq initial-frame-alist
-	`(;;(font . ,(if my-win32
-	  ;;	     (if have-win32-sixbyten-font
-	  ;;		 "-raster-sixbyten-normal-r-normal-normal-10-75-96-96-c-60-iso10646-1"
-	  ;;	       "-outline-Lucida Console-normal-r-normal-normal-11-82-96-96-c-*-iso8859-1")
-	  ;;	   ;; X's 6x10 font ...  Why not use "6x10" here?
-	  ;;	   "-Misc-Fixed-Medium-R-Normal--10-100-75-75-C-60-ISO8859-1"))
-	  ;;(background-color . "black")
+	`(;;(background-color . "black")
 	  ;;(foreground-color . "LightGray")
-	  ;;(mouse-color . "green")
 	  (horizontal-scroll-bars . nil)
-	  (vertical-scroll-bars . nil)
+	  (vertical-scroll-bars . right)
 	  (tool-bar-lines . 0)
-	  ;;(top . 0)
-	  ;;(left . 0)
+	  (left-fringe . 1)
+	  (right-fringe . 0)
 	  ;;(height . ,(if (or (not my-win32)
 	  ;;		   have-win32-sixbyten-font)
 	  ;;	       (my-frame-percent-to-char-height 97)
 	  ;;	     70))
-	  (heigh . 43)
-	  (width . 90)
-	  (left-fringe . 0)
-	  (right-fringe . 0)
+	  (width . 120)
+	  (height . 55)
 	  )))
 
 ;; default-frame-alist is defined in terms of initial-frame-alist.  Don't
