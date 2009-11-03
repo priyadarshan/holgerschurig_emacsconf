@@ -2004,9 +2004,188 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; http://box.matto.nl/emacsgmail.html
 ;; http://emacs-fu.blogspot.com/2009/06/e-mail-with-wanderlust.html
 ;; http://repo.or.cz/w/more-wl.git
+;; http://www.emacswiki.org/emacs/hgw-init-wl.el
 
 
-;; ~/.offlineimaprc
+;;{{{ Package: wanderlust - autoload
+
+(autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
+(autoload 'wl-draft "wl-draft" "Write draft with Wanderlust." t)
+(defun wl ()
+  "Load wanderlust e-mail client in a new frame"
+  (interactive)
+  (wl-other-frame t)
+  (wl-folder-open-all))
+
+;;}}}
+;;{{{ Package: wanderlust - SMTP
+(setq wl-smtp-connection-type 'starttls
+      wl-smtp-posting-port 587
+      wl-smtp-authenticate-type "plain"
+      wl-smtp-posting-user "holgerschurig@googlemail.com"
+      wl-smtp-posting-server "smtp.gmail.com"
+      wl-local-domain "gmail.com")
+(eval-after-load "elmo-util"
+  '(add-to-list 'elmo-passwd-alist '("SMTP:holgerschurig@googlemail.com/PLAIN@smtp.gmail.com" . "ZHRnYWJ6ZzA=")))
+
+
+;;}}}
+;;{{{ Package: wanderlust - IMAP
+;; (setq elmo-imap4-default-server "imap.gmail.com"
+;;       elmo-imap4-default-user "holgerschurig@googlemail.com"
+;;       elmo-imap4-default-authenticate-type 'clear
+;;       elmo-imap4-default-port '993
+;;       elmo-imap4-default-stream-type 'ssl
+;;       elmo-imap4-use-modified-utf7 t)
+
+(setq elmo-imap4-default-server "lin03"
+      elmo-imap4-default-user "schurig"
+      elmo-imap4-default-authenticate-type 'cram-md5
+      elmo-imap4-default-port '143
+      elmo-imap4-use-modified-utf7 t)
+(eval-after-load "elmo-util"
+  '(add-to-list 'elmo-passwd-alist '("IMAP:schurig/cram-md5@lin03:143" . "c2NodXJpZ3B3")))
+(eval-after-load "elmo-util"
+  '(add-to-list 'elmo-passwd-alist '("IMAP:schurig/digest-md5@lin01:143" . "ZzdrZnAy")))
+
+;;}}}
+;;{{{ Package: wanderlist - POP3
+
+(eval-after-load "elmo-util"
+  '(add-to-list 'elmo-passwd-alist '("POP3:p4004p2/user@mail.mn-solutions.de:110" . "c2Vkb2thNg==")))
+
+
+;;}}}
+;;{{{ Package: wanderlust - Paths
+(setq elmo-maildir-folder-path "~/Mail"
+      wl-folders-file "~/Mail/.folders"
+      elmo-msgdb-directory "~/.emacs.d/tmp/elmo-msgdb"
+      wl-address-file "~/.emacs.d/wl-addresses"
+      wl-alias-file "~/.emacs.d/wl-im-aliases"
+      wl-score-files-directory "~/.emacs.d/tmp/wl-scores/"
+      wl-temporary-file-directory "~/.emacs.d/tmp/wl/"
+      ;; Disabble all ugly icons
+      wl-icon-directory nil
+      )
+
+;;}}}
+;;{{{ Package: wanderlust - Folder view
+(setq wl-folder-desktop-name "Mails"
+      wl-draft-folder ".[Google Mail].Entw&APw-rfe"
+      wl-trash-folder ".[Google Mail]/Papierkorb"
+      ;; File-Carbon-
+      wl-fcc ".[Google Mail].Gesendet"
+      wl-fcc-force-as-read t
+      ;; Folders with more than this number are highlighted
+      wl-folder-many-unsync-threshold 1000
+      ;; Ask before writing .folders
+      wl-interactive-save-folders t
+      ;; Don't in folder window when f
+      wl-stay-folder-window nil
+      wl-folder-window-width 25
+      ;; Don't ask if we want to quit
+      wl-interactive-exit nil
+      )
+
+;; BUILD the folder tree automatically
+;; Note: if you change the hierarchy and want to rebuild the tree do
+;; rm -rf ~/Emacs/Wanderlust/Elmo/folder
+;; (setq wl-folder-hierarchy-access-folders
+;;       '("^.\\([^/.]+[/.]\\)*[^/.]+\\(:\\|@\\|$\\)"
+;; 	"^-[^.]*\\(:\\|@\\|$\\)"
+;; 	"^@$"
+;; 	"^'$"))
+
+;;}}}
+;;{{{ Package: wanderlust - Summary view
+(setq wl-auto-select-next 'unread
+      ;; Threading
+      wl-summary-default-view 'thread
+      wl-thread-insert-opened t
+      wl-summary-line-format "%T%P %D.%M,%h:%m %t%4(%c%)%20(%f%) %s"
+      ;; Shorten the mode-line
+      wl-summary-mode-line-format "WL: %f (%n/%u)"
+      ;; Don't truncate summary window
+      wl-summary-width nil
+      ;; no special mouse decoration
+      wl-use-highlight-mouse-line nil
+      ;; In those folders we want to display the receiver, not the sender
+      wl-summary-showto-folder-regexp ".[Google Mail].Gesendet"
+      )
+
+;;}}}
+;;{{{ Package: wanderlust - Message view
+(setq ;; Only display some message fields
+      wl-message-ignored-field-list
+      '("^.*:")
+      wl-message-visible-field-list
+      '("^\\(To\\|Cc\\):"
+	"^Subject:"
+	"^\\(From\\|Reply-To\\):"
+	;;"^Organization:"
+	"^\\(Posted\\|Date\\):"
+	)
+      ;; Display header fields in this order:
+      wl-message-sort-field-list
+      '("^Subject"
+	"^From"
+	"^Date"
+	"^To"
+	"^Cc")
+      ;; Disable inline display of HTML part.
+      ;; Put before load `mime-setup'
+      mime-setup-enable-inline-html nil
+      ;; Don't split large message.
+      mime-edit-split-message nil
+      ;; If lines of message are larger than this value, treat it as `large'.
+      mime-edit-message-default-max-lines 1000
+ )
+
+;;}}}
+;;{{{ Package: wanderlust - Beginnings of PDF handling
+;; (eval-after-load "mime-view"
+;;   '(progn
+;;      (ctree-set-calist-strictly
+;;       'mime-acting-condition
+;;       '((mode . "play")
+;;         (type . application)(subtype . pdf)
+;;         (method . my-mime-save-content-find-file)))))
+;;}}}
+;;{{{ Package: wanderlust - Message creation
+(setq wl-forward-subject-prefix "Fwd: "
+      ;;signature-file-name "~/Maildir/Signatures/XxxxXXXAddress"
+      ;;signature-insert-at-eof t
+      ;;signature-delete-blank-lines-at-eof t
+ )
+
+;;}}}
+;;{{{ Package: wanderlust - Misc customization
+(setq wl-from "Holger Schurig <holgerschurig@googlemail.com>"
+      ;;User's mail addresses
+      wl-user-mail-address-list '("h.schurig@mn-solutions.de"
+				  "holgerschurig@googlemail.com"
+				  "holgerschurig@gmail.com"
+				  "hs4233@mail.mn-solutions.de"
+				  )
+      ;; Subscribed mailing list.
+      wl-subscribed-mailing-list '("linux-wireless@linux.vger.org")
+      )
+
+;;}}}
+;;{{{ Package: wanderlust - Default compose-mail
+(autoload 'wl-user-agent-compose "wl-draft" nil t)
+(if (boundp 'mail-user-agent)
+    (setq mail-user-agent 'wl-user-agent))
+(if (fboundp 'define-mail-user-agent)
+    (define-mail-user-agent
+      'wl-user-agent
+      'wl-user-agent-compose
+      'wl-draft-send
+      'wl-draft-kill
+      'mail-send-hook))
+
+;;}}}
+;;{{{ Package: wanderlust - Dample .offlineimaprc
 ;;
 ;; # Sample minimal config file.  Copy this to ~/.offlineimaprc and edit to
 ;; # suit to get started fast.
@@ -2027,129 +2206,106 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; remotehost = imap.googlemail.com
 ;; remoteuser = holgerschurig@googlemail.com
 ;; remotepass = dtgabzg0
+;;}}}
+;;{{{ Package: wanderlust - Keybindings
+
+(defun my-wl-summary-enter-handler (&optional arg)
+  "Enter the message after pressing ENTER in the summary view."
+  (interactive)
+  (wl-summary-enter-handler arg)
+  (other-window 1))
+(eval-after-load "wl-summary"
+  '(progn
+     (define-key wl-summary-mode-map "\r"   'my-wl-summary-enter-handler)
+     (define-key wl-summary-mode-map "\C-m" 'my-wl-summary-enter-handler)
+     (define-key wl-folder-mode-map "n" 'wl-folder-next-unread)
+     (define-key wl-folder-mode-map "p" 'wl-folder-prev-unread)
+     ))
+(add-hook 'wl-folder-mode-hook 'wl-folder-open-all)
+
+(defun my-wl-summary-next ()
+  (interactive)
+  (other-window -1)
+  (wl-summary-next)
+  (other-window 1))
+(defun my-wl-summary-prev ()
+  "Should be called while in the message window"
+  (interactive)
+  (other-window -1)
+  (wl-summary-prev)
+  (other-window 1))
+(defun my-wl-summary-up ()
+  (interactive)
+  (other-window -1)
+  (wl-summary-up)
+  (other-window 1))
+(defun my-wl-summary-down ()
+  "Should be called while in the message window"
+  (interactive)
+  (other-window -1)
+  (wl-summary-down)
+  (other-window 1))
+(add-hook
+ 'mime-view-mode-hook
+ '(lambda ()
+    ;; (local-set-key "\C-m" 'my-mime-button-exec)
+    ;; (local-set-key "f" 'my-mime-find-file-current-entity)
+    ;; (local-set-key "\C-f" 'find-file-at-point)
+    (local-set-key "q" 'kill-buffer-and-window)
+    (local-set-key "n" 'my-wl-summary-down)
+    (local-set-key "p" 'my-wl-summary-up)
+    (local-set-key "N" 'my-wl-summary-next)
+    (local-set-key "P" 'my-wl-summary-prev)
+    (local-set-key [(space)] 'scroll-up)
+    (local-set-key [(backtab)] 'mime-preview-move-to-previous)
+    ))
+
+;;}}}
+;;{{{ Package: wanderlust - (Disabled) Mail checking
+;; (setq wl-biff-check-folder-list
+;;       '("&xxxxxxx+h.xxxxxx/user@mail.plus.net:110!direct"
+;;         "&xxxxxxx+enquiries/user@mail.plus.net:110!direct"
+;;         "%inbox:hxxxxxx0/clear@imap.gmail.com:993!"
+;;         "-gmane.emacs.cvs@news.gmane.org"
+;;         "-gmane.emacs.devel@news.gmane.org"
+;;         "-gmane.emacs.orgmode@news.gmane.org"
+;;         "-gmane.emacs.emms.user@news.gmane.org"
+;;         "-gmane.emacs.sources@news.gmane.org"
+;;         "-gmane.mail.wanderlust.general@news.gmane.org"
+;;         "-gmane.mail.wanderlust.general.japanese@news.gmane.org"
+;;         "-gmane.comp.window-managers.stumpwm.devel@news.gmane.org"
+;;         "-gmane.comp.mozilla.conkeror@news.gmane.org"
+;;         )
+;;       wl-biff-check-interval 180
+;;       wl-biff-use-idle-timer t)
 
 
-(autoload 'wl "wl" "Wanderlust" t)
-(autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
-(autoload 'wl-draft "wl-draft" "Write draft with Wanderlust." t)
+;;}}}
+;;{{{ Package: wanderlust - (Disabled) Hooks
+;; (add-hook
+;;  'wl-init-hook
+;;  '(lambda ()
+;;     (set-frame-position (selected-frame) 663 0)
+;;     (set-frame-height (selected-frame) 70)
+;;     (set-frame-width (selected-frame) 114)
+;;     ;;(my-wl-zen-smtp-server) ;; Set the default smtp server to zen
+;;     ;;(my-bbdb-wl-refile-alist) ;; Add the BBDB refiling folders
+;;     ;;(run-with-idle-timer 30 t 'my-wl-auto-save-draft-buffers)
 
-;; IMAP
-(setq elmo-imap4-default-server "imap.gmail.com"
-      elmo-imap4-default-user "holgerschurig@googlemail.com"
-      elmo-imap4-default-authenticate-type 'clear
-      elmo-imap4-default-port '993
-      elmo-imap4-default-stream-type 'ssl
-      elmo-imap4-use-modified-utf7 t)
+;;     ;; Add support for (signature . "filename")
+;;     ;; (unless (assq 'signature wl-draft-config-sub-func-alist)
+;;     ;;   (wl-append wl-draft-config-sub-func-alist
+;;     ;;              '((signature . wl-draft-config-sub-signature))))
+;;     ;; (defun mime-edit-insert-signature (&optional arg)
+;;     ;;   "Redefine to insert a signature file directly, not as a tag."
+;;     ;;   (interactive "P")
+;;     ;;   (insert-signature arg))
 
-;; SMTP
-(setq wl-smtp-connection-type 'starttls
-      wl-smtp-posting-port 587
-      wl-smtp-authenticate-type "plain"
-      wl-smtp-posting-user "holgerschurig"
-      wl-smtp-posting-server "smtp.gmail.com"
-      wl-local-domain "gmail.com")
+;;     ;; Keep track of recently used Email addresses
+;;     ;;(recent-addresses-mode 1)
+;;     ))
 
-;; Folders
-(setq elmo-maildir-folder-path "~/Mail"
-      wl-folder-desktop-name "Mails"
-      wl-folders-file "~/Mail/.folders"
-      wl-default-folder ".INBOX"
-      wl-default-spec "%"
-      wl-draft-folder "[Google Mail].Entw&APw-rfe"
-      wl-trash-folder "%[Google Mail]/Papierkorb"
-      ;; wl-spam-folder ".trash"              ;; ...spam as well
-      ;; wl-queue-folder ".queue"             ;; we don't use this
-      ;; wl-fcc ".sent"                       ;; sent msgs go to the "sent"-folder
-      ;; wl-fcc-force-as-read t               ;; mark sent messages as read
-)
-
-;; Folder view
-(setq wl-folder-many-unsync-threshold 1
-      wl-interactive-save-folders nil
-      ;;wl-stay-folder-window t
-      ;;wl-folder-window-width 25
-      )
-
-;; Summary view
-(setq wl-summary-default-view 'thread
-      wl-summary-line-format "%T%P %D.%M,%h:%m %t%4(%c%)%20(%f%) %s"
-      wl-summary-mode-line-format "WL: %f (%n/%u)"
-      wl-summary-width nil)
-
-;; Other paths
-(setq elmo-msgdb-directory "~/.emacs.d/tmp/elmo-msgdb"
-      wl-address-file "~/.emacs.d/wl-addresses"
-      wl-alias-file "~/.emacs.d/wl-im-aliases"
-      wl-score-files-directory "~/.emacs.d/tmp/wl-scores/"
-      wl-temporary-file-directory "~/.emacs.d/tmp/wl/")
-
-;; Misc customization
-(setq wl-from "Holger Schurig <h.schurig@mn-solutions.de>"
-      ;;User's mail addresses
-      ;; wl-user-mail-address-list
-      ;; (list (wl-address-header-extract-address wl-from)
-      ;; 	    ;; "e-mail2@example.com"
-      ;; 	    ;; "e-mail3@example.net" ...
-      ;; 	    )
-      ;;Subscribed mailing list.
-      ;; wl-subscribed-mailing-list
-      ;; 	    '("wl@lists.airs.net"
-      ;; 	      "apel-ja@m17n.org"
-      ;; 	      "emacs-mime-ja@m17n.org"
-      ;; 	      ;; "ml@example.com" ...
-      ;; 	      )
-      ;; Stay in offline mode for now
-      wl-plugged nil
-      ;; Keep folder window beside summary. (3 pane)
-      wl-stay-folder-window t
-      ;; Disable inline display of HTML part.
-      ;; Put before load `mime-setup'
-      mime-setup-enable-inline-html nil
-      ;; Don't split large message.
-      mime-edit-split-message nil
-      ;; If lines of message are larger than this value, treat it as `large'.
-      mime-edit-message-default-max-lines 1000
-      )
-
-
-
-;; (setq wl-folder-check-async t)
-;; check this folder periodically, and update modeline
-;; wl-biff-check-folder-list '(".todo") ;; check every 180 seconds
-;; (default: wl-biff-check-interval)
-
-
-;; hide many fields from message buffers
-(setq wl-message-ignored-field-list
-      '("^.*:")
-      wl-message-visible-field-list
-      '("^\\(To\\|Cc\\):"
-	"^Subject:"
-	"^\\(From\\|Reply-To\\):"
-	;;"^Organization:"
-	"^\\(Posted\\|Date\\):"
-	)
-      wl-message-sort-field-list
-      '("^Subject"
-	"^From"
-	"^Organization:"
-	"^X-Attribution:"
-	"^Date"
-	"^To"
-	"^Cc"))
-
-
-(autoload 'wl-user-agent-compose "wl-draft" nil t)
-(if (boundp 'mail-user-agent)
-    (setq mail-user-agent 'wl-user-agent))
-(if (fboundp 'define-mail-user-agent)
-    (define-mail-user-agent
-      'wl-user-agent
-      'wl-user-agent-compose
-      'wl-draft-send
-      'wl-draft-kill
-      'mail-send-hook))
-
+;;}}}
 ;;}}}
 ;;{{{ Disabled Package: bs
 

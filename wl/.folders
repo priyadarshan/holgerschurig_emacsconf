@@ -13,38 +13,41 @@
 # Multi      "*" FOLDER-1 ["," FOLDER-2] ... ["," FOLDER-N]
 # Filter     "/" CONDITION "/" TARGET-FOLDE
 # Pipe       "|" SOURCE-FOLDER "|" DESTINATION-FOLDER
-# Internal   ""flag" ["/" GLOBAL-FLAG
-#            ""sendlog"
-#            ""cache/00" - ""cache/1F"
+# Internal   "'flag" ["/" GLOBAL-FLAG
+#            "'sendlog"
+#            "'cache/00" - "'cache/1F"
 # File/Dir   "file:" PATH-OF-THE-DIRECTOR
 # Access     "access:" ROOT-FOLDER
 
-.INBOX				"Neue Mail"
-.[Google Mail].Entw&APw-rfe	"Entwurf"
-.[Google Mail].Gesendet		"Gesendet"
+# M&N
+%/users/schurig/INBOX                    "M&N AoX"
+
+%INBOX:schurig/digest-md5@lin01          "M&N Cyg schurig"
+&p4004p2@mail.mn-solutions.de            "M&N Cyg hs4233"
 
 
+# Googlemail
+
+.INBOX                                   "HS  Googlemail"
+.[Google Mail].Entw&APw-rfe              "Entwurf"
+.[Google Mail].Gesendet                  "Gesendet"
 WLAN {
-	.linux-wireless
-	.hostap
-	.ath5k-devel
-	.madwifi-devel
+        .linux-wireless
+        .hostap
+        .ath5k-devel
+        .madwifi-devel
 }
-
 Embedded {
-	.linux-arm-kernel
-	.haret
-	.urjtag
-	.ce-linux
+        .linux-arm-kernel
+        .haret
+        .urjtag
+        .ce-linux
 }
 
 Sonstige {
-	.llvm-cfe-dev
-#	.[Google Mail].Papierkorb	"Gelöscht"
-#	.[Google Mail].Spam		"Spam"
-#	.[Google Mail].Alle Nachrichten/ "Alle"
-#	.[Google Mail].Markiert/	"Markierte"
+        .llvm-cfe-dev
+#       .[Google Mail].Papierkorb        "Gelöscht"
+#       .[Google Mail].Spam              "Spam"
+#       .[Google Mail].Alle Nachrichten/ "Alle"
+#       .[Google Mail].Markiert/         "Markierte"
 }
-
-# hs4233@mail.mn-solutions.de/
-# lost+found/
