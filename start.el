@@ -2072,7 +2072,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 ;; Summary view
 (setq wl-summary-default-view 'thread
-      wl-summary-line-format "%n%T%P%D.%M,%h:%m %t%4(%c%)%17(%f%) %s"
+      wl-summary-line-format "%T%P %D.%M,%h:%m %t%4(%c%)%20(%f%) %s"
       wl-summary-mode-line-format "WL: %f (%n/%u)"
       wl-summary-width nil)
 
