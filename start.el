@@ -1285,9 +1285,9 @@ To remove this protection, call this command with a negative prefix argument."
      ))
 
 ;; Open Info-Screen in extra frame
-;; (defadvice info (before info activate)
-;;   (select-frame (make-frame))
-;;   )
+(defadvice info (before info activate)
+  (select-frame (make-frame))
+  )
 
 
 ;;}}}
