@@ -2120,7 +2120,8 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;; hide many fields from message buffers
-(setq wl-message-ignored-field-list '("^.*:")
+(setq wl-message-ignored-field-list
+      '("^.*:")
       wl-message-visible-field-list
       '("^\\(To\\|Cc\\):"
 	"^Subject:"
@@ -2129,10 +2130,10 @@ Otherwise, kill characters backward until encountering the end of a word."
 	"^\\(Posted\\|Date\\):"
 	)
       wl-message-sort-field-list
-      '("^From"
+      '("^Subject"
+	"^From"
 	"^Organization:"
 	"^X-Attribution:"
-	"^Subject"
 	"^Date"
 	"^To"
 	"^Cc"))
