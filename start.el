@@ -2121,6 +2121,50 @@ Otherwise, kill characters backward until encountering the end of a word."
       wl-folder-thread-indent-set-alist '((".*" . (2 "+" "+" "|" "-" " ")))
       )
 
+;; Functions for private key bindings
+(defun my-wl-summary-enter-handler (&optional arg)
+  "Enter the message after pressing ENTER in the summary view."
+  (interactive)
+  (wl-summary-enter-handler arg)
+  (other-window 1))
+
+;; Key bindings
+
+;; ENTER         * my-wl-summary-enter-handler
+;; SPACE         * my-wl-summary-enter-handler
+;; q               wl-summary-exit
+
+;; C-w           * wl-summary-save-current-message
+;; C-y		wl-summary-yank-saved-message
+
+;; C-o		wl-summary-auto-refile
+;; C-t		wl-plugged-change
+
+;; Ideas:
+
+;; m r             mark read
+;; m u             mark unread
+
+
+(eval-after-load "wl-summary"
+  '(progn
+     ;; (define-key wl-summary-mode-map "\r"   'my-wl-summary-enter-handler)
+     ;; (define-key wl-summary-mode-map "\C-m" 'my-wl-summary-enter-handler)
+     ;; ORIGINAL: wl-summary-read
+     (define-key wl-summary-mode-map [(space)] 'my-wl-summary-enter-handler)
+     (define-key wl-summary-mode-map [(return)] 'my-wl-summary-enter-handler)
+     ;; C-w: save, C-y yank
+     (define-key wl-summary-mode-map "\C-w" 'wl-summary-save-saved-message)
+
+     (define-key wl-summary-mode-map "m u" 'wl-summary-mark-as-unread)
+     (define-key wl-summary-mode-map "m i" 'wl-summary-mark-as-important)
+     (define-key wl-summary-mode-map "m d" 'wl-summary-delete)
+     (define-key wl-summary-mode-map "m r" 'wl-summary-mark-as-read)
+     (define-key wl-summary-mode-map "m x" 'wl-summary-unmark)
+     ))
+
+
+
 ;;}}}
 ;;{{{ Package: wanderlust - Message view
 
@@ -2265,15 +2309,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; remoteuser = holgerschurig@googlemail.com
 ;; remotepass = dtgabzg0
 ;;}}}
-;;{{{ Package: wanderlust - Keybindings
-
-(eval-after-load "wl-summary"
-  '(progn
-     (define-key wl-folder-mode-map "n" 'wl-folder-next-unread)
-     (define-key wl-folder-mode-map "p" 'wl-folder-prev-unread)
-     ))
-(add-hook 'wl-folder-mode-hook 'wl-folder-open-all)
-
 ;;{{{ Package: wanderlust - (Disabled) Mail checking
 ;; (setq wl-biff-check-folder-list
 ;;       '("&xxxxxxx+h.xxxxxx/user@mail.plus.net:110!direct"
