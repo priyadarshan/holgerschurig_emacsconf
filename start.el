@@ -2150,6 +2150,43 @@ Otherwise, kill characters backward until encountering the end of a word."
       mime-edit-message-default-max-lines 1000
  )
 
+(defun my-wl-summary-next ()
+  (interactive)
+  (other-window -1)
+  (wl-summary-next)
+  (other-window 1))
+(defun my-wl-summary-prev ()
+  "Should be called while in the message window"
+  (interactive)
+  (other-window -1)
+  (wl-summary-prev)
+  (other-window 1))
+(defun my-wl-summary-up ()
+  (interactive)
+  (other-window -1)
+  (wl-summary-up)
+  (other-window 1))
+(defun my-wl-summary-down ()
+  "Should be called while in the message window"
+  (interactive)
+  (other-window -1)
+  (wl-summary-down)
+  (other-window 1))
+(add-hook
+ 'mime-view-mode-hook
+ '(lambda ()
+    ;; (local-set-key "\C-m" 'my-mime-button-exec)
+    ;; (local-set-key "f" 'my-mime-find-file-current-entity)
+    ;; (local-set-key "\C-f" 'find-file-at-point)
+    (local-set-key "q" 'kill-buffer-and-window)
+    (local-set-key "n" 'my-wl-summary-down)  ;; next NEW message
+    (local-set-key "N" 'my-wl-summary-next)  ;; next message
+    (local-set-key "p" 'my-wl-summary-prev)  ;; prev messge
+    (local-set-key "P" 'my-wl-summary-up)    ;; prev NEW message (seldom used)
+    (local-set-key [(space)] 'scroll-up)
+    (local-set-key [(backtab)] 'mime-preview-move-to-previous)
+    ))
+
 ;;}}}
 ;;{{{ Package: wanderlust - Beginnings of PDF handling
 ;; (eval-after-load "mime-view"
@@ -2230,58 +2267,13 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Package: wanderlust - Keybindings
 
-(defun my-wl-summary-enter-handler (&optional arg)
-  "Enter the message after pressing ENTER in the summary view."
-  (interactive)
-  (wl-summary-enter-handler arg)
-  (other-window 1))
 (eval-after-load "wl-summary"
   '(progn
-     (define-key wl-summary-mode-map "\r"   'my-wl-summary-enter-handler)
-     (define-key wl-summary-mode-map "\C-m" 'my-wl-summary-enter-handler)
      (define-key wl-folder-mode-map "n" 'wl-folder-next-unread)
      (define-key wl-folder-mode-map "p" 'wl-folder-prev-unread)
      ))
 (add-hook 'wl-folder-mode-hook 'wl-folder-open-all)
 
-(defun my-wl-summary-next ()
-  (interactive)
-  (other-window -1)
-  (wl-summary-next)
-  (other-window 1))
-(defun my-wl-summary-prev ()
-  "Should be called while in the message window"
-  (interactive)
-  (other-window -1)
-  (wl-summary-prev)
-  (other-window 1))
-(defun my-wl-summary-up ()
-  (interactive)
-  (other-window -1)
-  (wl-summary-up)
-  (other-window 1))
-(defun my-wl-summary-down ()
-  "Should be called while in the message window"
-  (interactive)
-  (other-window -1)
-  (wl-summary-down)
-  (other-window 1))
-(add-hook
- 'mime-view-mode-hook
- '(lambda ()
-    ;; (local-set-key "\C-m" 'my-mime-button-exec)
-    ;; (local-set-key "f" 'my-mime-find-file-current-entity)
-    ;; (local-set-key "\C-f" 'find-file-at-point)
-    (local-set-key "q" 'kill-buffer-and-window)
-    (local-set-key "n" 'my-wl-summary-down)
-    (local-set-key "p" 'my-wl-summary-up)
-    (local-set-key "N" 'my-wl-summary-next)
-    (local-set-key "P" 'my-wl-summary-prev)
-    (local-set-key [(space)] 'scroll-up)
-    (local-set-key [(backtab)] 'mime-preview-move-to-previous)
-    ))
-
-;;}}}
 ;;{{{ Package: wanderlust - (Disabled) Mail checking
 ;; (setq wl-biff-check-folder-list
 ;;       '("&xxxxxxx+h.xxxxxx/user@mail.plus.net:110!direct"
