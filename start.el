@@ -2123,6 +2123,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 ;;}}}
 ;;{{{ Package: wanderlust - Message view
+
 (setq ;; Only display some message fields
       wl-message-ignored-field-list
       '("^.*:")
@@ -2176,11 +2177,23 @@ Otherwise, kill characters backward until encountering the end of a word."
 				  "hs4233@mail.mn-solutions.de"
 				  )
       ;; Subscribed mailing list.
-      wl-subscribed-mailing-list '("linux-wireless@linux.vger.org")
+      ;; wl-subscribed-mailing-list '("linux-wireless@vger.kernel.org"
+      ;; 				   "hostap@lists.shmoo.com"
+      ;; 				   "ath5k-devel@lists.ath5k.org"
+      ;; 				   "madwifi-devel@lists.sourceforge.net"
+      ;; 				   "linux-arm-kernel@lists.arm.linux.org.uk"
+      ;; 				   "haret@handhelds.org"
+      ;; 				   "urjtag-development@lists.sourceforge.net"
+      ;; 				   "MEMBERS@LIST.CELINUXFORUM.ORG"
+      ;; 				   "cfe-dev@cs.uiuc.edu"
+      ;; 				   )
+      ;; No demo at startup
+      wl-demo nil
       )
 
 ;;}}}
 ;;{{{ Package: wanderlust - Default compose-mail
+
 (autoload 'wl-user-agent-compose "wl-draft" nil t)
 (if (boundp 'mail-user-agent)
     (setq mail-user-agent 'wl-user-agent))
@@ -2193,7 +2206,7 @@ Otherwise, kill characters backward until encountering the end of a word."
       'mail-send-hook))
 
 ;;}}}
-;;{{{ Package: wanderlust - Dample .offlineimaprc
+;;{{{ Package: wanderlust - Sample .offlineimaprc
 ;;
 ;; # Sample minimal config file.  Copy this to ~/.offlineimaprc and edit to
 ;; # suit to get started fast.
