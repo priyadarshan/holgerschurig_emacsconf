@@ -29,7 +29,7 @@
 # Googlemail
 
 .INBOX                                   "HS  Googlemail"
-.[Google Mail].Entw&APw-rfe              "Entwurf"
+#.[Google Mail].Entw&APw-rfe              "Entwurf"
 .[Google Mail].Gesendet                  "Gesendet"
 WLAN {
         .linux-wireless

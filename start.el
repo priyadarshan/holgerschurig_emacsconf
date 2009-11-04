@@ -2070,8 +2070,9 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 ;;}}}
 ;;{{{ Package: wanderlust - Folder view
+
 (setq wl-folder-desktop-name "Mails"
-      wl-draft-folder ".[Google Mail].Entw&APw-rfe"
+      wl-draft-folder ".draft"
       wl-trash-folder ".[Google Mail]/Papierkorb"
       ;; File-Carbon-
       wl-fcc ".[Google Mail].Gesendet"
