@@ -2003,7 +2003,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 ;; http://box.matto.nl/emacsgmail.html
 ;; http://emacs-fu.blogspot.com/2009/06/e-mail-with-wanderlust.html
-;; http://repo.or.cz/w/more-wl.git
 ;; http://www.emacswiki.org/emacs/hgw-init-wl.el
 
 
@@ -2083,7 +2082,7 @@ Otherwise, kill characters backward until encountering the end of a word."
       wl-interactive-save-folders t
       ;; Don't in folder window when f
       wl-stay-folder-window nil
-      wl-folder-window-width 25
+      wl-folder-window-width 35
       ;; Don't ask if we want to quit
       wl-interactive-exit nil
       )
