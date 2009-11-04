@@ -2111,6 +2111,14 @@ Otherwise, kill characters backward until encountering the end of a word."
       wl-use-highlight-mouse-line nil
       ;; In those folders we want to display the receiver, not the sender
       wl-summary-showto-folder-regexp ".[Google Mail].Gesendet"
+      ;; no ugly bold graphics for the thread display
+      wl-thread-child-str                "+"
+      wl-thread-have-younger-brother-str "+"
+      wl-thread-horizontal-str           "-"
+      wl-thread-space-str                " "
+      wl-thread-vertical-str             "|"
+      wl-thread-youngest-child-str       "+"
+      wl-folder-thread-indent-set-alist '((".*" . (2 "+" "+" "|" "-" " ")))
       )
 
 ;;}}}
