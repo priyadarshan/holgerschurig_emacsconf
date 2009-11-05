@@ -2030,6 +2030,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 ;;}}}
 ;;{{{ Package: wanderlust - IMAP
+
 ;; (setq elmo-imap4-default-server "imap.gmail.com"
 ;;       elmo-imap4-default-user "holgerschurig@googlemail.com"
 ;;       elmo-imap4-default-authenticate-type 'clear
@@ -2250,10 +2251,10 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 ;;}}}
 ;;{{{ Package: wanderlust - Misc customization
-(setq wl-from "Holger Schurig <holgerschurig@googlemail.com>"
+(setq wl-from "Holger Schurig <holgerschurig@gmail.com>"
       ;;User's mail addresses
       wl-user-mail-address-list '("h.schurig@mn-solutions.de"
-				  "holgerschurig@googlemail.com"
+				  "holgerschurig@gmail.com"
 				  "holgerschurig@gmail.com"
 				  "hs4233@mail.mn-solutions.de"
 				  )
