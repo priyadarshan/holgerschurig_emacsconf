@@ -2266,9 +2266,69 @@ Otherwise, kill characters backward until encountering the end of a word."
   (kill-whole-line))
 (add-hook 'wl-mail-setup-hook 'my-kill-user-agent)
 
+(defun my-clean-mime-reply ()
+  "Clean-up the citation in replies, removing unnecessary entities."
+  (interactive)
+  ;; Find and strip the first tag, indicating the start of the
+  ;; cited message
+  (when (re-search-forward "^> \\[1" nil t)
+    (beginning-of-line)
+    (delete-lines 1)
+    (while (or (looking-at "^> *$")
+               (looking-at "^> \\[[1-9]"))
+      (delete-lines 1))
+    (when (re-search-forward "^> \\[[1-9][\\. ]" nil t)
+      (beginning-of-line)
+      (let ((pt (point)))
+        (re-search-forward "^$")
+        (delete-region pt (point)))))
+  ;; Now find the tag that ends the first section, and strip off
+  ;; everything from there to the end of the message (including any
+  ;; other sections that got cited)
+  (goto-char (point-max))
+  (when (re-search-backward "^> +[^ ]" nil t)
+    (beginning-of-line)
+    (let ((pt (point)))
+      (goto-char (point-max))
+      (if (re-search-backward "^> *$" pt t)
+          (progn
+            (beginning-of-line)
+            (while (looking-at "^> *$")
+              (delete-lines 1)
+              (forward-line -1))
+            (forward-line 1)
+            (delete-lines 1))
+        (goto-char (point-max))
+        (re-search-backward "^$")
+        (delete-lines 1)))))
+
 ;; Modify mail buffer at mail creation time, not at send time
 (remove-hook 'wl-draft-send-hook 'wl-draft-config-exec)
-(add-hook 'wl-mail-setup-hook 'wl-draft-config-exec)
+
+(defun my-mail-setup ()
+  "Set up appropriate modes for writing Email and clean-up
+citation for replies."
+  (interactive)
+  ;; Fold over-lenght lines
+  (turn-on-auto-fill)
+  ;; Now call our hooks. For mailing lists with patches, this might
+  ;; turn off auto-fill again.
+  (wl-draft-config-exec)
+  ;; Switch on the completion selection mode
+  ;; and set the default completion-selection to bbdb
+  ;;(completion-selection-mode t)
+  ;;(completion-selection-set 'complete-bbdb)
+
+  ;; TODO Clean up reply citation
+  (save-excursion
+    ;; Goto the beginning of the message body
+    (mail-text)
+    ;; If the message body starts with "Dear " assume it is a reply
+    ;; and clean the citation
+    (when (looking-at "^Dear ")
+      (my-clean-mime-reply))))
+(add-hook 'wl-mail-setup-hook 'my-mail-setup)
+
 
 ;;}}}
 ;;{{{ Package: wanderlust - Misc customization
