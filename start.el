@@ -2249,6 +2249,8 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;{{{ Package: wanderlust - Message drafting
 
 (setq wl-forward-subject-prefix "Fwd: "
+      ;; We don't want this overlong user-agent
+      mime-edit-insert-user-agent-field nil
       ;; http://www.gohome.org/wl/doc/wl_91.html
       wl-draft-config-alist
       '(;; Private messages -> private signature
@@ -2257,6 +2259,12 @@ Otherwise, kill characters backward until encountering the end of a word."
 	 (bottom-file . "~/.emacs.d/wl/private.sig"))
         )
  )
+
+(defun my-kill-user-agent ()
+  (interactive)
+  (mail-position-on-field "User-Agent")
+  (kill-whole-line))
+(add-hook 'wl-mail-setup-hook 'my-kill-user-agent)
 
 ;; Modify mail buffer at mail creation time, not at send time
 (remove-hook 'wl-draft-send-hook 'wl-draft-config-exec)
