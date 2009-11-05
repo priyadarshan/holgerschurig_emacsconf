@@ -2273,6 +2273,9 @@ Otherwise, kill characters backward until encountering the end of a word."
     (goto-char loc))
     )
 (add-hook 'wl-mail-setup-hook 'my-kill-user-agent)
+(add-hook 'wl-draft-reply-hook 'my-kill-user-agent)
+(add-hook 'wl-draft-forward-hook 'my-kill-user-agent)
+
 
 (defun my-clean-mime-reply ()
   "Clean-up the citation in replies, removing unnecessary entities."
