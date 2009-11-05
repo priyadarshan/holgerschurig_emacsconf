@@ -2157,11 +2157,18 @@ Otherwise, kill characters backward until encountering the end of a word."
      ;; C-w: save, C-y yank
      (define-key wl-summary-mode-map "\C-w" 'wl-summary-save-saved-message)
 
-     (define-key wl-summary-mode-map "m u" 'wl-summary-mark-as-unread)
-     (define-key wl-summary-mode-map "m i" 'wl-summary-mark-as-important)
-     (define-key wl-summary-mode-map "m d" 'wl-summary-delete)
-     (define-key wl-summary-mode-map "m r" 'wl-summary-mark-as-read)
-     (define-key wl-summary-mode-map "m x" 'wl-summary-unmark)
+     ;; Normal marks
+     (define-key wl-summary-mode-map "mu" 'wl-summary-mark-as-unread)
+     (define-key wl-summary-mode-map "mi" 'wl-summary-mark-as-important)
+     (define-key wl-summary-mode-map "md" 'wl-summary-delete)
+     (define-key wl-summary-mode-map "mr" 'wl-summary-mark-as-read)
+     (define-key wl-summary-mode-map "mx" 'wl-summary-unmark)
+     ;; Thread marks
+     (define-key wl-summary-mode-map "tu" 'wl-thread-mark-as-unread)
+     (define-key wl-summary-mode-map "ti" 'wl-thread-mark-as-important)
+     (define-key wl-summary-mode-map "td" 'wl-thread-delete)
+     (define-key wl-summary-mode-map "tr" 'wl-thread-mark-as-read)
+     (define-key wl-summary-mode-map "tx" 'wl-thread-unmark)
      ))
 
 
