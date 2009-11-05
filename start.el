@@ -2246,12 +2246,21 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;         (type . application)(subtype . pdf)
 ;;         (method . my-mime-save-content-find-file)))))
 ;;}}}
-;;{{{ Package: wanderlust - Message creation
+;;{{{ Package: wanderlust - Message drafting
+
 (setq wl-forward-subject-prefix "Fwd: "
-      ;;signature-file-name "~/Maildir/Signatures/XxxxXXXAddress"
-      ;;signature-insert-at-eof t
-      ;;signature-delete-blank-lines-at-eof t
+      ;; http://www.gohome.org/wl/doc/wl_91.html
+      wl-draft-config-alist
+      '(;; Private messages -> private signature
+	("^From:.*gmail.com"
+	 ;;(bottom . "\nBye.\n") ;; inserted at the bottom of the body
+	 (bottom-file . "~/.emacs.d/wl/private.sig"))
+        )
  )
+
+;; Modify mail buffer at mail creation time, not at send time
+(remove-hook 'wl-draft-send-hook 'wl-draft-config-exec)
+(add-hook 'wl-mail-setup-hook 'wl-draft-config-exec)
 
 ;;}}}
 ;;{{{ Package: wanderlust - Misc customization
