@@ -2370,28 +2370,6 @@ citation for replies."
       'mail-send-hook))
 
 ;;}}}
-;;{{{ Package: wanderlust - Sample .offlineimaprc
-;;
-;; # Sample minimal config file.  Copy this to ~/.offlineimaprc and edit to
-;; # suit to get started fast.
-;;
-;; [general]
-;; accounts = Googlemail
-;;
-;; [Account Googlemail]
-;; localrepository = Local
-;; remoterepository = Remote
-;;
-;; [Repository Local]
-;; type = Maildir
-;; localfolders = ~/Mail
-;;
-;; [Repository Remote]
-;; type = Gmail
-;; remotehost = imap.googlemail.com
-;; remoteuser = holgerschurig@googlemail.com
-;; remotepass = dtgabzg0
-;;}}}
 ;;{{{ Package: wanderlust - (Disabled) Mail checking
 ;; (setq wl-biff-check-folder-list
 ;;       '("&xxxxxxx+h.xxxxxx/user@mail.plus.net:110!direct"
