@@ -1810,6 +1810,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 		  (name . "^Folder$")
 		  (name . "^Summary$")
 		  (name . "^\\.draft/")))
+	 ("magit" (name . "^\\*magit"))
 	 ("emacs" (name . "^\\*"))
 	 )))
 
