@@ -1,0 +1,31 @@
+# Sample minimal config file.  Copy this to ~/.offlineimaprc and edit to
+# suit to get started fast.
+
+[general]
+accounts = Googlemail
+ui = TTY.TTYUI
+
+[Account Googlemail]
+localrepository = Local
+remoterepository = Remote
+
+[Repository Local]
+type = Maildir
+localfolders = ~/Mail
+
+[Repository Remote]
+type = Gmail
+remotehost = imap.googlemail.com
+remoteuser = holgerschurig@googlemail.com
+remotepass = dtgabzg0
+folderfilter = lambda foldername: foldername not in [
+		"[Google Mail]/Alle Nachrichten",
+		"[Google Mail]/Papierkorb",
+		"[Google Mail]/Spam",
+		"[Google Mail]/Markiert",
+		"[Google Mail]/Entw&AMMAvA-rfe",
+		"[Google Mail]/Entw&APw-rfe",
+		"hs4233@mail.mn-solutions.de",
+	]
+#	'Trash'
+#]
