@@ -1808,7 +1808,8 @@ Otherwise, kill characters backward until encountering the end of a word."
 		    (mode . muse-mode)))
 	 ("Mail" (or
 		  (name . "^Folder$")
-		  (name . "^Summary$")))
+		  (name . "^Summary$")
+		  (name . "^\\.draft/")))
 	 ("emacs" (name . "^\\*"))
 	 )))
 
