@@ -2002,7 +2002,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Package: wanderlust
 
-;; http://box.matto.nl/emacsgmail.html
 ;; http://emacs-fu.blogspot.com/2009/06/e-mail-with-wanderlust.html
 ;; http://www.emacswiki.org/emacs/hgw-init-wl.el
 
@@ -2011,11 +2010,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 (autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
 (autoload 'wl-draft "wl-draft" "Write draft with Wanderlust." t)
-(defun wl ()
-  "Load wanderlust e-mail client in a new frame"
-  (interactive)
-  (wl-other-frame t)
-  (wl-folder-open-all))
 
 ;;}}}
 ;;{{{ Package: wanderlust - SMTP
