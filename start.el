@@ -2264,9 +2264,14 @@ Otherwise, kill characters backward until encountering the end of a word."
  )
 
 (defun my-kill-user-agent ()
-  (interactive)
-  (mail-position-on-field "User-Agent")
-  (kill-whole-line))
+  (let ((loc (point)))
+    (mail-position-on-field "User-Agent")
+    (delete-region
+     (save-excursion (move-beginning-of-line 1) (point))
+     (save-excursion (move-end-of-line 1) (point)))
+    (delete-char 1)
+    (goto-char loc))
+    )
 (add-hook 'wl-mail-setup-hook 'my-kill-user-agent)
 
 (defun my-clean-mime-reply ()
