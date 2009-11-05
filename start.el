@@ -2020,6 +2020,8 @@ Otherwise, kill characters backward until encountering the end of a word."
       wl-smtp-posting-user "holgerschurig@googlemail.com"
       wl-smtp-posting-server "smtp.gmail.com"
       wl-local-domain "gmail.com")
+;; You should also run elmo-passwd-alist-save, otherwise the passwords
+;; vanish at (wl-exit) time and won't be loaded again.
 (eval-after-load "elmo-util"
   '(add-to-list 'elmo-passwd-alist '("SMTP:holgerschurig@googlemail.com/PLAIN@smtp.gmail.com" . "ZHRnYWJ6ZzA=")))
 
