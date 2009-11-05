@@ -19,18 +19,14 @@
 # File/Dir   "file:" PATH-OF-THE-DIRECTOR
 # Access     "access:" ROOT-FOLDER
 
-# M&N
-%/users/schurig/INBOX                    "M&N AoX"
+%/users/schurig/INBOX                    "schurig  (lin03, AoX) "
+%INBOX:schurig/digest-md5@lin01          "schurig  (Mittwald)   "
+&p4004p2@mail.mn-solutions.de            "hs4233   (Mittwald)   "
+.INBOX                                   "HS       (Google)     "
+.draft                                   "Entwurf  (lokal)      "
+[Google Mail].Gesendet                   "Gesendet (Google)     "
 
-%INBOX:schurig/digest-md5@lin01          "M&N Cyg schurig"
-&p4004p2@mail.mn-solutions.de            "M&N Cyg hs4233"
 
-
-# Googlemail
-
-.INBOX                                   "HS  Googlemail"
-#.[Google Mail].Entw&APw-rfe              "Entwurf"
-.[Google Mail].Gesendet                  "Gesendet"
 WLAN {
         .linux-wireless
         .hostap
@@ -46,8 +42,4 @@ Embedded {
 
 Sonstige {
         .llvm-cfe-dev
-#       .[Google Mail].Papierkorb        "Gelöscht"
-#       .[Google Mail].Spam              "Spam"
-#       .[Google Mail].Alle Nachrichten/ "Alle"
-#       .[Google Mail].Markiert/         "Markierte"
 }
