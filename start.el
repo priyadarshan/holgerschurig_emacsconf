@@ -2224,20 +2224,22 @@ Otherwise, kill characters backward until encountering the end of a word."
   (other-window -1)
   (wl-summary-down)
   (other-window 1))
-(add-hook
- 'mime-view-mode-hook
- '(lambda ()
-    ;; (local-set-key "\C-m" 'my-mime-button-exec)
-    ;; (local-set-key "f" 'my-mime-find-file-current-entity)
-    ;; (local-set-key "\C-f" 'find-file-at-point)
-    (local-set-key "q" 'kill-buffer-and-window)
-    (local-set-key "n" 'my-wl-summary-down)  ;; next NEW message
-    (local-set-key "N" 'my-wl-summary-next)  ;; next message
-    (local-set-key "p" 'my-wl-summary-prev)  ;; prev messge
-    (local-set-key "P" 'my-wl-summary-up)    ;; prev NEW message (seldom used)
-    (local-set-key [(space)] 'scroll-up)
-    (local-set-key [(backtab)] 'mime-preview-move-to-previous)
-    ))
+
+(defun my-mime-view-keybindings ()
+  ;; As TAB moves forward, S-TAB should move backwards
+  (local-set-key [(backtab)] 'mime-preview-move-to-previous)
+  ;; this will also delete the buffer
+  (local-set-key "q" 'kill-buffer-and-window)
+  ;; n moves to next NEW message, but p moves to previos message
+  (local-set-key "n" 'my-wl-summary-down)
+  (local-set-key "p" 'my-wl-summary-prev)
+  ;; next message, but P moves to previos NEW messages, which is
+  ;; exists quite seldom
+  (local-set-key "N" 'my-wl-summary-next)
+  (local-set-key "P" 'my-wl-summary-up)
+  (local-set-key [(space)] 'my-wl-summary-down)
+  )
+(add-hook 'mime-view-mode-hook 'my-mime-view-keybindings)
 
 ;;}}}
 ;;{{{ Package: wanderlust - Beginnings of PDF handling
