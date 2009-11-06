@@ -8,6 +8,7 @@ ui = TTY.TTYUI
 [Account Googlemail]
 localrepository = Local
 remoterepository = Remote
+autorefresh = 10
 
 [Repository Local]
 type = Maildir
