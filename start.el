@@ -1808,6 +1808,8 @@ Otherwise, kill characters backward until encountering the end of a word."
 		    (name . "^\\*Org.*")
 		    (mode . muse-mode)))
 	 ("Mail" (or
+		  (name . "^contacts$")
+		  (name . "^\\*BBDB\\*$")
 		  (name . "^Folder$")
 		  (name . "^Summary$")
 		  (name . "^\\.draft/")))
@@ -2243,7 +2245,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;         (type . application)(subtype . pdf)
 ;;         (method . my-mime-save-content-find-file)))))
 ;;}}}
-;;{{{ Package: wanderlust - Message drafting
+;;{{{ Package: wanderlust - Message composing
 
 (setq wl-forward-subject-prefix "Fwd: "
       ;; We don't want this overlong user-agent
@@ -2319,10 +2321,6 @@ citation for replies."
   ;; Now call our hooks. For mailing lists with patches, this might
   ;; turn off auto-fill again.
   (wl-draft-config-exec)
-  ;; Switch on the completion selection mode
-  ;; and set the default completion-selection to bbdb
-  ;;(completion-selection-mode t)
-  ;;(completion-selection-set 'complete-bbdb)
 
   ;; TODO Clean up reply citation
   (save-excursion
@@ -2333,6 +2331,53 @@ citation for replies."
     (when (looking-at "^Dear ")
       (my-clean-mime-reply))))
 (add-hook 'wl-mail-setup-hook 'my-mail-setup)
+
+
+;;}}}
+;;{{{ Package: wanderlust - E-Mail address database
+
+;; http://emacs-fu.blogspot.com/2009/08/managing-e-mail-addresses-with-bbdb.html
+
+(eval-after-load "wl"
+  '(progn
+     ;; this also does "(require 'bbdb)"
+     (load "/usr/share/emacs/site-lisp/wl/utils/bbdb-wl.el" 'noerror 'nomsg)))
+
+(eval-after-load "bbdb-wl"
+  '(progn
+     (bbdb-wl-setup)
+     (define-key wl-draft-mode-map (kbd "<C-tab>") 'bbdb-complete-name)))
+
+(eval-after-load "bbdb"
+  '(progn
+     (setq bbdb-file "~/.emacs.d/tmp/contacts"
+	   ;; allow contacts file to be edited outside emacs
+	   bbdb-auto-revert-p t
+	   ;; 1 means save-without-asking
+           bbdb-offer-save 1
+
+	   ;; Don't always show the BBDB window
+	   bbdb-use-pop-up nil
+	   ;; be disposable with SPC
+	   bbdb-electric-p t
+	   ;; allow cycling if user has several mail addresses
+	   bbdb-complete-name-allow-cycling t
+
+	   ;; De-americanize
+	   bbdb-north-american-phone-numbers-p nil
+	   bbdb-check-zip-codes-p nil
+
+	   ;; auto-create addresses from mail
+	   bbdb/mail-auto-create-p 'bbdb-ignore-some-messages-hook
+	   bbdb-always-add-addresses t
+
+	   ;; Don't ask about fake addresses. NOTE: there can be only one
+	   ;; entry per header (such as To, From)
+	   ;; http://flex.ee.uec.ac.jp/texi/bbdb/bbdb_11.html
+	   bbdb-ignore-some-messages-alist
+	   '(( "From" . "no.?reply\\|DAEMON\\|daemon\\|facebookmail\\|twitter"))
+	   )
+     (bbdb-initialize)))
 
 
 ;;}}}
