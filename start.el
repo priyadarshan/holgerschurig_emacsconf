@@ -1,5 +1,6 @@
 ;; -*- mode: emacs-lisp; mode: fold -*-
 
+
 ;;{{{ Debugging
 
 ;; Provide a useful error trace if loading this monster fails
@@ -2012,14 +2013,17 @@ Otherwise, kill characters backward until encountering the end of a word."
 (autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
 (autoload 'wl-draft "wl-draft" "Write draft with Wanderlust." t)
 
+
 ;;}}}
 ;;{{{ Package: wanderlust - SMTP
+
 (setq wl-smtp-connection-type 'starttls
       wl-smtp-posting-port 587
       wl-smtp-authenticate-type "plain"
       wl-smtp-posting-user "holgerschurig@googlemail.com"
       wl-smtp-posting-server "smtp.gmail.com"
       wl-local-domain "gmail.com")
+
 ;; You should also run elmo-passwd-alist-save, otherwise the passwords
 ;; vanish at (wl-exit) time and won't be loaded again.
 (eval-after-load "elmo-util"
@@ -2029,22 +2033,17 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Package: wanderlust - IMAP
 
-;; (setq elmo-imap4-default-server "imap.gmail.com"
-;;       elmo-imap4-default-user "holgerschurig@googlemail.com"
-;;       elmo-imap4-default-authenticate-type 'clear
-;;       elmo-imap4-default-port '993
-;;       elmo-imap4-default-stream-type 'ssl
-;;       elmo-imap4-use-modified-utf7 t)
-
 (setq elmo-imap4-default-server "lin03"
       elmo-imap4-default-user "schurig"
       elmo-imap4-default-authenticate-type 'cram-md5
       elmo-imap4-default-port '143
       elmo-imap4-use-modified-utf7 t)
+
 (eval-after-load "elmo-util"
   '(add-to-list 'elmo-passwd-alist '("IMAP:schurig/cram-md5@lin03:143" . "c2NodXJpZ3B3")))
 (eval-after-load "elmo-util"
   '(add-to-list 'elmo-passwd-alist '("IMAP:schurig/digest-md5@lin01:143" . "ZzdrZnAy")))
+
 
 ;;}}}
 ;;{{{ Package: wanderlist - POP3
@@ -2055,6 +2054,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 ;;}}}
 ;;{{{ Package: wanderlust - Paths
+
 (setq elmo-maildir-folder-path "~/Mail"
       wl-folders-file "~/Mail/.folders"
       elmo-msgdb-directory "~/.emacs.d/tmp/elmo-msgdb"
@@ -2065,6 +2065,7 @@ Otherwise, kill characters backward until encountering the end of a word."
       ;; Disabble all ugly icons
       wl-icon-directory nil
       )
+
 
 ;;}}}
 ;;{{{ Package: wanderlust - Folder view
@@ -2086,17 +2087,10 @@ Otherwise, kill characters backward until encountering the end of a word."
       wl-interactive-exit nil
       )
 
-;; BUILD the folder tree automatically
-;; Note: if you change the hierarchy and want to rebuild the tree do
-;; rm -rf ~/Emacs/Wanderlust/Elmo/folder
-;; (setq wl-folder-hierarchy-access-folders
-;;       '("^.\\([^/.]+[/.]\\)*[^/.]+\\(:\\|@\\|$\\)"
-;; 	"^-[^.]*\\(:\\|@\\|$\\)"
-;; 	"^@$"
-;; 	"^'$"))
 
 ;;}}}
 ;;{{{ Package: wanderlust - Summary view
+
 (setq wl-auto-select-next 'unread
       ;; Threading
       wl-summary-default-view 'thread
@@ -2343,6 +2337,7 @@ citation for replies."
 
 ;;}}}
 ;;{{{ Package: wanderlust - Misc customization
+
 (setq wl-from "Holger Schurig <holgerschurig@gmail.com>"
       ;;User's mail addresses
       wl-user-mail-address-list '("h.schurig@mn-solutions.de"
@@ -2365,6 +2360,10 @@ citation for replies."
       wl-demo nil
       )
 
+;; Automatically save entered passwords before clearing them
+(add-hook 'wl-exit-hook 'elmo-passwd-alist-save)
+
+
 ;;}}}
 ;;{{{ Package: wanderlust - Default compose-mail
 
@@ -2379,8 +2378,10 @@ citation for replies."
       'wl-draft-kill
       'mail-send-hook))
 
+
 ;;}}}
 ;;{{{ Package: wanderlust - (Disabled) Mail checking
+
 ;; (setq wl-biff-check-folder-list
 ;;       '("&xxxxxxx+h.xxxxxx/user@mail.plus.net:110!direct"
 ;;         "&xxxxxxx+enquiries/user@mail.plus.net:110!direct"
@@ -2399,32 +2400,6 @@ citation for replies."
 ;;       wl-biff-use-idle-timer t)
 
 
-;;}}}
-;;{{{ Package: wanderlust - (Disabled) Hooks
-;; (add-hook
-;;  'wl-init-hook
-;;  '(lambda ()
-;;     (set-frame-position (selected-frame) 663 0)
-;;     (set-frame-height (selected-frame) 70)
-;;     (set-frame-width (selected-frame) 114)
-;;     ;;(my-wl-zen-smtp-server) ;; Set the default smtp server to zen
-;;     ;;(my-bbdb-wl-refile-alist) ;; Add the BBDB refiling folders
-;;     ;;(run-with-idle-timer 30 t 'my-wl-auto-save-draft-buffers)
-
-;;     ;; Add support for (signature . "filename")
-;;     ;; (unless (assq 'signature wl-draft-config-sub-func-alist)
-;;     ;;   (wl-append wl-draft-config-sub-func-alist
-;;     ;;              '((signature . wl-draft-config-sub-signature))))
-;;     ;; (defun mime-edit-insert-signature (&optional arg)
-;;     ;;   "Redefine to insert a signature file directly, not as a tag."
-;;     ;;   (interactive "P")
-;;     ;;   (insert-signature arg))
-
-;;     ;; Keep track of recently used Email addresses
-;;     ;;(recent-addresses-mode 1)
-;;     ))
-
-;;}}}
 ;;}}}
 ;;{{{ Disabled Package: bs
 
