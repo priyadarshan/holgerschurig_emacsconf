@@ -1196,9 +1196,10 @@ To remove this protection, call this command with a negative prefix argument."
 
 (add-hook 'emacs-lisp-mode-hook
 	  '(lambda ()
-	     ;;(eldoc-mode t)
-	     ;;(turn-on-auto-fill)
-	     (imenu-add-to-menubar "Imenu")))
+	     ;; automatically give help about function syntax
+	     (eldoc-mode t)
+	     ;; "-" is almost always part of a function- or variable-name
+	     (modify-syntax-entry ?- "w")))
 
 
 
