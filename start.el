@@ -2013,15 +2013,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ Package: smart-tab
-
-(load "smart-tab/smart-tab" 'noerror 'nomessage)
-(eval-after-load "smart-tab"
-  '(global-smart-tab-mode 1))
-
-
-
-;;}}}
 ;;{{{ Package: tramp
 
 (setq tramp-persistency-file-name "~/.emacs.d/tmp/tramp")
@@ -2599,6 +2590,17 @@ citation for replies."
 ;; (require 'fuzzy-match)
 
 ;; (icicle-mode 1)
+
+
+
+;;}}}
+;;{{{ Disabled package: smart-tab
+
+;; This positions the cursor at weird positions when writin
+
+;; (load "smart-tab/smart-tab" 'noerror 'nomessage)
+;; (eval-after-load "smart-tab"
+;;   '(global-smart-tab-mode 1))
 
 
 
