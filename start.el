@@ -2039,447 +2039,448 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ Package: wanderlust
+;;{{{ Disabled Package: wanderlust
 
-;; http://emacs-fu.blogspot.com/2009/06/e-mail-with-wanderlust.html
-;; http://www.emacswiki.org/emacs/hgw-init-wl.el
-
-
-;;{{{ Package: wanderlust - autoload
-
-(autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
-(autoload 'wl-draft "wl-draft" "Write draft with Wanderlust." t)
+;; ;; http://emacs-fu.blogspot.com/2009/06/e-mail-with-wanderlust.html
+;; ;; http://www.emacswiki.org/emacs/hgw-init-wl.el
 
 
-;;}}}
-;;{{{ Package: wanderlust - SMTP
+;; ;;{{{ Package: wanderlust - autoload
 
-(setq wl-smtp-connection-type 'starttls
-      wl-smtp-posting-port 587
-      wl-smtp-authenticate-type "plain"
-      wl-smtp-posting-user "holgerschurig@googlemail.com"
-      wl-smtp-posting-server "smtp.gmail.com"
-      wl-local-domain "gmail.com")
-
-;; You should also run elmo-passwd-alist-save, otherwise the passwords
-;; vanish at (wl-exit) time and won't be loaded again.
-(eval-after-load "elmo-util"
-  '(add-to-list 'elmo-passwd-alist '("SMTP:holgerschurig@googlemail.com/PLAIN@smtp.gmail.com" . "ZHRnYWJ6ZzA=")))
+;; (autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
+;; (autoload 'wl-draft "wl-draft" "Write draft with Wanderlust." t)
 
 
-;;}}}
-;;{{{ Package: wanderlust - IMAP
+;; ;;}}}
+;; ;;{{{ Package: wanderlust - SMTP
 
-(setq elmo-imap4-default-server "lin03"
-      elmo-imap4-default-user "schurig"
-      elmo-imap4-default-authenticate-type 'cram-md5
-      elmo-imap4-default-port '143
-      elmo-imap4-use-modified-utf7 t)
+;; (setq wl-smtp-connection-type 'starttls
+;;       wl-smtp-posting-port 587
+;;       wl-smtp-authenticate-type "plain"
+;;       wl-smtp-posting-user "holgerschurig@googlemail.com"
+;;       wl-smtp-posting-server "smtp.gmail.com"
+;;       wl-local-domain "gmail.com")
 
-(eval-after-load "elmo-util"
-  '(add-to-list 'elmo-passwd-alist '("IMAP:schurig/cram-md5@lin03:143" . "c2NodXJpZ3B3")))
-(eval-after-load "elmo-util"
-  '(add-to-list 'elmo-passwd-alist '("IMAP:schurig/digest-md5@lin01:143" . "ZzdrZnAy")))
-
-
-;;}}}
-;;{{{ Package: wanderlist - POP3
-
-(eval-after-load "elmo-util"
-  '(add-to-list 'elmo-passwd-alist '("POP3:p4004p2/user@mail.mn-solutions.de:110" . "c2Vkb2thNg==")))
+;; ;; You should also run elmo-passwd-alist-save, otherwise the passwords
+;; ;; vanish at (wl-exit) time and won't be loaded again.
+;; (eval-after-load "elmo-util"
+;;   '(add-to-list 'elmo-passwd-alist '("SMTP:holgerschurig@googlemail.com/PLAIN@smtp.gmail.com" . "ZHRnYWJ6ZzA=")))
 
 
-;;}}}
-;;{{{ Package: wanderlust - Paths
+;; ;;}}}
+;; ;;{{{ Package: wanderlust - IMAP
 
-(setq elmo-maildir-folder-path "~/Mail"
-      wl-folders-file "~/Mail/.folders"
-      elmo-msgdb-directory "~/.emacs.d/tmp/elmo-msgdb"
-      wl-address-file "~/.emacs.d/wl-addresses"
-      wl-alias-file "~/.emacs.d/wl-im-aliases"
-      wl-score-files-directory "~/.emacs.d/tmp/wl-scores/"
-      wl-temporary-file-directory "~/.emacs.d/tmp/wl/"
-      ;; Disabble all ugly icons
-      wl-icon-directory nil
-      )
+;; (setq elmo-imap4-default-server "lin03"
+;;       elmo-imap4-default-user "schurig"
+;;       elmo-imap4-default-authenticate-type 'cram-md5
+;;       elmo-imap4-default-port '143
+;;       elmo-imap4-use-modified-utf7 t)
 
-
-;;}}}
-;;{{{ Package: wanderlust - Folder view
-
-(setq wl-folder-desktop-name "Mails"
-      wl-draft-folder ".draft"
-      wl-trash-folder ".[Google Mail]/Papierkorb"
-      ;; File-Carbon-
-      wl-fcc ".[Google Mail].Gesendet"
-      wl-fcc-force-as-read t
-      ;; Folders with more than this number are highlighted
-      wl-folder-many-unsync-threshold 1000
-      ;; Ask before writing .folders
-      wl-interactive-save-folders t
-      ;; Don't in folder window when f
-      wl-stay-folder-window nil
-      wl-folder-window-width 35
-      ;; Don't ask if we want to quit
-      wl-interactive-exit nil
-      )
+;; (eval-after-load "elmo-util"
+;;   '(add-to-list 'elmo-passwd-alist '("IMAP:schurig/cram-md5@lin03:143" . "c2NodXJpZ3B3")))
+;; (eval-after-load "elmo-util"
+;;   '(add-to-list 'elmo-passwd-alist '("IMAP:schurig/digest-md5@lin01:143" . "ZzdrZnAy")))
 
 
-;;}}}
-;;{{{ Package: wanderlust - Summary view
+;; ;;}}}
+;; ;;{{{ Package: wanderlist - POP3
 
-(setq wl-auto-select-next 'unread
-      ;; Threading
-      wl-summary-default-view 'thread
-      wl-thread-insert-opened t
-      wl-summary-line-format "%T%P %D.%M,%h:%m %t%4(%c%)%20(%f%) %s"
-      ;; Shorten the mode-line
-      wl-summary-mode-line-format "WL: %f (%n/%u)"
-      ;; Don't truncate summary window
-      wl-summary-width nil
-      ;; no special mouse decoration
-      wl-use-highlight-mouse-line nil
-      ;; In those folders we want to display the receiver, not the sender
-      wl-summary-showto-folder-regexp ".[Google Mail].Gesendet"
-      ;; no ugly bold graphics for the thread display
-      wl-thread-child-str                "+"
-      wl-thread-have-younger-brother-str "+"
-      wl-thread-horizontal-str           "-"
-      wl-thread-space-str                " "
-      wl-thread-vertical-str             "|"
-      wl-thread-youngest-child-str       "+"
-      wl-folder-thread-indent-set-alist '((".*" . (2 "+" "+" "|" "-" " ")))
-      )
-
-;; Functions for private key bindings
-(defun my-wl-summary-enter-handler (&optional arg)
-  "Enter the message after pressing ENTER in the summary view."
-  (interactive)
-  (wl-summary-enter-handler arg)
-  (other-window 1))
-
-;; Key bindings
-
-;; ENTER         * my-wl-summary-enter-handler
-;; SPACE         * my-wl-summary-enter-handler
-;; q               wl-summary-exit
-
-;; C-w           * wl-summary-save-current-message
-;; C-y		wl-summary-yank-saved-message
-
-;; C-o		wl-summary-auto-refile
-;; C-t		wl-plugged-change
-
-;; Ideas:
-
-;; m r             mark read
-;; m u             mark unread
+;; (eval-after-load "elmo-util"
+;;   '(add-to-list 'elmo-passwd-alist '("POP3:p4004p2/user@mail.mn-solutions.de:110" . "c2Vkb2thNg==")))
 
 
-(eval-after-load "wl-summary"
-  '(progn
-     ;; (define-key wl-summary-mode-map "\r"   'my-wl-summary-enter-handler)
-     ;; (define-key wl-summary-mode-map "\C-m" 'my-wl-summary-enter-handler)
-     ;; ORIGINAL: wl-summary-read
-     (define-key wl-summary-mode-map [(space)] 'my-wl-summary-enter-handler)
-     (define-key wl-summary-mode-map [(return)] 'my-wl-summary-enter-handler)
-     ;; C-w: save, C-y yank
-     (define-key wl-summary-mode-map "\C-w" 'wl-summary-save-saved-message)
+;; ;;}}}
+;; ;;{{{ Package: wanderlust - Paths
 
-     ;; Normal marks
-     (define-key wl-summary-mode-map "mu" 'wl-summary-mark-as-unread)
-     (define-key wl-summary-mode-map "mi" 'wl-summary-mark-as-important)
-     (define-key wl-summary-mode-map "md" 'wl-summary-delete)
-     (define-key wl-summary-mode-map "mr" 'wl-summary-mark-as-read)
-     (define-key wl-summary-mode-map "mx" 'wl-summary-unmark)
-     ;; Thread marks
-     (define-key wl-summary-mode-map "tu" 'wl-thread-mark-as-unread)
-     (define-key wl-summary-mode-map "ti" 'wl-thread-mark-as-important)
-     (define-key wl-summary-mode-map "td" 'wl-thread-delete)
-     (define-key wl-summary-mode-map "tr" 'wl-thread-mark-as-read)
-     (define-key wl-summary-mode-map "tx" 'wl-thread-unmark)
-     ))
+;; (setq elmo-maildir-folder-path "~/Mail"
+;;       wl-folders-file "~/Mail/.folders"
+;;       elmo-msgdb-directory "~/.emacs.d/tmp/elmo-msgdb"
+;;       wl-address-file "~/.emacs.d/wl-addresses"
+;;       wl-alias-file "~/.emacs.d/wl-im-aliases"
+;;       wl-score-files-directory "~/.emacs.d/tmp/wl-scores/"
+;;       wl-temporary-file-directory "~/.emacs.d/tmp/wl/"
+;;       ;; Disabble all ugly icons
+;;       wl-icon-directory nil
+;;       )
 
 
+;; ;;}}}
+;; ;;{{{ Package: wanderlust - Folder view
 
-;;}}}
-;;{{{ Package: wanderlust - Message view
+;; (setq wl-folder-desktop-name "Mails"
+;;       wl-draft-folder ".draft"
+;;       wl-trash-folder ".[Google Mail]/Papierkorb"
+;;       ;; File-Carbon-
+;;       wl-fcc ".[Google Mail].Gesendet"
+;;       wl-fcc-force-as-read t
+;;       ;; Folders with more than this number are highlighted
+;;       wl-folder-many-unsync-threshold 1000
+;;       ;; Ask before writing .folders
+;;       wl-interactive-save-folders t
+;;       ;; Don't in folder window when f
+;;       wl-stay-folder-window nil
+;;       wl-folder-window-width 35
+;;       ;; Don't ask if we want to quit
+;;       wl-interactive-exit nil
+;;       )
 
-(setq ;; Only display some message fields
-      wl-message-ignored-field-list
-      '("^.*:")
-      wl-message-visible-field-list
-      '("^\\(To\\|Cc\\):"
-	"^Subject:"
-	"^\\(From\\|Reply-To\\):"
-	;;"^Organization:"
-	"^\\(Posted\\|Date\\):"
-	)
-      ;; Display header fields in this order:
-      wl-message-sort-field-list
-      '("^Subject"
-	"^From"
-	"^Date"
-	"^To"
-	"^Cc")
-      ;; Disable inline display of HTML part.
-      ;; Put before load `mime-setup'
-      mime-setup-enable-inline-html nil
-      ;; Don't split large message.
-      mime-edit-split-message nil
-      ;; If lines of message are larger than this value, treat it as `large'.
-      mime-edit-message-default-max-lines 1000
- )
 
-(defun my-wl-summary-next ()
-  (interactive)
-  (other-window -1)
-  (wl-summary-next)
-  (other-window 1))
-(defun my-wl-summary-prev ()
-  "Should be called while in the message window"
-  (interactive)
-  (other-window -1)
-  (wl-summary-prev)
-  (other-window 1))
-(defun my-wl-summary-up ()
-  (interactive)
-  (other-window -1)
-  (wl-summary-up)
-  (other-window 1))
-(defun my-wl-summary-down ()
-  "Should be called while in the message window"
-  (interactive)
-  (other-window -1)
-  (wl-summary-down)
-  (other-window 1))
+;; ;;}}}
+;; ;;{{{ Package: wanderlust - Summary view
 
-(defun my-mime-view-keybindings ()
-  ;; As TAB moves forward, S-TAB should move backwards
-  (local-set-key [(backtab)] 'mime-preview-move-to-previous)
-  ;; this will also delete the buffer
-  (local-set-key "q" 'kill-buffer-and-window)
-  ;; n moves to next NEW message, but p moves to previos message
-  (local-set-key "n" 'my-wl-summary-down)
-  (local-set-key "p" 'my-wl-summary-prev)
-  ;; next message, but P moves to previos NEW messages, which is
-  ;; exists quite seldom
-  (local-set-key "N" 'my-wl-summary-next)
-  (local-set-key "P" 'my-wl-summary-up)
-  (local-set-key [(space)] 'my-wl-summary-down)
-  )
-(add-hook 'mime-view-mode-hook 'my-mime-view-keybindings)
+;; (setq wl-auto-select-next 'unread
+;;       ;; Threading
+;;       wl-summary-default-view 'thread
+;;       wl-thread-insert-opened t
+;;       wl-summary-line-format "%T%P %D.%M,%h:%m %t%4(%c%)%20(%f%) %s"
+;;       ;; Shorten the mode-line
+;;       wl-summary-mode-line-format "WL: %f (%n/%u)"
+;;       ;; Don't truncate summary window
+;;       wl-summary-width nil
+;;       ;; no special mouse decoration
+;;       wl-use-highlight-mouse-line nil
+;;       ;; In those folders we want to display the receiver, not the sender
+;;       wl-summary-showto-folder-regexp ".[Google Mail].Gesendet"
+;;       ;; no ugly bold graphics for the thread display
+;;       wl-thread-child-str                "+"
+;;       wl-thread-have-younger-brother-str "+"
+;;       wl-thread-horizontal-str           "-"
+;;       wl-thread-space-str                " "
+;;       wl-thread-vertical-str             "|"
+;;       wl-thread-youngest-child-str       "+"
+;;       wl-folder-thread-indent-set-alist '((".*" . (2 "+" "+" "|" "-" " ")))
+;;       )
 
-;;}}}
-;;{{{ Package: wanderlust - Beginnings of PDF handling
-;; (eval-after-load "mime-view"
+;; ;; Functions for private key bindings
+;; (defun my-wl-summary-enter-handler (&optional arg)
+;;   "Enter the message after pressing ENTER in the summary view."
+;;   (interactive)
+;;   (wl-summary-enter-handler arg)
+;;   (other-window 1))
+
+;; ;; Key bindings
+
+;; ;; ENTER         * my-wl-summary-enter-handler
+;; ;; SPACE         * my-wl-summary-enter-handler
+;; ;; q               wl-summary-exit
+
+;; ;; C-w           * wl-summary-save-current-message
+;; ;; C-y		wl-summary-yank-saved-message
+
+;; ;; C-o		wl-summary-auto-refile
+;; ;; C-t		wl-plugged-change
+
+;; ;; Ideas:
+
+;; ;; m r             mark read
+;; ;; m u             mark unread
+
+
+;; (eval-after-load "wl-summary"
 ;;   '(progn
-;;      (ctree-set-calist-strictly
-;;       'mime-acting-condition
-;;       '((mode . "play")
-;;         (type . application)(subtype . pdf)
-;;         (method . my-mime-save-content-find-file)))))
-;;}}}
-;;{{{ Package: wanderlust - Message composing
+;;      ;; (define-key wl-summary-mode-map "\r"   'my-wl-summary-enter-handler)
+;;      ;; (define-key wl-summary-mode-map "\C-m" 'my-wl-summary-enter-handler)
+;;      ;; ORIGINAL: wl-summary-read
+;;      (define-key wl-summary-mode-map [(space)] 'my-wl-summary-enter-handler)
+;;      (define-key wl-summary-mode-map [(return)] 'my-wl-summary-enter-handler)
+;;      ;; C-w: save, C-y yank
+;;      (define-key wl-summary-mode-map "\C-w" 'wl-summary-save-saved-message)
 
-(setq wl-forward-subject-prefix "Fwd: "
-      ;; We don't want this overlong user-agent
-      mime-edit-insert-user-agent-field nil
-      ;; http://www.gohome.org/wl/doc/wl_91.html
-      wl-draft-config-alist
-      '(;; Private messages -> private signature
-	("^From:.*gmail.com"
-	 ;;(bottom . "\nBye.\n") ;; inserted at the bottom of the body
-	 (bottom-file . "~/.emacs.d/wl/private.sig"))
-        )
- )
-
-(defun my-kill-user-agent ()
-  (let ((loc (point)))
-    (mail-position-on-field "User-Agent")
-    (delete-region
-     (save-excursion (move-beginning-of-line 1) (point))
-     (save-excursion (move-end-of-line 1) (point)))
-    (delete-char 1)
-    (goto-char loc))
-    )
-(add-hook 'wl-mail-setup-hook 'my-kill-user-agent)
-(add-hook 'wl-draft-reply-hook 'my-kill-user-agent)
-(add-hook 'wl-draft-forward-hook 'my-kill-user-agent)
+;;      ;; Normal marks
+;;      (define-key wl-summary-mode-map "mu" 'wl-summary-mark-as-unread)
+;;      (define-key wl-summary-mode-map "mi" 'wl-summary-mark-as-important)
+;;      (define-key wl-summary-mode-map "md" 'wl-summary-delete)
+;;      (define-key wl-summary-mode-map "mr" 'wl-summary-mark-as-read)
+;;      (define-key wl-summary-mode-map "mx" 'wl-summary-unmark)
+;;      ;; Thread marks
+;;      (define-key wl-summary-mode-map "tu" 'wl-thread-mark-as-unread)
+;;      (define-key wl-summary-mode-map "ti" 'wl-thread-mark-as-important)
+;;      (define-key wl-summary-mode-map "td" 'wl-thread-delete)
+;;      (define-key wl-summary-mode-map "tr" 'wl-thread-mark-as-read)
+;;      (define-key wl-summary-mode-map "tx" 'wl-thread-unmark)
+;;      ))
 
 
-(defun my-clean-mime-reply ()
-  "Clean-up the citation in replies, removing unnecessary entities."
-  (interactive)
-  ;; Find and strip the first tag, indicating the start of the
-  ;; cited message
-  (when (re-search-forward "^> \\[1" nil t)
-    (beginning-of-line)
-    (delete-lines 1)
-    (while (or (looking-at "^> *$")
-               (looking-at "^> \\[[1-9]"))
-      (delete-lines 1))
-    (when (re-search-forward "^> \\[[1-9][\\. ]" nil t)
-      (beginning-of-line)
-      (let ((pt (point)))
-        (re-search-forward "^$")
-        (delete-region pt (point)))))
-  ;; Now find the tag that ends the first section, and strip off
-  ;; everything from there to the end of the message (including any
-  ;; other sections that got cited)
-  (goto-char (point-max))
-  (when (re-search-backward "^> +[^ ]" nil t)
-    (beginning-of-line)
-    (let ((pt (point)))
-      (goto-char (point-max))
-      (if (re-search-backward "^> *$" pt t)
-          (progn
-            (beginning-of-line)
-            (while (looking-at "^> *$")
-              (delete-lines 1)
-              (forward-line -1))
-            (forward-line 1)
-            (delete-lines 1))
-        (goto-char (point-max))
-        (re-search-backward "^$")
-        (delete-lines 1)))))
 
-;; Modify mail buffer at mail creation time, not at send time
-(remove-hook 'wl-draft-send-hook 'wl-draft-config-exec)
+;; ;;}}}
+;; ;;{{{ Package: wanderlust - Message view
 
-(defun my-mail-setup ()
-  "Set up appropriate modes for writing Email and clean-up
-citation for replies."
-  (interactive)
-  ;; Fold over-lenght lines
-  (turn-on-auto-fill)
-  ;; Now call our hooks. For mailing lists with patches, this might
-  ;; turn off auto-fill again.
-  (wl-draft-config-exec)
+;; (setq ;; Only display some message fields
+;;       wl-message-ignored-field-list
+;;       '("^.*:")
+;;       wl-message-visible-field-list
+;;       '("^\\(To\\|Cc\\):"
+;; 	"^Subject:"
+;; 	"^\\(From\\|Reply-To\\):"
+;; 	;;"^Organization:"
+;; 	"^\\(Posted\\|Date\\):"
+;; 	)
+;;       ;; Display header fields in this order:
+;;       wl-message-sort-field-list
+;;       '("^Subject"
+;; 	"^From"
+;; 	"^Date"
+;; 	"^To"
+;; 	"^Cc")
+;;       ;; Disable inline display of HTML part.
+;;       ;; Put before load `mime-setup'
+;;       mime-setup-enable-inline-html nil
+;;       ;; Don't split large message.
+;;       mime-edit-split-message nil
+;;       ;; If lines of message are larger than this value, treat it as `large'.
+;;       mime-edit-message-default-max-lines 1000
+;;  )
 
-  ;; TODO Clean up reply citation
-  (save-excursion
-    ;; Goto the beginning of the message body
-    (mail-text)
-    ;; If the message body starts with "Dear " assume it is a reply
-    ;; and clean the citation
-    (when (looking-at "^Dear ")
-      (my-clean-mime-reply))))
-(add-hook 'wl-mail-setup-hook 'my-mail-setup)
+;; (defun my-wl-summary-next ()
+;;   (interactive)
+;;   (other-window -1)
+;;   (wl-summary-next)
+;;   (other-window 1))
+;; (defun my-wl-summary-prev ()
+;;   "Should be called while in the message window"
+;;   (interactive)
+;;   (other-window -1)
+;;   (wl-summary-prev)
+;;   (other-window 1))
+;; (defun my-wl-summary-up ()
+;;   (interactive)
+;;   (other-window -1)
+;;   (wl-summary-up)
+;;   (other-window 1))
+;; (defun my-wl-summary-down ()
+;;   "Should be called while in the message window"
+;;   (interactive)
+;;   (other-window -1)
+;;   (wl-summary-down)
+;;   (other-window 1))
 
+;; (defun my-mime-view-keybindings ()
+;;   ;; As TAB moves forward, S-TAB should move backwards
+;;   (local-set-key [(backtab)] 'mime-preview-move-to-previous)
+;;   ;; this will also delete the buffer
+;;   (local-set-key "q" 'kill-buffer-and-window)
+;;   ;; n moves to next NEW message, but p moves to previos message
+;;   (local-set-key "n" 'my-wl-summary-down)
+;;   (local-set-key "p" 'my-wl-summary-prev)
+;;   ;; next message, but P moves to previos NEW messages, which is
+;;   ;; exists quite seldom
+;;   (local-set-key "N" 'my-wl-summary-next)
+;;   (local-set-key "P" 'my-wl-summary-up)
+;;   (local-set-key [(space)] 'my-wl-summary-down)
+;;   )
+;; (add-hook 'mime-view-mode-hook 'my-mime-view-keybindings)
 
-;;}}}
-;;{{{ Package: wanderlust - E-Mail address database
+;; ;;}}}
+;; ;;{{{ Package: wanderlust - Beginnings of PDF handling
+;; ;; (eval-after-load "mime-view"
+;; ;;   '(progn
+;; ;;      (ctree-set-calist-strictly
+;; ;;       'mime-acting-condition
+;; ;;       '((mode . "play")
+;; ;;         (type . application)(subtype . pdf)
+;; ;;         (method . my-mime-save-content-find-file)))))
+;; ;;}}}
+;; ;;{{{ Package: wanderlust - Message composing
 
-;; http://emacs-fu.blogspot.com/2009/08/managing-e-mail-addresses-with-bbdb.html
-
-(eval-after-load "wl"
-  '(progn
-     ;; this also does "(require 'bbdb)"
-     (load "/usr/share/emacs/site-lisp/wl/utils/bbdb-wl.el" 'noerror 'nomsg)))
-
-(eval-after-load "bbdb-wl"
-  '(progn
-     (bbdb-wl-setup)
-     (define-key wl-draft-mode-map (kbd "<C-tab>") 'bbdb-complete-name)))
-
-(eval-after-load "bbdb"
-  '(progn
-     (setq bbdb-file "~/.emacs.d/tmp/contacts"
-	   ;; allow contacts file to be edited outside emacs
-	   bbdb-auto-revert-p t
-	   ;; 1 means save-without-asking
-           bbdb-offer-save 1
-
-	   ;; Don't always show the BBDB window
-	   bbdb-use-pop-up nil
-	   ;; be disposable with SPC
-	   bbdb-electric-p t
-	   ;; allow cycling if user has several mail addresses
-	   bbdb-complete-name-allow-cycling t
-
-	   ;; De-americanize
-	   bbdb-north-american-phone-numbers-p nil
-	   bbdb-check-zip-codes-p nil
-
-	   ;; auto-create addresses from mail
-	   bbdb/mail-auto-create-p 'bbdb-ignore-some-messages-hook
-	   bbdb-always-add-addresses t
-
-	   ;; Don't ask about fake addresses. NOTE: there can be only one
-	   ;; entry per header (such as To, From)
-	   ;; http://flex.ee.uec.ac.jp/texi/bbdb/bbdb_11.html
-	   bbdb-ignore-some-messages-alist
-	   '(( "From" . "no.?reply\\|DAEMON\\|daemon\\|facebookmail\\|twitter"))
-	   )
-     (bbdb-initialize)))
-
-
-;;}}}
-;;{{{ Package: wanderlust - Misc customization
-
-(setq wl-from "Holger Schurig <holgerschurig@gmail.com>"
-      ;;User's mail addresses
-      wl-user-mail-address-list '("h.schurig@mn-solutions.de"
-				  "holgerschurig@gmail.com"
-				  "holgerschurig@gmail.com"
-				  "hs4233@mail.mn-solutions.de"
-				  )
-      ;; Subscribed mailing list.
-      ;; wl-subscribed-mailing-list '("linux-wireless@vger.kernel.org"
-      ;; 				   "hostap@lists.shmoo.com"
-      ;; 				   "ath5k-devel@lists.ath5k.org"
-      ;; 				   "madwifi-devel@lists.sourceforge.net"
-      ;; 				   "linux-arm-kernel@lists.arm.linux.org.uk"
-      ;; 				   "haret@handhelds.org"
-      ;; 				   "urjtag-development@lists.sourceforge.net"
-      ;; 				   "MEMBERS@LIST.CELINUXFORUM.ORG"
-      ;; 				   "cfe-dev@cs.uiuc.edu"
-      ;; 				   )
-      ;; No demo at startup
-      wl-demo nil
-      )
-
-;; Automatically save entered passwords before clearing them
-(add-hook 'wl-exit-hook 'elmo-passwd-alist-save)
-
-
-;;}}}
-;;{{{ Package: wanderlust - Default compose-mail
-
-(autoload 'wl-user-agent-compose "wl-draft" nil t)
-(if (boundp 'mail-user-agent)
-    (setq mail-user-agent 'wl-user-agent))
-(if (fboundp 'define-mail-user-agent)
-    (define-mail-user-agent
-      'wl-user-agent
-      'wl-user-agent-compose
-      'wl-draft-send
-      'wl-draft-kill
-      'mail-send-hook))
-
-
-;;}}}
-;;{{{ Package: wanderlust - (Disabled) Mail checking
-
-;; (setq wl-biff-check-folder-list
-;;       '("&xxxxxxx+h.xxxxxx/user@mail.plus.net:110!direct"
-;;         "&xxxxxxx+enquiries/user@mail.plus.net:110!direct"
-;;         "%inbox:hxxxxxx0/clear@imap.gmail.com:993!"
-;;         "-gmane.emacs.cvs@news.gmane.org"
-;;         "-gmane.emacs.devel@news.gmane.org"
-;;         "-gmane.emacs.orgmode@news.gmane.org"
-;;         "-gmane.emacs.emms.user@news.gmane.org"
-;;         "-gmane.emacs.sources@news.gmane.org"
-;;         "-gmane.mail.wanderlust.general@news.gmane.org"
-;;         "-gmane.mail.wanderlust.general.japanese@news.gmane.org"
-;;         "-gmane.comp.window-managers.stumpwm.devel@news.gmane.org"
-;;         "-gmane.comp.mozilla.conkeror@news.gmane.org"
+;; (setq wl-forward-subject-prefix "Fwd: "
+;;       ;; We don't want this overlong user-agent
+;;       mime-edit-insert-user-agent-field nil
+;;       ;; http://www.gohome.org/wl/doc/wl_91.html
+;;       wl-draft-config-alist
+;;       '(;; Private messages -> private signature
+;; 	("^From:.*gmail.com"
+;; 	 ;;(bottom . "\nBye.\n") ;; inserted at the bottom of the body
+;; 	 (bottom-file . "~/.emacs.d/wl/private.sig"))
 ;;         )
-;;       wl-biff-check-interval 180
-;;       wl-biff-use-idle-timer t)
+;;  )
+
+;; (defun my-kill-user-agent ()
+;;   (let ((loc (point)))
+;;     (mail-position-on-field "User-Agent")
+;;     (delete-region
+;;      (save-excursion (move-beginning-of-line 1) (point))
+;;      (save-excursion (move-end-of-line 1) (point)))
+;;     (delete-char 1)
+;;     (goto-char loc))
+;;     )
+;; (add-hook 'wl-mail-setup-hook 'my-kill-user-agent)
+;; (add-hook 'wl-draft-reply-hook 'my-kill-user-agent)
+;; (add-hook 'wl-draft-forward-hook 'my-kill-user-agent)
 
 
+;; (defun my-clean-mime-reply ()
+;;   "Clean-up the citation in replies, removing unnecessary entities."
+;;   (interactive)
+;;   ;; Find and strip the first tag, indicating the start of the
+;;   ;; cited message
+;;   (when (re-search-forward "^> \\[1" nil t)
+;;     (beginning-of-line)
+;;     (delete-lines 1)
+;;     (while (or (looking-at "^> *$")
+;;                (looking-at "^> \\[[1-9]"))
+;;       (delete-lines 1))
+;;     (when (re-search-forward "^> \\[[1-9][\\. ]" nil t)
+;;       (beginning-of-line)
+;;       (let ((pt (point)))
+;;         (re-search-forward "^$")
+;;         (delete-region pt (point)))))
+;;   ;; Now find the tag that ends the first section, and strip off
+;;   ;; everything from there to the end of the message (including any
+;;   ;; other sections that got cited)
+;;   (goto-char (point-max))
+;;   (when (re-search-backward "^> +[^ ]" nil t)
+;;     (beginning-of-line)
+;;     (let ((pt (point)))
+;;       (goto-char (point-max))
+;;       (if (re-search-backward "^> *$" pt t)
+;;           (progn
+;;             (beginning-of-line)
+;;             (while (looking-at "^> *$")
+;;               (delete-lines 1)
+;;               (forward-line -1))
+;;             (forward-line 1)
+;;             (delete-lines 1))
+;;         (goto-char (point-max))
+;;         (re-search-backward "^$")
+;;         (delete-lines 1)))))
+
+;; ;; Modify mail buffer at mail creation time, not at send time
+;; (remove-hook 'wl-draft-send-hook 'wl-draft-config-exec)
+
+;; (defun my-mail-setup ()
+;;   "Set up appropriate modes for writing Email and clean-up
+;; citation for replies."
+;;   (interactive)
+;;   ;; Fold over-lenght lines
+;;   (turn-on-auto-fill)
+;;   ;; Now call our hooks. For mailing lists with patches, this might
+;;   ;; turn off auto-fill again.
+;;   (wl-draft-config-exec)
+
+;;   ;; TODO Clean up reply citation
+;;   (save-excursion
+;;     ;; Goto the beginning of the message body
+;;     (mail-text)
+;;     ;; If the message body starts with "Dear " assume it is a reply
+;;     ;; and clean the citation
+;;     (when (looking-at "^Dear ")
+;;       (my-clean-mime-reply))))
+;; (add-hook 'wl-mail-setup-hook 'my-mail-setup)
+
+
+;; ;;}}}
+;; ;;{{{ Package: wanderlust - E-Mail address database
+
+;; ;; http://emacs-fu.blogspot.com/2009/08/managing-e-mail-addresses-with-bbdb.html
+
+;; (eval-after-load "wl"
+;;   '(progn
+;;      ;; this also does "(require 'bbdb)"
+;;      (load "/usr/share/emacs/site-lisp/wl/utils/bbdb-wl.el" 'noerror 'nomsg)))
+
+;; (eval-after-load "bbdb-wl"
+;;   '(progn
+;;      (bbdb-wl-setup)
+;;      (define-key wl-draft-mode-map (kbd "<C-tab>") 'bbdb-complete-name)))
+
+;; (eval-after-load "bbdb"
+;;   '(progn
+;;      (setq bbdb-file "~/.emacs.d/tmp/contacts"
+;; 	   ;; allow contacts file to be edited outside emacs
+;; 	   bbdb-auto-revert-p t
+;; 	   ;; 1 means save-without-asking
+;;            bbdb-offer-save 1
+
+;; 	   ;; Don't always show the BBDB window
+;; 	   bbdb-use-pop-up nil
+;; 	   ;; be disposable with SPC
+;; 	   bbdb-electric-p t
+;; 	   ;; allow cycling if user has several mail addresses
+;; 	   bbdb-complete-name-allow-cycling t
+
+;; 	   ;; De-americanize
+;; 	   bbdb-north-american-phone-numbers-p nil
+;; 	   bbdb-check-zip-codes-p nil
+
+;; 	   ;; auto-create addresses from mail
+;; 	   bbdb/mail-auto-create-p 'bbdb-ignore-some-messages-hook
+;; 	   bbdb-always-add-addresses t
+
+;; 	   ;; Don't ask about fake addresses. NOTE: there can be only one
+;; 	   ;; entry per header (such as To, From)
+;; 	   ;; http://flex.ee.uec.ac.jp/texi/bbdb/bbdb_11.html
+;; 	   bbdb-ignore-some-messages-alist
+;; 	   '(( "From" . "no.?reply\\|DAEMON\\|daemon\\|facebookmail\\|twitter"))
+;; 	   )
+;;      (bbdb-initialize)))
+
+
+;; ;;}}}
+;; ;;{{{ Package: wanderlust - Misc customization
+
+;; (setq wl-from "Holger Schurig <holgerschurig@gmail.com>"
+;;       ;;User's mail addresses
+;;       wl-user-mail-address-list '("h.schurig@mn-solutions.de"
+;; 				  "holgerschurig@gmail.com"
+;; 				  "holgerschurig@gmail.com"
+;; 				  "hs4233@mail.mn-solutions.de"
+;; 				  )
+;;       ;; Subscribed mailing list.
+;;       ;; wl-subscribed-mailing-list '("linux-wireless@vger.kernel.org"
+;;       ;; 				   "hostap@lists.shmoo.com"
+;;       ;; 				   "ath5k-devel@lists.ath5k.org"
+;;       ;; 				   "madwifi-devel@lists.sourceforge.net"
+;;       ;; 				   "linux-arm-kernel@lists.arm.linux.org.uk"
+;;       ;; 				   "haret@handhelds.org"
+;;       ;; 				   "urjtag-development@lists.sourceforge.net"
+;;       ;; 				   "MEMBERS@LIST.CELINUXFORUM.ORG"
+;;       ;; 				   "cfe-dev@cs.uiuc.edu"
+;;       ;; 				   )
+;;       ;; No demo at startup
+;;       wl-demo nil
+;;       )
+
+;; ;; Automatically save entered passwords before clearing them
+;; (add-hook 'wl-exit-hook 'elmo-passwd-alist-save)
+
+
+;; ;;}}}
+;; ;;{{{ Package: wanderlust - Default compose-mail
+
+;; (autoload 'wl-user-agent-compose "wl-draft" nil t)
+;; (if (boundp 'mail-user-agent)
+;;     (setq mail-user-agent 'wl-user-agent))
+;; (if (fboundp 'define-mail-user-agent)
+;;     (define-mail-user-agent
+;;       'wl-user-agent
+;;       'wl-user-agent-compose
+;;       'wl-draft-send
+;;       'wl-draft-kill
+;;       'mail-send-hook))
+
+
+;; ;;}}}
+;; ;;{{{ Package: wanderlust - (Disabled) Mail checking
+
+;; ;; (setq wl-biff-check-folder-list
+;; ;;       '("&xxxxxxx+h.xxxxxx/user@mail.plus.net:110!direct"
+;; ;;         "&xxxxxxx+enquiries/user@mail.plus.net:110!direct"
+;; ;;         "%inbox:hxxxxxx0/clear@imap.gmail.com:993!"
+;; ;;         "-gmane.emacs.cvs@news.gmane.org"
+;; ;;         "-gmane.emacs.devel@news.gmane.org"
+;; ;;         "-gmane.emacs.orgmode@news.gmane.org"
+;; ;;         "-gmane.emacs.emms.user@news.gmane.org"
+;; ;;         "-gmane.emacs.sources@news.gmane.org"
+;; ;;         "-gmane.mail.wanderlust.general@news.gmane.org"
+;; ;;         "-gmane.mail.wanderlust.general.japanese@news.gmane.org"
+;; ;;         "-gmane.comp.window-managers.stumpwm.devel@news.gmane.org"
+;; ;;         "-gmane.comp.mozilla.conkeror@news.gmane.org"
+;; ;;         )
+;; ;;       wl-biff-check-interval 180
+;; ;;       wl-biff-use-idle-timer t)
+
+
+;; ;;}}}
 ;;}}}
 ;;{{{ Disabled Package: bs
 
