@@ -902,6 +902,11 @@ To remove this protection, call this command with a negative prefix argument."
    ((t (:weight bold))))
  )
 
+;; Column-Marker http://www.emacswiki.org/emacs/ColumnMarker
+(require 'column-marker nil 'nomsg)
+(eval-after-load "column-marker"
+  '(add-hook 'c-mode-hook (lambda () (interactive) (column-marker-1 80))))
+
 
 
 ;;}}}
