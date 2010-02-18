@@ -185,8 +185,8 @@ command from COMMANDS."
 (substitute-key-definition 'recenter-top-bottom 'my-recenter (current-global-map))
 
 ;; Nicer scroll handling
-(setq scroll-conservatively 1)
-(setq scroll-preserve-screen-position t)
+(setq scroll-conservatively 1000000
+      scroll-preserve-screen-position 1)
 
 
 
