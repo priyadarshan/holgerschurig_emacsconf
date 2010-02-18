@@ -1,5 +1,12 @@
 ;; -*- mode: emacs-lisp; mode: fold -*-
 
+;; http://atomized.org/2009/01/emacs-23-directory-local-variables/
+
+(dir-locals-set-class-variables 'usr-src-linux
+ '((nil . ((compile-command . "make -C /usr/src/linux C=1")))))
+(dir-locals-set-directory-class "/usr/src/linux" 'usr-src-linux)
+(setq enable-local-eval t)
+
 
 ;;{{{ Debugging
 
