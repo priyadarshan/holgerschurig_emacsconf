@@ -239,6 +239,33 @@ See also the command `yank-pop' (\\[yank-pop])."
 (global-set-key "\C-y" 'my-yank)
 
 
+;; http://www.reddit.com/r/emacs/comments/b1r8a/remacs_tell_us_about_the_obscure_but_useful/
+(defun delete-char-dynamic (&optional arg)
+  "If at end of line, intelligently join to the following;
+otherwise delete."
+  (interactive "p")
+  (if (or (not (eolp)) (bolp))
+      (delete-char arg)
+    (let ((start (point))
+          (in-comment (eq (get-text-property (point) 'face)
+                          'font-lock-comment-face)))
+      (forward-char)
+      (skip-chars-forward " \  ")
+      (if (and in-comment (looking-at comment-start-skip))
+          (goto-char (match-end 0)))
+      (delete-region start (point))
+      (when (and (not (eolp))
+                 (/= (char-before) ? )
+                 (/= (char-before) ?\  ))
+        (insert-char ?  1)
+        (backward-char)))))
+;; Make delete-selection-mode work with it
+(put 'delete-char-dynamic 'delete-selection 'supersede)
+;; Rebind DELETE and friends to our version
+(define-key global-map [(deletechar)] 'delete-char-dynamic)
+(define-key global-map [(delete)] 'delete-char-dynamic)
+(define-key global-map [(control ?d)] 'delete-char-dynamic)
+
 
 ;;}}}
 ;;{{{ Functions: Indentation
