@@ -1967,11 +1967,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 (ido-mode 'both)
 
 
-;; ;; 	  (ido-completing-read
-;; ;; 	   prompt
-;; ;; 	   (all-completions "" collection predicate)
-;; ;; 	   nil require-match initial-input hist def))))
-
 ;; ;; use ido even for M-x
 ;; (global-set-key
 ;;  "\M-x"
