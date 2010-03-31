@@ -1147,6 +1147,38 @@ To remove this protection, call this command with a negative prefix argument."
 (setq c-basic-offset 8)
 (setq tab-width 8)
 
+;; http://www.emacswiki.org/emacs-en/SmartTabs
+;;(setq cua-auto-tabify-rectangles nil)
+(defadvice align (around smart-tabs activate)
+  (let ((indent-tabs-mode nil)) ad-do-it))
+(defadvice align-regexp (around smart-tabs activate)
+  (let ((indent-tabs-mode nil)) ad-do-it))
+(defadvice indent-relative (around smart-tabs activate)
+  (let ((indent-tabs-mode nil)) ad-do-it))
+(defadvice indent-according-to-mode (around smart-tabs activate)
+  (let ((indent-tabs-mode indent-tabs-mode))
+    (if (memq indent-line-function
+	      '(indent-relative
+		indent-relative-maybe))
+	(setq indent-tabs-mode nil))
+    ad-do-it))
+(defmacro smart-tabs-advice (function offset)
+  (defvaralias offset 'tab-width)
+  `(defadvice ,function (around smart-tabs activate)
+     (cond
+      (indent-tabs-mode
+       (save-excursion
+	 (beginning-of-line)
+	 (while (looking-at "\t*\\( +\\)\t+")
+	   (replace-match "" nil nil nil 1)))
+       (setq tab-width tab-width)
+       (let ((tab-width fill-column)
+	     (,offset fill-column))
+	 ad-do-it))
+      (t
+       ad-do-it))))
+
+
 ;; Silence byte-compiler
 (require 'cc-mode)
 
@@ -1156,6 +1188,8 @@ To remove this protection, call this command with a negative prefix argument."
   (turn-on-auto-fill)
   (c-toggle-auto-newline 1)
   (modify-syntax-entry ?_ "w")
+  (smart-tabs-advice c-indent-line c-basic-offset)
+  (smart-tabs-advice c-indent-region c-basic-offset)
   (setq fill-column 76
 	;; Let RET break and continue a comment
 	;; C doesn't start functions with a ( in the first column
@@ -1180,6 +1214,14 @@ To remove this protection, call this command with a negative prefix argument."
 	)
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
+
+;; For Python
+;; (smart-tabs-advice python-indent-line-1 python-indent)
+;; (add-hook 'python-mode-hook
+;; 	  (lambda ()
+;; 	    (setq indent-tabs-mode t)
+;; 	    (setq tab-width (default-value 'tab-width))))
+
 
 ;; Linux style for linux :-)
 ;; (defun my-c-mode-hook ()
@@ -1641,8 +1683,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 	       (lambda ()
 		 (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
 		 ;; (make-local-variable 'transient-mark-mode)
-		 (auto-fill-mode -1)
-		 (setq tab-width 8)))))
+		 (auto-fill-mode -1)))))
 
 
 
@@ -2122,7 +2163,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ Package: unbount
+;;{{{ Package: unbound
 
 (autoload 'describe-unbound-keys "unbound"
   "Display a list of unbound keystrokes of complexity no greater than max." t)
