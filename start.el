@@ -641,15 +641,15 @@ To remove this protection, call this command with a negative prefix argument."
 ;; Show the text pointer in text areas
 ;;(setq void-text-area-pointer nil)
 
-(eval-after-load "avoid"
-  '(progn
-     ;; Move the mouse to the lower-right corner instead of default upper-right
-     ;; (defun mouse-avoidance-banish-destination ()
-     ;;   (cons (- (frame-width) 1) (- (frame-height) 1)))
-     (setq mouse-avoidance-timer-delay 0.1)
-     (mouse-avoidance-mode 'banish)))
-(unless ms-windows
-  (when (display-mouse-p) (require 'avoid nil t)))
+;; (eval-after-load "avoid"
+;;   '(progn
+;;      ;; Move the mouse to the lower-right corner instead of default upper-right
+;;      ;; (defun mouse-avoidance-banish-destination ()
+;;      ;;   (cons (- (frame-width) 1) (- (frame-height) 1)))
+;;      (setq mouse-avoidance-timer-delay 0.1)
+;;      (mouse-avoidance-mode 'banish)))
+;; (unless ms-windows
+;;   (when (display-mouse-p) (require 'avoid nil t)))
 
 
 
