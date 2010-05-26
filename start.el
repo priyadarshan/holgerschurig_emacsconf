@@ -1012,11 +1012,10 @@ To remove this protection, call this command with a negative prefix argument."
       (column-number-mode t)
       ;; Turn off blinking
       (blink-cursor-mode -1)
-      )
-  (progn
-    ;; Visial bell only in text mode
-    (setq visible-bell t)
-    ))
+      ))
+
+;; Visible bell, beeps are annoying
+(setq visible-bell t)
 
 ;; Let parenthesis behave
 (show-paren-mode 1)
