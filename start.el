@@ -2048,7 +2048,8 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 (eval-after-load "magit"
   '(progn
-     (setq magit-save-some-buffers nil)))
+     (setq magit-save-some-buffers nil
+	   magit-omit-untracked-dir-content t)))
 
 (global-set-key "\M-g\M-m" 'magit-status)
 ;; ORIGIN: undefined
