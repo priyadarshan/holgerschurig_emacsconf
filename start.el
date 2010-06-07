@@ -1984,7 +1984,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 	 ;;ido-work-directory-list '()
 	 ido-everywhere t			; use for many file dialogs
 	 ido-max-work-file-list      50		; remember many
-	 ido-use-filename-at-point t		; use filename at point
 	 ido-enable-flex-matching t		; be flexible
 	 ido-max-prospects 4			; don't spam my minibuffer
 	 ido-confirm-unique-completion t	; wait for RET, even with unique completion
