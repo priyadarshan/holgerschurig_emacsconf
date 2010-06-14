@@ -1781,6 +1781,19 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: eproject
+
+(load "eproject/eproject.el")
+
+(define-project-type make (generic-git)
+  (look-for "Makefile"))
+
+(add-hook 'make-project-file-visit-hook
+          (lambda ()
+            (set (make-local-variable 'compile-command)
+                 (format "make -C %s" (eproject-root)))))
+
+;;}}}
 ;;{{{ Package: erc
 
 (autoload 'erc-open "erc" "IRC client." t)
