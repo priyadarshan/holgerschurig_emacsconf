@@ -1208,11 +1208,11 @@ To remove this protection, call this command with a negative prefix argument."
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 
 ;; For Python
-;; (smart-tabs-advice python-indent-line-1 python-indent)
-;; (add-hook 'python-mode-hook
-;; 	  (lambda ()
-;; 	    (setq indent-tabs-mode t)
-;; 	    (setq tab-width (default-value 'tab-width))))
+(smart-tabs-advice python-indent-line-1 python-indent)
+(add-hook 'python-mode-hook
+	  (lambda ()
+	    (setq indent-tabs-mode t)
+	    (setq tab-width 4)))
 
 
 ;; Linux style for linux :-)
