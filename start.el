@@ -1776,15 +1776,21 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Package: eproject
 
-(load "eproject/eproject.el")
 
-(define-project-type make (generic-git)
-  (look-for "Makefile"))
+(eval-after-load "eproject"
+   '(progn
+
+      (define-project-type make (generic-git)
+	(look-for "Makefile"))
+      ))
+
+(load "eproject/eproject.el")
 
 (add-hook 'make-project-file-visit-hook
           (lambda ()
             (set (make-local-variable 'compile-command)
                  (format "make -C %s" (eproject-root)))))
+
 
 ;;}}}
 ;;{{{ Package: erc
