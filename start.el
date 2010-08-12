@@ -1207,14 +1207,6 @@ To remove this protection, call this command with a negative prefix argument."
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 
-;; For Python
-(smart-tabs-advice python-indent-line-1 python-indent)
-(add-hook 'python-mode-hook
-	  (lambda ()
-	    (setq indent-tabs-mode t)
-	    (setq tab-width 4)))
-
-
 ;; Linux style for linux :-)
 ;; (defun my-c-mode-hook ()
 ;;   (c-set-style
@@ -1665,6 +1657,22 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; (tempo-define-template "perl-while-skeleton" '("while (<>) {\n  chomp;\n  " p "\n}\n"))
 
 
+
+;;}}}
+;;{{{ Mode: Python
+
+(defun my-tab-setup ()
+  (interactive)
+  (setq indent-tabs-mode t)
+  (setq tab-width 4))
+(smart-tabs-advice python-indent-line-1 python-indent)
+(add-hook 'python-mode-hook 'my-tab-setup)
+
+;;}}}
+;;{{{ Mode: Shell
+
+(smart-tabs-advice shell-basic-indent-line sh-basic-offset)
+(add-hook 'shell-mode-hook 'my-tab-setup)
 
 ;;}}}
 ;;{{{ Mode: Term
