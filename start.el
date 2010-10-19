@@ -1177,7 +1177,7 @@ To remove this protection, call this command with a negative prefix argument."
 
 (defun my-c-mode-common-setup ()
   (define-key c-mode-map (kbd "RET") 'newline)
-  (turn-on-auto-fill)
+  (turn-off-auto-fill)
   (c-toggle-auto-newline 1)
   (modify-syntax-entry ?_ "w")
   (smart-tabs-advice c-indent-line c-basic-offset)
