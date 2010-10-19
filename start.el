@@ -1,5 +1,5 @@
 ;; -*- mode: emacs-lisp; mode: fold -*-
-
+;; toggle entries with C-t
 
 ;;{{{ Debugging
 
