@@ -769,6 +769,13 @@ To remove this protection, call this command with a negative prefix argument."
 
 (setq auto-save-list-file-prefix "~/.emacs.d/tmp/auto-save-list/saves-")
 
+
+;; quickly safe
+(global-set-key [(f2)] 'save-buffer)
+;; ORIGINAL: 2C-commands
+(global-set-key [(shift f2)] '2C-command)
+;; ORIGINAL: undefined
+
 ;;}}}
 ;;{{{ Help
 
