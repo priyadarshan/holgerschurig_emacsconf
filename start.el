@@ -661,26 +661,32 @@ To remove this protection, call this command with a negative prefix argument."
 ;; get rid of yes-or-no questions - y or n is enough
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; This inhibits the initial startup echo area message.
-;;(setq inhibit-startup-echo-area-message "schurig")
+(setq ;; Do without annoying startup msg.
+      inhibit-startup-message t
 
-;; Do without annoying startup msg.
-(setq inhibit-startup-message t)
+      ;; This inhibits the initial startup echo area message.
+      ;;(setq inhibit-startup-echo-area-message "schurig")
 
-;; Empty scratch message
-;(setq initial-scratch-message nil)
+      ;; Don't ask when running revert-buffer
+      revert-without-query (quote (""))
 
-;; Include current buffer name in the title bar
-(setq frame-title-format '(buffer-file-name "%f" ("%b")))
+      ;; Empty scratch message
+      initial-scratch-message nil
 
-;; Don't ask for killing emacs
-;;(setq confirm-kill-emacs t)
+      ;; Include current buffer name in the title bar
+      frame-title-format '(buffer-file-name "%f" ("%b"))
 
-;; Set up default editing mode.
-(setq default-major-mode 'indented-text-mode)
+      ;; Don't ask for killing emacs
+      ;;(setq confirm-kill-emacs t)
 
-;; Custom file
-(setq custom-file "~/.emacs.d/custom.el")
+      ;; Set up default editing mode.
+      default-major-mode 'indented-text-mode
+
+      ;; Custom file, part one
+      custom-file "~/.emacs.d/custom.el"
+      )
+
+;; Custom file, part two
 (if (file-exists-p custom-file) (load-file custom-file))
 
 ;; Save recent files
