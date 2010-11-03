@@ -1136,8 +1136,6 @@ To remove this protection, call this command with a negative prefix argument."
 
 ;; Tabs mode
 (setq indent-tabs-mode t)
-(setq c-basic-offset 8)
-(setq tab-width 8)
 
 ;; http://www.emacswiki.org/emacs-en/SmartTabs
 ;;(setq cua-auto-tabify-rectangles nil)
@@ -1180,14 +1178,12 @@ To remove this protection, call this command with a negative prefix argument."
   (turn-off-auto-fill)
   (c-toggle-auto-newline 1)
   (modify-syntax-entry ?_ "w")
-  (smart-tabs-advice c-indent-line c-basic-offset)
-  (smart-tabs-advice c-indent-region c-basic-offset)
   (setq fill-column 76
 	;; Let RET break and continue a comment
 	;; C doesn't start functions with a ( in the first column
 	open-paren-in-column-0-is-defun-start nil
-	;; Insert TABs if needed
-	;;c-tab-always-indent nil
+	;; Insert TABs inside literals
+	c-tab-always-indent 1
 	;; Tell cc-mode not to check for old-style (K&R) function
 	;; declarations. This speeds up indenting a lot (I hear).
 	c-recognize-knr-p nil
@@ -1199,11 +1195,16 @@ To remove this protection, call this command with a negative prefix argument."
 	c-electric-pound-behavior '(alignleft)
 	;; No abbrevs
 	abbrev-mode nil
+	;; Preferred tab width
+	tab-width 4
+	c-basic-offset 4
 	;; Default style
 	c-default-style '((java-mode . "java")
 			  (awk-mode . "awk")
 			  (other . "linux"))
 	)
+  (smart-tabs-advice c-indent-line c-basic-offset)
+  (smart-tabs-advice c-indent-region c-basic-offset)
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 
