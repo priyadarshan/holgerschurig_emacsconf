@@ -1721,9 +1721,25 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Package: aspell
 
+; http://www.emacswiki.org/emacs-jp/InteractiveSpell
 (setq ispell-program-name "aspell"
-      ispell-extra-args '("--sug-mode=ultra"))
+      ispell-list-command "list"
+      ;; This makes aspell faster, but it will make it's suggestion worse
+      ispell-extra-args '("--sug-mode=ultra")
+      flyspell-issue-message-flag nil)
+      )
 
+(defun flyspell-de ()
+  "Calls Flyspell with german dictionary"
+  (interactive)
+  (ispell-change-dictionary "de")
+  (flyspell-mode 1))
+
+(defun flyspell-en ()
+  "Calls Flyspell with english dictionary"
+  (interactive)
+  (ispell-change-dictionary "en")
+  (flyspell-mode 1))
 
 
 ;;}}}
