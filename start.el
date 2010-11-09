@@ -1727,7 +1727,6 @@ Otherwise, kill characters backward until encountering the end of a word."
       ;; This makes aspell faster, but it will make it's suggestion worse
       ispell-extra-args '("--sug-mode=ultra")
       flyspell-issue-message-flag nil)
-      )
 
 (defun flyspell-de ()
   "Calls Flyspell with german dictionary"
