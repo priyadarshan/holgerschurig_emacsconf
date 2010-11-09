@@ -1981,6 +1981,12 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: md-mode
+
+(autoload 'md-mode "md-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.md$" . md-mode))
+
+;;}}}
 ;;{{{ Package: pabbrev
 
 (autoload 'pabbrev-mode "pabbrev" nil t)
