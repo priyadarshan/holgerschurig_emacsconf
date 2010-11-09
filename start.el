@@ -2725,17 +2725,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ Disabled package: smart-tab
-
-;; This positions the cursor at weird positions when writin
-
-;; (load "smart-tab/smart-tab" 'noerror 'nomessage)
-;; (eval-after-load "smart-tab"
-;;   '(global-smart-tab-mode 1))
-
-
-
-;;}}}
 ;;{{{ Key bindings
 
 (global-set-key "\C-xE"		'apply-macro-to-region-lines)
