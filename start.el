@@ -1947,10 +1947,10 @@ Otherwise, kill characters backward until encountering the end of a word."
 	   magit-omit-untracked-dir-content t)))
 
 (global-set-key "\M-g\M-m" 'magit-status)
-;; ORIGIN: undefined
+;; ORIGINAL: undefined
 
 (global-set-key "\M-gm" 'magit-status)
-;; ORIGIN: undefined
+;; ORIGINAL: undefined
 
 
 
@@ -2730,19 +2730,19 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;{{{ Key bindings
 
 (global-set-key "\C-xE"		'apply-macro-to-region-lines)
-;; ORIGIN: kmacro-and-and-call-macro (on \C-Xe)
+;; ORIGINAL: kmacro-and-and-call-macro (on \C-Xe)
 
 (global-set-key "\C-x\\"	'align-regexp)
-;; ORIGIN: undefined
+;; ORIGINAL: undefined
 
 (global-set-key "\C-c\C-f"	'ff-find-other-file)
-;; ORIGIN: undefined
+;; ORIGINAL: undefined
 
 (global-set-key "\C-cc"		'comment-region)
-;; ORIGIN: undefined
+;; ORIGINAL: undefined
 
 (global-set-key "\C-cu"		'uncomment-region)
-;; ORIGIN: undefined
+;; ORIGINAL: undefined
 
 
 ;; Don't iconify
