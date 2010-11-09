@@ -1979,6 +1979,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Package: paredit
 
+;; Paredit is now loaded via package.el (elpa)
 (autoload 'paredit-mode "paredit" nil t)
 
 ;; Automatically turn on in elist mode
