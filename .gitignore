@@ -4,7 +4,6 @@
 *.org
 /tmp/
 /elisp/eproject/
-/elisp/magit/
 /elisp/smart-tab/
 /elpa/archive-contents
 /elpa/builtin-packages

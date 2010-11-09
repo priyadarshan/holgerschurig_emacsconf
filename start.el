@@ -23,7 +23,6 @@
 
 (dolist (i '(
 	     "~/.emacs.d/elisp/"
-	     "~/.emacs.d/magit/"
 	     "~/.emacs.d/elpa/"
 	     "~/.emacs.d/"
 	     ))
@@ -1941,11 +1940,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Package: magit
 
-;; git clone git://gitorious.org/magit/mainline.git magit
-;; http://zagadka.vm.bytemark.co.uk/magit/magit.html
-
-(autoload 'magit-status "magit/magit" nil t)
-
+;; Magit is now loaded via package.el (elpa)
 (eval-after-load "magit"
   '(progn
      (setq magit-save-some-buffers nil
