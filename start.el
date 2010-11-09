@@ -1810,6 +1810,32 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: cscope
+
+;; (eval-after-load "xcscope"
+(require 'xcscope)
+(setq ;; This indexer ignores .obj, .git, .svn and single-letter directories
+      cscope-indexing-script (expand-file-name"~/.emacs.d/bin/cscope-indexer")
+      ;; It seems that it asks anyway ...
+      cscope-no-mouse-prompts t
+      ;; Don't open the cscope result window
+      cscope-display-cscope-buffer nil)
+
+(define-key esc-map "." 'cscope-find-this-symbol)
+;; ORIGINAL: find-tag (etags.el)
+
+(define-key esc-map "*" 'cscope-pop-mark)
+;; ORIGINAL: pop-tag-mark (etags.el)
+
+(define-key esc-map "," 'cscope-next-symbol)
+;; ORIGINAL: tags-loop-continue (etags.el)
+
+(define-key esc-map ";" 'cscope-prev-symbol)
+;; ORIGINAL: comment-dwim
+
+
+
+;;}}}
 ;;{{{ Package: ibuffer
 
 (require 'ibuffer)
