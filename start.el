@@ -660,6 +660,11 @@ To remove this protection, call this command with a negative prefix argument."
 ;; get rid of yes-or-no questions - y or n is enough
 (fset 'yes-or-no-p 'y-or-n-p)
 
+;; Delete 'process-kill-buffer-query-function from kill-buffer-query-function.
+;; http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/
+(setq kill-buffer-query-functions
+  (remq 'process-kill-buffer-query-function kill-buffer-query-functions))
+
 (setq ;; Do without annoying startup msg.
       inhibit-startup-message t
 
