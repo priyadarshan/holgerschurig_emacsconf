@@ -1822,9 +1822,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 (setq ;; This indexer ignores .obj, .git, .svn and single-letter directories
       cscope-indexing-script (expand-file-name"~/.emacs.d/bin/cscope-indexer")
       ;; It seems that it asks anyway ...
-      cscope-no-mouse-prompts t
-      ;; Don't open the cscope result window
-      cscope-display-cscope-buffer nil)
+      cscope-no-mouse-prompts t)
 
 (define-key esc-map "." 'cscope-find-this-symbol)
 ;; ORIGINAL: find-tag (etags.el)
