@@ -880,27 +880,6 @@ To remove this protection, call this command with a negative prefix argument."
 ;;}}}
 ;;{{{ Display: Faces
 
-;; ;; http://www.jurta.org/en/emacs/dotemacs
-;;
-;; (defun my-colors-dark (&optional frame)
-;;   "Set colors suitable for working in the darkness without electricity."
-;;
-;;   (interactive)
-;;   (if frame
-;;       (select-frame frame)
-;;     (setq frame (selected-frame)))
-;;   (set-background-color "black")
-;;   (set-foreground-color "DarkGrey")
-;;   (when (facep 'region)
-;;     (set-face-background 'region "DimGray" frame))
-;;   (when (facep 'fringe)
-;;     (set-face-background 'fringe (face-background 'default) frame)
-;;     (set-face-foreground 'fringe (face-foreground 'default) frame)))
-;; (my-colors-dark)
-;;
-;; ;; Colorize newly created frames
-;; (add-hook 'after-make-frame-functions 'my-colors-dark)
-
 ;; http://www.emacswiki.org/cgi-bin/wiki/EightyColumnRule
 (defface my--todo-face
   '((t :foreground "red"
@@ -908,27 +887,13 @@ To remove this protection, call this command with a negative prefix argument."
   "Font for showing TODO words."
   :group 'basic-faces)
 
-(defface my--fixme-face
-  '((t :background "red"
-       :foreground "white"
-       :weight bold))
-  "Font for showing FIXME and XXX words."
-  :group 'basic-faces)
-
-(defface my--hint-face
-  '((t :foreground "green"
-       :weight bold))
-  "Font for showing HINT words."
-  :group 'basic-faces)
-
+;; Highlight each of TODO TODO: FIXME FIXME: XXX XXX: \todo
 (defun my--hint-facify ()
    (unless (or (eq 'diff-mode major-mode) (eq 'script-mode major-mode))
      (font-lock-add-keywords nil '(
-         ;;("\t+" 0 'my--tab-face t)
-	 ("\\<\\(TODO\\(\\?|:\\)?\\)\\>" 1 'my--todo-face t)
-	 ("\\<\\(FIXME:\\|XXX\\)\\>" 1 'my--fixme-face t)
-	 ("\\<\\(HINT:\\)\\>" 1 'my--hint-face t)
+	 ("\\(\\<\\(\\(FIXME\\|TODO\\|XXX\\):?\\>\\)\\|\\\\todo\\)" 1 'my--todo-face t)
 	 ))))
+
 (add-hook 'font-lock-mode-hook 'my--hint-facify)
 
 ;; tips from http://www.reddit.com/r/emacs/comments/9nh64/ask_emacs_which_color_theme_do_you_use/
@@ -1847,6 +1812,9 @@ Otherwise, kill characters backward until encountering the end of a word."
       ;;ibuffer-use-header-line t
       ;;ibuffer-default-sorting-mode 'major-mode
       ;;
+      ;; Don't ask when killing a buffer
+      ibuffer-expert t
+      ;;
       ibuffer-show-empty-filter-groups nil
       ibuffer-old-time 4
       ;; And now my filters:
@@ -1876,6 +1844,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 (add-hook 'ibuffer-mode-hook
 	  (lambda ()
+	    (ibuffer-auto-mode 1)
 	    (ibuffer-switch-to-saved-filter-groups "default")))
 
 ;; Turn off header
@@ -1902,6 +1871,17 @@ Otherwise, kill characters backward until encountering the end of a word."
 (global-set-key "\C-x\C-b" 'my-ibuffer)
 ;; ORIGINAL: list-buffers
 
+;; http://curiousprogrammer.wordpress.com/2009/04/02/ibuffer/
+(defun ibuffer-ediff-marked-buffers ()
+  (interactive)
+  (let* ((marked-buffers (ibuffer-get-marked-buffers))
+         (len (length marked-buffers)))
+    (unless (= 2 len)
+      (error (format "%s buffer%s been marked (needs to be 2)"
+                     len (if (= len 1) " has" "s have"))))
+    (ediff-buffers (car marked-buffers) (cadr marked-buffers))))
+(define-key ibuffer-mode-map "e" 'ibuffer-ediff-marked-buffers)
+;; ORIGINAL: ibuffer-visit-buffer
 
 
 ;;}}}
