@@ -2146,7 +2146,10 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Package: tramp
 
-(setq tramp-persistency-file-name "~/.emacs.d/tmp/tramp")
+(setq tramp-persistency-file-name "~/.emacs.d/tmp/tramp"
+      tramp-default-method "ssh"
+      ;; Relax prompt checking
+      tramp-shell-prompt-pattern "^#$>\n]*[#$%>] *")
 
 
 
