@@ -1973,6 +1973,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 	 ido-max-prospects 4			; don't spam my minibuffer
 	 ido-confirm-unique-completion t	; wait for RET, even with unique completion
 	 ;;ido-enable-dot-prefix t		; need "." to select hidden files
+	 ido-enable-tramp-completion nil
 	 ido-ignore-buffers
 	 '("\\`"
 	   "^\*Mess"
