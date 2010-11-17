@@ -1887,6 +1887,17 @@ Otherwise, kill characters backward until encountering the end of a word."
 (global-set-key "\C-x\C-b" 'my-ibuffer)
 ;; ORIGINAL: list-buffers
 
+;; http://curiousprogrammer.wordpress.com/2009/04/02/ibuffer/
+(defun ibuffer-ediff-marked-buffers ()
+  (interactive)
+  (let* ((marked-buffers (ibuffer-get-marked-buffers))
+         (len (length marked-buffers)))
+    (unless (= 2 len)
+      (error (format "%s buffer%s been marked (needs to be 2)"
+                     len (if (= len 1) " has" "s have"))))
+    (ediff-buffers (car marked-buffers) (cadr marked-buffers))))
+(define-key ibuffer-mode-map "e" 'ibuffer-ediff-marked-buffers)
+;; ORIGINAL: ibuffer-visit-buffer
 
 
 ;;}}}
