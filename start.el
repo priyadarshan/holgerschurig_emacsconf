@@ -1013,7 +1013,7 @@ To remove this protection, call this command with a negative prefix argument."
 (show-paren-mode 1)
 (setq show-paren-delay 0
       blink-matching-parent nil)
-(set-face-background 'show-paren-match-face "#e0e0e0")
+(set-face-background 'show-paren-match-face "#d0d0d0")
 
 
 ;; Display page delimiter ^L as a horizontal line
