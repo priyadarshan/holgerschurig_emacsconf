@@ -792,6 +792,20 @@ To remove this protection, call this command with a negative prefix argument."
 (global-set-key [(shift f2)] '2C-command)
 ;; ORIGINAL: undefined
 
+
+;; Registers allow you to jump to a file or other location quickly. Use
+;; C-x r j followed by the letter of the register (i for init.el, s
+;; for this file) to jump to it.
+;;
+;; You should add registers here for the files you edit most often.
+
+(dolist (r `((?s (file . "~/.emacs.d/start.el"))
+	     ;;(?o (file . ,(concat dotfiles-dir "emacs-kit.org")))
+	     ))
+  (set-register (car r) (cadr r)))
+
+
+
 ;;}}}
 ;;{{{ Help
 
