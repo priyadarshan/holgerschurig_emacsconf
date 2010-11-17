@@ -1822,6 +1822,27 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: desktop
+
+;; http://www.emacswiki.org/emacs/DeskTop
+(desktop-save-mode 1)
+
+(setq desktop-base-file-name "~/.emacs.d/tmp/emacs.desktop"
+      desktop-base-lock-name "~/.emacs.d/tmp/emacs.desktop.lock"
+      desktop-save t
+      desktop-buffers-not-to-save
+      (concat "\\("
+	      "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
+	      "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
+	      "\\)$"))
+
+(add-to-list 'desktop-modes-not-to-save 'dired-mode)
+(add-to-list 'desktop-modes-not-to-save 'Info-mode)
+(add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
+(add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
+
+
+;;}}}
 ;;{{{ Package: eshell
 
 (setq eshell-cmpl-cycle-completions nil
