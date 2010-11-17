@@ -1824,6 +1824,45 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: eshell
+
+(setq eshell-cmpl-cycle-completions nil
+      eshell-save-history-on-exit t
+      eshell-cmpl-dir-ignore "\\`\\(\\.\\.?\\|CVS\\|\\.svn\\|\\.git\\)/\\'")
+
+(eval-after-load 'esh-opt
+  '(progn
+     (require 'em-prompt)
+     (require 'em-term)
+     (setenv "PAGER" "cat")
+     (message "XXXXXXXXXXXXXXXX")
+     (set-face-attribute 'eshell-prompt nil :foreground "turquoise1")
+     (add-hook 'eshell-mode-hook ;; for some reason this needs to be a hook
+	       '(lambda () (define-key eshell-mode-map "\C-a" 'eshell-bol)))
+     (add-to-list 'eshell-visual-commands "ssh")
+     (add-to-list 'eshell-visual-commands "tail")
+     (add-to-list 'eshell-command-completions-alist
+		  '("gunzip" "gz\\'"))
+     (add-to-list 'eshell-command-completions-alist
+		  '("tar" "\\(\\.tar|\\.tgz\\|\\.tar\\.gz\\)\\'"))
+     (add-to-list 'eshell-output-filter-functions 'eshell-handle-ansi-color)))
+
+
+;; The eshell directory holds alias definitions and history
+;; information.  It is much like a .bashrc file for those who are
+;; familiar with bash.  This set the value of eshell-directory-name to
+;; point to the eshell directory in this directory.  The alias file
+;; is pre-populated with some generally applicable aliases.
+
+;; (setq eshell-directory-name (expand-file-name "./" (expand-file-name "eshell" dotfiles-dir)))
+
+(global-set-key (kbd "C-x m") 'eshell)
+;; ORIGINAL: undefined
+(global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
+;; ORIGINAL: compose-mail
+
+
+;;}}}
 ;;{{{ Package: ibuffer
 
 (require 'ibuffer)
