@@ -880,27 +880,6 @@ To remove this protection, call this command with a negative prefix argument."
 ;;}}}
 ;;{{{ Display: Faces
 
-;; ;; http://www.jurta.org/en/emacs/dotemacs
-;;
-;; (defun my-colors-dark (&optional frame)
-;;   "Set colors suitable for working in the darkness without electricity."
-;;
-;;   (interactive)
-;;   (if frame
-;;       (select-frame frame)
-;;     (setq frame (selected-frame)))
-;;   (set-background-color "black")
-;;   (set-foreground-color "DarkGrey")
-;;   (when (facep 'region)
-;;     (set-face-background 'region "DimGray" frame))
-;;   (when (facep 'fringe)
-;;     (set-face-background 'fringe (face-background 'default) frame)
-;;     (set-face-foreground 'fringe (face-foreground 'default) frame)))
-;; (my-colors-dark)
-;;
-;; ;; Colorize newly created frames
-;; (add-hook 'after-make-frame-functions 'my-colors-dark)
-
 ;; http://www.emacswiki.org/cgi-bin/wiki/EightyColumnRule
 (defface my--todo-face
   '((t :foreground "red"
@@ -908,27 +887,13 @@ To remove this protection, call this command with a negative prefix argument."
   "Font for showing TODO words."
   :group 'basic-faces)
 
-(defface my--fixme-face
-  '((t :background "red"
-       :foreground "white"
-       :weight bold))
-  "Font for showing FIXME and XXX words."
-  :group 'basic-faces)
-
-(defface my--hint-face
-  '((t :foreground "green"
-       :weight bold))
-  "Font for showing HINT words."
-  :group 'basic-faces)
-
+;; Highlight each of TODO TODO: FIXME FIXME: XXX XXX: \todo
 (defun my--hint-facify ()
    (unless (or (eq 'diff-mode major-mode) (eq 'script-mode major-mode))
      (font-lock-add-keywords nil '(
-         ;;("\t+" 0 'my--tab-face t)
-	 ("\\<\\(TODO\\(\\?|:\\)?\\)\\>" 1 'my--todo-face t)
-	 ("\\<\\(FIXME:\\|XXX\\)\\>" 1 'my--fixme-face t)
-	 ("\\<\\(HINT:\\)\\>" 1 'my--hint-face t)
+	 ("\\(\\<\\(\\(FIXME\\|TODO\\|XXX\\):?\\>\\)\\|\\\\todo\\)" 1 'my--todo-face t)
 	 ))))
+
 (add-hook 'font-lock-mode-hook 'my--hint-facify)
 
 ;; tips from http://www.reddit.com/r/emacs/comments/9nh64/ask_emacs_which_color_theme_do_you_use/
