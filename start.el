@@ -898,7 +898,7 @@ To remove this protection, call this command with a negative prefix argument."
 
 
 ;;}}}
-;;{{{ Display: Faces
+;;{{{ Display: Font lock and faces
 
 ;; http://www.emacswiki.org/cgi-bin/wiki/EightyColumnRule
 (defface my--todo-face
@@ -938,12 +938,9 @@ To remove this protection, call this command with a negative prefix argument."
 
 
 
-;;}}}
-;;{{{ Display: Font lock
-
 ;; Activate font-lock-mode (syntax coloring)
-(setq global-font-lock-mode t)
-(setq font-lock-verbose nil)
+(setq global-font-lock-mode t
+      font-lock-verbose nil)
 
 (defconst font-lock-maximum-decoration t)
 
