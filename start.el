@@ -2872,6 +2872,9 @@ Otherwise, kill characters backward until encountering the end of a word."
 (global-set-key "\C-cu"		'uncomment-region)
 ;; ORIGINAL: undefined
 
+(global-set-key (kbd "C-;")     'comment-dwim)
+;; ORIGINAL: undefined
+
 
 ;; Don't iconify
 (when window-system
