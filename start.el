@@ -615,6 +615,9 @@ To remove this protection, call this command with a negative prefix argument."
 (global-set-key [(shift f8)] 'previous-error)
 ;; ORIGINAL: undefined
 
+;; Help should search more than just commands
+(global-set-key (kbd "C-h a") 'apropos)
+;; ORIGINAL: apropos-command
 
 
 ;;}}}
