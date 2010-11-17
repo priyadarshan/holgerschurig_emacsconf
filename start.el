@@ -1861,6 +1861,25 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: fill
+
+;; Each list element as new paragraph
+;; http://www.emacswiki.org/cgi-bin/wiki/FillParagraph
+(setq paragraph-start    " *\\([*+-]\\|\\([0-9]+\\|[a-zA-Z]\\)[.)]\\|$\\)"
+      paragraph-separate "$")
+
+;; Do not break line after single character when filling
+(defun fill-single-char-nobreak-p ()
+  "Don't break line after a single character."
+  (save-excursion
+    (skip-chars-backward " \t")
+    (backward-char 2)
+    (looking-at "[[:space:]][a-zA-Z]")))
+
+(add-to-list 'fill-nobreak-predicate 'fill-single-char-nobreak-p)
+
+
+;;}}}
 ;;{{{ Package: ibuffer
 
 (require 'ibuffer)
