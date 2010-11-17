@@ -1832,17 +1832,17 @@ Otherwise, kill characters backward until encountering the end of a word."
   '(progn
      (require 'em-prompt)
      (require 'em-term)
+     (require 'em-cmpl)
      (setenv "PAGER" "cat")
-     (message "XXXXXXXXXXXXXXXX")
      (set-face-attribute 'eshell-prompt nil :foreground "turquoise1")
      (add-hook 'eshell-mode-hook ;; for some reason this needs to be a hook
 	       '(lambda () (define-key eshell-mode-map "\C-a" 'eshell-bol)))
      (add-to-list 'eshell-visual-commands "ssh")
      (add-to-list 'eshell-visual-commands "tail")
      (add-to-list 'eshell-command-completions-alist
-		  '("gunzip" "gz\\'"))
+     		  '("gunzip" "gz\\'"))
      (add-to-list 'eshell-command-completions-alist
-		  '("tar" "\\(\\.tar|\\.tgz\\|\\.tar\\.gz\\)\\'"))
+     		  '("tar" "\\(\\.tar|\\.tgz\\|\\.tar\\.gz\\)\\'"))
      (add-to-list 'eshell-output-filter-functions 'eshell-handle-ansi-color)))
 
 
