@@ -1832,6 +1832,9 @@ Otherwise, kill characters backward until encountering the end of a word."
       ;;ibuffer-use-header-line t
       ;;ibuffer-default-sorting-mode 'major-mode
       ;;
+      ;; Don't ask when killing a buffer
+      ibuffer-expert t
+      ;;
       ibuffer-show-empty-filter-groups nil
       ibuffer-old-time 4
       ;; And now my filters:
