@@ -615,6 +615,9 @@ To remove this protection, call this command with a negative prefix argument."
 (global-set-key [(shift f8)] 'previous-error)
 ;; ORIGINAL: undefined
 
+;; Help should search more than just commands
+(global-set-key (kbd "C-h a") 'apropos)
+;; ORIGINAL: apropos-command
 
 
 ;;}}}
@@ -723,6 +726,9 @@ To remove this protection, call this command with a negative prefix argument."
 ;; find file at point
 (require 'ffap)
 
+(global-set-key (kbd "C-x C-p") 'find-file-at-point)
+;; ORIGINAL: mark-page
+
 ;; rebind C-x C-f and others to the ffap bindings (see variable ffap-bindings)
 ;; (ffap-bindings)
 ;; C-u C-x C-f finds the file at point
@@ -785,6 +791,20 @@ To remove this protection, call this command with a negative prefix argument."
 ;; ORIGINAL: 2C-commands
 (global-set-key [(shift f2)] '2C-command)
 ;; ORIGINAL: undefined
+
+
+;; Registers allow you to jump to a file or other location quickly. Use
+;; C-x r j followed by the letter of the register (i for init.el, s
+;; for this file) to jump to it.
+;;
+;; You should add registers here for the files you edit most often.
+
+(dolist (r `((?s (file . "~/.emacs.d/start.el"))
+	     ;;(?o (file . ,(concat dotfiles-dir "emacs-kit.org")))
+	     ))
+  (set-register (car r) (cadr r)))
+
+
 
 ;;}}}
 ;;{{{ Help
@@ -1801,6 +1821,45 @@ Otherwise, kill characters backward until encountering the end of a word."
 (define-key esc-map ";" 'cscope-prev-symbol)
 ;; ORIGINAL: comment-dwim
 
+
+
+;;}}}
+;;{{{ Package: eshell
+
+(setq eshell-cmpl-cycle-completions nil
+      eshell-save-history-on-exit t
+      eshell-cmpl-dir-ignore "\\`\\(\\.\\.?\\|CVS\\|\\.svn\\|\\.git\\)/\\'")
+
+(eval-after-load 'esh-opt
+  '(progn
+     (require 'em-prompt)
+     (require 'em-term)
+     (setenv "PAGER" "cat")
+     (message "XXXXXXXXXXXXXXXX")
+     (set-face-attribute 'eshell-prompt nil :foreground "turquoise1")
+     (add-hook 'eshell-mode-hook ;; for some reason this needs to be a hook
+	       '(lambda () (define-key eshell-mode-map "\C-a" 'eshell-bol)))
+     (add-to-list 'eshell-visual-commands "ssh")
+     (add-to-list 'eshell-visual-commands "tail")
+     (add-to-list 'eshell-command-completions-alist
+		  '("gunzip" "gz\\'"))
+     (add-to-list 'eshell-command-completions-alist
+		  '("tar" "\\(\\.tar|\\.tgz\\|\\.tar\\.gz\\)\\'"))
+     (add-to-list 'eshell-output-filter-functions 'eshell-handle-ansi-color)))
+
+
+;; The eshell directory holds alias definitions and history
+;; information.  It is much like a .bashrc file for those who are
+;; familiar with bash.  This set the value of eshell-directory-name to
+;; point to the eshell directory in this directory.  The alias file
+;; is pre-populated with some generally applicable aliases.
+
+;; (setq eshell-directory-name (expand-file-name "./" (expand-file-name "eshell" dotfiles-dir)))
+
+(global-set-key (kbd "C-x m") 'eshell)
+;; ORIGINAL: undefined
+(global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
+;; ORIGINAL: compose-mail
 
 
 ;;}}}
