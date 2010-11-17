@@ -726,6 +726,9 @@ To remove this protection, call this command with a negative prefix argument."
 ;; find file at point
 (require 'ffap)
 
+(global-set-key (kbd "C-x C-p") 'find-file-at-point)
+;; ORIGINAL: mark-page
+
 ;; rebind C-x C-f and others to the ffap bindings (see variable ffap-bindings)
 ;; (ffap-bindings)
 ;; C-u C-x C-f finds the file at point
