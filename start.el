@@ -2144,6 +2144,18 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: skeleton
+
+;; Skeleton pairs
+(global-set-key (kbd "(") 'skeleton-pair-insert-maybe)
+(global-set-key (kbd "[") 'skeleton-pair-insert-maybe)
+(global-set-key (kbd "{") 'skeleton-pair-insert-maybe)
+(global-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
+(setq skeleton-pair t)
+
+
+
+;;}}}
 ;;{{{ Package: tramp
 
 (setq tramp-persistency-file-name "~/.emacs.d/tmp/tramp"
