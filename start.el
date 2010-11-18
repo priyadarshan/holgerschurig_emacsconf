@@ -1111,11 +1111,13 @@ To remove this protection, call this command with a negative prefix argument."
 ;;}}}
 ;;{{{ Completion
 
-;; ignore case when reading a file name completion
-(setq read-file-name-completion-ignore-case t)
-
-;; do not consider case significant in completion (GNU Emacs default)
-(setq completion-ignore-case t)
+(setq ;; ignore case when reading a file name completion
+      read-file-name-completion-ignore-case t
+      ;; do not consider case significant in completion (GNU Emacs default)
+      completion-ignore-case t
+      ;; lets TAB do completion as well
+      tab-always-indent 'complete
+      completions-format 'vertical)
 
 ;; Doesn't work with ido
 ;; (partial-completion-mode 1)
