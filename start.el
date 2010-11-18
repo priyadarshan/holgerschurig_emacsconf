@@ -2365,6 +2365,20 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: yasnipped
+
+(add-to-list 'load-path "~/.emacs.d/elisp/yasnippet/")
+(eval-after-load "yasnippet"
+  '(progn (yas/initialize)
+	  (setq yas/snippet-dirs '("~/.emacs.d/snippets"
+				   "~/.emacs.d/elisp/yasnippet/snippets"))
+	  (yas/load-snippet-dirs)
+	  ))
+;; yas/snippet-dirs
+
+(require 'yasnippet nil t)
+
+;;}}}
 ;;{{{ Key bindings
 
 (global-set-key "\C-xE"		'apply-macro-to-region-lines)
