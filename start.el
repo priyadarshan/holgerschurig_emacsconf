@@ -1298,6 +1298,7 @@ To remove this protection, call this command with a negative prefix argument."
 ;; use 'e' to edit filenames
 (eval-after-load "dired"
   '(progn
+     (setq dired-auto-revert-buffer t)
      (define-key dired-mode-map "e" 'wdired-change-to-wdired-mode)))
 
 
