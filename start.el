@@ -417,21 +417,8 @@ are two windows displayed, act like C-x1:"
     (delete-other-windows)
   ))
 
-(defun my-next-window ()
-  "If there is only one window displayed, switch to the next
-  buffer. Otherwise simply toggle the window."
-  (interactive)
-  (if (one-window-p t)
-      (my-zoom-next-buffer2)
-    (other-window 1)))
-
 (global-set-key [(f5)] 'my-explode-window)
 ;; ORIGINAL: undefined
-
-(global-set-key [(f6)] 'my-next-window)
-;; ORIGINAL: undefined
-
-;; TODO: Shift-F6: prev window?
 
 
 
@@ -480,6 +467,173 @@ big window will be displayed."
 
 (global-set-key "\M-n" 'my-zoom-next-buffer)
 ;; ORIGINAL: undefined
+
+
+
+;; http://www.emacswiki.org/emacs/mybuffers.el
+(defvar mybuffers-repetitions 0
+  "Number of times `mybuffers-switch' was repeated.")
+
+(defvar mybuffers-list ()
+  "List of non-special buffers open.")
+
+(defun mybuffers-filter-buffers (filter-function)
+  "Returns a list of buffers that match FILTER-FUNCTION."
+  (delq nil
+        (mapcar (lambda (buffer)
+                  (if (funcall filter-function buffer) buffer nil))
+                (buffer-list))))
+
+(defun mybuffers-special-buffer-p (buffer)
+  "Returns t if BUFFER is one of the special buffers, `nil' otherwise.
+A special buffer is one whose name starts with an asterisk. And `TAGS'."
+  (let ((name (buffer-name buffer)))
+    (or (string-match "^ ?\\*" name)
+        (equal "TAGS" name))))
+
+(defun mybuffers-normal-buffer-p (buffer)
+  "This is the complement of `mybuffers-special-buffer-p'."
+  (not (mybuffers-special-buffer-p buffer)))
+
+(defun mybuffers-reorder-buffer-list (new-list)
+  "Reorder buffer list using NEW-LIST."
+  (while new-list
+    (bury-buffer (car new-list))
+    (setq new-list (cdr new-list))))
+
+(defun mybuffers-swap (the-list i j)
+  "Swap I and J elements in THE-LIST."
+  (let ((tmp (nth j the-list))
+        (vec (vconcat the-list)))
+    (aset vec i tmp)
+    (aset vec j (nth i the-list))
+    (append vec nil)))
+
+(defun mybuffers-rotate-next (the-list)
+  "Delete first elem in THE-LIST and append it to the end."
+  (append (cdr the-list) (list (car the-list))))
+
+(defun mybuffers-rotate-prev (the-list)
+  "Delete last elem in THE-LIST and append it to the start."
+  (append (last the-list) (butlast the-list)))
+
+(defun mybuffers--switch (dir-next)
+  "Switch to buffer in my buffer list.
+You should bind this function to Ctrl-Tab or something."
+  (interactive)
+  ;; if the last command wasn't a switch buffer, reset
+  (when (not (or (eq last-command 'mybuffers-switch-next)
+		 (eq last-command 'mybuffers-switch-prev)))
+    (setq mybuffers-repetitions 0
+          mybuffers-list (mybuffers-filter-buffers 'mybuffers-normal-buffer-p)))
+  ;; if the current buffer is not a special buffer
+  (when (not (mybuffers-special-buffer-p (current-buffer)))
+    (setq mybuffers-repetitions (1+ mybuffers-repetitions))
+    ;; swap or rotate
+    (if (< mybuffers-repetitions (length mybuffers-list))
+        (setq mybuffers-list (mybuffers-swap mybuffers-list 0 mybuffers-repetitions))
+      (setq mybuffers-list (if dir-next
+			       (mybuffers-rotate-next mybuffers-list)
+			     (mybuffers-rotate-prev mybuffers-list)))
+      (setq mybuffers-repetitions 0)))
+  ;; switch to 1st buffer
+  (switch-to-buffer (elt mybuffers-list 0))
+  (mybuffers-reorder-buffer-list
+   (append mybuffers-list
+	   (mybuffers-filter-buffers 'mybuffers-special-buffer-p))))
+
+(defun mybuffers-switch-next ()
+  "Switch to next buffer."
+  (interactive)
+  (mybuffers--switch t))
+
+(defun mybuffers-switch-prev ()
+  "Switch to previous buffer."
+  (interactive)
+  (mybuffers--switch nil))
+
+
+;; http://www.xsteve.at/prg/emacs/bubble-buffer.el
+(defvar bubble-buffer-max-display-length (- (frame-width) 5)
+  "Maximum number of characters to display in the minibuffer when bubbling.")
+
+(defvar bubble-buffer-omit-regexp "\\*"
+  "Regexp for buffer-names that should be skipped when bubbling buffers with
+bubble-buffer-next and bubble-buffer-previous.
+For example you could use \"\\\\*.+\\\\*\" to exclude all buffers that contain two *'s.")
+
+(defun bubble-buffer-omit-buffer (buffer)
+  "return nil if the buffer should be omitted, otherwise the buffer name"
+  (let ((buf-name (buffer-name buffer)))
+    (unless (and bubble-buffer-omit-regexp (string-match bubble-buffer-omit-regexp buf-name))
+      buf-name)))
+
+
+(defun bubble-buffer-next()
+  "Bubble down one entry in the buffer list.
+   Switch to the next buffer on the list"
+  (interactive)
+  (if (not (eq last-command 'bubble-buffer-next))
+      (progn (setq bubble-buffer-list (copy-alist (buffer-list)))
+             (delq (get-buffer " *Minibuf-0*") bubble-buffer-list)
+             (delq (get-buffer " *Minibuf-1*") bubble-buffer-list)
+             (setq bubble-buffer-buried-list nil)))
+  (let* ((cur-buf (current-buffer))
+         (b-list (delq nil (mapcar 'bubble-buffer-omit-buffer (cdr bubble-buffer-list))))
+         (doit b-list)
+         (rest nil)
+         (s))
+    (while doit
+      (add-to-list 'bubble-buffer-buried-list (car bubble-buffer-list))
+      (bury-buffer (car bubble-buffer-list))
+      (setq bubble-buffer-list (cdr bubble-buffer-list))
+      (switch-to-buffer (car bubble-buffer-list))
+      (setq rest (cdr (copy-alist bubble-buffer-list)))
+      (while rest
+        (bury-buffer (car rest))
+        (setq rest (cdr rest)))
+      (setq doit (not (bubble-buffer-omit-buffer (current-buffer)))))
+    ;;(message "%S" bubble-buffer-list)
+    (if b-list
+        (progn
+          (setq b-list (cdr b-list))
+          (setq s (concat
+                   "Next: "
+                   (if b-list (format "%S" b-list "") "")
+                   "[end]"))
+          (message "%s" (concat
+			 (substring s 0 (min bubble-buffer-max-display-length (length s)))
+			 " ...")))
+      (message "Already at the end of the buffer-list"))))
+
+(defun bubble-buffer-previous()
+  "Undo one bubbling step from bubble-buffer-next.
+   Switch to the buffer before the bubbled up buffer in the buffer list"
+  (interactive)
+  (unless (eq last-command 'bubble-buffer-next)
+    (setq bubble-buffer-buried-list nil))
+  (setq this-command 'bubble-buffer-next)
+  (if bubble-buffer-buried-list
+      (progn
+        (let ((doit t)
+              (s)
+              (b-list))
+          (while doit
+            (add-to-list 'bubble-buffer-list (car bubble-buffer-buried-list))
+            (switch-to-buffer (car bubble-buffer-buried-list))
+            (setq bubble-buffer-buried-list (cdr bubble-buffer-buried-list))
+            (setq doit (not (bubble-buffer-omit-buffer (current-buffer))))))
+        (setq b-list (delq nil (mapcar 'bubble-buffer-omit-buffer bubble-buffer-buried-list)))
+        (setq s (concat
+                 "Prev: "
+                 (if b-list (format "%S" b-list "") "")
+                 "[start]"))
+        (message "%s" (concat
+		       (substring s 0 (min bubble-buffer-max-display-length (length s))) " ...")))
+    (message "Already at the start of the bubble-buffer-list")))
+
+(global-set-key [(f6)] 'bubble-buffer-next)
+(global-set-key [(shift f6)] 'bubble-buffer-previous)
 
 
 ;; Insert buffer at current position
