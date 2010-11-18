@@ -32,47 +32,6 @@
 
 
 ;;}}}
-;;{{{ Functions: Deleting
-
-;; The following may be of interest to people who (a) are happy with
-;; "C-w" and friends for killing and yanking, (b) use
-;; "transient-mark-mode", (c) also like the traditional Unix tty
-;; behaviour that "C-w" deletes a word backwards and (d) use
-;; GnuEmacs. It tweaks "C-w" so that, if the mark is inactive, it
-;; deletes a word backwards instead of killing the region:
-;; http://www.emacswiki.org/cgi-bin/wiki/DefaultKillingAndYanking
-(defadvice kill-region (before unix-werase activate compile)
-  "When called interactively with no active region, delete a single word
-    backwards instead."
-  (interactive
-   (if mark-active (list (region-beginning) (region-end))
-     (list (save-excursion (backward-word 1) (point)) (point)))))
-
-;; Deleting past a tab changes tab into spaces
-(setq backward-delete-char-untabify-method nil)
-
-;; Use delete-selection mode.
-(delete-selection-mode t)
-
-;; Be silent when killing text from RO buffer
-(setq kill-read-only-ok t)
-
-;; Delete annoying spaces when kill-line at end of line and the
-;; next line is indented
-(defun kill-and-join-forward (&optional arg)
-  "If at end of line, join with following; otherwise kill line.
-Deletes whitespace at join."
-			     (interactive "P")
-			     (if (and (eolp) (not (bolp)))
-				 (delete-indentation t)
-			       (kill-line arg)))
-
-(global-set-key (kbd "C-k") 'kill-and-join-forward)
-;; ORIGINAL: deleteline
-
-
-
-;;}}}
 ;;{{{ Functions: Moving cursor
 
 ;; http://www.emacswiki.org/cgi-bin/wiki/DoubleKeyBinding
@@ -192,6 +151,42 @@ command from COMMANDS."
 ;;}}}
 ;;{{{ Functions: Yank and Delete
 
+;; The following may be of interest to people who (a) are happy with
+;; "C-w" and friends for killing and yanking, (b) use
+;; "transient-mark-mode", (c) also like the traditional Unix tty
+;; behaviour that "C-w" deletes a word backwards and (d) use
+;; GnuEmacs. It tweaks "C-w" so that, if the mark is inactive, it
+;; deletes a word backwards instead of killing the region:
+;; http://www.emacswiki.org/cgi-bin/wiki/DefaultKillingAndYanking
+(defadvice kill-region (before unix-werase activate compile)
+  "When called interactively with no active region, delete a single word
+    backwards instead."
+  (interactive
+   (if mark-active (list (region-beginning) (region-end))
+     (list (save-excursion (backward-word 1) (point)) (point)))))
+
+;; Deleting past a tab changes tab into spaces
+(setq backward-delete-char-untabify-method nil)
+
+;; Use delete-selection mode.
+(delete-selection-mode t)
+
+;; Be silent when killing text from RO buffer
+(setq kill-read-only-ok t)
+
+;; Delete annoying spaces when kill-line at end of line and the
+;; next line is indented
+(defun kill-and-join-forward (&optional arg)
+  "If at end of line, join with following; otherwise kill line.
+Deletes whitespace at join."
+			     (interactive "P")
+			     (if (and (eolp) (not (bolp)))
+				 (delete-indentation t)
+			       (kill-line arg)))
+
+(global-set-key (kbd "C-k") 'kill-and-join-forward)
+;; ORIGINAL: deleteline
+
 (defun my-yank (&optional arg)
   "Reinsert (\"paste\") the last stretch of killed text.
 More precisely, reinsert the stretch of killed text most recently
@@ -227,8 +222,8 @@ See also the command `yank-pop' (\\[yank-pop])."
       (setq this-command 'yank))
   nil)
 
-;; ORIGNAL: yank
 (global-set-key "\C-y" 'my-yank)
+;; ORIGNAL: yank
 
 
 ;; http://www.reddit.com/r/emacs/comments/b1r8a/remacs_tell_us_about_the_obscure_but_useful/
@@ -253,10 +248,13 @@ otherwise delete."
         (backward-char)))))
 ;; Make delete-selection-mode work with it
 (put 'delete-char-dynamic 'delete-selection 'supersede)
+
 ;; Rebind DELETE and friends to our version
 (define-key global-map [(deletechar)] 'delete-char-dynamic)
 (define-key global-map [(delete)] 'delete-char-dynamic)
 (define-key global-map [(control ?d)] 'delete-char-dynamic)
+;; ORIGINAL: delete-char
+
 
 
 ;;}}}
