@@ -412,7 +412,7 @@ are two windows displayed, act like C-x1:"
       (progn
 	(split-window-vertically)
 	(other-window 1)
-	(my-zoom-next-buffer)
+	(my-zoom-next-buffer2)
 	(other-window -1))
     (delete-other-windows)
   ))
@@ -422,7 +422,7 @@ are two windows displayed, act like C-x1:"
   buffer. Otherwise simply toggle the window."
   (interactive)
   (if (one-window-p t)
-      (my-zoom-next-buffer)
+      (my-zoom-next-buffer2)
     (other-window 1)))
 
 (global-set-key [(f5)] 'my-explode-window)
@@ -438,17 +438,7 @@ are two windows displayed, act like C-x1:"
 ;;}}}
 ;;{{{ Functions: Buffers
 
-(defun my-zoom-next-buffer ()
-  "Search for buffers that have are visiting a file. If one is found,
-then current buffer is buried, and the first buffer in the list will
-then be visited. That way, you can cycle throught all open files.
-
-While doing this, all other windows are shrinked, so that only one
-big window will be displayed."
-  (interactive)
-
-  (delete-other-windows)
-
+(defun my-zoom-next-buffer2 ()
   (let ((curbuf (current-buffer))
 	(firstbuf nil))
     (dolist (buffer (buffer-list))
@@ -474,6 +464,19 @@ big window will be displayed."
       )
   )
 )
+
+(defun my-zoom-next-buffer ()
+  "Search for buffers that are visiting a file. If one is found,
+then current buffer is buried, and the first buffer in the list will
+then be visited. That way, you can cycle throught all open files.
+
+While doing this, all other windows are shrinked, so that only one
+big window will be displayed."
+  (interactive)
+
+  (delete-other-windows)
+  (my-zoom-next-buffer2))
+
 
 (global-set-key "\M-n" 'my-zoom-next-buffer)
 ;; ORIGINAL: undefined
