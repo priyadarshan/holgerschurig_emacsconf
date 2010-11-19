@@ -1992,8 +1992,8 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 ;; http://www.emacswiki.org/emacs/DeskTop
 
-(setq desktop-base-file-name "~/.emacs.d/tmp/emacs.desktop"
-      desktop-base-lock-name "~/.emacs.d/tmp/emacs.desktop.lock"
+(setq desktop-base-file-name "~/.emacs.d/tmp/desktop.data"
+      desktop-base-lock-name "~/.emacs.d/tmp/desktop.lock"
       desktop-save t
       desktop-buffers-not-to-save
       (concat "\\("
