@@ -153,8 +153,7 @@ With arg, turn Fold minor mode on if arg is positive, off otherwise."
       '("Hide Fold" . fold-hide)))
 ;;}}}
 
-;;{{{ fold-mode-prefix-key
-(defvar fold-mode-prefix-key "\C-c@"
+(defvar fold-mode-prefix-key "\C-c@"  ;;{{{
   "Set this *before* loading fold mode to assign fold mode keymap to a
 different prefix. The default \\C-c@ is also used by outline minor
 mode, which is not normally a conflict.
