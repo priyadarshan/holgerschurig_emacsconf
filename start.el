@@ -9,6 +9,7 @@
   "Turn on debug on error"
   (interactive)
   (setq debug-on-error t))
+(setq debug-on-error t)
 
 
 
@@ -850,15 +851,6 @@ To remove this protection, call this command with a negative prefix argument."
 
 ;; Custom file, part two
 (if (file-exists-p custom-file) (load-file custom-file))
-
-;; Save recent files
-(setq recentf-save-file "~/.emacs.d/tmp/recentf.el"
-      recentf-exclude '("bbdb$"
-			"svn-commit.tmp$"
-			".git/COMMIT_EDITMSG$"
-			".git/TAG_EDITMSG")
-      recentf-max-saved-items 1000)
-(recentf-mode 1)
 
 ;; Don't run vc-git & friends, we have magit
 (defun vc-find-file-hook ()
@@ -2006,6 +1998,10 @@ Otherwise, kill characters backward until encountering the end of a word."
 (add-to-list 'desktop-modes-not-to-save 'Info-mode)
 (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
 (add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
+;; No need to save them, as the history will be handled by
+;; recentf and recentf-initialize-file-name-history, but
+;; only if file-name-history is empty ...
+(delq 'file-name-history desktop-globals-to-save)
 
 
 ;;}}}
@@ -2179,37 +2175,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 (ido-mode 'both)
 
 
-;; ;; use ido even for M-x
-;; (global-set-key
-;;  "\M-x"
-;;  (lambda ()
-;;    (interactive)
-;;    (call-interactively
-;;     (intern
-;;      (ido-completing-read
-;;       "M-x "
-;;       (all-completions "" obarray 'commandp))))))
-
-
-;; sort ido filelist by mtime instead of alphabetically
-;; http://www.emacswiki.org/emacs/InteractivelyDoThings
-(defun ido-sort-mtime ()
-  (setq ido-temp-list
-	(sort ido-temp-list
-	      (lambda (a b)
-		(let ((ta (nth 5 (file-attributes (concat ido-current-directory a))))
-		      (tb (nth 5 (file-attributes (concat ido-current-directory b)))))
-		  (if (= (nth 0 ta) (nth 0 tb))
-		      (> (nth 1 ta) (nth 1 tb))
-		    (> (nth 0 ta) (nth 0 tb)))))))
-  (ido-to-end  ;; move . files to end (again)
-   (delq nil (mapcar
-	      (lambda (x) (if (and (not (string-equal x ".")) (string-equal (substring x 0 1) ".")) x))
-	      ido-temp-list))))
-(add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
-(add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)
-
-
 ;;}}}
 ;;{{{ Package: magit
 
@@ -2307,6 +2272,23 @@ Otherwise, kill characters backward until encountering the end of a word."
 	     ;;("bitlbee" bitlbee "robert" "sekrit")
 	     ))
      ))
+
+
+
+;;}}}
+;;{{{ Package: recentf
+
+;; Save recent files
+(setq recentf-save-file "~/.emacs.d/tmp/recentf.el"
+      recentf-exclude '("bbdb$"
+			"svn-commit.tmp$"
+			".git/COMMIT_EDITMSG$"
+			".git/TAG_EDITMSG")
+      recentf-max-saved-items 1000
+      recentf-auto-cleanup 300
+      recentf-max-menu-items 20)
+
+(recentf-mode 1)
 
 
 
