@@ -2148,6 +2148,29 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: imaxima
+
+(defun my-maxima-inferior-setup ()
+  (setq yas/dont-activate t)
+  )
+
+(eval-after-load "imaxima"
+  '(progn (setq imaxima-fnt-size "Large"
+		imaxima-latex-preamble"\\usepackage{concrete}"
+		imaxima-use-maxima-mode-flag t)
+	  (add-hook 'inferior-maxima-mode-hook 'my-maxima-inferior-setup)
+	  ))
+
+(eval-after-load "maxima"
+  '(progn (define-key inferior-maxima-mode-map "\t" 'inferior-maxima-complete)
+	 ;;
+	  ))
+
+(autoload 'imaxima "imaxima" nil t)
+
+
+
+;;}}}
 ;;{{{ Package: magit
 
 ;; Magit is now loaded via package.el (elpa)
