@@ -1360,19 +1360,6 @@ To remove this protection, call this command with a negative prefix argument."
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 
-;; Linux style for linux :-)
-;; (defun my-c-mode-hook ()
-;;   (c-set-style
-;;    (if (and (buffer-file-name)
-;; 	    (string-match "/usr/src/linux" (buffer-file-name)))
-;;        "linux"
-;;      "free-group-style")))
-;; (add-hook 'c-mode-hook 'my-c-mode-hook)
-
-
-;; (c-set-offset XXX)
-;; (c-add-style XXX)
-
 ;; Search .obj dir as well:
 (require 'find-file)
 (add-to-list 'cc-search-directories ".obj")
