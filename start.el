@@ -1916,9 +1916,15 @@ Otherwise, kill characters backward until encountering the end of a word."
 (eval-after-load "install-elisp"
   '(setq install-elisp-repository-directory "~/.emacs.d/elisp/"))
 
+(eval-after-load "url-cache"
+  '(setq url-cache-directory "~/.emacs.d/tmp/cache/"))
+
 (eval-after-load "auto-install"
-  '(setq auto-install-directory "~/.emacs.d/tmp/auto-install/"))
-(require 'auto-install nil 'nomsg)
+  '(progn (setq auto-install-directory "~/.emacs.d/elisp/")
+	  ))
+;; (require 'auto-install nil 'nomsg)
+;; (auto-install-update-emacswiki-package-name t)
+(autoload 'auto-install-from-emacswiki "auto-install" nil t)
 
 
 
