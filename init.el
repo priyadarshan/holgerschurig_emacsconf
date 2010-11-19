@@ -5,7 +5,7 @@
 	 bcc-blacklist '("/recentf\\.el$" "/history\\.el$")
 	 byte-compile-warnings t
 	 byte-compile-verbose nil))
-(load (expand-file-name "~/.emacs.d/elisp/byte-code-cache.el"))
+(load "~/.emacs.d/elisp/byte-code-cache.el")
 
-(load (expand-file-name "~/.emacs.d/start.el"))
 (autoload 'fold-mode "fold" "Fold mode" t)
+(load "~/.emacs.d/start.el")
