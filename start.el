@@ -838,6 +838,7 @@ To remove this protection, call this command with a negative prefix argument."
 (defun vc-find-file-hook ()
   "Dummy, overriding the one in vc-hooks.el"
   (setq vc-mode nil))
+(setq vc-handled-backends nil)
 
 
 
