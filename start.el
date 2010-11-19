@@ -2409,27 +2409,3 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ TODO stuff
-
-;; TODO: copyright-update?
-
-
-;; TODO: desktop/session-save?
-
-;; http://hoolihan.net/blog-tim/?p=155
-
-;; (defvar user-temporary-file-directory
-;;   (concat temporary-file-directory user-login-name "/"))
-;; (make-directory user-temporary-file-directory t)
-;; (setq backup-by-copying t)
-;; (setq backup-directory-alist
-;;       `(("." . ,user-temporary-file-directory)
-;; 	(,tramp-file-name-regexp nil)))
-;; (setq auto-save-list-file-prefix
-;;       (concat user-temporary-file-directory ".auto-saves-"))
-;; (setq auto-save-file-name-transforms
-;;       `((".*" ,user-temporary-file-directory t)))
-
-
-
-;;}}}
