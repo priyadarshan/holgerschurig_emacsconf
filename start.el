@@ -405,27 +405,6 @@ there are several windows open."
 ;; ORIGINAL: undefined
 
 
-(defun my-explode-window ()
-  "If there is only one window displayed, act like C-x2. If there
-are two windows displayed, act like C-x1:"
-  (interactive)
-  (if (one-window-p t)
-      (progn
-	(split-window-vertically)
-	(other-window 1)
-	(my-zoom-next-buffer2)
-	(other-window -1))
-    (delete-other-windows)
-  ))
-
-(global-set-key [(f5)] 'my-explode-window)
-;; ORIGINAL: undefined
-
-
-
-;;}}}
-;;{{{ Functions: Buffers
-
 (defun my-zoom-next-buffer2 ()
   (let ((curbuf (current-buffer))
 	(firstbuf nil))
@@ -453,23 +432,26 @@ are two windows displayed, act like C-x1:"
   )
 )
 
-(defun my-zoom-next-buffer ()
-  "Search for buffers that are visiting a file. If one is found,
-then current buffer is buried, and the first buffer in the list will
-then be visited. That way, you can cycle throught all open files.
-
-While doing this, all other windows are shrinked, so that only one
-big window will be displayed."
+(defun my-explode-window ()
+  "If there is only one window displayed, act like C-x2. If there
+are two windows displayed, act like C-x1:"
   (interactive)
+  (if (one-window-p t)
+      (progn
+	(split-window-vertically)
+	(other-window 1)
+	(my-zoom-next-buffer2)
+	(other-window -1))
+    (delete-other-windows)
+  ))
 
-  (delete-other-windows)
-  (my-zoom-next-buffer2))
-
-
-(global-set-key "\M-n" 'my-zoom-next-buffer)
+(global-set-key [(f5)] 'my-explode-window)
 ;; ORIGINAL: undefined
 
 
+
+;;}}}
+;;{{{ Functions: Buffers
 
 ;; http://www.emacswiki.org/emacs/mybuffers.el
 (defvar mybuffers-repetitions 0
