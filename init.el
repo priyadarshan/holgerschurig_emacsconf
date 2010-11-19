@@ -9,3 +9,4 @@
 
 (load (expand-file-name "~/.emacs.d/start.el"))
 (load (expand-file-name "~/.emacs.d/eproject.el"))
+(autoload 'fold-mode "fold" "Fold mode" t)
