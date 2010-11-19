@@ -2310,7 +2310,22 @@ Otherwise, kill characters backward until encountering the end of a word."
 (global-set-key (kbd "[") 'skeleton-pair-insert-maybe)
 (global-set-key (kbd "{") 'skeleton-pair-insert-maybe)
 (global-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
-(setq skeleton-pair t)
+
+;; If this function returns nil, then pairing is attempted
+(defun my-skeleton-pair-filter-function ()
+  (cond
+   ;; if the just-entered skeleton char is a "
+   ((eq last-command-char ?\")
+    (or (looking-at   (regexp-quote (string last-command-char)))
+	(looking-back (regexp-quote (string last-command-char)))
+	(looking-back "[[:graph:]]")
+	))
+   ;; For other skeleton chars
+   (t
+    (looking-at (regexp-quote (string last-command-char))))))
+
+(setq skeleton-pair t
+      skeleton-pair-filter-function 'my-skeleton-pair-filter-function)
 
 
 
