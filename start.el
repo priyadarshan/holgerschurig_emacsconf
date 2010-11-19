@@ -1327,6 +1327,9 @@ To remove this protection, call this command with a negative prefix argument."
   (turn-off-auto-fill)
   (c-toggle-auto-newline 1)
   (modify-syntax-entry ?_ "w")
+  ;; c-mode overrides the global newline-and-indent. Strangely,
+  ;; cc-mode keeps the global. We don't care, we always set it :-)
+  (local-set-key (kbd "RET") 'newline-and-indent)
   (setq fill-column 76
 	;; Let RET break and continue a comment
 	;; C doesn't start functions with a ( in the first column
