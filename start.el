@@ -1062,9 +1062,12 @@ To remove this protection, call this command with a negative prefix argument."
  )
 
 ;; Column-Marker http://www.emacswiki.org/emacs/ColumnMarker
-(require 'column-marker nil 'nomsg)
+;;
+;; HINT: column-marker.el comes from EmacsWiki, you can update it
+;; with (auto-install-from-emacswiki)
 (eval-after-load "column-marker"
   '(add-hook 'c-mode-hook (lambda () (interactive) (column-marker-1 80))))
+(require 'column-marker nil 'nomsg)
 
 
 
@@ -1911,7 +1914,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Package: auto-install
 
-;; See also Package: install-elist
 
 (eval-after-load "install-elisp"
   '(setq install-elisp-repository-directory "~/.emacs.d/elisp/"))
@@ -1922,6 +1924,10 @@ Otherwise, kill characters backward until encountering the end of a word."
 (eval-after-load "auto-install"
   '(progn (setq auto-install-directory "~/.emacs.d/elisp/")
 	  ))
+
+;; HINT: auto-install.el comes from EmacsWiki, you can update it
+;; with (auto-install-from-emacswiki)
+
 ;; (require 'auto-install nil 'nomsg)
 ;; (auto-install-update-emacswiki-package-name t)
 (autoload 'auto-install-from-emacswiki "auto-install" nil t)
@@ -2256,6 +2262,9 @@ Otherwise, kill characters backward until encountering the end of a word."
 (autoload 'pabbrev-mode "pabbrev" nil t)
 (autoload 'global-pabbrev-mode "pabbrev" nil t)
 
+;; HINT: pabbrev.el comes from EmacsWiki, you can update it
+;; with (auto-install-from-emacswiki)
+
 ;; (require 'pabbrev)
 ;; (global-pabbrev-mode t)
 ;; (setq pabbrev-read-only-error nil)
@@ -2378,6 +2387,9 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;{{{ Package: unbound
 
 ;; http://www.emacswiki.org/emacs/download/unbound.el
+;;
+;; HINT: unbound.el comes from EmacsWiki, you can update it
+;; with (auto-install-from-emacswiki)
 (autoload 'describe-unbound-keys "unbound"
   "Display a list of unbound keystrokes of complexity no greater than max." t)
 
