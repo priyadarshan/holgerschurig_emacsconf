@@ -2406,7 +2406,17 @@ Otherwise, kill characters backward until encountering the end of a word."
 	  (yas/load-snippet-dirs)
 	  ))
 
-(require 'yasnippet nil t)
+;; (require 'yasnippet nil t)
+
+
+;; HINT: yas-jit.el comes from EmacsWiki, you can update it
+;; with (auto-install-from-emacswiki)
+(eval-after-load "yas-jit"
+  '(progn (setq yas/root-directory "~/.emacs.d/snippets")
+	  (yas/jit-load)
+	  ))
+
+(require 'yas-jit nil t)
 
 (add-to-list 'auto-mode-alist '("\\.yasnippet$" . snippet-mode))
 
