@@ -1259,14 +1259,6 @@ To remove this protection, call this command with a negative prefix argument."
 
 
 ;;}}}
-;;{{{ Web-Browsing
-
-(setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "google-chrome")
-
-
-
-;;}}}
 ;;{{{ Mode: C, C++
 
 ;; Tabs mode
@@ -1944,6 +1936,14 @@ Otherwise, kill characters backward until encountering the end of a word."
 	   ;; Save file after every bookmark altertation
 	   bookmark-save-flag 1
 	   )))
+
+
+
+;;}}}
+;;{{{ Package: browse-url
+
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "google-chrome")
 
 
 
