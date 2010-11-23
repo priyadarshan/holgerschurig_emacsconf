@@ -1636,92 +1636,124 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Mode: Org
 
-;; SEE: http://www.emacswiki.org/emacs/org-config-thierry.el
+;; http://orgmode.org/worg/org-tutorials/orgtutorial_dto.php
+;; http://thread.gmane.org/gmane.emacs.orgmode/4832
 ;; http://www.newartisans.com/2007/08/using-org-mode-as-a-day-planner.html
 
-(require 'org-install)
+(eval-after-load "org"
+  '(progn (setq org-directory (file-truename "~/.emacs.d/org/")
+		org-default-notes-file (concat org-directory "notes.org")
+		org-agenda-files (list (concat org-directory "agenda.org") org-default-notes-file)
 
-(setq org-directory "~/.emacs.d/org"
-      org-agenda-files (list "~/.emacs.d/org/agenda.org"
+		;; Only load these org modules:
+		org-modules (;; 'org-bbdb
+			     ;; 'org-bibtex
+			     ;; 'org-docview
+			     ;; 'org-gnus
+			     ;; 'org-info
+			     ;; 'org-jsinfo
+			     ;; 'org-irc
+			     ;; 'org-mew
+			     ;; 'org-mhe
+			     ;; 'org-rmail
+			     ;; 'org-vm
+			     ;; 'org-w3m
+			     ;; 'org-wl
 			     )
 
-      ;; Include diary entries
-      org-agenda-include-diary t
+		;; Add a space before the elipsis
+		org-ellipsis " ..."
 
-      ;; Opening/closing .org mode
-      org-agenda-restore-windows-after-quit t
-      org-agenda-window-setup 'current-window
+		;; Store notes at beginning of file
+		org-reverse-note-order t
 
-      ;; Skip done items
-      org-agenda-skip-deadline-if-done t
-      org-agenda-skip-scheduled-if-done t
+		;; No need to add a DONE log entry, as our #+TODO: line makes a
+		;; log entry anyway. For the same reason, don't add a closed-
+		;; string either.
+		org-log-done 'nil
+		;; org-closed-string ""
 
-      ;; Let agenda starts on the current day
-      org-agenda-start-on-weekday nil
+		;; don't use S-xxx as this is used for CUA mode etc
+		org-replace-disputed-keys t
+		org-support-shift-select 'always
 
-      ;; Store notes at beginning of file
-      org-reverse-note-order t
+		;; Assumes you have "#+STARTUP: customtime" in your *.org file
+		;; or you can alternative set "org-display-custom-times t"
+		org-time-stamp-custom-formats '("<%d.%m.%Y %a>" . "<%d.%m.%Y %a %H:%M>")
+		;; org-display-custom-times t
 
-      ;; Don't show TODO items at first
-      ;;(org-fast-tag-selection-single-key 'expert)
+		;; This seems like a good basic set of keywords to start out with:
+		;; org-todo-keywords '((type "TODO" "NEXT" "WAITING" "DONE"))
+		;; org-todo-keywords '((sequence "TODO" | "DONE")
+		;;                     (sequence "REPORT" "BUG" "KNOWNCAUSE" | "FIXED")
+		;;                     (sequence | "CANCELLED")))
 
-      ;; For C-c a #
-      org-stuck-projects
-      '("+LEVEL=2/-DONE"
-	;; TODO-keyword identifying non-stuck projects:
-	("TODO" "CANCELLED")
-	;; Tags identifying non-stuck projects:
-	nil
-	;; Arbitrary reg-exp identifying non-stuck projects:
-	"")
+		)
+	  (add-hook 'org-mode-hook 'auto-fill-mode)
+     ))
 
-      ;; Some special view to select from after C-c a
-      org-agenda-custom-commands
-      '(("f" "Finished" todo "DONE|CANCELLED" nil)
-	("w" "Waiting" todo "WAIT|FORWARD" nil)
-	("3" "3 week agenda" agenda "" ((org-agenda-ndays 21)))
-	;; ("A" "A-Tasks" agenda ""
-	;;  ((org-agenda-skip-function
-	;;    (lambda nil
-	;;      (org-agenda-skip-entry-if 'notregexp "\\=.*\\[#A\\]")))
-	;;   (org-agenda-ndays 1)
-	;;   (org-agenda-overriding-header "Today's Priority #A tasks: ")))
-	("u" "unscheduled" alltodo ""
-	 ((org-agenda-skip-function
-	   (lambda ()
-	     (org-agenda-skip-entry-if 'scheduled
-				       'deadline
-				       'regexp "<[^>\n]+>"
-				       )))
-	  (org-agenda-overriding-header "Unscheduled TODO entries: "))))
 
-      ;; Add a space before the elipsis
-      org-ellipsis " ..."
+(eval-after-load "org-agenda"
+  '(progn (setq	;; Include diary entries
+		org-agenda-include-diary t
 
-      ;; No need to add a DONE log entry, as our #+TODO: line makes a
-      ;; log entry anyway. For the same reason, don't add a closed-
-      ;; string either.
-      org-log-done 'nil
-      org-closed-string ""
+		;; Opening/closing .org mode
+		org-agenda-restore-windows-after-quit t
+		org-agenda-window-setup 'current-window
 
-      ;; Only use "1.", "2." for ordered lists, not "1)", "2)" etc
-      org-plain-list-ordered-item-terminator ?.
+		;; Skip done items
+		org-agenda-skip-deadline-if-done t
+		org-agenda-skip-scheduled-if-done t
 
-      ;; Don't use S-xxx as this is used for CUA mode etc
-      org-replace-disputed-keys t
+		;; Let agenda starts on the current day
+		org-agenda-start-on-weekday nil
 
-      ;; Assumes you have "#+STARTUP: customtime" in your *.org file
-      org-time-stamp-custom-formats '("<%a %d.%m.%Y>" . "<%a %d.%m.%Y %H:%M>")
-      )
+		;; For C-c a #
+		org-stuck-projects
+		'("+LEVEL=2-CATEGORY=\"Notes\""
+		  ;; TODO-keyword identifying non-stuck projects:
+		  ("TODO" "DONE" "CANCELLED")
+		  ;; Tags identifying non-stuck projects:
+		  nil
+		  ;; Arbitrary reg-exp identifying non-stuck projects:
+		  "")
 
-;; Turn on auto-fill
-(add-hook 'org-mode-hook 'auto-fill-mode)
+		;; Some special view to select from after C-c a
+		;; (key desc type match settings files)
+		org-agenda-custom-commands
+		'(("f" "Finished" todo "DONE|CANCELLED" nil)
+		  ("w" "Waiting" todo "WAIT|FORWARD" nil)
+		  ("3" agenda "" ((org-agenda-ndays 21)))
+		  ("u" "unscheduled" alltodo ""
+		   ((org-agenda-skip-function
+		     (lambda ()
+		       (org-agenda-skip-entry-if 'scheduled
+						 'deadline
+						 'regexp "<[^>\n]+>"
+						 ))))))
 
-;; Use Org mode for files ending with .org
+		)
+
+     ))
+
+(eval-after-load "org-list"
+  '(progn (setq ;; Only use "1.", "2." for ordered lists, not "1)", "2)" etc
+		org-plain-list-ordered-item-terminator ?.)
+	  ))
+
+(autoload 'org-mode "org" "Org mode" t)
+(autoload 'org-diary "org" "Diary entries from Org mode")
+(autoload 'org-agenda "org-agenda" "Multi-file agenda from Org mode" t)
+(autoload 'org-store-link "org" "Store a link to the current location" t)
+;; (autoload 'orgtbl-mode "org" "Org tables as a minor mode" t)
+;; (autoload 'turn-on-orgtbl "org" "Org tables as a minor mode")
+
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
 ;; Key-Bindings
 (define-key global-map "\C-ca" 'org-agenda)
+;; ORIGINAL: undefined
+(define-key global-map "\C-cl" 'org-store-link)
 ;; ORIGINAL: undefined
 
 
@@ -1729,23 +1761,40 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Mode: Remember
 
-(require 'remember)
+(eval-after-load "org-remember"
+  '(progn (setq org-remember-store-without-prompt t
 
-;;(org-remember-insinuate)
-(setq org-default-notes-file (concat org-directory "/agenda.org")
-      remember-data-file (concat org-directory "/notes.org")
-      org-remember-store-without-prompt t
-      ;; Store remember notes without prompting
-      org-remember-store-without-prompt t
-      org-remember-templates
-      ;; SingleName character template         optionalFile optionalHeadline
-      '(("TODO"     ?t       "* TODO %?\n  - State \"TODO\"       %u" nil    "Tasks")
-	("NOTES"    ?n       "* %?\n  - State \"TODO\"       %u"      nil    "Notes")
-	)
-      remember-annotation-functions 'org-remember-annotation
-      remember-handler-functions 'org-remember-handler
-      )
-(add-hook 'remember-mode-hook 'org-remember-apply-template)
+		org-remember-templates
+		;; List elements:
+		;;   single name
+		;;   character
+		;;   template
+		;;   optional file
+		;;   optional headline
+		'(("TODO"
+		   ?t
+		   "* TODO %?\n  - State \"TODO\"       %u"
+		   "agenda.org"
+		   "Tasks")
+		  ("NOTES"
+		   ?n
+		   "* %?\n"
+		   "notes.org"
+		   "Notes")
+		  )
+
+		)
+	  ))
+
+(eval-after-load "remember"
+  '(progn (setq remember-data-file (concat org-directory "notes.org")
+		remember-annotation-functions 'org-remember-annotation
+		remember-handler-functions 'org-remember-handler
+	   )
+	  (add-hook 'remember-mode-hook 'org-remember-apply-template)
+	  ))
+
+(autoload 'org-remember "org-remember" "Remember something" t)
 
 (define-key global-map "\C-cr" 'org-remember)
 ;; ORIGINAL: undefined
@@ -1967,6 +2016,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 (desktop-save-mode 1)
 
 (add-to-list 'desktop-modes-not-to-save 'dired-mode)
+(add-to-list 'desktop-modes-not-to-save 'org-mode)
 (add-to-list 'desktop-modes-not-to-save 'Info-mode)
 (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
 (add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
