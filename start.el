@@ -1983,11 +1983,17 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;{{{ Package: cscope
 
 ;; (eval-after-load "xcscope"
-(require 'xcscope)
-(setq ;; This indexer ignores .obj, .git, .svn and single-letter directories
-      cscope-indexing-script (concat dotfiles-dir "bin/cscope-indexer")
-      ;; It seems that it asks anyway ...
-      cscope-no-mouse-prompts t)
+(eval-after-load "xcscope"
+  '(progn (setq ;; This indexer ignores .obj, .git, .svn and single-letter directories
+	   cscope-indexing-script (concat dotfiles-dir "bin/cscope-indexer")
+	   ;; It seems that it asks anyway ...
+	   cscope-no-mouse-prompts t)
+	  ))
+
+(autoload 'cscope-find-this-symbol "xcsope" nil t)
+(autoload 'cscope-pop-mark "xcsope" nil t)
+(autoload 'cscope-next-symbol "xcsope" nil t)
+(autoload 'cscope-prev-symbol "xcsope" nil t)
 
 (define-key esc-map "." 'cscope-find-this-symbol)
 ;; ORIGINAL: find-tag (etags.el)
