@@ -1754,36 +1754,30 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;{{{ Mode: Remember
 
 (eval-after-load "org-remember"
-  '(progn (setq org-remember-store-without-prompt t
-
-		org-remember-templates
+  '(progn (setq org-remember-templates
 		;; List elements:
 		;;   single name
 		;;   character
 		;;   template
+		;;     %?  After completing the template, position cursor here.
+		;;     %t  time stamp, date only (%u but inactive date)
 		;;   optional file
-		;;   optional headline
+		;;   optional headline: under which headline to file the new entry
+		;;   optional context
 		'(("TODO"
 		   ?t
 		   "* TODO %?\n  - State \"TODO\"       %u"
 		   "agenda.org"
 		   "Tasks")
-		  ("NOTES"
-		   ?n
-		   "* %?\n"
-		   "notes.org"
-		   "Notes")
 		  )
 
 		)
+	  (org-remember-insinuate)
 	  ))
 
 (eval-after-load "remember"
-  '(progn (setq remember-data-file (concat org-directory "notes.org")
-		remember-annotation-functions 'org-remember-annotation
-		remember-handler-functions 'org-remember-handler
+  '(progn (setq remember-data-file (concat org-directory "agenda.org")
 	   )
-	  (add-hook 'remember-mode-hook 'org-remember-apply-template)
 	  ))
 
 (autoload 'org-remember "org-remember" "Remember something" t)
