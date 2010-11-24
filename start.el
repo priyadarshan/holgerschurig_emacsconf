@@ -22,13 +22,9 @@
 ;;}}}
 ;;{{{ Load path
 
-(dolist (i '(
-	     "~/.emacs.d/elisp/"
-	     "~/.emacs.d/elpa/"
-	     "~/.emacs.d/"
-	     ))
-  (when (not (member i load-path))
-    (add-to-list 'load-path (expand-file-name i))))
+(add-to-list 'load-path dotfiles-dir)
+(add-to-list 'load-path (concat dotfiles-dir "elisp/"))
+(add-to-list 'load-path (concat dotfiles-dir "elpa/"))
 
 
 
@@ -761,7 +757,7 @@ To remove this protection, call this command with a negative prefix argument."
 ;;}}}
 ;;{{{ Load private data
 
-(load "~/.emacs.d/private.el" 'noerror 'nomessage)
+(load (concat dotfiles-dir "private.el") 'noerror 'nomessage)
 
 
 
@@ -828,7 +824,7 @@ To remove this protection, call this command with a negative prefix argument."
       default-major-mode 'indented-text-mode
 
       ;; Custom file, part one
-      custom-file "~/.emacs.d/custom.el"
+      custom-file (concat dotfiles-dir "custom.el")
       )
 
 ;; Custom file, part two
@@ -879,7 +875,7 @@ To remove this protection, call this command with a negative prefix argument."
  backup-by-copying-when-linked t
  ;; Just never create backup files at all
  ;;make-backup-files nil
- backup-directory-alist '(("." . "~/.emacs.d/tmp/bak/"))
+ backup-directory-alist (list (cons "." (concat dotfiles-dir "tmp/bak/")))
  )
 
 ;; Emacs is a text editor, make sure your text files end in a newline
@@ -898,7 +894,7 @@ To remove this protection, call this command with a negative prefix argument."
 ;; Auto-saving into some global directory
 
 ;; (defvar autosave-dir
-;;   (file-name-as-directory "~/.emacs.d/tmp/autosave")
+;;   (file-name-as-directory (concat dotfiles-dir "tmp/autosave"))
 ;;   "The directory in which to place auto-save (i.e. #foo#) files.")
 
 ;; (defun auto-save-file-name-p (filename)
@@ -913,7 +909,7 @@ To remove this protection, call this command with a negative prefix argument."
 ;;             (expand-file-name
 ;;              (concat "#%" (buffer-name) "#")))))
 
-(setq auto-save-list-file-prefix "~/.emacs.d/tmp/auto-save-list/saves-")
+(setq auto-save-list-file-prefix (concat dotfiles-dir "tmp/auto-save-list/saves-"))
 
 
 ;; quickly safe
@@ -929,7 +925,7 @@ To remove this protection, call this command with a negative prefix argument."
 ;;
 ;; You should add registers here for the files you edit most often.
 
-(dolist (r `((?s (file . "~/.emacs.d/start.el"))
+(dolist (r `((?s (file . (concat dotfiles-dir "start.el")))
 	     ;;(?o (file . ,(concat dotfiles-dir "emacs-kit.org")))
 	     ))
   (set-register (car r) (cadr r)))
@@ -1186,7 +1182,7 @@ To remove this protection, call this command with a negative prefix argument."
 
 ;; Minibuffer history
 (require 'savehist)
-(setq savehist-file "~/.emacs.d/tmp/history.el"
+(setq savehist-file (concat dotfiles-dir "tmp/history.el")
       history-length 1000)
 (savehist-mode 1)
 
@@ -1353,8 +1349,8 @@ To remove this protection, call this command with a negative prefix argument."
 
 (defvar srecode-map-save-file nil)
 (defvar semanticdb-default-save-directory nil)
-(setq srecode-map-save-file "~/.emacs.d/tmp/srecode-map"
-      semanticdb-default-save-directory "~/.emacs.d/tmp/semanticdb")
+(setq srecode-map-save-file (concat dotfiles-dir "tmp/srecode-map")
+      semanticdb-default-save-directory (concat dotfiles-dir "/tmp/semanticdb"))
 
 (eval-after-load "cedet"
   '(progn
@@ -1467,7 +1463,7 @@ To remove this protection, call this command with a negative prefix argument."
 ;;}}}
 ;;{{{ Mode: Info
 
-;; (add-to-list 'Info-default-directory-list "~/.emacs.d/info")
+;; (add-to-list 'Info-default-directory-list (concat dotfiles-dir "info"))
 
 (defun my-next-link-or-scroll-page-forward (next-point)
   "Scroll one page forward when no more next links on the current page."
@@ -1637,7 +1633,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; http://www.newartisans.com/2007/08/using-org-mode-as-a-day-planner.html
 
 (eval-after-load "org"
-  '(progn (setq org-directory (file-truename "~/.emacs.d/org/")
+  '(progn (setq org-directory (file-truename (concat dotfiles-dir "org/"))
 		org-default-notes-file (concat org-directory "notes.org")
 		org-agenda-files (list (concat org-directory "agenda.org") org-default-notes-file)
 
@@ -1908,13 +1904,13 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 (eval-after-load "install-elisp"
-  '(setq install-elisp-repository-directory "~/.emacs.d/elisp/"))
+  '(setq install-elisp-repository-directory (concat dotfiles-dir "elisp/")))
 
 (eval-after-load "url-cache"
-  '(setq url-cache-directory "~/.emacs.d/tmp/cache/"))
+  '(setq url-cache-directory (concat dotfiles-dir "tmp/cache/")))
 
 (eval-after-load "auto-install"
-  '(progn (setq auto-install-directory "~/.emacs.d/elisp/")
+  '(progn (setq auto-install-directory (concat dotfiles-dir "elisp/"))
 	  ))
 
 ;; HINT: auto-install.el comes from EmacsWiki, you can update it
@@ -1932,7 +1928,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 (eval-after-load "bookmark"
   '(progn
      (setq ;; Store bookmarks inside .emacs.d
-           bookmark-default-file "~/.emacs.d/org/bookmarks.org"
+           bookmark-default-file (concat dotfiles-dir "org/bookmarks.org")
 	   ;; Save file after every bookmark altertation
 	   bookmark-save-flag 1
 	   )))
@@ -1950,7 +1946,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Package: calendar
 
-(setq diary-file  "~/.emacs.d/org/diary"
+(setq diary-file  (concat dotfiles-dir "org/diary")
       calendar-latitude 50.17
       calendar-longitude 8.46
       calendar-location-name "Wöllstadt"
@@ -1995,7 +1991,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; (eval-after-load "xcscope"
 (require 'xcscope)
 (setq ;; This indexer ignores .obj, .git, .svn and single-letter directories
-      cscope-indexing-script (expand-file-name"~/.emacs.d/bin/cscope-indexer")
+      cscope-indexing-script (concat dotfiles-dir "bin/cscope-indexer")
       ;; It seems that it asks anyway ...
       cscope-no-mouse-prompts t)
 
@@ -2018,8 +2014,8 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 ;; http://www.emacswiki.org/emacs/DeskTop
 
-(setq desktop-base-file-name "~/.emacs.d/tmp/desktop.data"
-      desktop-base-lock-name "~/.emacs.d/tmp/desktop.lock"
+(setq desktop-base-file-name (concat dotfiles-dir "tmp/desktop.data")
+      desktop-base-lock-name (concat dotfiles-dir "tmp/desktop.lock")
       desktop-save t
       desktop-buffers-not-to-save
       (concat "\\("
@@ -2183,7 +2179,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 (require 'ido)
 (eval-after-load "ido"
-  '(setq ido-save-directory-list-file "~/.emacs.d/tmp/ido.last"
+  '(setq ido-save-directory-list-file (concat dotfiles-dir "tmp/ido.last")
 	 ;;ido-work-directory-list '()
 	 ido-everywhere t			; use for many file dialogs
 	 ido-max-work-file-list      50		; remember many
@@ -2340,7 +2336,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;{{{ Package: recentf
 
 ;; Save recent files
-(setq recentf-save-file "~/.emacs.d/tmp/recentf.el"
+(setq recentf-save-file (concat dotfiles-dir "tmp/recentf.el")
       recentf-exclude '("bbdb$"
 			"svn-commit.tmp$"
 			".git/COMMIT_EDITMSG$"
@@ -2376,7 +2372,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Package: tramp
 
-(setq tramp-persistency-file-name "~/.emacs.d/tmp/tramp"
+(setq tramp-persistency-file-name (concat dotfiles-dir "tmp/tramp")
       tramp-default-method "ssh"
       ;; Relax prompt checking
       tramp-shell-prompt-pattern "^#$>\n]*[#$%>] *")
@@ -2409,12 +2405,12 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Package: yasnippet
 
-(add-to-list 'load-path "~/.emacs.d/elisp/yasnippet/")
+(add-to-list 'load-path (concat dotfiles-dir "elisp/yasnippet/"))
 (eval-after-load "yasnippet"
   '(progn (yas/initialize)
-	  (setq yas/snippet-dirs '("~/.emacs.d/snippets"
+	  (setq yas/snippet-dirs (list (concat dotfiles-dir "snippets")
 				   ;;"~/.emacs.d/elisp/yasnippet/snippets"
-				   ))
+				       ))
 	  (yas/load-snippet-dirs)
 	  ))
 
@@ -2424,7 +2420,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; HINT: yas-jit.el comes from EmacsWiki, you can update it
 ;; with (auto-install-from-emacswiki)
 (eval-after-load "yas-jit"
-  '(progn (setq yas/root-directory "~/.emacs.d/snippets")
+  '(progn (setq yas/root-directory (concat dotfiles-dir "snippets"))
 	  (yas/jit-load)
 	  ))
 
