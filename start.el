@@ -2253,6 +2253,39 @@ Otherwise, kill characters backward until encountering the end of a word."
 (add-to-list 'auto-mode-alist '("\\.md$" . md-mode))
 
 ;;}}}
+;;{{{ Package: mediawiki
+
+;; http://www.emacswiki.org/emacs/mediawiki.el
+;; (auto-install-from-url "http://launchpadlibrarian.net/59170085/mediawiki.el")
+;; "http://bazaar.launchpad.net/~hexmode/mediawiki-el/trunk/download/head%3A/mediawiki.el-20100227051241-nk34zzd7aq6b02gm-1/mediawiki.el")
+(eval-after-load "mediawiki"
+  '(progn (setq mediawiki-site-default "Mediawiki"
+		mediawiki-pop-buffer-hook '(delete-other-windows)
+		mediawiki-draft-data-file (concat dotfiles-dir "tmp/draft.wiki")
+		)
+	  (add-to-list 'mediawiki-site-alist
+		       (list "DARC"
+		       	     "http://wiki.darc.de/"
+		       	     "DH3HS"
+		       	     "dtgabzd0"
+		       	     "Harzburg"))
+	  (add-to-list 'mediawiki-site-alist
+		       (list "Mediawiki"
+			     "http://www.mediawiki.org/w/"
+			     "HolgerSchurig"
+			     "dtgabzm"
+			     "Sandbox"))
+     ))
+
+;; (require 'mediawiki)
+;; (mediawiki-site "Mediawiki")
+;; (mediawiki-site "DARC")
+;; (mediawiki-open "Sandbox")
+(autoload 'mediawiki-open "mediawiki" nil t)
+
+
+
+;;}}}
 ;;{{{ Package: pabbrev
 
 (autoload 'pabbrev-mode "pabbrev" nil t)
