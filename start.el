@@ -9,7 +9,6 @@
   "Turn on debug on error"
   (interactive)
   (setq debug-on-error t))
-(setq debug-on-error t)
 
 
 
