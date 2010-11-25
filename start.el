@@ -1913,6 +1913,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; (require 'auto-install nil 'nomsg)
 ;; (auto-install-update-emacswiki-package-name t)
 (autoload 'auto-install-from-emacswiki "auto-install" nil t)
+(autoload 'auto-install-from-url "auto-install" nil t)
 
 
 
