@@ -1659,6 +1659,9 @@ Otherwise, kill characters backward until encountering the end of a word."
 		;; Store notes at beginning of file
 		org-reverse-note-order t
 
+		;; Follow a link with just return
+		org-return-follows-link t
+
 		;; No need to add a DONE log entry, as our #+TODO: line makes a
 		;; log entry anyway. For the same reason, don't add a closed-
 		;; string either.
