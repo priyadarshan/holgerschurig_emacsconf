@@ -2132,22 +2132,8 @@ Otherwise, kill characters backward until encountering the end of a word."
 	    (ibuffer-auto-mode 1)
 	    (ibuffer-switch-to-saved-filter-groups "default")))
 
-;; Turn off header
-(defadvice ibuffer-update-title-and-summary (after kill-2-lines)
-  (save-excursion
-    (set-buffer "*Ibuffer*")
-    (toggle-read-only 0)
-    (goto-char 1)
-    (search-forward "-\n" nil t)
-    (delete-region 1 (point))
-    (let ((window-min-height 1))
-      ;; save a little screen estate
-      (shrink-window-if-larger-than-buffer))
-    (toggle-read-only)))
-(ad-activate 'ibuffer-update-title-and-summary)
-
 (defun my-ibuffer ()
-  "Open ibuffer with cursour pointed to most recent buffer name"
+  "Open ibuffer with cursor pointed to most recent buffer name"
   (interactive)
   (let ((recent-buffer-name (buffer-name)))
     (ibuffer)
