@@ -2011,6 +2011,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 (setq desktop-base-file-name (concat dotfiles-dir "tmp/desktop.data")
       desktop-base-lock-name (concat dotfiles-dir "tmp/desktop.lock")
       desktop-save t
+      desktop-load-locked-desktop t
       desktop-buffers-not-to-save
       (concat "\\("
 	      "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
