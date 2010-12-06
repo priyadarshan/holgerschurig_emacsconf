@@ -538,10 +538,7 @@ For example you could use \"\\\\*.+\\\\*\" to exclude all buffers that contain t
       buf-name)))
 
 
-(defun bubble-buffer-next()
-  "Bubble down one entry in the buffer list.
-   Switch to the next buffer on the list"
-  (interactive)
+(defun bubble-buffer-next-2()
   (if (not (eq last-command 'bubble-buffer-next))
       (progn (setq bubble-buffer-list (copy-alist (buffer-list)))
              (delq (get-buffer " *Minibuf-0*") bubble-buffer-list)
@@ -575,10 +572,8 @@ For example you could use \"\\\\*.+\\\\*\" to exclude all buffers that contain t
 			 " ...")))
       (message "Already at the end of the buffer-list"))))
 
-(defun bubble-buffer-previous()
-  "Undo one bubbling step from bubble-buffer-next.
-   Switch to the buffer before the bubbled up buffer in the buffer list"
-  (interactive)
+
+(defun bubble-buffer-previous-2()
   (unless (eq last-command 'bubble-buffer-next)
     (setq bubble-buffer-buried-list nil))
   (setq this-command 'bubble-buffer-next)
@@ -600,6 +595,31 @@ For example you could use \"\\\\*.+\\\\*\" to exclude all buffers that contain t
         (message "%s" (concat
 		       (substring s 0 (min bubble-buffer-max-display-length (length s))) " ...")))
     (message "Already at the start of the bubble-buffer-list")))
+
+
+(defun bubble-buffer-next()
+  "If you have only one window open, then bubble down one entry in the buffer list.
+Switch to the next buffer on the list.
+
+If more than one window is open, then just move to the next one."
+  (interactive)
+  (if (eq (count-windows) 1)
+      (bubble-buffer-next-2)
+    (other-window 1)
+    ))
+
+
+(defun bubble-buffer-previous()
+  "If you have only one window open, then undo one bubbling step from bubble-buffer-next.
+Switch to the buffer before the bubbled up buffer in the buffer list
+
+If more than one window is open, then just move to the previous one."
+  (interactive)
+  (if (eq (count-windows) 1)
+      (bubble-buffer-prev-2)
+    (other-window -1)
+    ))
+
 
 (global-set-key [(f6)] 'bubble-buffer-next)
 (global-set-key [(shift f6)] 'bubble-buffer-previous)
