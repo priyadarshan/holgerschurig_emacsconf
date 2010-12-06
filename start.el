@@ -286,11 +286,11 @@ otherwise delete."
 ;;}}}
 ;;{{{ Functions: Searching
 
-;; Scrolling while searching
-(setq isearch-allow-scroll t)
+(setq ;; Scrolling while searching
+      isearch-allow-scroll t
 
-;; Save Isearch stuff
-(setq isearch-resume-in-command-history t)
+      ;; Save Isearch stuff
+      isearch-resume-in-command-history t)
 
 ;; (add-hook 'isearch-mode-end-hook
 ;;           (lambda ()
