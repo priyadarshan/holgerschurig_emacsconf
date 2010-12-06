@@ -294,17 +294,6 @@ otherwise delete."
 (define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
 ;; ORIGINAL: isearch-yank-line
 
-;; (add-hook 'isearch-mode-end-hook
-;;           (lambda ()
-;;             ;; On typing C-RET
-;;             (when (eq last-input-event 'C-return)
-;;               ;; Set the point at the beginning of the search string
-;;               (if (and isearch-forward isearch-other-end)
-;; 		  (goto-char isearch-other-end))
-;;               ;; Don't push the search string into the search ring
-;;               (if isearch-regexp
-;;                   (setq regexp-search-ring (cdr regexp-search-ring))
-;;                 (setq search-ring (cdr search-ring))))))
 
 ;; Prompts you for an expression, defaulting to the symbol that your
 ;; cursor is on, and greps for that in the current directory and all
@@ -2451,8 +2440,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 				       ))
 	  (yas/load-snippet-dirs)
 	  ))
-
-;; (require 'yasnippet nil t)
 
 
 ;; HINT: yas-jit.el comes from EmacsWiki, you can update it
