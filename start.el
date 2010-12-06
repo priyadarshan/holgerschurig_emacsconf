@@ -291,6 +291,8 @@ otherwise delete."
 
       ;; Save Isearch stuff
       isearch-resume-in-command-history t)
+(define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
+;; ORIGINAL: isearch-yank-line
 
 ;; (add-hook 'isearch-mode-end-hook
 ;;           (lambda ()
