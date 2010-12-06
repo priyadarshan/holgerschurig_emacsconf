@@ -143,6 +143,71 @@ command from COMMANDS."
       scroll-preserve-screen-position 1)
 
 
+;; Like goto-line, but doesn't modify minibuffer-history, but use it's
+;; own little history list.
+
+(setq my-goto-line-history '())
+(defun my-goto-line (line &optional buffer)
+  "Goto LINE, counting from line 1 at beginning of buffer.
+Normally, move point in the current buffer, and leave mark at the
+previous position.  With just \\[universal-argument] as argument,
+move point in the most recently selected other buffer, and switch to it.
+
+If there's a number in the buffer at point, it is the default for LINE.
+
+This function is usually the wrong thing to use in a Lisp program.
+What you probably want instead is something like:
+  (goto-char (point-min)) (forward-line (1- N))
+If at all possible, an even better solution is to use char counts
+rather than line counts."
+  (interactive
+   (if (and current-prefix-arg (not (consp current-prefix-arg)))
+       (list (prefix-numeric-value current-prefix-arg))
+     ;; Look for a default, a number in the buffer at point.
+     (let* ((default
+	      (save-excursion
+		(skip-chars-backward "0-9")
+		(if (looking-at "[0-9]")
+		    (buffer-substring-no-properties
+		     (point)
+		     (progn (skip-chars-forward "0-9")
+			    (point))))))
+	    ;; Decide if we're switching buffers.
+	    (buffer
+	     (if (consp current-prefix-arg)
+		 (other-buffer (current-buffer) t)))
+	    (buffer-prompt
+	     (if buffer
+		 (concat " in " (buffer-name buffer))
+	       "")))
+       ;; Read the argument, offering that number (if any) as default.
+       (list (read-from-minibuffer (format (if default "Goto line%s (%s): "
+					     "Goto line%s: ")
+					   buffer-prompt
+					   default)
+				   nil nil t
+				   'my-goto-line-history
+				   default)
+	     buffer))))
+  ;; Switch to the desired buffer, one way or another.
+  (if buffer
+      (let ((window (get-buffer-window buffer)))
+	(if window (select-window window)
+	  (switch-to-buffer-other-window buffer))))
+  ;; Leave mark at previous position
+  (or (region-active-p) (push-mark))
+  ;; Move to the specified line number in that buffer.
+  (save-restriction
+    (widen)
+    (goto-char (point-min))
+    (if (eq selective-display t)
+	(re-search-forward "[\n\C-m]" nil 'end (1- line))
+      (forward-line (1- line)))))
+
+(global-set-key (kbd "M-g g") 'my-goto-line)
+(global-set-key (kbd "M-g M-g") 'my-goto-line)
+
+
 
 ;;}}}
 ;;{{{ Functions: Yank and Delete
