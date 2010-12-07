@@ -2273,11 +2273,10 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ Package: imaxima
+;;{{{ Package: maxima
 
 (defun my-maxima-inferior-setup ()
-  (setq yas/dont-activate t)
-  )
+  (setq yas/dont-activate t))
 
 (eval-after-load "imaxima"
   '(progn (setq imaxima-fnt-size "Large"
@@ -2286,12 +2285,29 @@ Otherwise, kill characters backward until encountering the end of a word."
 	  (add-hook 'inferior-maxima-mode-hook 'my-maxima-inferior-setup)
 	  ))
 
+(autoload 'imaxima "imaxima" nil t)
+
+
+;; This function opens an imaxima buffer in the background. When I use
+;; C-c C-c in the maxima-mode, the already started imaxima buffer will
+;; then be re-used by maxima-display-buffer. That way I have the image
+;; capable imaxima instead of the text-only maxima buffer.
+(defun my-maxima-setup()
+  (let ((oldbuf (current-buffer)))
+    (require 'imaxima)
+    (imaxima)
+    (switch-to-buffer oldbuf))
+  )
+
 (eval-after-load "maxima"
   '(progn (define-key inferior-maxima-mode-map "\t" 'inferior-maxima-complete)
-	 ;;
+	  (setq maxima-use-full-color-in-process-buffer t)
+	  (add-hook 'maxima-mode-hook 'my-maxima-setup)
 	  ))
 
-(autoload 'imaxima "imaxima" nil t)
+(autoload 'maxima-mode "maxima" nil t)
+
+(add-to-list 'auto-mode-alist '("\\.mac$" . maxima-mode))
 
 
 
