@@ -2273,6 +2273,23 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: magit
+
+;; Magit is now loaded via package.el (elpa)
+(eval-after-load "magit"
+  '(progn
+     (setq magit-save-some-buffers nil
+	   magit-omit-untracked-dir-content t)))
+
+(global-set-key "\M-g\M-m" 'magit-status)
+;; ORIGINAL: undefined
+
+(global-set-key "\M-gm" 'magit-status)
+;; ORIGINAL: undefined
+
+
+
+;;}}}
 ;;{{{ Package: maxima
 
 (defun my-maxima-inferior-setup ()
@@ -2308,23 +2325,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 (autoload 'maxima-mode "maxima" nil t)
 
 (add-to-list 'auto-mode-alist '("\\.mac$" . maxima-mode))
-
-
-
-;;}}}
-;;{{{ Package: magit
-
-;; Magit is now loaded via package.el (elpa)
-(eval-after-load "magit"
-  '(progn
-     (setq magit-save-some-buffers nil
-	   magit-omit-untracked-dir-content t)))
-
-(global-set-key "\M-g\M-m" 'magit-status)
-;; ORIGINAL: undefined
-
-(global-set-key "\M-gm" 'magit-status)
-;; ORIGINAL: undefined
 
 
 
