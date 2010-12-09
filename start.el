@@ -2518,6 +2518,15 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: visual-basic
+
+(autoload 'visual-basic-mode "visual-basic-mode" nil t)
+
+(add-to-list 'auto-mode-alist '("\\.vba$" . visual-basic-mode))
+
+
+
+;;}}}
 ;;{{{ Package: yasnippet
 
 (add-to-list 'load-path (concat dotfiles-dir "elisp/yasnippet/"))
