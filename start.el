@@ -1240,7 +1240,7 @@ To remove this protection, call this command with a negative prefix argument."
  ;; Don't insert current directory into minubuffer
  insert-default-directory nil
  ;; enable recursive minibuffer
- enable-recursive-minibuffers t
+ enable-recursive-minibuffers nil
  ;; minibuffer window expands vertically as necessary to hold the text that
  ;; you put in the minibuffer
  resize-mini-windows t
