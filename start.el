@@ -1961,14 +1961,16 @@ Otherwise, kill characters backward until encountering the end of a word."
 (defun flyspell-de ()
   "Calls Flyspell with german dictionary"
   (interactive)
-  (ispell-change-dictionary "de")
-  (flyspell-mode 1))
+  (ispell-change-dictionary "de-neu")
+  (flyspell-mode 1)
+  (flyspell-buffer))
 
 (defun flyspell-en ()
   "Calls Flyspell with english dictionary"
   (interactive)
   (ispell-change-dictionary "en")
-  (flyspell-mode 1))
+  (flyspell-mode 1)
+  (flyspell-buffer))
 
 
 ;;}}}
@@ -2113,6 +2115,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; recentf and recentf-initialize-file-name-history, but
 ;; only if file-name-history is empty ...
 (delq 'file-name-history desktop-globals-to-save)
+(add-to-list 'desktop-globals-to-save 'compile-command)
 
 
 ;;}}}
