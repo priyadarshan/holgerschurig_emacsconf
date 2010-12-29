@@ -1484,17 +1484,23 @@ To remove this protection, call this command with a negative prefix argument."
 ;;}}}
 ;;{{{ Mode: Dired
 
-;; provide some dired goodies and dired-jump at C-x C-j
-(require 'dired-x)
-
 ;; HINT: next expression is very useful for M-( in Dired mode:
 ;; (string-match "perl" (shell-command-to-string (concat "file " name)))
 
 ;; use 'e' to edit filenames
 (eval-after-load "dired"
   '(progn
+     ;; provide some dired goodies
+     ;; http://www.gnu.org/software/emacs/manual/html_mono/dired-x.html
+     ;; dired-jump        C-x C-j
+     (require 'dired-x)
+     (message "XXXXXXXXXXXXXXX dired")
+
      (setq dired-auto-revert-buffer t)
      (define-key dired-mode-map "e" 'wdired-change-to-wdired-mode)))
+
+(define-key global-map "\C-x\C-d" 'dired)
+;; ORIGINAL: list-directory
 
 
 ;;}}}
