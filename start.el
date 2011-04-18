@@ -2536,32 +2536,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ Package: yasnippet
-
-(add-to-list 'load-path (concat dotfiles-dir "elisp/yasnippet/"))
-(eval-after-load "yasnippet"
-  '(progn (yas/initialize)
-	  (setq yas/snippet-dirs (list (concat dotfiles-dir "snippets")
-				   ;;"~/.emacs.d/elisp/yasnippet/snippets"
-				       ))
-	  (yas/load-snippet-dirs)
-	  ))
-
-
-;; HINT: yas-jit.el comes from EmacsWiki, you can update it
-;; with (auto-install-from-emacswiki)
-(eval-after-load "yas-jit"
-  '(progn (setq yas/root-directory (concat dotfiles-dir "snippets"))
-	  (yas/jit-load)
-	  ))
-
-(require 'yas-jit nil t)
-
-(add-to-list 'auto-mode-alist '("\\.yasnippet$" . snippet-mode))
-
-
-
-;;}}}
 ;;{{{ Disabled Package: skeleton
 
 ;; Skeleton pairs
