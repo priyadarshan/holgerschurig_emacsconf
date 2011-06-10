@@ -2413,13 +2413,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ Package: quilt
-
-(load "quilt" 'noerror 'nomessage)
-
-
-
-;;}}}
 ;;{{{ Package: rcirc
 
 (eval-after-load "rcirc"
