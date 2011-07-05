@@ -781,7 +781,6 @@ To remove this protection, call this command with a negative prefix argument."
   (interactive)
   (delete-other-windows)
   (save-buffer)
-  ;; disabled for now
   (if (or (eq major-mode 'lisp-mode) (eq major-mode 'emacs-lisp-mode))
       (progn
 	(ignore-errors (my--kill-buffer-and-window (get-buffer-create "*Compile-Log*")))
@@ -789,8 +788,7 @@ To remove this protection, call this command with a negative prefix argument."
 	(my--bcc-compile-source-file (buffer-file-name))
 	)
     (progn
-      (my--kill-buffer-and-window (get-buffer-create "*compilation*"))
-	(compile compile-command))))
+      (compile compile-command))))
 
 (global-set-key [(f7)] 'my-compile)
 ;; ORIGINAL: undefined
@@ -805,16 +803,16 @@ To remove this protection, call this command with a negative prefix argument."
 
 ;; Helper for compilation. Close the compilation window if there was
 ;; no error at all.
-(defun compilation-exit-autoclose (status code msg)
-  ;; If M-x compile exists with a 0
-  (when (and (eq status 'exit) (zerop code))
-    ;; then bury the *compilation* buffer, so that C-x b doesn't go there
-    (bury-buffer "*compilation*")
-    ;; and delete the *compilation* window
-    (delete-window (get-buffer-window (get-buffer "*compilation*"))))
-  ;; Always return the anticipated result of compilation-exit-message-function
-  (cons msg code))
-(setq compilation-exit-message-function 'compilation-exit-autoclose
+;; http://www.emacswiki.org/emacs/ModeCompile
+(defun compile-autoclose (buffer string)
+  (cond ((string-match "finished" string)
+	 ;; (message "Build maybe successful: closing window.")
+	 (run-with-timer 1 nil
+			 'delete-window
+			 (get-buffer-window buffer t)))
+	(t
+	 (message "Compilation exited abnormally: %s" string))))
+(setq compilation-finish-functions 'compile-autoclose
       compilation-ask-about-save nil
       compilation-scroll-output t)
 
