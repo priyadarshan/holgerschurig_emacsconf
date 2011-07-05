@@ -2168,10 +2168,11 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Package: eproject
 
-(require 'eproject)
+(require 'eproject nil t)
 (setq eproject-completing-read-function (quote eproject--ido-completing-read))
 
-(require 'eprojects)
+;;(require 'eprojects)
+(load (concat dotfiles-dir "eprojects.el") 'noerror 'nomessage)
 
 
 ;; Snippets from eproject-extra.el:
