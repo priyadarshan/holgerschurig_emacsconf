@@ -4,7 +4,7 @@
 
 (eval-after-load "byte-code-cache"
   '(setq bcc-cache-directory (concat dotfiles-dir "tmp/byte-cache")
-	 bcc-blacklist '("/recentf\\.el$" "/history\\.el$")
+	 bcc-blacklist '("/recentf\\.el$" "/history\\.el$" "/desktop\\.data$")
 	 byte-compile-warnings t
 	 byte-compile-verbose nil))
 
