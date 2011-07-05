@@ -1768,6 +1768,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 		)
 	  (add-hook 'org-mode-hook 'auto-fill-mode)
+	  (define-key org-mode-map "\C-t" 'org-shifttab)
      ))
 
 
