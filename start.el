@@ -1802,7 +1802,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 		org-agenda-custom-commands
 		'(("f" "Finished" todo "DONE|CANCELLED" nil)
 		  ("w" "Waiting" todo "WAIT|FORWARD" nil)
-		  ("3" agenda "" ((org-agenda-ndays 21)))
+		  ("3" "next 3 weeks" agenda "" ((org-agenda-ndays 21)))
 		  ("u" "unscheduled" alltodo ""
 		   ((org-agenda-skip-function
 		     (lambda ()
@@ -1812,7 +1812,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 						 ))))))
 
 		)
-
      ))
 
 (eval-after-load "org-list"
