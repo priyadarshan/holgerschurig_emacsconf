@@ -962,6 +962,7 @@ To remove this protection, call this command with a negative prefix argument."
 
 ;; Open *.h files normally in c++ mode
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
 
 
 ;; Auto-saving into some global directory
