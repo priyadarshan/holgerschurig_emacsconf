@@ -788,7 +788,10 @@ To remove this protection, call this command with a negative prefix argument."
 	(my--bcc-compile-source-file (buffer-file-name))
 	)
     (progn
-      (compile compile-command))))
+      (if (fboundp 'eproject-root)
+	  (let ((default-directory (eproject-root)))
+		  (compile compile-command))
+	(compile compile-command)))))
 
 (global-set-key [(f7)] 'my-compile)
 ;; ORIGINAL: undefined
@@ -2160,6 +2163,40 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; ORIGINAL: undefined
 (global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
 ;; ORIGINAL: compose-mail
+
+
+;;}}}
+;;{{{ Package: eproject
+
+(require 'eproject)
+(setq eproject-completing-read-function (quote eproject--ido-completing-read))
+
+(require 'eprojects)
+
+
+;; Snippets from eproject-extra.el:
+
+(defun eproject-grep (regexp)
+  "Search all files in the current project for REGEXP."
+  (interactive "sRegexp grep: ")
+  (let* ((root (eproject-root))
+         (default-directory root)
+         (files (eproject-list-project-files-relative root)))
+    (grep-compute-defaults)
+    (lgrep regexp (combine-and-quote-strings files) root)))
+
+(defvar eproject-todo-expressions
+  '("TODO" "XXX" "FIXME")
+  "A list of tags for `eproject-todo' to search for when generating the project's TODO list.")
+
+(defun eproject-todo ()
+  "Display a project TODO list.
+
+Customize `eproject-todo-expressions' to control what this function looks for."
+  (interactive)
+  ;; TODO: display output in a buffer called *<project>-TODO* instead of *grep*.
+  (eproject-grep (regexp-opt eproject-todo-expressions)))
+
 
 
 ;;}}}
