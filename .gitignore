@@ -3,7 +3,6 @@
 *.elc
 *.org
 /tmp/
-/elisp/yasnippet/
 /elpa/archive-contents
 /elpa/builtin-packages
 /elpa/*/*
