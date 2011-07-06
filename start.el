@@ -2099,31 +2099,31 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ Package: desktop
+;;{{{ Disabled Package: desktop
 
 ;; http://www.emacswiki.org/emacs/DeskTop
 
-(setq desktop-base-file-name (concat dotfiles-dir "tmp/desktop.data")
-      desktop-base-lock-name (concat dotfiles-dir "tmp/desktop.lock")
-      desktop-save t
-      desktop-load-locked-desktop t
-      desktop-buffers-not-to-save
-      (concat "\\("
-	      "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
-	      "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
-	      "\\)$"))
-(desktop-save-mode 1)
+;; (setq desktop-base-file-name (concat dotfiles-dir "tmp/desktop.data")
+;;       desktop-base-lock-name (concat dotfiles-dir "tmp/desktop.lock")
+;;       desktop-save t
+;;       desktop-load-locked-desktop t
+;;       desktop-buffers-not-to-save
+;;       (concat "\\("
+;; 	      "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
+;; 	      "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
+;; 	      "\\)$"))
+;; (desktop-save-mode 1)
 
-(add-to-list 'desktop-modes-not-to-save 'dired-mode)
-(add-to-list 'desktop-modes-not-to-save 'org-mode)
-(add-to-list 'desktop-modes-not-to-save 'Info-mode)
-(add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
-(add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
-;; No need to save them, as the history will be handled by
-;; recentf and recentf-initialize-file-name-history, but
-;; only if file-name-history is empty ...
-(delq 'file-name-history desktop-globals-to-save)
-(add-to-list 'desktop-globals-to-save 'compile-command)
+;; (add-to-list 'desktop-modes-not-to-save 'dired-mode)
+;; (add-to-list 'desktop-modes-not-to-save 'org-mode)
+;; (add-to-list 'desktop-modes-not-to-save 'Info-mode)
+;; (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
+;; (add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
+;; ;; No need to save them, as the history will be handled by
+;; ;; recentf and recentf-initialize-file-name-history, but
+;; ;; only if file-name-history is empty ...
+;; (delq 'file-name-history desktop-globals-to-save)
+;; (add-to-list 'desktop-globals-to-save 'compile-command)
 
 
 ;;}}}
