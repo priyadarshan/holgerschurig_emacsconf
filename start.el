@@ -2166,37 +2166,37 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ Package: eproject
+;;{{{ Disabled Package: eproject
 
-(require 'eproject nil t)
-(setq eproject-completing-read-function (quote eproject--ido-completing-read))
+;; (require 'eproject nil t)
+;; (setq eproject-completing-read-function (quote eproject--ido-completing-read))
 
-;;(require 'eprojects)
-(load (concat dotfiles-dir "eprojects.el") 'noerror 'nomessage)
+;; ;;(require 'eprojects)
+;; (load (concat dotfiles-dir "eprojects.el") 'noerror 'nomessage)
 
 
-;; Snippets from eproject-extra.el:
+;; ;; Snippets from eproject-extra.el:
 
-(defun eproject-grep (regexp)
-  "Search all files in the current project for REGEXP."
-  (interactive "sRegexp grep: ")
-  (let* ((root (eproject-root))
-         (default-directory root)
-         (files (eproject-list-project-files-relative root)))
-    (grep-compute-defaults)
-    (lgrep regexp (combine-and-quote-strings files) root)))
+;; (defun eproject-grep (regexp)
+;;   "Search all files in the current project for REGEXP."
+;;   (interactive "sRegexp grep: ")
+;;   (let* ((root (eproject-root))
+;;          (default-directory root)
+;;          (files (eproject-list-project-files-relative root)))
+;;     (grep-compute-defaults)
+;;     (lgrep regexp (combine-and-quote-strings files) root)))
 
-(defvar eproject-todo-expressions
-  '("TODO" "XXX" "FIXME")
-  "A list of tags for `eproject-todo' to search for when generating the project's TODO list.")
+;; (defvar eproject-todo-expressions
+;;   '("TODO" "XXX" "FIXME")
+;;   "A list of tags for `eproject-todo' to search for when generating the project's TODO list.")
 
-(defun eproject-todo ()
-  "Display a project TODO list.
+;; (defun eproject-todo ()
+;;   "Display a project TODO list.
 
-Customize `eproject-todo-expressions' to control what this function looks for."
-  (interactive)
-  ;; TODO: display output in a buffer called *<project>-TODO* instead of *grep*.
-  (eproject-grep (regexp-opt eproject-todo-expressions)))
+;; Customize `eproject-todo-expressions' to control what this function looks for."
+;;   (interactive)
+;;   ;; TODO: display output in a buffer called *<project>-TODO* instead of *grep*.
+;;   (eproject-grep (regexp-opt eproject-todo-expressions)))
 
 
 
