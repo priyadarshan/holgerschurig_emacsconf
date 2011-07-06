@@ -2099,34 +2099,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ Disabled Package: desktop
-
-;; http://www.emacswiki.org/emacs/DeskTop
-
-;; (setq desktop-base-file-name (concat dotfiles-dir "tmp/desktop.data")
-;;       desktop-base-lock-name (concat dotfiles-dir "tmp/desktop.lock")
-;;       desktop-save t
-;;       desktop-load-locked-desktop t
-;;       desktop-buffers-not-to-save
-;;       (concat "\\("
-;; 	      "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
-;; 	      "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
-;; 	      "\\)$"))
-;; (desktop-save-mode 1)
-
-;; (add-to-list 'desktop-modes-not-to-save 'dired-mode)
-;; (add-to-list 'desktop-modes-not-to-save 'org-mode)
-;; (add-to-list 'desktop-modes-not-to-save 'Info-mode)
-;; (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
-;; (add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
-;; ;; No need to save them, as the history will be handled by
-;; ;; recentf and recentf-initialize-file-name-history, but
-;; ;; only if file-name-history is empty ...
-;; (delq 'file-name-history desktop-globals-to-save)
-;; (add-to-list 'desktop-globals-to-save 'compile-command)
-
-
-;;}}}
 ;;{{{ Package: eshell
 
 (setq eshell-cmpl-cycle-completions nil
@@ -2163,41 +2135,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; ORIGINAL: undefined
 (global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
 ;; ORIGINAL: compose-mail
-
-
-;;}}}
-;;{{{ Disabled Package: eproject
-
-;; (require 'eproject nil t)
-;; (setq eproject-completing-read-function (quote eproject--ido-completing-read))
-
-;; ;;(require 'eprojects)
-;; (load (concat dotfiles-dir "eprojects.el") 'noerror 'nomessage)
-
-
-;; ;; Snippets from eproject-extra.el:
-
-;; (defun eproject-grep (regexp)
-;;   "Search all files in the current project for REGEXP."
-;;   (interactive "sRegexp grep: ")
-;;   (let* ((root (eproject-root))
-;;          (default-directory root)
-;;          (files (eproject-list-project-files-relative root)))
-;;     (grep-compute-defaults)
-;;     (lgrep regexp (combine-and-quote-strings files) root)))
-
-;; (defvar eproject-todo-expressions
-;;   '("TODO" "XXX" "FIXME")
-;;   "A list of tags for `eproject-todo' to search for when generating the project's TODO list.")
-
-;; (defun eproject-todo ()
-;;   "Display a project TODO list.
-
-;; Customize `eproject-todo-expressions' to control what this function looks for."
-;;   (interactive)
-;;   ;; TODO: display output in a buffer called *<project>-TODO* instead of *grep*.
-;;   (eproject-grep (regexp-opt eproject-todo-expressions)))
-
 
 
 ;;}}}
@@ -2589,6 +2526,69 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 ;; (setq skeleton-pair t
 ;;       skeleton-pair-filter-function 'my-skeleton-pair-filter-function)
+
+
+
+;;}}}
+;;{{{ Disabled Package: desktop
+
+;; http://www.emacswiki.org/emacs/DeskTop
+
+;; (setq desktop-base-file-name (concat dotfiles-dir "tmp/desktop.data")
+;;       desktop-base-lock-name (concat dotfiles-dir "tmp/desktop.lock")
+;;       desktop-save t
+;;       desktop-load-locked-desktop t
+;;       desktop-buffers-not-to-save
+;;       (concat "\\("
+;; 	      "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
+;; 	      "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
+;; 	      "\\)$"))
+;; (desktop-save-mode 1)
+
+;; (add-to-list 'desktop-modes-not-to-save 'dired-mode)
+;; (add-to-list 'desktop-modes-not-to-save 'org-mode)
+;; (add-to-list 'desktop-modes-not-to-save 'Info-mode)
+;; (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
+;; (add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
+;; ;; No need to save them, as the history will be handled by
+;; ;; recentf and recentf-initialize-file-name-history, but
+;; ;; only if file-name-history is empty ...
+;; (delq 'file-name-history desktop-globals-to-save)
+;; (add-to-list 'desktop-globals-to-save 'compile-command)
+
+
+;;}}}
+;;{{{ Disabled Package: eproject
+
+;; (require 'eproject nil t)
+;; (setq eproject-completing-read-function (quote eproject--ido-completing-read))
+
+;; ;;(require 'eprojects)
+;; (load (concat dotfiles-dir "eprojects.el") 'noerror 'nomessage)
+
+
+;; ;; Snippets from eproject-extra.el:
+
+;; (defun eproject-grep (regexp)
+;;   "Search all files in the current project for REGEXP."
+;;   (interactive "sRegexp grep: ")
+;;   (let* ((root (eproject-root))
+;;          (default-directory root)
+;;          (files (eproject-list-project-files-relative root)))
+;;     (grep-compute-defaults)
+;;     (lgrep regexp (combine-and-quote-strings files) root)))
+
+;; (defvar eproject-todo-expressions
+;;   '("TODO" "XXX" "FIXME")
+;;   "A list of tags for `eproject-todo' to search for when generating the project's TODO list.")
+
+;; (defun eproject-todo ()
+;;   "Display a project TODO list.
+
+;; Customize `eproject-todo-expressions' to control what this function looks for."
+;;   (interactive)
+;;   ;; TODO: display output in a buffer called *<project>-TODO* instead of *grep*.
+;;   (eproject-grep (regexp-opt eproject-todo-expressions)))
 
 
 
