@@ -22,7 +22,6 @@
 ;;{{{ Load path
 
 (add-to-list 'load-path dotfiles-dir)
-(add-to-list 'load-path (concat dotfiles-dir "elisp/"))
 (add-to-list 'load-path (concat dotfiles-dir "elpa/"))
 
 
