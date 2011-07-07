@@ -1813,6 +1813,18 @@ Otherwise, kill characters backward until encountering the end of a word."
 						 ))))))
 
 		)
+	  (define-key org-agenda-mode-map "\C-ct" 'org-agenda-todo)
+	  ;; ORIGINAL: undefined
+	  (define-key org-agenda-mode-map "\C-cs" 'org-agenda-schedule)
+	  ;; ORIGINAL: undefined
+	  (define-key org-agenda-mode-map "\C-ce" 'org-agenda-set-effort)
+	  ;; ORIGINAL: undefined
+	  (define-key org-agenda-mode-map "\C-ci" 'org-agenda-clock-in)
+	  ;; ORIGINAL: undefined
+	  (define-key org-agenda-mode-map "\C-co" 'org-agenda-clock-out)
+	  ;; ORIGINAL: undefined
+	  (define-key org-agenda-mode-map "\C-cw" 'org-agenda-refile)
+	  ;; ORIGINAL: undefined
      ))
 
 (eval-after-load "org-list"
