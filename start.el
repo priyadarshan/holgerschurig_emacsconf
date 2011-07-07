@@ -1718,7 +1718,8 @@ Otherwise, kill characters backward until encountering the end of a word."
 (eval-after-load "org"
   '(progn (setq org-directory (file-truename (concat dotfiles-dir "org/"))
 		org-default-notes-file (concat org-directory "notes.org")
-		org-agenda-files (list (concat org-directory "agenda.org") org-default-notes-file)
+		;;org-agenda-files (list (concat org-directory "agenda.org") org-default-notes-file)
+		org-agenda-files (list (concat org-directory "agenda.org"))
 
 		;; Only load these org modules:
 		org-modules (;; 'org-bbdb
