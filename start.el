@@ -2257,16 +2257,43 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;}}}
 ;;{{{ Package: magit
 
-;; Magit is now loaded via package.el (elpa)
+;; Magit is now installed via the debian package "magit"
+
 (eval-after-load "magit"
   '(progn
-     (setq magit-save-some-buffers nil
-	   magit-omit-untracked-dir-content t)))
+     (setq magit-save-some-buffers 'dontask
+	   )))
 
-(global-set-key "\M-g\M-m" 'magit-status)
+(autoload 'magit-get-top-dir "magit" nil t)
+(defun my-magit-status (dir)
+  "This is like 'magit-status', but it deletes the other windows, making the
+magit status be prominently displayed."
+  (interactive (list (or (and (not current-prefix-arg)
+			      (magit-get-top-dir default-directory))
+			 (magit-read-top-dir (and (consp current-prefix-arg)
+						  (> (car current-prefix-arg) 4))))))
+  (magit-save-some-buffers)
+  (let ((topdir (magit-get-top-dir dir)))
+    (unless topdir
+      (when (y-or-n-p (format "There is no Git repository in %S.  Create one? "
+			      dir))
+	(magit-init dir)
+	(setq topdir (magit-get-top-dir dir))))
+    (when topdir
+      (let ((buf (or (magit-find-buffer 'status topdir)
+		     (generate-new-buffer
+		      (concat "*magit: "
+			      (file-name-nondirectory
+			       (directory-file-name topdir)) "*")))))
+        (pop-to-buffer buf)
+	(delete-other-windows)
+        (magit-mode-init topdir 'status #'magit-refresh-status)
+        (magit-status-mode t)))))
+
+(global-set-key "\M-g\M-m" 'my-magit-status)
 ;; ORIGINAL: undefined
 
-(global-set-key "\M-gm" 'magit-status)
+(global-set-key "\M-gm" 'my-magit-status)
 ;; ORIGINAL: undefined
 
 
