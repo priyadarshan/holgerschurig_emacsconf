@@ -2395,7 +2395,9 @@ magit status be prominently displayed."
 ;;{{{ Package: package           (Emacs package manager)
 
 (eval-after-load "package"
-  '(package-initialize))
+  '(progn (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+	  ;(add-to-list 'package-archives '("tromey" . "http://tromey.com/elpa/"))
+	  (package-initialize)))
 
 (require 'package nil 'noerror)
 
