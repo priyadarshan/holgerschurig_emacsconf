@@ -13,8 +13,7 @@
 (load (concat dotfiles-dir "elisp/byte-code-cache.el"))
 
 
-;; HINT: fold.el comes from EmacsWiki, you can update it
+;; HINT: folding.el comes from EmacsWiki, you can update it
 ;; with (auto-install-from-emacswiki)
 (add-to-list 'load-path (concat dotfiles-dir "elisp/"))
-(autoload 'fold-mode "fold" "Fold mode" t)
 (load (concat dotfiles-dir "start.el"))

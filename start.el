@@ -1,4 +1,3 @@
-;; -*- mode: emacs-lisp; mode: fold -*-
 ;; toggle entries with C-t
 
 ;;{{{ Debugging
@@ -1517,21 +1516,18 @@ To remove this protection, call this command with a negative prefix argument."
 
 
 ;;}}}
-;;{{{ Mode: Fold
+;;{{{ Mode: Folding
 
-;; SEE http://www.emacswiki.org/emacs/download/fold.el
+;; SEE http://www.emacswiki.org/emacs/download/folding.el
 
-(autoload 'fold-mode "fold" "Fold mode" t)
-(autoload 'fold-toggle "fold" "Fold toggle" t)
+(autoload 'folding-mode "folding" "Fold mode" t)
+;;(autoload 'folding-toggle "fold" "Fold toggle" t)
 
 
 
-(eval-after-load "fold"
+(eval-after-load "folding"
   '(progn
-     (define-key fold-mode-map "\C-t" 'fold-toggle)
-     (setq fold-automatic-show nil)
-     (setq fold-autoclose-other-folds nil)
-     (setq fold-whole-buffer-moves-point t)))
+     (define-key folding-mode-map "\C-t" 'folding-toggle-show-hide)))
 
 
 
@@ -2226,7 +2222,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 (define-key ibuffer-mode-map "e" 'ibuffer-ediff-marked-buffers)
 ;; ORIGINAL: ibuffer-visit-buffer
 
-
 ;;}}}
 ;;{{{ Package: ido
 
@@ -2669,6 +2664,9 @@ magit status be prominently displayed."
   "Signal a `buffer-read-only' error if the current buffer is read-only."
   (barf-if-buffer-read-only))
 
-
-
 ;;}}}
+
+; Local Variables:
+; mode:emacs-lisp
+; mode:folding
+; End:
