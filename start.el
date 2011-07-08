@@ -2542,7 +2542,7 @@ magit status be prominently displayed."
 ;; ;; If this function returns nil, then pairing is attempted
 ;; (defun my-skeleton-pair-filter-function ()
 ;;   (cond
-;;    ;; if the just-entered skeleton char is a "
+;;    ;; if the just-entered skeleton char is a quote char
 ;;    ((eq last-command-char ?\")
 ;;     (or (looking-at   (regexp-quote (string last-command-char)))
 ;; 	(looking-back (regexp-quote (string last-command-char)))
