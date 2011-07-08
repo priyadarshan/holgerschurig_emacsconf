@@ -1759,13 +1759,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 		;; Assumes you have "#+STARTUP: customtime" in your *.org file
 		;; or you can alternative set "org-display-custom-times t"
 		org-time-stamp-custom-formats '("<%d.%m.%Y %a>" . "<%d.%m.%Y %a %H:%M>")
-		;; org-display-custom-times t
-
-		;; This seems like a good basic set of keywords to start out with:
-		;; org-todo-keywords '((type "TODO" "NEXT" "WAITING" "DONE"))
-		;; org-todo-keywords '((sequence "TODO" | "DONE")
-		;;                     (sequence "REPORT" "BUG" "KNOWNCAUSE" | "FIXED")
-		;;                     (sequence | "CANCELLED")))
+		org-display-custom-times t
 
 		)
 	  (add-hook 'org-mode-hook 'auto-fill-mode)
@@ -1836,8 +1830,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 (autoload 'org-diary "org" "Diary entries from Org mode")
 (autoload 'org-agenda "org-agenda" "Multi-file agenda from Org mode" t)
 (autoload 'org-store-link "org" "Store a link to the current location" t)
-;; (autoload 'orgtbl-mode "org" "Org tables as a minor mode" t)
-;; (autoload 'turn-on-orgtbl "org" "Org tables as a minor mode")
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
