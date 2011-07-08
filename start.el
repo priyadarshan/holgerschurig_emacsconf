@@ -2272,7 +2272,6 @@ magit status be prominently displayed."
 			      (magit-get-top-dir default-directory))
 			 (magit-read-top-dir (and (consp current-prefix-arg)
 						  (> (car current-prefix-arg) 4))))))
-  (magit-save-some-buffers)
   (let ((topdir (magit-get-top-dir dir)))
     (unless topdir
       (when (y-or-n-p (format "There is no Git repository in %S.  Create one? "
