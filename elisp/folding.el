@@ -1725,13 +1725,6 @@ with XEmacs.")
   :type  'string
   :group 'folding)
 
-(defcustom folding-goto-key "\M-g"
-  "*Key to be bound to `folding-goto-line' in folding mode.
-The default value is M - g, but you propably don't want folding to
-occupy it if you have used M - g got `goto-line'."
-  :type  'string
-  :group 'folding)
-
 (defcustom folding-font-lock-begin-mark 'font-lock-reference-face
   "Face to highligh beginning fold mark."
   :type  'face
@@ -1803,7 +1796,7 @@ For the good ol' key bindings, please use the function
 `folding-bind-backward-compatible-keys' instead."
   (interactive)
 
-  (define-key folding-mode-map folding-goto-key 'folding-goto-line)
+  (define-key folding-mode-map "\M-gg" 'folding-goto-line)
 
   (folding-bind-terminal-keys)
 
@@ -1931,9 +1924,7 @@ For the good ol' key bindings, please use the function
 If non-nil, folds are entered when going to a given line.
 Otherwise the buffer is unfolded. Can also be set to 'show.
 This variable is used only if `folding-advice-instantiate' was
-non-nil when folding was loaded.
-
-See also `folding-goto-key'."
+non-nil when folding was loaded."
   :type 'boolean
 
   :group 'folding)
