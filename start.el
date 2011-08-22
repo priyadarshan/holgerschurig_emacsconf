@@ -1672,6 +1672,15 @@ Otherwise, kill characters backward until encountering the end of a word."
      (define-key scheme-mode-map [(control backspace)] 'my-join-line-and-indent-sexp-or-backward-kill-word)))
 
 ;;}}}
+;;{{{ Mode: Lua
+
+(autoload 'lua-mode "lua-mode" "Lua editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+(add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
+
+
+
+;;}}}
 ;;{{{ Mode: Man
 
 (eval-after-load "man"
