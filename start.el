@@ -10,7 +10,6 @@
   (setq debug-on-error t))
 
 
-
 ;;}}}
 ;;{{{ OS - Environment
 
@@ -206,7 +205,6 @@ rather than line counts."
 (global-set-key (kbd "M-g M-g") 'my-goto-line)
 
 
-
 ;;}}}
 ;;{{{ Functions: Yank and Delete
 
@@ -343,7 +341,6 @@ otherwise delete."
 
 (global-set-key (kbd "\C-j") 'newline)
 ;; ORIGINAL: newline-and-indent
-
 
 
 ;;}}}
@@ -744,8 +741,6 @@ To remove this protection, call this command with a negative prefix argument."
 (protect-buffer-from-kill-mode nil (get-buffer "*scratch*"))
 
 
-
-
 ;;}}}
 ;;{{{ Functions: Compilation
 
@@ -864,7 +859,6 @@ To remove this protection, call this command with a negative prefix argument."
 ;;       interprogram-paste-function 'x-cut-buffer-or-selection-value)
 
 
-
 ;;}}}
 ;;{{{ Entering/exiting Emacs
 
@@ -909,7 +903,6 @@ To remove this protection, call this command with a negative prefix argument."
   "Dummy, overriding the one in vc-hooks.el"
   (setq vc-mode nil))
 (setq vc-handled-backends nil)
-
 
 
 ;;}}}
