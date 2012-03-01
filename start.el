@@ -1,4 +1,5 @@
 ;; toggle entries with C-t
+;; widen: C-x n w
 
 ;;{{{ Debugging
 
