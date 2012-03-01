@@ -1481,7 +1481,6 @@ To remove this protection, call this command with a negative prefix argument."
      ;; http://www.gnu.org/software/emacs/manual/html_mono/dired-x.html
      ;; dired-jump        C-x C-j
      (require 'dired-x)
-     (message "XXXXXXXXXXXXXXX dired")
 
      (setq dired-auto-revert-buffer t)
      (define-key dired-mode-map "e" 'wdired-change-to-wdired-mode)))
