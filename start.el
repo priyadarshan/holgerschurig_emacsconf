@@ -381,7 +381,6 @@ otherwise delete."
 ;; ORIGINAL: isearch-other-meta-char
 
 
-
 ;;}}}
 ;;{{{ Functions: Miscelleanous
 
@@ -744,7 +743,6 @@ To remove this protection, call this command with a negative prefix argument."
 ;;}}}
 ;;{{{ Functions: Compilation
 
-
 (defun my--bcc-compile-source-file (fullname)
   "Compiles an elisp file into the byte-cache"
   (let (cachename
@@ -848,7 +846,6 @@ To remove this protection, call this command with a negative prefix argument."
 ;;      (mouse-avoidance-mode 'banish)))
 ;; (unless ms-windows
 ;;   (when (display-mouse-p) (require 'avoid nil t)))
-
 
 
 ;;}}}
@@ -1140,7 +1137,6 @@ To remove this protection, call this command with a negative prefix argument."
       font-lock-verbose nil)
 
 (defconst font-lock-maximum-decoration t)
-
 
 
 ;;}}}
