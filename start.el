@@ -1196,12 +1196,18 @@ To remove this protection, call this command with a negative prefix argument."
 ;; (add-to-list 'special-display-frame-alist '(tool-bar-lines . 0))
 
 (if window-system
+    ;; X11, Windows, etc
     (progn
-      ;; Windows systems are fast enought
+      ;; Windowing systems are fast enought
       (column-number-mode t)
       ;; Turn off blinking
       (blink-cursor-mode -1)
-      ))
+      )
+  ;; Text mode
+  (progn
+    ;; No s
+    (setq visible-cursor nil)
+    ))
 
 ;; Visible bell, beeps are annoying
 (setq visible-bell t)
