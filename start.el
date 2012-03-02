@@ -1300,11 +1300,6 @@ To remove this protection, call this command with a negative prefix argument."
 		(nth 3 (current-input-mode))
  		)
 
-(unless window-system
-  ;; Without this, "emacs -nw" only shows ??? and not הצü
-  (setq-default default-enable-multibyte-characters nil))
-
-
 
 ;;}}}
 ;;{{{ Completion
