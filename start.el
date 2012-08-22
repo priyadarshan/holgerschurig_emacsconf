@@ -351,7 +351,10 @@ otherwise delete."
       isearch-allow-scroll t
 
       ;; Save Isearch stuff
-      isearch-resume-in-command-history t)
+      isearch-resume-in-command-history t
+
+      ;; Don't fold when searching while in folding mode
+      folding-isearch-install nil)
 (define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
 ;; ORIGINAL: isearch-yank-line
 
