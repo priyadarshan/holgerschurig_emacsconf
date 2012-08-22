@@ -122,17 +122,17 @@ command from COMMANDS."
 (defun my-recenter ()
   "Depending on how many times it was called moves the point to:
 
-* center of buffer
-* end of buffer
-* start of buffer
+* center of screen
+* neear start of screen
+* near end of center
 * back to where it was"
   (interactive)
   (let ((i 0) (old (window-start)))
     (while (and (<= (setq i (1+ i)) 6) (equal (window-start) old))
       (seq-times-do nil (setq my--previous-position (window-start))
 	(recenter)
-	(recenter -1)
-	(recenter 0)
+	(recenter 4)
+	(recenter -5)
 	(set-window-start (selected-window) my--previous-position)))))
 (substitute-key-definition 'recenter-top-bottom 'my-recenter (current-global-map))
 
