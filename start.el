@@ -351,7 +351,10 @@ otherwise delete."
       isearch-allow-scroll t
 
       ;; Save Isearch stuff
-      isearch-resume-in-command-history t)
+      isearch-resume-in-command-history t
+
+      ;; Don't fold when searching while in folding mode
+      folding-isearch-install nil)
 (define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
 ;; ORIGINAL: isearch-yank-line
 
@@ -2245,7 +2248,15 @@ Otherwise, kill characters backward until encountering the end of a word."
 	   "\\`\\.\\./"
 	   "\\`\\./")
 	 ))
-
+;; Ignore some files from latex / latexmk
+(add-to-list 'completion-ignored-extensions ".aux")
+(add-to-list 'completion-ignored-extensions ".dvi")
+(add-to-list 'completion-ignored-extensions ".fdb_latexmk")
+(add-to-list 'completion-ignored-extensions ".idx")
+(add-to-list 'completion-ignored-extensions ".ilg")
+(add-to-list 'completion-ignored-extensions ".ind")
+(add-to-list 'completion-ignored-extensions ".pdf")
+(add-to-list 'completion-ignored-extensions ".toc")
 (ido-mode 'both)
 
 
