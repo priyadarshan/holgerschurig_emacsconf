@@ -1,6 +1,7 @@
 ;; toggle entries with C-t
 ;; widen: C-x n w
 
+
 ;;{{{ Debugging
 
 ;; Provide a useful error trace if loading this monster fails
@@ -22,7 +23,6 @@
 
 (add-to-list 'load-path dotfiles-dir)
 (add-to-list 'load-path (concat dotfiles-dir "elpa/"))
-
 
 
 ;;}}}
@@ -314,7 +314,6 @@ otherwise delete."
 ;; ORIGINAL: delete-char
 
 
-
 ;;}}}
 ;;{{{ Functions: Indentation
 
@@ -496,7 +495,6 @@ are two windows displayed, act like C-x1:"
 
 (global-set-key [(f5)] 'my-explode-window)
 ;; ORIGINAL: undefined
-
 
 
 ;;}}}
@@ -831,7 +829,6 @@ To remove this protection, call this command with a negative prefix argument."
 (load (concat dotfiles-dir "private.el") 'noerror 'nomessage)
 
 
-
 ;;}}}
 ;;{{{ Mouse
 
@@ -911,7 +908,6 @@ To remove this protection, call this command with a negative prefix argument."
 
 ;; use decimal for `C-q'
 (setq read-quoted-char-radix 10)
-
 
 
 ;;}}}
@@ -1000,7 +996,6 @@ To remove this protection, call this command with a negative prefix argument."
   (set-register (car r) (cadr r)))
 
 
-
 ;;}}}
 ;;{{{ Help
 
@@ -1027,7 +1022,6 @@ To remove this protection, call this command with a negative prefix argument."
 
 (global-set-key [(f1)] 'my-help)
 ;; ORIGINAL: help-command
-
 
 
 ;;}}}
@@ -1089,7 +1083,6 @@ To remove this protection, call this command with a negative prefix argument."
 ;; use copy-sequence here -- it doesn't copy the list elements, just the
 ;; list's cons cells.  Use copy-alist instead.
 (setq default-frame-alist (copy-alist initial-frame-alist))
-
 
 
 ;;}}}
@@ -1166,7 +1159,6 @@ To remove this protection, call this command with a negative prefix argument."
     (my-wrap-mode-on)))
 
 
-
 ;;}}}
 ;;{{{ Display: Whitespace
 
@@ -1228,7 +1220,6 @@ To remove this protection, call this command with a negative prefix argument."
       idle-update-delay 0.35)
 
 
-
 ;;}}}
 ;;{{{ Display: Minibuffer
 
@@ -1261,7 +1252,6 @@ To remove this protection, call this command with a negative prefix argument."
 (savehist-mode 1)
 
 
-
 ;;}}}
 ;;{{{ Display: Menue
 
@@ -1283,7 +1273,6 @@ To remove this protection, call this command with a negative prefix argument."
 
 ;; Delete previous identical history entries
 (setq history-delete-duplicates t)
-
 
 
 ;;}}}
@@ -1315,7 +1304,6 @@ To remove this protection, call this command with a negative prefix argument."
 ;; Doesn't work with ido
 ;; (partial-completion-mode 1)
 ;; (setq completion-auto-help 'lazy)
-
 
 
 
@@ -1405,7 +1393,6 @@ To remove this protection, call this command with a negative prefix argument."
 (add-to-list 'cc-search-directories "..")
 
 
-
 ;;}}}
 ;;{{{ Mode: CEDET
 
@@ -1449,13 +1436,11 @@ To remove this protection, call this command with a negative prefix argument."
   (load "cedet" 'noerror 'nomessage))
 
 
-
 ;;}}}
 ;;{{{ Mode: CSV
 
 (add-to-list 'auto-mode-alist '("\\.[Cc][Ss][Vv]\\'" . csv-mode))
 (autoload 'csv-mode "csv-mode" "Major mode for editing comma-separated value files." t)
-
 
 
 ;;}}}
@@ -1468,7 +1453,6 @@ To remove this protection, call this command with a negative prefix argument."
 	     (setq def-header '((t nil)))
 	     ))
 (setq diff-switches "-u")
-
 
 
 ;;}}}
@@ -1503,7 +1487,6 @@ To remove this protection, call this command with a negative prefix argument."
 	     (modify-syntax-entry ?- "w")))
 
 
-
 ;;}}}
 ;;{{{ Mode: Folding
 
@@ -1519,12 +1502,10 @@ To remove this protection, call this command with a negative prefix argument."
      (define-key folding-mode-map "\C-t" 'folding-toggle-show-hide)))
 
 
-
 ;;}}}
 ;;{{{ Mode: Generic-X
 
 (require 'generic-x)
-
 
 
 ;;}}}
@@ -1660,13 +1641,13 @@ Otherwise, kill characters backward until encountering the end of a word."
      (define-key scheme-mode-map [(control return)] 'my-reindent-then-newline-and-indent-and-indent-sexp)
      (define-key scheme-mode-map [(control backspace)] 'my-join-line-and-indent-sexp-or-backward-kill-word)))
 
+
 ;;}}}
 ;;{{{ Mode: Lua
 
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
-
 
 
 ;;}}}
@@ -1698,7 +1679,6 @@ Otherwise, kill characters backward until encountering the end of a word."
      ;; (define-key view-mode-map [tab] 'other-window) ; used for next-ref
      ;; more/less scrolling style
      (define-key Man-mode-map [return] 'View-scroll-line-forward)))
-
 
 
 ;;}}}
@@ -1833,7 +1813,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; ORIGINAL: undefined
 
 
-
 ;;}}}
 ;;{{{ Mode: Remember
 
@@ -1868,7 +1847,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 (define-key global-map "\C-cr" 'org-remember)
 ;; ORIGINAL: undefined
-
 
 
 ;;}}}
@@ -1907,7 +1885,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; (tempo-define-template "perl-while-skeleton" '("while (<>) {\n  chomp;\n  " p "\n}\n"))
 
 
-
 ;;}}}
 ;;{{{ Mode: Python
 
@@ -1918,11 +1895,13 @@ Otherwise, kill characters backward until encountering the end of a word."
 (smart-tabs-advice python-indent-line-1 python-indent)
 (add-hook 'python-mode-hook 'my-tab-setup)
 
+
 ;;}}}
 ;;{{{ Mode: Shell
 
 (smart-tabs-advice shell-basic-indent-line sh-basic-offset)
 (add-hook 'shell-mode-hook 'my-tab-setup)
+
 
 ;;}}}
 ;;{{{ Mode: Term
@@ -1936,7 +1915,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 		 (auto-fill-mode -1)))))
 
 
-
 ;;}}}
 ;;{{{ Mode: Text
 
@@ -1946,12 +1924,10 @@ Otherwise, kill characters backward until encountering the end of a word."
 	     (auto-fill-mode 1)))
 
 
-
 ;;}}}
 ;;{{{ Mode: WordStar
 
 (autoload 'wsmm-mode "wsmm" "WordStar minor mode" t)
-
 
 
 ;;}}}
@@ -2002,7 +1978,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 (autoload 'auto-install-from-url "auto-install" nil t)
 
 
-
 ;;}}}
 ;;{{{ Package: bookmark
 
@@ -2015,13 +1990,11 @@ Otherwise, kill characters backward until encountering the end of a word."
 	   )))
 
 
-
 ;;}}}
 ;;{{{ Package: browse-url
 
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "google-chrome")
-
 
 
 ;;}}}
@@ -2065,7 +2038,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 (add-hook 'calendar-initial-window-hook 'diary-mark-entries)
 
 
-
 ;;}}}
 ;;{{{ Package: cscope
 
@@ -2093,7 +2065,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 (define-key esc-map ";" 'cscope-prev-symbol)
 ;; ORIGINAL: comment-dwim
-
 
 
 ;;}}}
@@ -2220,6 +2191,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 (define-key ibuffer-mode-map "e" 'ibuffer-ediff-marked-buffers)
 ;; ORIGINAL: ibuffer-visit-buffer
 
+
 ;;}}}
 ;;{{{ Package: ido
 
@@ -2305,7 +2277,6 @@ magit status be prominently displayed."
 ;; ORIGINAL: undefined
 
 
-
 ;;}}}
 ;;{{{ Package: maxima
 
@@ -2344,12 +2315,12 @@ magit status be prominently displayed."
 (add-to-list 'auto-mode-alist '("\\.mac$" . maxima-mode))
 
 
-
 ;;}}}
 ;;{{{ Package: md-mode
 
 (autoload 'md-mode "md-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.md$" . md-mode))
+
 
 ;;}}}
 ;;{{{ Package: mediawiki
@@ -2383,7 +2354,6 @@ magit status be prominently displayed."
 (autoload 'mediawiki-open "mediawiki" nil t)
 
 
-
 ;;}}}
 ;;{{{ Package: pabbrev
 
@@ -2410,7 +2380,6 @@ magit status be prominently displayed."
 (require 'package nil 'noerror)
 
 
-
 ;;}}}
 ;;{{{ Package: paredit
 
@@ -2419,7 +2388,6 @@ magit status be prominently displayed."
 
 ;; Automatically turn on in elist mode
 ;; (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
-
 
 
 ;;}}}
@@ -2458,7 +2426,6 @@ magit status be prominently displayed."
      ))
 
 
-
 ;;}}}
 ;;{{{ Package: recentf
 
@@ -2473,7 +2440,6 @@ magit status be prominently displayed."
       recentf-max-menu-items 20)
 
 (recentf-mode 1)
-
 
 
 ;;}}}
@@ -2494,8 +2460,6 @@ magit status be prominently displayed."
 (add-hook 'server-done-hook (lambda nil (kill-buffer nil)))
 
 
-
-
 ;;}}}
 ;;{{{ Package: tramp
 
@@ -2503,7 +2467,6 @@ magit status be prominently displayed."
       tramp-default-method "ssh"
       ;; Relax prompt checking
       tramp-shell-prompt-pattern "^#$>\n]*[#$%>] *")
-
 
 
 ;;}}}
@@ -2517,7 +2480,6 @@ magit status be prominently displayed."
   "Display a list of unbound keystrokes of complexity no greater than max." t)
 
 
-
 ;;}}}
 ;;{{{ Package: uniquify
 
@@ -2528,14 +2490,12 @@ magit status be prominently displayed."
       uniquify-ignore-buffers-re "^\\*")
 
 
-
 ;;}}}
 ;;{{{ Package: visual-basic
 
 (autoload 'visual-basic-mode "visual-basic-mode" nil t)
 
 (add-to-list 'auto-mode-alist '("\\.vba$" . visual-basic-mode))
-
 
 
 ;;}}}
@@ -2562,7 +2522,6 @@ magit status be prominently displayed."
 
 ;; (setq skeleton-pair t
 ;;       skeleton-pair-filter-function 'my-skeleton-pair-filter-function)
-
 
 
 ;;}}}
@@ -2627,7 +2586,6 @@ magit status be prominently displayed."
 ;;   (eproject-grep (regexp-opt eproject-todo-expressions)))
 
 
-
 ;;}}}
 ;;{{{ Key bindings
 
@@ -2671,6 +2629,7 @@ magit status be prominently displayed."
 (defadvice query-replace-read-args (before barf-if-buffer-read-only activate)
   "Signal a `buffer-read-only' error if the current buffer is read-only."
   (barf-if-buffer-read-only))
+
 
 ;;}}}
 
