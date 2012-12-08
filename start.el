@@ -1294,8 +1294,8 @@ To remove this protection, call this command with a negative prefix argument."
 (setq sentence-end-double-space nil)
 
 ;; Allow german umlaut characters
-(unless ms-windows
-  (set-language-environment "Latin-1"))
+;;(unless ms-windows
+;;  (set-language-environment "Latin-1"))
 
 (set-input-mode (car (current-input-mode))
  		(nth 1 (current-input-mode))
