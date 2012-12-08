@@ -2275,28 +2275,37 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 (autoload 'magit-get-top-dir "magit" nil t)
 (defun my-magit-status (dir)
-  "This is like 'magit-status', but it deletes the other windows, making the
-magit status be prominently displayed."
-  (interactive (list (or (and (not current-prefix-arg)
-			      (magit-get-top-dir default-directory))
-			 (magit-read-top-dir (and (consp current-prefix-arg)
-						  (> (car current-prefix-arg) 4))))))
+  "Open a Magit status buffer for the Git repository containing
+DIR.  If DIR is not within a Git repository, offer to create a
+Git repository in DIR.
+
+Interactively, a prefix argument means to ask the user which Git
+repository to use even if `default-directory' is under Git control.
+Two prefix arguments means to ignore `magit-repo-dirs' when asking for
+user input."
+  (interactive (list (if current-prefix-arg
+                         (magit-read-top-dir
+                          (> (prefix-numeric-value current-prefix-arg)
+                             4))
+                       (or (magit-get-top-dir default-directory)
+                           (magit-read-top-dir nil)))))
+  (magit-save-some-buffers)
   (let ((topdir (magit-get-top-dir dir)))
     (unless topdir
       (when (y-or-n-p (format "There is no Git repository in %S.  Create one? "
-			      dir))
-	(magit-init dir)
-	(setq topdir (magit-get-top-dir dir))))
+                              dir))
+        (magit-init dir)
+        (setq topdir (magit-get-top-dir dir))))
     (when topdir
-      (let ((buf (or (magit-find-buffer 'status topdir)
-		     (generate-new-buffer
-		      (concat "*magit: "
-			      (file-name-nondirectory
-			       (directory-file-name topdir)) "*")))))
-        (pop-to-buffer buf)
-	(delete-other-windows)
-        (magit-mode-init topdir 'status #'magit-refresh-status)
-        (magit-status-mode t)))))
+      (let ((buf (or (magit-find-status-buffer topdir)
+                     (generate-new-buffer
+                      (concat "*magit: "
+                              (file-name-nondirectory
+                               (directory-file-name topdir)) "*")))))
+        (funcall magit-status-buffer-switch-function buf)
+	(delete-other-windows) ;; THIS IS MY ADDITION
+        (magit-mode-init topdir 'magit-status-mode #'magit-refresh-status)))))
+
 
 (global-set-key "\M-g\M-m" 'my-magit-status)
 ;; ORIGINAL: undefined
