@@ -1272,7 +1272,8 @@ To remove this protection, call this command with a negative prefix argument."
 ;;{{{ Misc
 
 ;; Delete previous identical history entries
-(setq history-delete-duplicates t)
+(setq history-delete-duplicates t
+      tabify-regexp "^\t* [ \t]+")
 
 
 ;;}}}
