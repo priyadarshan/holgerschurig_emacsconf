@@ -1,4 +1,5 @@
 ;; toggle entries with C-t
+;; widen: C-x n w
 
 ;;{{{ Debugging
 
@@ -8,7 +9,6 @@
   "Turn on debug on error"
   (interactive)
   (setq debug-on-error t))
-
 
 
 ;;}}}
@@ -206,7 +206,6 @@ rather than line counts."
 (global-set-key (kbd "M-g M-g") 'my-goto-line)
 
 
-
 ;;}}}
 ;;{{{ Functions: Yank and Delete
 
@@ -345,7 +344,6 @@ otherwise delete."
 ;; ORIGINAL: newline-and-indent
 
 
-
 ;;}}}
 ;;{{{ Functions: Searching
 
@@ -353,7 +351,10 @@ otherwise delete."
       isearch-allow-scroll t
 
       ;; Save Isearch stuff
-      isearch-resume-in-command-history t)
+      isearch-resume-in-command-history t
+
+      ;; Don't fold when searching while in folding mode
+      folding-isearch-install nil)
 (define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
 ;; ORIGINAL: isearch-yank-line
 
@@ -382,7 +383,6 @@ otherwise delete."
 
 (define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
 ;; ORIGINAL: isearch-other-meta-char
-
 
 
 ;;}}}
@@ -744,11 +744,8 @@ To remove this protection, call this command with a negative prefix argument."
 (protect-buffer-from-kill-mode nil (get-buffer "*scratch*"))
 
 
-
-
 ;;}}}
 ;;{{{ Functions: Compilation
-
 
 (defun my--bcc-compile-source-file (fullname)
   "Compiles an elisp file into the byte-cache"
@@ -855,14 +852,12 @@ To remove this protection, call this command with a negative prefix argument."
 ;;   (when (display-mouse-p) (require 'avoid nil t)))
 
 
-
 ;;}}}
 ;;{{{ X-Windows cut'n'paste
 
 ;; Use clipboard of X
 ;; (setq x-select-enable-clipboard t
 ;;       interprogram-paste-function 'x-cut-buffer-or-selection-value)
-
 
 
 ;;}}}
@@ -909,7 +904,6 @@ To remove this protection, call this command with a negative prefix argument."
   "Dummy, overriding the one in vc-hooks.el"
   (setq vc-mode nil))
 (setq vc-handled-backends nil)
-
 
 
 ;;}}}
@@ -1149,7 +1143,6 @@ To remove this protection, call this command with a negative prefix argument."
 (defconst font-lock-maximum-decoration t)
 
 
-
 ;;}}}
 ;;{{{ Display: Truncation lines
 
@@ -1203,12 +1196,18 @@ To remove this protection, call this command with a negative prefix argument."
 ;; (add-to-list 'special-display-frame-alist '(tool-bar-lines . 0))
 
 (if window-system
+    ;; X11, Windows, etc
     (progn
-      ;; Windows systems are fast enought
+      ;; Windowing systems are fast enought
       (column-number-mode t)
       ;; Turn off blinking
       (blink-cursor-mode -1)
-      ))
+      )
+  ;; Text mode
+  (progn
+    ;; No s
+    (setq visible-cursor nil)
+    ))
 
 ;; Visible bell, beeps are annoying
 (setq visible-bell t)
@@ -1293,10 +1292,6 @@ To remove this protection, call this command with a negative prefix argument."
 ;; A sentence doesn't end with two spaces (in german)
 (setq sentence-end-double-space nil)
 
-;; Allow german umlaut characters
-;;(unless ms-windows
-;;  (set-language-environment "Latin-1"))
-
 (set-input-mode (car (current-input-mode))
  		(nth 1 (current-input-mode))
  		0
@@ -1304,11 +1299,6 @@ To remove this protection, call this command with a negative prefix argument."
 		;; umlaut characters on a german keyboard
 		(nth 3 (current-input-mode))
  		)
-
-(unless window-system
-  ;; Without this, "emacs -nw" only shows ??? and not הצü
-  (setq-default default-enable-multibyte-characters nil))
-
 
 
 ;;}}}
@@ -1494,7 +1484,6 @@ To remove this protection, call this command with a negative prefix argument."
      ;; http://www.gnu.org/software/emacs/manual/html_mono/dired-x.html
      ;; dired-jump        C-x C-j
      (require 'dired-x)
-     (message "XXXXXXXXXXXXXXX dired")
 
      (setq dired-auto-revert-buffer t)
      (define-key dired-mode-map "e" 'wdired-change-to-wdired-mode)))
@@ -2264,7 +2253,15 @@ Otherwise, kill characters backward until encountering the end of a word."
 	   "\\`\\.\\./"
 	   "\\`\\./")
 	 ))
-
+;; Ignore some files from latex / latexmk
+(add-to-list 'completion-ignored-extensions ".aux")
+(add-to-list 'completion-ignored-extensions ".dvi")
+(add-to-list 'completion-ignored-extensions ".fdb_latexmk")
+(add-to-list 'completion-ignored-extensions ".idx")
+(add-to-list 'completion-ignored-extensions ".ilg")
+(add-to-list 'completion-ignored-extensions ".ind")
+(add-to-list 'completion-ignored-extensions ".pdf")
+(add-to-list 'completion-ignored-extensions ".toc")
 (ido-mode 'both)
 
 
@@ -2280,14 +2277,8 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 (autoload 'magit-get-top-dir "magit" nil t)
 (defun my-magit-status (dir)
-  "Open a Magit status buffer for the Git repository containing
-DIR.  If DIR is not within a Git repository, offer to create a
-Git repository in DIR.
-
-Interactively, a prefix argument means to ask the user which Git
-repository to use even if `default-directory' is under Git control.
-Two prefix arguments means to ignore `magit-repo-dirs' when asking for
-user input."
+  "This is like 'magit-status', but it deletes the other windows, making the
+magit status be prominently displayed."
   (interactive (list (if current-prefix-arg
                          (magit-read-top-dir
                           (> (prefix-numeric-value current-prefix-arg)
@@ -2307,10 +2298,13 @@ user input."
                       (concat "*magit: "
                               (file-name-nondirectory
                                (directory-file-name topdir)) "*")))))
+        ;; (funcall magit-status-buffer-switch-function buf)
+	;; (delete-other-windows) ;; THIS IS MY ADDITION
+        ;; (magit-mode-init topdir 'magit-status-mode #'magit-refresh-status)))))
+        (pop-to-buffer buf)
+	(delete-other-windows)
         (funcall magit-status-buffer-switch-function buf)
-	(delete-other-windows) ;; THIS IS MY ADDITION
         (magit-mode-init topdir 'magit-status-mode #'magit-refresh-status)))))
-
 
 (global-set-key "\M-g\M-m" 'my-magit-status)
 ;; ORIGINAL: undefined
