@@ -2147,6 +2147,11 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Package: expand region
+
+(global-set-key (kbd "C-#") 'er/expand-region)
+
+;;}}}
 ;;{{{ Package: fill
 
 ;; Each list element as new paragraph
