@@ -13,4 +13,5 @@
  '(diff-header ((t nil)))
  '(font-lock-constant-face ((((class color) (min-colors 88) (background light)) (:foreground "SlateBlue4"))))
  '(font-lock-keyword-face ((t (:weight bold))))
- '(font-lock-string-face ((((class color) (min-colors 88) (background light)) (:foreground "Forest Green")))))
+ '(font-lock-string-face ((((class color) (min-colors 88) (background light)) (:foreground "Forest Green"))))
+ '(region ((t (:background "gold" :foreground "gtk_selection_fg_color")))))
