@@ -105,7 +105,6 @@ command from COMMANDS."
 * back to where it was"
   (interactive)
   (seq-times-do nil (setq my--previous-position (point))
-    ;;(if folding-mode (folding-end-of-line) (end-of-line))
     (end-of-line)
     (forward-paragraph)
     (end-of-defun)
@@ -350,10 +349,8 @@ otherwise delete."
       isearch-allow-scroll t
 
       ;; Save Isearch stuff
-      isearch-resume-in-command-history t
+      isearch-resume-in-command-history t)
 
-      ;; Don't fold when searching while in folding mode
-      folding-isearch-install nil)
 (define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
 ;; ORIGINAL: isearch-yank-line
 
@@ -1494,13 +1491,12 @@ To remove this protection, call this command with a negative prefix argument."
 ;; SEE http://www.emacswiki.org/emacs/download/folding.el
 
 (autoload 'folding-mode "folding" "Fold mode" t)
-;;(autoload 'folding-toggle "fold" "Fold toggle" t)
-
 
 
 (eval-after-load "folding"
   '(progn
-     (define-key folding-mode-map "\C-t" 'folding-toggle-show-hide)))
+     (define-key folding-mode-map "\C-t" 'folding-toggle-show-hide)
+     (setq folding-isearch-install t)))
 
 
 ;;}}}
