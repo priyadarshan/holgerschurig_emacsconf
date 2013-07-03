@@ -1640,6 +1640,12 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Mode: Javascript (JS)
+
+(add-to-list 'auto-mode-alist '("\\.js$" . js-mode))
+
+
+;;}}}
 ;;{{{ Mode: Lua
 
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
