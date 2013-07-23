@@ -1391,6 +1391,15 @@ To remove this protection, call this command with a negative prefix argument."
 (add-to-list 'cc-search-directories "..")
 
 
+
+(defun my-format-buffer ()
+  (interactive)
+  (delete-trailing-whitespace)
+  (indent-region 0 (buffer-size) nil)
+  (tabify 0 (buffer-size)))
+
+
+
 ;;}}}
 ;;{{{ Mode: CEDET
 
