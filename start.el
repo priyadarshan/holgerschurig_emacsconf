@@ -1751,6 +1751,9 @@ Otherwise, kill characters backward until encountering the end of a word."
 		org-enforce-todo-dependencies t
 		org-enforce-todo-checkbox-dependencies t
 
+		;; Initial visibility
+		org-startup-folded 'content
+
 		)
 	  (add-hook 'org-mode-hook 'auto-fill-mode)
 	  (define-key org-mode-map "\C-t" 'org-shifttab)
