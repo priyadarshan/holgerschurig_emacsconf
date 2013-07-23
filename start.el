@@ -1746,6 +1746,11 @@ Otherwise, kill characters backward until encountering the end of a word."
 		org-time-stamp-custom-formats '("<%d.%m.%Y %a>" . "<%d.%m.%Y %a %H:%M>")
 		org-display-custom-times t
 
+		;; Only allow parents to be marked done when all childrens are done:
+		;; http://orgmode.org/manual/TODO-dependencies.html#TODO-dependencies
+		org-enforce-todo-dependencies t
+		org-enforce-todo-checkbox-dependencies t
+
 		)
 	  (add-hook 'org-mode-hook 'auto-fill-mode)
 	  (define-key org-mode-map "\C-t" 'org-shifttab)
