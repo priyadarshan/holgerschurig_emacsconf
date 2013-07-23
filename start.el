@@ -1742,6 +1742,8 @@ Otherwise, kill characters backward until encountering the end of a word."
 		;; Store notes at beginning of file
 		org-reverse-note-order t
 
+		org-support-shift-select t
+
 		;; Follow a link with just return
 		org-return-follows-link t
 
