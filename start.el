@@ -26,6 +26,20 @@
 
 
 ;;}}}
+;;{{{ Package: package           (Emacs package manager)
+
+;; Load this early, so that packages loaded by this means can be used later
+(eval-after-load "package"
+  '(progn ;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+	  ;(add-to-list 'package-archives '("tromey" . "http://tromey.com/elpa/"))
+	  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+	  (package-initialize)
+	  ))
+
+(require 'package nil 'noerror)
+
+
+;;}}}
 ;;{{{ Functions: Moving cursor
 
 ;; http://www.emacswiki.org/cgi-bin/wiki/DoubleKeyBinding
@@ -2391,17 +2405,6 @@ magit status be prominently displayed."
 ;; (global-pabbrev-mode t)
 ;; (setq pabbrev-read-only-error nil)
 
-
-
-;;}}}
-;;{{{ Package: package           (Emacs package manager)
-
-(eval-after-load "package"
-  '(progn (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-	  ;(add-to-list 'package-archives '("tromey" . "http://tromey.com/elpa/"))
-	  (package-initialize)))
-
-(require 'package nil 'noerror)
 
 
 ;;}}}
