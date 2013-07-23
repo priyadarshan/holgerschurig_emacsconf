@@ -1737,10 +1737,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 		org-log-done 'nil
 		;; org-closed-string ""
 
-		;; don't use S-xxx as this is used for CUA mode etc
-		org-replace-disputed-keys t
-		org-support-shift-select 'always
-
 		;; Assumes you have "#+STARTUP: customtime" in your *.org file
 		;; or you can alternative set "org-display-custom-times t"
 		org-time-stamp-custom-formats '("<%d.%m.%Y %a>" . "<%d.%m.%Y %a %H:%M>")
