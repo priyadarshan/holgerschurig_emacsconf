@@ -1670,6 +1670,14 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
+;;{{{ Mode: Nimrod
+
+(autoload 'nimrod-mode "nimrod-mode" "Nimrod editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.nim$" . nimrod-mode))
+(add-to-list 'interpreter-mode-alist '("nim" . nimrod-mode))
+
+
+;;}}}
 ;;{{{ Mode: Org
 
 ;; http://orgmode.org/worg/org-tutorials/orgtutorial_dto.php
