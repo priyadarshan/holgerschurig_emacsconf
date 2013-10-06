@@ -1415,46 +1415,7 @@ To remove this protection, call this command with a negative prefix argument."
 
 
 ;;}}}
-;;{{{ Mode: CEDET
 
-;; http://cedet.sourceforge.net/
-;; http://xtalk.msk.su/~ott/en/writings/emacs-devenv/EmacsCedet.html
-
-(defvar srecode-map-save-file nil)
-(defvar semanticdb-default-save-directory nil)
-(setq srecode-map-save-file (concat dotfiles-dir "tmp/srecode-map")
-      semanticdb-default-save-directory (concat dotfiles-dir "/tmp/semanticdb"))
-
-(eval-after-load "cedet"
-  '(progn
-     ;; Enable one of those:
-     ;;(semantic-load-enable-minimum-features)
-     ;;(semantic-load-enable-code-helpers)
-     (semantic-load-enable-gaudy-code-helpers)
-     ;;(semantic-load-enable-excessive-code-helpers)
-
-     ;; Enable exuberant ctags
-     ;;(semantic-load-enable-all-exuberent-ctags-support)
-
-     ;; Enable the Project management system
-     ;; (global-ede-mode 1)
-
-     ;; Enable template insertion menu
-     ;; (global-srecode-minor-mode 1)
-
-     ;; Use GCC include paths
-     (semantic-gcc-setup)
-
-     ;; Increase the delay before activation
-     ;;(setq semantic-idle-scheduler-idle-time 10)
-
-     ;; Idle after 1 second
-     ;;(setq semantic-idle-scheduler-idle-time 1)
-     ))
-
-(defun load-cedet ()
-  (interactive)
-  (load "cedet" 'noerror 'nomessage))
 
 
 ;;}}}
