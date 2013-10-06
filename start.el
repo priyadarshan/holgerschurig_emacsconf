@@ -1420,7 +1420,10 @@ To remove this protection, call this command with a negative prefix argument."
 
 
 ;;}}}
+;;{{{ Mode: D
 
+(autoload 'd-mode "d-mode" "Major mode for editing D code." t)
+(add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
 
 
 ;;}}}
