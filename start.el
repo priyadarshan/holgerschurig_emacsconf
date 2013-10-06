@@ -24,7 +24,6 @@
 (add-to-list 'load-path dotfiles-dir)
 (add-to-list 'load-path (concat dotfiles-dir "elpa/"))
 
-
 ;;}}}
 ;;{{{ Package: package           (Emacs package manager)
 
@@ -37,7 +36,6 @@
 	  ))
 
 (require 'package nil 'noerror)
-
 
 ;;}}}
 ;;{{{ Functions: Moving cursor
@@ -1415,14 +1413,14 @@ To remove this protection, call this command with a negative prefix argument."
 
 
 ;;}}}
-
-
-
-;;}}}
 ;;{{{ Mode: CSV
 
 (add-to-list 'auto-mode-alist '("\\.[Cc][Ss][Vv]\\'" . csv-mode))
 (autoload 'csv-mode "csv-mode" "Major mode for editing comma-separated value files." t)
+
+
+;;}}}
+
 
 
 ;;}}}
