@@ -2093,7 +2093,9 @@ Otherwise, kill characters backward until encountering the end of a word."
      		  '("gunzip" "gz\\'"))
      (add-to-list 'eshell-command-completions-alist
      		  '("tar" "\\(\\.tar|\\.tgz\\|\\.tar\\.gz\\)\\'"))
-     (add-to-list 'eshell-output-filter-functions 'eshell-handle-ansi-color)))
+     ;; Somehow this clashes with magit from ELPA
+     ;;(add-to-list 'eshell-output-filter-functions 'eshell-handle-ansi-color)
+     ))
 
 
 ;; The eshell directory holds alias definitions and history
