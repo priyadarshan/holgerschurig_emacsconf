@@ -11,7 +11,6 @@
   (interactive)
   (setq debug-on-error t))
 
-
 ;;}}}
 ;;{{{ OS - Environment
 
@@ -215,7 +214,6 @@ rather than line counts."
 
 (global-set-key (kbd "M-g g") 'my-goto-line)
 (global-set-key (kbd "M-g M-g") 'my-goto-line)
-
 
 ;;}}}
 ;;{{{ Functions: Yank and Delete
@@ -1458,7 +1456,6 @@ To remove this protection, call this command with a negative prefix argument."
 (define-key global-map "\C-x\C-d" 'dired)
 ;; ORIGINAL: list-directory
 
-
 ;;}}}
 ;;{{{ Mode: ELisp
 
@@ -2003,8 +2000,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;;{{{ Package: browse-url
 
 (setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "google-chrome")
-
+      browse-url-generic-program "xdg-open")
 
 ;;}}}
 ;;{{{ Package: calendar
@@ -2045,7 +2041,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 	     (define-key calendar-mode-map "\C-x<" 'scroll-calendar-right)))
 
 (add-hook 'calendar-initial-window-hook 'diary-mark-entries)
-
 
 ;;}}}
 ;;{{{ Package: cscope
@@ -2113,7 +2108,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; ORIGINAL: undefined
 (global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
 ;; ORIGINAL: compose-mail
-
 
 ;;}}}
 ;;{{{ Package: fill
