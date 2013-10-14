@@ -1819,7 +1819,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;;}}}
-;;{{{ Mode: Remember
+;;{{{ Mode: Org-Remember
 
 (eval-after-load "org-remember"
   '(progn (setq org-remember-templates
@@ -1841,11 +1841,6 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 		)
 	  (org-remember-insinuate)
-	  ))
-
-(eval-after-load "remember"
-  '(progn (setq remember-data-file (concat org-directory "agenda.org")
-	   )
 	  ))
 
 (autoload 'org-remember "org-remember" "Remember something" t)
