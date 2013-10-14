@@ -1684,6 +1684,10 @@ Otherwise, kill characters backward until encountering the end of a word."
 ;; http://thread.gmane.org/gmane.emacs.orgmode/4832
 ;; http://www.newartisans.com/2007/08/using-org-mode-as-a-day-planner.html
 
+
+;; Must be set before org-mode loads!
+(setq org-replace-disputed-keys t)
+
 (eval-after-load "org"
   '(progn (setq org-directory (file-truename (concat dotfiles-dir "org/"))
 		org-default-notes-file (concat org-directory "notes.org")
