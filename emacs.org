@@ -3,6 +3,13 @@
 #+OPTIONS: H:2 num:nil toc:t
 #+STARTUP: oddeven
 
+* Package: ERC
+#+begin_src emacs-lisp
+(eval-after-load "erc"
+  '(progn (erc-hide-list (quote ("JOIN" "PART" "QUIT")))
+   ))
+#+end_src
+
 * Trailer
 #+begin_src emacs-lisp
 (message "NOTE: emacs.org loaded")
