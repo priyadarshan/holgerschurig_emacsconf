@@ -2270,7 +2270,9 @@ remove the new key bindings that use pop-up buffers.
 (eval-after-load "magit"
   '(progn
      (setq magit-save-some-buffers 'dontask
-	   )))
+	   )
+     (set-face-attribute 'magit-item-highlight nil :background nil)
+     ))
 
 (autoload 'magit-get-top-dir "magit" nil t)
 (defun my-magit-status (dir)
