@@ -1801,17 +1801,20 @@ Key-Bindings
 
 ** Mode: Org-Faces
 
-;; (set-face-attribute 'eshell-prompt nil :foreground "turquoise1")
+Normally the levels are colored in many different colors. These
+definitions make them all blue.
+
 #+BEGIN_SRC emacs-lisp
 (eval-after-load "org-faces"
-  '(progn (set-face-attribute 'org-level-2 nil :foreground "Blue1")
-	  (set-face-attribute 'org-level-2 nil :foreground "Blue1")
-	  (set-face-attribute 'org-level-3 nil :foreground "Blue1")
-	  (set-face-attribute 'org-level-4 nil :foreground "Blue1")
-	  (set-face-attribute 'org-level-5 nil :foreground "Blue1")
-	  (set-face-attribute 'org-level-6 nil :foreground "Blue1")
-	  (set-face-attribute 'org-level-7 nil :foreground "Blue1")
-	  (set-face-attribute 'org-level-8 nil :foreground "Blue1")
+  '(progn (set-face-attribute 'org-level-1 nil :foreground "Blue1" :weight 'bold)
+	  (set-face-attribute 'org-level-2 nil :foreground "Blue1" :weight 'bold)
+	  (set-face-attribute 'org-level-2 nil :foreground "Blue1" :weight 'bold)
+	  (set-face-attribute 'org-level-3 nil :foreground "Blue1" :weight 'bold)
+	  (set-face-attribute 'org-level-4 nil :foreground "Blue1" :weight 'bold)
+	  (set-face-attribute 'org-level-5 nil :foreground "Blue1" :weight 'bold)
+	  (set-face-attribute 'org-level-6 nil :foreground "Blue1" :weight 'bold)
+	  (set-face-attribute 'org-level-7 nil :foreground "Blue1" :weight 'bold)
+	  (set-face-attribute 'org-level-8 nil :foreground "Blue1" :weight 'bold)
 	  ))
 #+END_SRC
 
