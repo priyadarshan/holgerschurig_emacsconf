@@ -1287,17 +1287,10 @@ To remove this protection, call this command with a negative prefix argument."
 
 * Language, German localisation
 
-#+BEGIN_SRC emacs-lisp
-;; A sentence doesn't end with two spaces (in german)
-(setq sentence-end-double-space nil)
+A sentence doesn't end with two spaces:
 
-(set-input-mode (car (current-input-mode))
- 		(nth 1 (current-input-mode))
- 		0
- 		;; Default for above is 't, which let us not enter
-		;; umlaut characters on a german keyboard
-		(nth 3 (current-input-mode))
- 		)
+#+BEGIN_SRC emacs-lisp
+(setq sentence-end-double-space nil)
 #+END_SRC
 
 * Completion
