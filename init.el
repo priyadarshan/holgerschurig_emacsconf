@@ -41,6 +41,5 @@ file to byte-code before it is loaded."
              exported-file)))
 
 
-(load (concat dotfiles-dir "start.el"))
-
+;; (load (concat dotfiles-dir "start.el"))
 (load-org-elisp (expand-file-name "emacs.org" dotfiles-dir))
