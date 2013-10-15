@@ -2626,8 +2626,3 @@ magit status be prominently displayed."
 
 
 ;;}}}
-
-; Local Variables:
-; mode:emacs-lisp
-; mode:folding
-; End:

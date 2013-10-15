@@ -1,0 +1,9 @@
+#+TITLE: Emacs Startup File
+#+SEQ_TODO: PROPOSED TODO STARTED | DONE DEFERRED REJECTED
+#+OPTIONS: H:2 num:nil toc:t
+#+STARTUP: oddeven
+
+* Trailer
+#+begin_src emacs-lisp
+(message "NOTE: emacs.org loaded")
+#+end_src

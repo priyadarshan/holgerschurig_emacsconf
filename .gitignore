@@ -1,7 +1,5 @@
 ?
-*~
-*.elc
-*.org
+/emacs.el
 /places
 /tmp/
 /elpa/archive-contents
