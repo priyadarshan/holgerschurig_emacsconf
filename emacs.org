@@ -23,6 +23,13 @@
 
 * Package: package           (Emacs package manager)
 
+ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
+Move the cookie file out into the =tmp/= directory.
+
+#+BEGIN_SRC emacs-lisp
+(setq url-configuration-directory (concat dotfiles-dir "tmp/"))
+#+END_SRC
+
 Load the ELPA package manager early. That way, the rest of the script
 can require loaded packages.
 
