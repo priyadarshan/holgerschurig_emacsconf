@@ -1691,29 +1691,12 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 
 ;; Must be set before org-mode loads!
-(setq org-replace-disputed-keys t)
 
 (eval-after-load "org"
   '(progn (setq org-directory (file-truename (concat dotfiles-dir "org/"))
 		org-default-notes-file (concat org-directory "notes.org")
 		;;org-agenda-files (list (concat org-directory "agenda.org") org-default-notes-file)
 		org-agenda-files (list (concat org-directory "agenda.org"))
-
-		;; Only load these org modules:
-		org-modules (;; 'org-bbdb
-			     ;; 'org-bibtex
-			     ;; 'org-docview
-			     ;; 'org-gnus
-			     ;; 'org-info
-			     ;; 'org-jsinfo
-			     ;; 'org-irc
-			     ;; 'org-mew
-			     ;; 'org-mhe
-			     ;; 'org-rmail
-			     ;; 'org-vm
-			     ;; 'org-w3m
-			     ;; 'org-wl
-			     )
 
 		;; Add a space before the elipsis
 		org-ellipsis " ..."
