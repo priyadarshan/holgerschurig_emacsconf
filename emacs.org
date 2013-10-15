@@ -1667,24 +1667,13 @@ Otherwise, kill characters backward until encountering the end of a word."
      (define-key Man-mode-map [return] 'View-scroll-line-forward)))
 #+END_SRC
 
-* Mode: Nimrod
-
-#+BEGIN_SRC emacs-lisp
-(autoload 'nimrod-mode "nimrod-mode" "Nimrod editing mode." t)
-(add-to-list 'auto-mode-alist '("\\.nim$" . nimrod-mode))
-(add-to-list 'interpreter-mode-alist '("nim" . nimrod-mode))
-#+END_SRC
-
 * Mode: Org
 
+- http://orgmode.org/worg/org-tutorials/orgtutorial_dto.php
+- http://thread.gmane.org/gmane.emacs.orgmode/4832
+- http://www.newartisans.com/2007/08/using-org-mode-as-a-day-planner.html
+
 #+BEGIN_SRC emacs-lisp
-;; http://orgmode.org/worg/org-tutorials/orgtutorial_dto.php
-;; http://thread.gmane.org/gmane.emacs.orgmode/4832
-;; http://www.newartisans.com/2007/08/using-org-mode-as-a-day-planner.html
-
-
-;; Must be set before org-mode loads!
-
 (eval-after-load "org"
   '(progn (setq org-directory (file-truename (concat dotfiles-dir "org/"))
 		org-default-notes-file (concat org-directory "notes.org")
@@ -2487,6 +2476,14 @@ magit status be prominently displayed."
 #+END_SRC
 
 * Disabled Package: skeleton
+* DISABLED Mode: Nimrod
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(autoload 'nimrod-mode "nimrod-mode" "Nimrod editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.nim$" . nimrod-mode))
+(add-to-list 'interpreter-mode-alist '("nim" . nimrod-mode))
+#+END_SRC
+
 
 #+BEGIN_SRC emacs-lisp :tangle no
 ;; Skeleton pairs
