@@ -21,13 +21,6 @@
 (defconst ms-windows (equal window-system 'w32))
 #+END_SRC
 
-* Load path
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(add-to-list 'load-path dotfiles-dir)
-(add-to-list 'load-path (concat dotfiles-dir "elpa/"))
-#+END_SRC
-
 * Package: package           (Emacs package manager)
 
 Load the ELPA package manager early. That way, the rest of the script
