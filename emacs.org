@@ -54,9 +54,12 @@ without those ugly underlines.
 Now that everything is set, have fun and use =M-x package-list-packages=.
 
 * Functions: Moving cursor
+** multiple key binding
+First we define code that allows us to bind multiple functions to
+repeated commands. Taken from
+[[http://www.emacswiki.org/cgi-bin/wiki/DoubleKeyBinding]]:
 
 #+BEGIN_SRC emacs-lisp
-;; http://www.emacswiki.org/cgi-bin/wiki/DoubleKeyBinding
 (defvar seq-times 0
   "Stores number of times command was executed.  It cotnains
 random data before `seq-times' macro is called.")
@@ -103,9 +106,14 @@ length is the number of COMMANDS) and then runs `seq-times'th
 command from COMMANDS."
   (declare (indent 2))
   `(eval (nth (seq-times ,name ,(length commands) ,body) ',commands)))
+#+END_SRC
 
-;; My home
+** Home / End
+Based on this, we define new home/end functions:
+
+#+BEGIN_SRC emacs-lisp
 (defvar my--previous-position 0)
+
 (defun my-home ()
   "Depending on how many times it was called moves the point to:
 
@@ -123,7 +131,6 @@ command from COMMANDS."
     (goto-char my--previous-position)))
 (substitute-key-definition 'move-beginning-of-line 'my-home (current-global-map))
 
-;; My end
 (defun my-end ()
   "Depending on how many times it was called moves the point to:
 
@@ -139,18 +146,18 @@ command from COMMANDS."
     (goto-char (point-max))
     (goto-char my--previous-position)))
 (substitute-key-definition 'move-end-of-line 'my-end (current-global-map))
+#+END_SRC
 
-;; Centering
-;;
-;; This is built-in into Emacs 23, but doesn't work as nice,
-;; because they have a different ordering of end-of-buffer,
-;; start-of-buffer.
+** Recenter
+This is built-in into Emacs 23, but doesn't work as nice, e.g. the
+bottom position is almost identical to the middle position.
 
+#+BEGIN_SRC emacs-lisp
 (defun my-recenter ()
   "Depending on how many times it was called moves the point to:
 
 - center of screen
-- neear start of screen
+- near start of screen
 - near end of center
 - back to where it was"
   (interactive)
@@ -159,19 +166,27 @@ command from COMMANDS."
       (seq-times-do nil (setq my--previous-position (window-start))
 	(recenter)
 	(recenter 4)
-	(recenter -5)
+	(recenter -1)
 	(set-window-start (selected-window) my--previous-position)))))
 (substitute-key-definition 'recenter-top-bottom 'my-recenter (current-global-map))
+#+END_SRC
 
-;; Nicer scroll handling
+** Nicer scroll handling
+
+#+BEGIN_SRC emacs-lisp
+
 (setq scroll-conservatively 1000000
       scroll-preserve-screen-position 1)
+#+END_SRC
 
+** Nicer goto-line
 
-;; Like goto-line, but doesn't modify minibuffer-history, but use it's
-;; own little history list.
+Doesn't modify minibuffer-history, but use it's own little history
+list.
 
+#+BEGIN_SRC emacs-lisp
 (setq my-goto-line-history '())
+
 (defun my-goto-line (line &optional buffer)
   "Goto LINE, counting from line 1 at beginning of buffer.
 Normally, move point in the current buffer, and leave mark at the
@@ -234,33 +249,52 @@ rather than line counts."
 #+END_SRC
 
 * Functions: Yank and Delete
+** Delete words or Yank
+The following may be of interest to people who (a) are happy with
+"C-w" and friends for killing and yanking, (b) use
+"transient-mark-mode", (c) also like the traditional Unix tty
+behaviour that "C-w" deletes a word backwards and (d) use
+GnuEmacs. It tweaks "C-w" so that, if the mark is inactive, it
+deletes a word backwards instead of killing the region:
+
+http://www.emacswiki.org/cgi-bin/wiki/DefaultKillingAndYanking
 
 #+BEGIN_SRC emacs-lisp
-;; The following may be of interest to people who (a) are happy with
-;; "C-w" and friends for killing and yanking, (b) use
-;; "transient-mark-mode", (c) also like the traditional Unix tty
-;; behaviour that "C-w" deletes a word backwards and (d) use
-;; GnuEmacs. It tweaks "C-w" so that, if the mark is inactive, it
-;; deletes a word backwards instead of killing the region:
-;; http://www.emacswiki.org/cgi-bin/wiki/DefaultKillingAndYanking
 (defadvice kill-region (before unix-werase activate compile)
   "When called interactively with no active region, delete a single word
     backwards instead."
   (interactive
    (if mark-active (list (region-beginning) (region-end))
      (list (save-excursion (backward-word 1) (point)) (point)))))
+#+END_SRC
 
-;; Deleting past a tab changes tab into spaces
+** Tab deletion
+Deleting past a tab normally changes tab into spaces. Don't do that,
+kill the tab instead. TODO move to programming section?
+
+#+BEGIN_SRC emacs-lisp
 (setq backward-delete-char-untabify-method nil)
+#+END_SRC
 
-;; Use delete-selection mode.
+** Selection deletion
+Use delete-selection mode:
+
+#+BEGIN_SRC emacs-lisp
 (delete-selection-mode t)
+#+END_SRC
 
-;; Be silent when killing text from RO buffer
+** Deletion in readonly buffer
+Be silent when killing text from read only buffer:
+
+#+BEGIN_SRC emacs-lisp
 (setq kill-read-only-ok t)
+#+END_SRC
 
-;; Delete annoying spaces when kill-line at end of line and the
-;; next line is indented
+** Delete whitespace when kill-line at end
+Delete annoying spaces when kill-line at end of line and the
+next line is indented:
+
+#+BEGIN_SRC emacs-lisp
 (defun kill-and-join-forward (&optional arg)
   "If at end of line, join with following; otherwise kill line.
 Deletes whitespace at join."
@@ -271,7 +305,10 @@ Deletes whitespace at join."
 
 (global-set-key (kbd "C-k") 'kill-and-join-forward)
 ;; ORIGINAL: deleteline
+#+END_SRC
 
+
+#+BEGIN_SRC emacs-lisp
 (defun my-yank (&optional arg)
   "Reinsert (\"paste\") the last stretch of killed text.
 More precisely, reinsert the stretch of killed text most recently
@@ -309,9 +346,13 @@ See also the command `yank-pop' (\\[yank-pop])."
 
 (global-set-key "\C-y" 'my-yank)
 ;; ORIGNAL: yank
+#+END_SRC
 
 
-;; http://www.reddit.com/r/emacs/comments/b1r8a/remacs_tell_us_about_the_obscure_but_useful/
+The following is from Boojum's post in
+[[http://www.reddit.com/r/emacs/comments/b1r8a/remacs_tell_us_about_the_obscure_but_useful/]].
+
+#+BEGIN_SRC emacs-lisp
 (defun delete-char-dynamic (&optional arg)
   "If at end of line, intelligently join to the following;
 otherwise delete."
@@ -342,10 +383,13 @@ otherwise delete."
 #+END_SRC
 
 * Functions: Indentation
+** Indent yanked text
+Let yanked text immediately be indented, based on an old version of
+[[http://www.emacswiki.org/emacs/AutoIndentation]]:
+
+# TODO: update with a newer version
 
 #+BEGIN_SRC emacs-lisp
-;; Let yanked text immediately be indented
-;; http://www.emacswiki.org/emacs/AutoIndentation
 (defadvice yank (after indent-region activate)
   (if (member major-mode
               '(emacs-lisp-mode scheme-mode lisp-mode
@@ -361,8 +405,11 @@ otherwise delete."
                                 latex-mode plain-tex-mode))
       (let ((mark-even-if-inactive t))
 	(indent-region (region-beginning) (region-end) nil))))
+#+END_SRC
 
-;; Swap RET and \C-j (newline and newline-and-indent)
+** Swap RET and C-j
+
+#+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "RET") 'newline-and-indent)
 ;; ORIGINAL: newline
 
@@ -371,7 +418,7 @@ otherwise delete."
 #+END_SRC
 
 * Functions: Searching
-
+** Package: isearch
 #+BEGIN_SRC emacs-lisp
 (setq ;; Scrolling while searching
       isearch-allow-scroll t
@@ -381,11 +428,15 @@ otherwise delete."
 
 (define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
 ;; ORIGINAL: isearch-yank-line
+#+END_SRC
 
+** grep
 
-;; Prompts you for an expression, defaulting to the symbol that your
-;; cursor is on, and greps for that in the current directory and all
-;; subdirectories.
+Prompts you for an expression, defaulting to the symbol that your
+cursor is on, and greps for that in the current directory and all
+subdirectories:
+
+#+BEGIN_SRC emacs-lisp
 (defun my-grep ()
   "grep the whole directory for something defaults to term at cursor position"
   (interactive)
@@ -397,7 +448,11 @@ otherwise delete."
 (global-set-key (kbd "C-x g") 'my-grep)
 ;; ORIGINAL: undefined
 
+#+END_SRC
 
+** Invoke isearch from Occur
+
+#+BEGIN_SRC emacs-lisp
 (defun isearch-occur ()
   "Invoke `occur' from within isearch."
   (interactive)
@@ -425,7 +480,7 @@ otherwise delete."
   (insert (format-time-string "%a, %e %b %Y %H:%M:%S %z")))
 #+END_SRC
 
-* Functions: Windows
+* Functions: Frames (Windows)
 
 #+BEGIN_SRC emacs-lisp
 ;; http://www.emacswiki.org/emacs/frame-cmds.el
@@ -768,7 +823,7 @@ To remove this protection, call this command with a negative prefix argument."
 #+END_SRC
 
 * Functions: Compilation
-
+** Byte compilation
 #+BEGIN_SRC emacs-lisp
 (defun my--bcc-compile-source-file (fullname)
   "Compiles an elisp file into the byte-cache"
@@ -792,8 +847,11 @@ To remove this protection, call this command with a negative prefix argument."
         (unless bcc-loaded-fake-cache-entry
           (setq loaded-from-bcc-cache t))))
     ))
+#+END_SRC
 
+** Compile or byte-compile
 
+#+BEGIN_SRC emacs-lisp
 (defun my-compile ()
   "Compile elisp or cpp"
   (interactive)
@@ -819,12 +877,13 @@ To remove this protection, call this command with a negative prefix argument."
   "Helper for to set compile-command"
   (interactive "scmd: ")
   (setq compile-command cmd))
+#+END_SRC
 
+** Auto close compile log if there are no errors
 
+[[http://www.emacswiki.org/emacs/ModeCompile]]
 
-;; Helper for compilation. Close the compilation window if there was
-;; no error at all.
-;; http://www.emacswiki.org/emacs/ModeCompile
+#+BEGIN_SRC emacs-lisp
 (defun compile-autoclose (buffer string)
   (cond ((string-match "finished" string)
 	 ;; (message "Build maybe successful: closing window.")
@@ -836,16 +895,17 @@ To remove this protection, call this command with a negative prefix argument."
 (setq compilation-finish-functions 'compile-autoclose
       compilation-ask-about-save nil
       compilation-scroll-output t)
+#+END_SRC
+
+** Error navigation
+
+#+BEGIN_SRC emacs-lisp
 
 (global-set-key [(f8)] 'next-error)
 ;; ORIGINAL: undefined
 
 (global-set-key [(shift f8)] 'previous-error)
 ;; ORIGINAL: undefined
-
-;; Help should search more than just commands
-(global-set-key (kbd "C-h a") 'apropos)
-;; ORIGINAL: apropos-command
 #+END_SRC
 
 * Load private data
@@ -856,30 +916,10 @@ To remove this protection, call this command with a negative prefix argument."
 
 * Mouse
 
+Paste at text-cursor, not at mouse-cursor
+
 #+BEGIN_SRC emacs-lisp
-;; paste at text-cursor, not at mouse-cursor
 (setq mouse-yank-at-point t)
-
-;; Show the text pointer in text areas
-;;(setq void-text-area-pointer nil)
-
-;; (eval-after-load "avoid"
-;;   '(progn
-;;      ;; Move the mouse to the lower-right corner instead of default upper-right
-;;      ;; (defun mouse-avoidance-banish-destination ()
-;;      ;;   (cons (- (frame-width) 1) (- (frame-height) 1)))
-;;      (setq mouse-avoidance-timer-delay 0.1)
-;;      (mouse-avoidance-mode 'banish)))
-;; (unless ms-windows
-;;   (when (display-mouse-p) (require 'avoid nil t)))
-#+END_SRC
-
-* X-Windows cut'n'paste
-
-#+BEGIN_SRC emacs-lisp
-;; Use clipboard of X
-;; (setq x-select-enable-clipboard t
-;;       interprogram-paste-function 'x-cut-buffer-or-selection-value)
 #+END_SRC
 
 * Entering/exiting Emacs
@@ -897,7 +937,7 @@ To remove this protection, call this command with a negative prefix argument."
       inhibit-startup-message t
 
       ;; This inhibits the initial startup echo area message.
-      ;;(setq inhibit-startup-echo-area-message "schurig")
+      inhibit-startup-echo-area-message "schurig"
 
       ;; Don't ask when running revert-buffer
       revert-without-query (quote (""))
@@ -912,7 +952,7 @@ To remove this protection, call this command with a negative prefix argument."
       ;;(setq confirm-kill-emacs t)
 
       ;; Set up default editing mode.
-      default-major-mode 'indented-text-mode
+      major-mode 'indented-text-mode
 
       ;; Custom file, part one
       custom-file (concat dotfiles-dir "custom.el")
@@ -920,8 +960,13 @@ To remove this protection, call this command with a negative prefix argument."
 
 ;; Custom file, part two
 (if (file-exists-p custom-file) (load-file custom-file))
+#+END_SRC
 
-;; Don't run vc-git & friends, we have magit
+** Don't run version control hooks
+
+Don't run vc-git & friends, we have magit
+
+#+BEGIN_SRC emacs-lisp
 (defun vc-find-file-hook ()
   "Dummy, overriding the one in vc-hooks.el"
   (setq vc-mode nil))
@@ -930,8 +975,9 @@ To remove this protection, call this command with a negative prefix argument."
 
 * Entering text
 
+Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
+
 #+BEGIN_SRC emacs-lisp
-;; use decimal for `C-q'
 (setq read-quoted-char-radix 10)
 #+END_SRC
 
@@ -967,37 +1013,18 @@ To remove this protection, call this command with a negative prefix argument."
  backup-directory-alist (list (cons "." (concat dotfiles-dir "tmp/bak/")))
  )
 
-;; Emacs is a text editor, make sure your text files end in a newline
+;; Make sure your text files end in a newline
 (setq require-final-newline t)
 
 ;; Disable auto-save (#init.el# file-names)
 (setq auto-save-default nil)
 
-;; Don't open Qt's *.pro files as IDLWAVE files
+;; Don't open Qt's *.pro files as IDLWAVE files TODO move to development
 (add-to-list 'auto-mode-alist '("\\.pro$" . fundamental-mode))
 
 ;; Open *.h files normally in c++ mode
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
-
-
-;; Auto-saving into some global directory
-
-;; (defvar autosave-dir
-;;   (file-name-as-directory (concat dotfiles-dir "tmp/autosave"))
-;;   "The directory in which to place auto-save (i.e. #foo#) files.")
-
-;; (defun auto-save-file-name-p (filename)
-;;   "Return non-nil if filename can be yielded by `make-auto-save-file-name'.
-;; filename should lack slashes."
-;;   (string-match "^#.*#$" (file-name-nondirectory filename)))
-
-;; (defun make-auto-save-file-name ()
-;;   (concat autosave-dir
-;;           (if buffer-file-name
-;;               (concat "#" (file-name-nondirectory buffer-file-name) "#")
-;;             (expand-file-name
-;;              (concat "#%" (buffer-name) "#")))))
 
 (setq auto-save-list-file-prefix (concat dotfiles-dir "tmp/auto-save-list/saves-"))
 
@@ -1007,32 +1034,23 @@ To remove this protection, call this command with a negative prefix argument."
 ;; ORIGINAL: 2C-commands
 (global-set-key [(shift f2)] '2C-command)
 ;; ORIGINAL: undefined
-
-
-;; Registers allow you to jump to a file or other location quickly. Use
-;; C-x r j followed by the letter of the register (i for init.el, s
-;; for this file) to jump to it.
-;;
-;; You should add registers here for the files you edit most often.
-
-(dolist (r `((?s (file . (concat dotfiles-dir "start.el")))
-	     ;;(?o (file . ,(concat dotfiles-dir "emacs-kit.org")))
-	     ))
-  (set-register (car r) (cadr r)))
 #+END_SRC
 
 * Help
+** Go to last help buffer
+Make 'l' (like last) go to the previous position in emacs help.
+
+[[http://www.emacswiki.org/cgi-bin/wiki/EmacsNiftyTricks]]
 
 #+BEGIN_SRC emacs-lisp
-;; Make 'l' go to the previous position in Emacs HELP
-;; http://www.emacswiki.org/cgi-bin/wiki/EmacsNiftyTricks
 (add-hook 'help-mode-hook
 	  '(lambda ()
 	     (define-key help-mode-map "l" 'help-go-back)))
+#+END_SRC
 
-;; check all variables and non-interactive functions as well
-(setq apropos-do-all t)
+** F1 key searches in help or opens man page
 
+#+BEGIN_SRC emacs-lisp
 (defun my-help ()
   "If function given tries to `describe-function' otherwise uses
 `manual-entry' to display manpage of a `current-word'."
@@ -1047,6 +1065,17 @@ To remove this protection, call this command with a negative prefix argument."
 
 (global-set-key [(f1)] 'my-help)
 ;; ORIGINAL: help-command
+#+END_SRC
+
+** Apropos
+
+#+BEGIN_SRC emacs-lisp
+;; check all variables and non-interactive functions as well
+(setq apropos-do-all t)
+
+;; Help should search more than just commands
+(global-set-key (kbd "C-h a") 'apropos)
+;; ORIGINAL: apropos-command
 #+END_SRC
 
 * Display: Frame display
@@ -1186,8 +1215,9 @@ To remove this protection, call this command with a negative prefix argument."
 
 * Display: Whitespace
 
+Let typing errors be obvious
+
 #+BEGIN_SRC emacs-lisp
-;; Let typing errors be obvious
 (add-hook 'find-file-hook
 	  '(lambda ()
 	     ;; This hack allows the diff-mode hook to set the
@@ -1222,7 +1252,7 @@ To remove this protection, call this command with a negative prefix argument."
       )
   ;; Text mode
   (progn
-    ;; No s
+    ;; No "very" visible cursor
     (setq visible-cursor nil)
     ))
 
@@ -1277,20 +1307,12 @@ To remove this protection, call this command with a negative prefix argument."
 (savehist-mode 1)
 #+END_SRC
 
-* Display: Menue
+* Display: Menu
+
+Get rid of the Games in the Tools menu.
 
 #+BEGIN_SRC emacs-lisp
-;; get rid of the Games in the Tools menu
 (define-key menu-bar-tools-menu [games] nil)
-
-;; Default was 80000
-(setq undo-limit 30000)
-#+END_SRC
-
-* Printing
-
-#+BEGIN_SRC emacs-lisp
-(setq lpr-command "kprinter")
 #+END_SRC
 
 * Misc
@@ -1298,7 +1320,8 @@ To remove this protection, call this command with a negative prefix argument."
 #+BEGIN_SRC emacs-lisp
 ;; Delete previous identical history entries
 (setq history-delete-duplicates t
-      tabify-regexp "^\t* [ \t]+")
+      tabify-regexp "^\t* [ \t]+"
+      )
 #+END_SRC
 
 * Language, German localisation
