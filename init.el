@@ -13,7 +13,7 @@
 (load (concat dotfiles-dir "elisp/byte-code-cache.el"))
 
 
-(add-to-list 'load-path (mapconcat 'identity (file-expand-wildcards "elpa/org-20*" dotfiles-dir) ""))
+(add-to-list 'load-path (concat (mapconcat 'identity (file-expand-wildcards (concat dotfiles-dir "elpa/org-20*")) "") "/"))
 (require 'ob-tangle)
 (defun load-org-elisp (file &optional compile)
   "Load Emacs Lisp source code blocks in the Org-mode FILE.
