@@ -22,7 +22,6 @@ and then loads the resulting file using `load-file'.  With prefix
 arg (noninteractively: 2nd arg) COMPILE the tangled Emacs Lisp
 file to byte-code before it is loaded."
   (interactive "fFile to load: \nP")
-  (require 'ob-core)
   (let* ((age (lambda (file)
                 (float-time
                  (time-subtract (current-time)
