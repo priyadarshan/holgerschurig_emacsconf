@@ -1686,7 +1686,8 @@ Otherwise, kill characters backward until encountering the end of a word."
 		;; Store notes at beginning of file
 		org-reverse-note-order t
 
-		org-support-shift-select t
+		;; always use shift select
+		;;org-support-shift-select t
 
 		;; Follow a link with just return
 		org-return-follows-link t
@@ -1716,13 +1717,29 @@ Otherwise, kill characters backward until encountering the end of a word."
 	  (add-hook 'org-mode-hook 'auto-fill-mode)
      ))
 
+(autoload 'org-mode "org" "Org mode" t)
+(autoload 'org-diary "org" "Diary entries from Org mode")
+(autoload 'org-store-link "org" "Store a link to the current location" t)
 
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+#+END_SRC
+
+Key-Bindings
+
+#+BEGIN_SRC emacs-lisp
+(define-key global-map "\C-cl" 'org-store-link)
+;; ORIGINAL: undefined
+#+END_SRC
+
+** Mode: Org-Agenda
+
+#+BEGIN_SRC emacs-lisp
 (eval-after-load "org-agenda"
   '(progn (setq	;; Include diary entries
 		org-agenda-include-diary t
 
-		;; Opening/closing .org mode
-		org-agenda-restore-windows-after-quit t
+		;; Opening/closing .the agenda
+		;; org-agenda-restore-windows-after-quit t
 		org-agenda-window-setup 'current-window
 
 		;; Skip done items
@@ -1746,7 +1763,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 		;; (key desc type match settings files)
 		org-agenda-custom-commands
 		'(("f" "Finished" todo "DONE|CANCELLED" nil)
-		  ("w" "Waiting" todo "WAIT|FORWARD" nil)
+		  ("w" "Waiting" todo "BLOCKED|FORWARD|FEEDBACK" nil)
 		  ("3" "next 3 weeks" agenda "" ((org-agenda-ndays 21)))
 		  ("u" "unscheduled" alltodo ""
 		   ((org-agenda-skip-function
@@ -1771,26 +1788,43 @@ Otherwise, kill characters backward until encountering the end of a word."
 	  ;; ORIGINAL: undefined
      ))
 
+
+(autoload 'org-agenda "org-agenda" "Multi-file agenda from Org mode" t)
+#+END_SRC
+
+Key-Bindings
+
+#+BEGIN_SRC emacs-lisp
+(define-key global-map "\C-ca" 'org-agenda)
+;; ORIGINAL: undefined
+#+END_SRC
+
+** Mode: Org-Faces
+
+;; (set-face-attribute 'eshell-prompt nil :foreground "turquoise1")
+#+BEGIN_SRC emacs-lisp
+(eval-after-load "org-faces"
+  '(progn (set-face-attribute 'org-level-2 nil :foreground "Blue1")
+	  (set-face-attribute 'org-level-2 nil :foreground "Blue1")
+	  (set-face-attribute 'org-level-3 nil :foreground "Blue1")
+	  (set-face-attribute 'org-level-4 nil :foreground "Blue1")
+	  (set-face-attribute 'org-level-5 nil :foreground "Blue1")
+	  (set-face-attribute 'org-level-6 nil :foreground "Blue1")
+	  (set-face-attribute 'org-level-7 nil :foreground "Blue1")
+	  (set-face-attribute 'org-level-8 nil :foreground "Blue1")
+	  ))
+#+END_SRC
+
+** Mode: Org-List
+
+#+BEGIN_SRC emacs-lisp
 (eval-after-load "org-list"
   '(progn (setq ;; Only use "1.", "2." for ordered lists, not "1)", "2)" etc
 		org-plain-list-ordered-item-terminator ?.)
 	  ))
-
-(autoload 'org-mode "org" "Org mode" t)
-(autoload 'org-diary "org" "Diary entries from Org mode")
-(autoload 'org-agenda "org-agenda" "Multi-file agenda from Org mode" t)
-(autoload 'org-store-link "org" "Store a link to the current location" t)
-
-(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-
-;; Key-Bindings
-(define-key global-map "\C-ca" 'org-agenda)
-;; ORIGINAL: undefined
-(define-key global-map "\C-cl" 'org-store-link)
-;; ORIGINAL: undefined
 #+END_SRC
 
-* Mode: Org-Remember
+** Mode: Org-Remember
 
 #+BEGIN_SRC emacs-lisp
 (eval-after-load "org-remember"
@@ -1819,6 +1853,24 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 (define-key global-map "\C-cr" 'org-remember)
 ;; ORIGINAL: undefined
+#+END_SRC
+
+** Mode: Org-Src
+
+http://orgmode.org/manual/Editing-source-code.html#Editing-source-code
+
+#+BEGIN_SRC emacs-lisp
+(eval-after-load "org-src"
+  '(progn (setq ;; don't add two spaces after editing into the source block
+	        org-src-preserve-indentation t
+
+		;; Don't reorganize the frames when calling the editor
+		org-src-window-setup 'current-window
+		)
+
+	  ;; Also exit with C-c C-c
+	  (define-key org-src-mode-map "\C-c\C-c" 'org-edit-src-exit)
+	  ))
 #+END_SRC
 
 * Mode: Perl
