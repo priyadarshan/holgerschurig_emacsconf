@@ -37,6 +37,15 @@ can require loaded packages.
 (require 'package nil 'noerror)
 #+END_SRC
 
+The package list uses "buttons" for links. Let those buttons be marked
+without those ugly underlines.
+
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute 'button nil :foreground "Blue2" :underline nil)
+#+END_SRC
+
+Now that everything is set, have fun and use =M-x package-list-packages=.
+
 * Functions: Moving cursor
 
 #+BEGIN_SRC emacs-lisp
