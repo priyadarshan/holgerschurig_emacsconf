@@ -1936,29 +1936,6 @@ Otherwise, kill characters backward until encountering the end of a word."
   (flyspell-buffer))
 #+END_SRC
 
-* Package: auto-install
-
-#+BEGIN_SRC emacs-lisp
-
-(eval-after-load "install-elisp"
-  '(setq install-elisp-repository-directory (concat dotfiles-dir "elisp/")))
-
-(eval-after-load "url-cache"
-  '(setq url-cache-directory (concat dotfiles-dir "tmp/cache/")))
-
-(eval-after-load "auto-install"
-  '(progn (setq auto-install-directory (concat dotfiles-dir "elisp/"))
-	  ))
-
-;; HINT: auto-install.el comes from EmacsWiki, you can update it
-;; with (auto-install-from-emacswiki)
-
-;; (require 'auto-install nil 'nomsg)
-;; (auto-install-update-emacswiki-package-name t)
-(autoload 'auto-install-from-emacswiki "auto-install" nil t)
-(autoload 'auto-install-from-url "auto-install" nil t)
-#+END_SRC
-
 * Package: bookmark
 
 #+BEGIN_SRC emacs-lisp
@@ -2484,6 +2461,29 @@ magit status be prominently displayed."
 (autoload 'nimrod-mode "nimrod-mode" "Nimrod editing mode." t)
 (add-to-list 'auto-mode-alist '("\\.nim$" . nimrod-mode))
 (add-to-list 'interpreter-mode-alist '("nim" . nimrod-mode))
+#+END_SRC
+
+* DISABLED Package: auto-install
+
+#+BEGIN_SRC emacs-lisp :tangle no
+
+(eval-after-load "install-elisp"
+  '(setq install-elisp-repository-directory (concat dotfiles-dir "elisp/")))
+
+(eval-after-load "url-cache"
+  '(setq url-cache-directory (concat dotfiles-dir "tmp/cache/")))
+
+(eval-after-load "auto-install"
+  '(progn (setq auto-install-directory (concat dotfiles-dir "elisp/"))
+	  ))
+
+;; HINT: auto-install.el comes from EmacsWiki, you can update it
+;; with (auto-install-from-emacswiki)
+
+;; (require 'auto-install nil 'nomsg)
+;; (auto-install-update-emacswiki-package-name t)
+(autoload 'auto-install-from-emacswiki "auto-install" nil t)
+(autoload 'auto-install-from-url "auto-install" nil t)
 #+END_SRC
 
 
