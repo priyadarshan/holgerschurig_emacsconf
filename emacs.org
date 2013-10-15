@@ -2259,9 +2259,14 @@ http://orgmode.org/manual/Editing-source-code.html#Editing-source-code
 
 * Package: magit
 
-#+BEGIN_SRC emacs-lisp
-;; Magit is now installed via the debian package "magit"
+=magit-rigid-key-bindings= must be set before magit is loaded. It will
+remove the new key bindings that use pop-up buffers.
 
+#+BEGIN_SRC emacs-lisp
+(setq magit-rigid-key-bindings t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
 (eval-after-load "magit"
   '(progn
      (setq magit-save-some-buffers 'dontask
