@@ -1710,6 +1710,8 @@ Otherwise, kill characters backward until encountering the end of a word."
 		;; Initial visibility
 		org-startup-folded 'content
 
+		;; Fontify code blocks
+		org-src-fontify-natively t
 		)
 	  (add-hook 'org-mode-hook 'auto-fill-mode)
      ))
