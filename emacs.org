@@ -29,7 +29,7 @@ can require loaded packages.
 #+BEGIN_SRC emacs-lisp
 (eval-after-load "package"
   '(progn ;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-	  ;(add-to-list 'package-archives '("tromey" . "http://tromey.com/elpa/"))
+	  (add-to-list 'package-archives '("tromey" . "http://tromey.com/elpa/"))
 	  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 	  (package-initialize)
 	  ))
