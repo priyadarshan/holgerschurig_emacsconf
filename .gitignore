@@ -1,9 +1,7 @@
 ?
-*~
-*.elc
-*.org
+/emacs.el
+/places
 /tmp/
-/elpa/archive-contents
-/elpa/builtin-packages
+/elpa/*.txt
 /elpa/*/*
 /org/

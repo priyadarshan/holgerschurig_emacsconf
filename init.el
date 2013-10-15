@@ -13,7 +13,52 @@
 (load (concat dotfiles-dir "elisp/byte-code-cache.el"))
 
 
-;; HINT: folding.el comes from EmacsWiki, you can update it
-;; with (auto-install-from-emacswiki)
-(add-to-list 'load-path (concat dotfiles-dir "elisp/"))
-(load (concat dotfiles-dir "start.el"))
+;; Some values must be set before emacs.org auto-loads org.el ...
+(setq ;; Only load these org modules:
+      org-modules (;; 'org-bbdb
+		   ;; 'org-bibtex
+		   ;; 'org-docview
+		   ;; 'org-gnus
+		   ;; 'org-info
+		   ;; 'org-jsinfo
+		   ;; 'org-irc
+		   ;; 'org-mew
+		   ;; 'org-mhe
+		   ;; 'org-rmail
+		   ;; 'org-vm
+		   ;; 'org-w3m
+		   ;; 'org-wl
+		   )
+      org-replace-disputed-keys t)
+
+
+(add-to-list 'load-path (concat (mapconcat 'identity (file-expand-wildcards (concat dotfiles-dir "elpa/org-20*")) "") "/"))
+(require 'ob-tangle)
+(defun load-org-elisp (file &optional compile)
+  "Load Emacs Lisp source code blocks in the Org-mode FILE.
+This function exports the source code using `org-babel-tangle'
+and then loads the resulting file using `load-file'.  With prefix
+arg (noninteractively: 2nd arg) COMPILE the tangled Emacs Lisp
+file to byte-code before it is loaded."
+  (interactive "fFile to load: \nP")
+  (let* ((age (lambda (file)
+                (float-time
+                 (time-subtract (current-time)
+                                (nth 5 (or (file-attributes (file-truename file))
+                                           (file-attributes file)))))))
+         (base-name (file-name-sans-extension file))
+         (exported-file (concat base-name ".el")))
+    ;; tangle if the org-mode file is newer than the elisp file
+    (unless (and (file-exists-p exported-file)
+                 (> (funcall age file) (funcall age exported-file)))
+      (org-babel-tangle-file file exported-file "emacs-lisp"))
+    (message "%s %s"
+             (if compile
+                 (progn (byte-compile-file exported-file 'load)
+                        "Compiled and loaded")
+               (progn (load-file exported-file) "Loaded"))
+             exported-file)))
+
+
+;; (load (concat dotfiles-dir "start.el"))
+(load-org-elisp (expand-file-name "emacs.org" dotfiles-dir))
