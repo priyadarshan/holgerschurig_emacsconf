@@ -2169,7 +2169,7 @@ http://orgmode.org/manual/Editing-source-code.html#Editing-source-code
       '(("default"
 	 ("dired" (mode . dired-mode))
 	 ("erc" (mode . erc-mode))
-	 ("Agenda" (or
+	 ("Org-Mode" (or
 		    (name . "^\\*Calendar\\*$")
 		    (name . "^diary$")
 		    (name . "^\\*Org.*")
