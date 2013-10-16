@@ -2,7 +2,7 @@
 #+SEQ_TODO: TODO DISABLED | DONE
 #+OPTIONS: H:2 num:nil toc:t
 #+STARTUP: oddeven
-
+#+STARTUP: overview
 
 * Debugging
 
