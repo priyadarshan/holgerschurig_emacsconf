@@ -71,6 +71,11 @@ Install some packages by default. Idea taken from Emacs-Starterkit.
     (package-install package)))
 #+END_SRC
 
+** use-package
+#+BEGIN_SRC emacs-lisp
+(require 'use-package)
+#+END_SRC
+
 * Functions: Moving cursor
 ** multiple key binding
 First we define code that allows us to bind multiple functions to
@@ -1002,16 +1007,19 @@ Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
 * File opening/saving
 
 #+BEGIN_SRC emacs-lisp
-;; find file at point
-(require 'ffap)
-
-(global-set-key (kbd "C-x C-p") 'find-file-at-point)
-;; ORIGINAL: mark-page
+(use-package ffap
+	     :commands
+	     find-file-at-point
+	     :init
+	     (bind-key "\C-x\C-p" 'find-file-at-point)
+	     ;; ORIGINAL: mark-page
+	     )
 
 ;; rebind C-x C-f and others to the ffap bindings (see variable ffap-bindings)
 ;; (ffap-bindings)
 ;; C-u C-x C-f finds the file at point
 ;; (setq ffap-require-prefix t)
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 ;; Auto decompress compressed files.

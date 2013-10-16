@@ -61,4 +61,7 @@ file to byte-code before it is loaded."
 
 
 ;; (load (concat dotfiles-dir "start.el"))
-(load-org-elisp (expand-file-name "emacs.org" dotfiles-dir))
+(add-hook 'after-init-hook
+ `(lambda ()
+	(load-org-elisp (expand-file-name "emacs.org" dotfiles-dir))
+))
