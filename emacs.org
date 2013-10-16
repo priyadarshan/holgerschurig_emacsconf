@@ -2301,12 +2301,12 @@ remove the new key bindings that use pop-up buffers.
 #+BEGIN_SRC emacs-lisp
 (eval-after-load "magit"
   '(progn
-     (setq magit-save-some-buffers 'dontask
-	   )
+     (setq magit-save-some-buffers 'dontask)
      (set-face-attribute 'magit-item-highlight nil :background nil)
      ))
 
 (autoload 'magit-get-top-dir "magit" nil t)
+
 (defun my-magit-status (dir)
   "This is like 'magit-status', but it deletes the other windows, making the
 magit status be prominently displayed."
@@ -2334,10 +2334,7 @@ magit status be prominently displayed."
         (funcall magit-status-buffer-switch-function buf)
         (magit-mode-init topdir 'magit-status-mode #'magit-refresh-status)))))
 
-(global-set-key "\M-g\M-m" 'my-magit-status)
-;; ORIGINAL: undefined
-
-(global-set-key "\M-gm" 'my-magit-status)
+(global-set-key "\C-cm" 'my-magit-status)
 ;; ORIGINAL: undefined
 #+END_SRC
 
