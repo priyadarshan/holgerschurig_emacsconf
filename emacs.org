@@ -1013,29 +1013,24 @@ Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
 ;; C-u C-x C-f finds the file at point
 ;; (setq ffap-require-prefix t)
 
-;; Never show GTK file open dialog
-(setq use-file-dialog nil)
-
-;; don't add newlines to end of buffer when scrolling, but show them
-(setq next-line-add-newlines nil)
-
+#+BEGIN_SRC emacs-lisp
 ;; Auto decompress compressed files.
 (auto-compression-mode t)
 
-(setq
- ;; Preserve hard links to the file you´re editing (this is
- ;; especially important if you edit system files)
- backup-by-copying-when-linked t
- ;; Just never create backup files at all
- ;;make-backup-files nil
- backup-directory-alist (list (cons "." (concat dotfiles-dir "tmp/bak/")))
- )
-
-;; Make sure your text files end in a newline
-(setq require-final-newline t)
-
-;; Disable auto-save (#init.el# file-names)
-(setq auto-save-default nil)
+(setq ;; Never show GTK file open dialog
+      use-file-dialog nil
+      ;; don't add newlines to end of buffer when scrolling, but show them
+      next-line-add-newlines nil
+      ;; Preserve hard links to the file you´re editing (this is
+      ;; especially important if you edit system files)
+      backup-by-copying-when-linked t
+      ;; Just never create backup files at all
+      ;;make-backup-files nil
+      backup-directory-alist (list (cons "." (concat dotfiles-dir "tmp/bak/")))
+      ;; Make sure your text files end in a newline
+      require-final-newline t
+      ;; Disable auto-save (#init.el# file-names)
+      auto-save-default nil)
 
 ;; Don't open Qt's *.pro files as IDLWAVE files TODO move to development
 (add-to-list 'auto-mode-alist '("\\.pro$" . fundamental-mode))
