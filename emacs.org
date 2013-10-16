@@ -2301,7 +2301,9 @@ remove the new key bindings that use pop-up buffers.
 #+BEGIN_SRC emacs-lisp
 (eval-after-load "magit"
   '(progn
-     (setq magit-save-some-buffers 'dontask)
+     (setq magit-save-some-buffers 'dontask
+	   magit-stage-all-confirm nil
+	   magit-unstage-all-confirm nil)
      (set-face-attribute 'magit-item-highlight nil :background nil)
      ))
 
