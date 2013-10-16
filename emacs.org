@@ -61,7 +61,8 @@ Install some packages by default. Idea taken from Emacs-Starterkit.
 (defvar my-packages-autoinst
   (list 'magit
 	'git-commit-mode
-	'git-rebase-mode)
+	'git-rebase-mode
+	'column-marker)
   "Libraries that should be installed by default.")
 
 (unless package-archive-contents
@@ -1203,14 +1204,15 @@ by Zenspider
 ** Column 80 marker
 
 #+BEGIN_SRC emacs-lisp
+(defun my-column-marker-at-80 ()
+  (interactive)
+  (column-marker-1 80)
+)
 
-;; Column-Marker http://www.emacswiki.org/emacs/ColumnMarker
-;;
-;; HINT: column-marker.el comes from EmacsWiki, you can update it
-;; with (auto-install-from-emacswiki)
-(eval-after-load "column-marker"
-  '(add-hook 'c-mode-hook (lambda () (interactive) (column-marker-1 80))))
-(require 'column-marker nil 'nomsg)
+(use-package column-marker
+  :init
+  (progn (add-hook 'c-mode-hook 'my-column-marker-at-80)
+  ))
 #+END_SRC
 
 * Display: Truncation lines
