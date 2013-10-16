@@ -22,6 +22,7 @@
 #+END_SRC
 
 * Package: package           (Emacs package manager)
+** Prepare cookie place for ELPA
 
 ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
 Move the cookie file out into the =tmp/= directory.
@@ -30,8 +31,7 @@ Move the cookie file out into the =tmp/= directory.
 (setq url-configuration-directory (concat dotfiles-dir "tmp/"))
 #+END_SRC
 
-Load the ELPA package manager early. That way, the rest of the script
-can require loaded packages.
+** Load ELPA package manager
 
 #+BEGIN_SRC emacs-lisp
 (eval-after-load "package"
@@ -44,6 +44,8 @@ can require loaded packages.
 (require 'package nil 'noerror)
 #+END_SRC
 
+** Face for package list buttons
+
 The package list uses "buttons" for links. Let those buttons be marked
 without those ugly underlines.
 
@@ -51,7 +53,23 @@ without those ugly underlines.
 (set-face-attribute 'button nil :foreground "Blue2" :underline nil)
 #+END_SRC
 
-Now that everything is set, have fun and use =M-x package-list-packages=.
+** Auto-Installation of some packages
+
+Install some packages by default. Idea taken from Emacs-Starterkit.
+
+#+BEGIN_SRC emacs-lisp
+(defvar my-packages-autoinst
+  (list 'magit
+	'git-commit-mode
+	'git-rebase-mode)
+  "Libraries that should be installed by default.")
+
+(unless package-archive-contents
+  (package-refresh-contents))
+(dolist (package my-packages-autoinst)
+  (unless (package-installed-p package)
+    (package-install package)))
+#+END_SRC
 
 * Functions: Moving cursor
 ** multiple key binding
