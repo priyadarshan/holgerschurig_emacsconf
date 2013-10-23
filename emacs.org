@@ -1939,8 +1939,10 @@ http://orgmode.org/manual/Editing-source-code.html#Editing-source-code
 #+BEGIN_SRC emacs-lisp
 (defun my-tab-setup ()
   (interactive)
-  (setq indent-tabs-mode t)
-  (setq tab-width 4))
+  (setq indent-tabs-mode t
+	tab-width 4
+	python-indent-offset 4
+	python-indent-guess-indent-offset t))
 (add-hook 'python-mode-hook 'my-tab-setup)
 #+END_SRC
 
