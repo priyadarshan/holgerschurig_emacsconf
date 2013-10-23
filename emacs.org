@@ -2289,8 +2289,8 @@ remove the new key bindings that use pop-up buffers.
   '(progn
      (setq magit-save-some-buffers 'dontask
 	   magit-stage-all-confirm nil
-	   magit-unstage-all-confirm nil)
-     (set-face-attribute 'magit-item-highlight nil :background nil)
+	   magit-unstage-all-confirm nil
+	   magit-refresh-file-buffer-hook '(revert-buffer))
      ))
 
 (autoload 'magit-get-top-dir "magit" nil t)
