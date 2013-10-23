@@ -400,9 +400,9 @@ otherwise delete."
 (put 'delete-char-dynamic 'delete-selection 'supersede)
 
 ;; Rebind DELETE and friends to our version
-(define-key global-map [(deletechar)] 'delete-char-dynamic)
-(define-key global-map [(delete)] 'delete-char-dynamic)
-(define-key global-map [(control ?d)] 'delete-char-dynamic)
+(bind-key "<deletechar>" 'delete-char-dynamic)
+(bind-key "<delete>" 'delete-char-dynamic)
+(bind-key "C-d" 'delete-char-dynamic)
 ;; ORIGINAL: delete-char
 #+END_SRC
 
@@ -1011,8 +1011,7 @@ Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
 (use-package ffap
 	     :commands
 	     find-file-at-point
-	     :init
-	     (bind-key "\C-x\C-p" 'find-file-at-point)
+	     :bind ("C-x C-p" . find-file-at-point)
 	     ;; ORIGINAL: mark-page
 	     )
 
