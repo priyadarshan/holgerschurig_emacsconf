@@ -1379,38 +1379,6 @@ A sentence doesn't end with two spaces:
 ;; Tabs mode
 (setq indent-tabs-mode t)
 
-;; http://www.emacswiki.org/emacs-en/SmartTabs
-;;(setq cua-auto-tabify-rectangles nil)
-(defadvice align (around smart-tabs activate)
-  (let ((indent-tabs-mode nil)) ad-do-it))
-(defadvice align-regexp (around smart-tabs activate)
-  (let ((indent-tabs-mode nil)) ad-do-it))
-(defadvice indent-relative (around smart-tabs activate)
-  (let ((indent-tabs-mode nil)) ad-do-it))
-(defadvice indent-according-to-mode (around smart-tabs activate)
-  (let ((indent-tabs-mode indent-tabs-mode))
-    (if (memq indent-line-function
-	      '(indent-relative
-		indent-relative-maybe))
-	(setq indent-tabs-mode nil))
-    ad-do-it))
-(defmacro smart-tabs-advice (function offset)
-  (defvaralias offset 'tab-width)
-  `(defadvice ,function (around smart-tabs activate)
-     (cond
-      (indent-tabs-mode
-       (save-excursion
-	 (beginning-of-line)
-	 (while (looking-at "\t*\\( +\\)\t+")
-	   (replace-match "" nil nil nil 1)))
-       (setq tab-width tab-width)
-       (let ((tab-width fill-column)
-	     (,offset fill-column))
-	 ad-do-it))
-      (t
-       ad-do-it))))
-
-
 ;; Silence byte-compiler
 (require 'cc-mode)
 
@@ -1448,8 +1416,6 @@ A sentence doesn't end with two spaces:
 			  (awk-mode . "awk")
 			  (other . "linux"))
 	)
-  (smart-tabs-advice c-indent-line c-basic-offset)
-  (smart-tabs-advice c-indent-region c-basic-offset)
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 
@@ -1976,7 +1942,6 @@ http://orgmode.org/manual/Editing-source-code.html#Editing-source-code
   (interactive)
   (setq indent-tabs-mode t)
   (setq tab-width 4))
-(smart-tabs-advice python-indent-line-1 python-indent)
 (add-hook 'python-mode-hook 'my-tab-setup)
 #+END_SRC
 
@@ -1991,7 +1956,6 @@ http://orgmode.org/manual/Editing-source-code.html#Editing-source-code
   (define-key text-mode-map "\C-i" 'self-insert-command)
   )
 
-(smart-tabs-advice shell-basic-indent-line sh-basic-offset)
 (add-hook 'shell-mode-hook 'my-shell-tab-setup)
 (add-hook 'sh-mode-hook 'my-shell-tab-setup)
 #+END_SRC
