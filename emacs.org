@@ -2302,25 +2302,30 @@ magit status be prominently displayed."
                          (magit-read-top-dir
                           (> (prefix-numeric-value current-prefix-arg)
                              4))
-                       (or (magit-get-top-dir default-directory)
+                       (or (magit-get-top-dir)
                            (magit-read-top-dir nil)))))
-  (magit-save-some-buffers)
   (let ((topdir (magit-get-top-dir dir)))
     (unless topdir
-      (when (y-or-n-p (format "There is no Git repository in %S.  Create one? "
-                              dir))
+      (when (y-or-n-p
+             (format "There is no Git repository in %S.  Create one? " dir))
         (magit-init dir)
         (setq topdir (magit-get-top-dir dir))))
     (when topdir
+      (magit-save-some-buffers topdir)
       (let ((buf (or (magit-find-status-buffer topdir)
                      (generate-new-buffer
                       (concat "*magit: "
                               (file-name-nondirectory
                                (directory-file-name topdir)) "*")))))
-        (pop-to-buffer buf)
+        (magit-display-mode-buffer buf magit-status-buffer-switch-function)
 	(delete-other-windows)
-        (funcall magit-status-buffer-switch-function buf)
         (magit-mode-init topdir 'magit-status-mode #'magit-refresh-status)))))
+(defun magit-refresh-status ()
+  (magit-git-exit-code "update-index" "--refresh")
+  (magit-create-buffer-sections
+    (magit-with-section 'status nil
+      (run-hooks 'magit-status-insert-sections-hook)))
+  (run-hooks 'magit-refresh-status-hook))
 
 (global-set-key "\C-cm" 'my-magit-status)
 ;; ORIGINAL: undefined
