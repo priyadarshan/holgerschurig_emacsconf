@@ -2314,12 +2314,12 @@ magit status be prominently displayed."
         (setq topdir (magit-get-top-dir dir))))
     (when topdir
       (magit-save-some-buffers topdir)
-      (let ((buf (or (magit-find-status-buffer topdir)
+      (let ((buf (or (magit-find-buffer 'magit-status-mode topdir)
                      (generate-new-buffer
                       (concat "*magit: "
                               (file-name-nondirectory
                                (directory-file-name topdir)) "*")))))
-        (magit-display-mode-buffer buf magit-status-buffer-switch-function)
+        (magit-mode-display-buffer buf magit-status-buffer-switch-function)
 	(delete-other-windows)
         (magit-mode-init topdir 'magit-status-mode #'magit-refresh-status)))))
 (defun magit-refresh-status ()
