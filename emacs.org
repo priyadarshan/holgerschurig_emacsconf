@@ -59,10 +59,7 @@ Install some packages by default. Idea taken from Emacs-Starterkit.
 
 #+BEGIN_SRC emacs-lisp
 (defvar my-packages-autoinst
-  (list 'magit
-	'git-commit-mode
-	'git-rebase-mode
-	'column-marker)
+  (list 'column-marker)
   "Libraries that should be installed by default.")
 
 (unless package-archive-contents
@@ -2298,6 +2295,29 @@ remove the new key bindings that use pop-up buffers.
 (autoload 'magit-get-top-dir "magit" nil t)
 
 (defun my-magit-status (dir)
+  (interactive (list (or (and (not current-prefix-arg)
+                              (magit-get-top-dir default-directory))
+                         (magit-read-top-dir (and (consp current-prefix-arg)
+                                                  (> (car current-prefix-arg) 4))))))
+  (if magit-save-some-buffers
+      (save-some-buffers (eq magit-save-some-buffers 'dontask)))
+  (let ((topdir (magit-get-top-dir dir)))
+    (unless topdir
+      (when (y-or-n-p (format "There is no Git repository in %S.  Create one? "
+                              dir))
+        (magit-init dir)
+        (setq topdir (magit-get-top-dir dir))))
+    (when topdir
+      (let ((buf (or (magit-find-buffer 'status topdir)
+                     (generate-new-buffer
+                      (concat "*magit: " 
+                              (file-name-nondirectory
+                               (directory-file-name topdir)) "*")))))
+        (switch-to-buffer buf)
+        (delete-other-windows)
+        (magit-mode-init topdir 'status #'magit-refresh-status)
+        (magit-status-mode t)))))
+(defun my-new-magit-status (dir)
   "This is like 'magit-status', but it deletes the other windows, making the
 magit status be prominently displayed."
   (interactive (list (if current-prefix-arg
