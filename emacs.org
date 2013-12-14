@@ -59,7 +59,7 @@ Install some packages by default. Idea taken from Emacs-Starterkit.
 
 #+BEGIN_SRC emacs-lisp
 (defvar my-packages-autoinst
-  (list 'column-marker)
+  (list 'column-marker 'use-package)
   "Libraries that should be installed by default.")
 
 (unless package-archive-contents
