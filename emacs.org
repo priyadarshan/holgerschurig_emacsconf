@@ -2287,6 +2287,7 @@ remove the new key bindings that use pop-up buffers.
 (eval-after-load "magit"
   '(progn
      (setq magit-save-some-buffers 'dontask
+	   magit-commit-all-when-nothing-staged nil
 	   magit-stage-all-confirm nil
 	   magit-unstage-all-confirm nil
 	   magit-refresh-file-buffer-hook '(revert-buffer))
@@ -2310,7 +2311,7 @@ remove the new key bindings that use pop-up buffers.
     (when topdir
       (let ((buf (or (magit-find-buffer 'status topdir)
                      (generate-new-buffer
-                      (concat "*magit: " 
+                      (concat "*magit: "
                               (file-name-nondirectory
                                (directory-file-name topdir)) "*")))))
         (switch-to-buffer buf)
