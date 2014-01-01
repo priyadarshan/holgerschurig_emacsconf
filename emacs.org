@@ -21,7 +21,7 @@
 (defconst ms-windows (equal window-system 'w32))
 #+END_SRC
 
-* Package: package           (Emacs package manager)
+* Package management
 ** Prepare cookie place for ELPA
 
 ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
@@ -44,22 +44,15 @@ Move the cookie file out into the =tmp/= directory.
 (require 'package nil 'noerror)
 #+END_SRC
 
-** Face for package list buttons
-
-The package list uses "buttons" for links. Let those buttons be marked
-without those ugly underlines.
-
-#+BEGIN_SRC emacs-lisp
-(set-face-attribute 'button nil :foreground "Blue2" :underline nil)
-#+END_SRC
-
 ** Auto-Installation of some packages
 
 Install some packages by default. Idea taken from Emacs-Starterkit.
 
 #+BEGIN_SRC emacs-lisp
 (defvar my-packages-autoinst
-  (list 'column-marker 'use-package)
+  (list 'column-marker
+	'use-package
+	'web-mode)
   "Libraries that should be installed by default.")
 
 (unless package-archive-contents
@@ -72,6 +65,15 @@ Install some packages by default. Idea taken from Emacs-Starterkit.
 ** use-package
 #+BEGIN_SRC emacs-lisp
 (require 'use-package)
+#+END_SRC
+
+** Face for package list buttons
+
+The package list uses "buttons" for links. Let those buttons be marked
+without those ugly underlines.
+
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute 'button nil :foreground "Blue2" :underline nil)
 #+END_SRC
 
 * Functions: Moving cursor
