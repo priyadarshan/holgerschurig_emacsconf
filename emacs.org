@@ -1488,8 +1488,9 @@ A sentence doesn't end with two spaces:
 
 #+BEGIN_SRC emacs-lisp
 (use-package dired
+  :commands dired
   :config (setq dired-auto-revert-buffer t)
-  :bind ("\C-x\C-d" . dired)  ;;ORIGINAL: list-directory
+  :bind ("\C-x\C-d" . ido-dired)  ;;ORIGINAL: list-directory
 )
 #+END_SRC
 
