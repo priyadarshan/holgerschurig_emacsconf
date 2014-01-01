@@ -51,6 +51,7 @@ Install some packages by default. Idea taken from Emacs-Starterkit.
 #+BEGIN_SRC emacs-lisp
 (defvar my-packages-autoinst
   (list 'column-marker
+	'csv-mode
 	'use-package
 	'web-mode)
   "Libraries that should be installed by default.")
@@ -1457,8 +1458,8 @@ A sentence doesn't end with two spaces:
 * Mode: CSV
 
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.[Cc][Ss][Vv]\\'" . csv-mode))
-(autoload 'csv-mode "csv-mode" "Major mode for editing comma-separated value files." t)
+(use-package csv-mode
+  :mode "\\.[Cc][Ss][Vv]\\'")
 #+END_SRC
 
 * Mode: D
