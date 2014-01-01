@@ -1643,10 +1643,24 @@ Otherwise, kill characters backward until encountering the end of a word."
      (define-key scheme-mode-map [(control backspace)] 'my-join-line-and-indent-sexp-or-backward-kill-word)))
 #+END_SRC
 
-* Mode: Javascript (JS)
+* Mode: Javascript (js2-mode)
+
+The rename-modeline macro is from http://whattheemacsd.com/appearance.el-01.html#disqus_thread
 
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.js$" . js-mode))
+(defmacro rename-modeline (package-name mode new-name)
+  `(eval-after-load ,package-name
+     '(defadvice ,mode (after rename-modeline activate)
+        (setq mode-name ,new-name))))
+
+(use-package js2-mode
+  :mode
+  ("\\.js$" . js2-mode)
+  :init
+  (rename-modeline "js2-mode" js2-mode "js2")
+)
+
+;; auto-mode-alist
 #+END_SRC
 
 * Mode: Lua
