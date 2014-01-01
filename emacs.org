@@ -1473,34 +1473,24 @@ A sentence doesn't end with two spaces:
 * Mode: Diff
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'diff-mode-hook
-	  '(lambda ()
-	     (setq show-trailing-whitespace -1)
-	     (setq def-file-header '((t nil)))
-	     (setq def-header '((t nil)))
-	     ))
-(setq diff-switches "-u")
+(defun my-diff-mode-hook ()
+    (setq show-trailing-whitespace t)
+    (setq def-file-header '((t nil)))
+    (setq def-header '((t nil))))
+
+(use-package diff-mode
+  :config (progn
+	    (add-hook 'diff-mode-hook 'my-diff-mode-hook)
+	    (setq diff-switches "-u")))
 #+END_SRC
 
 * Mode: Dired
 
 #+BEGIN_SRC emacs-lisp
-;; HINT: next expression is very useful for M-( in Dired mode:
-;; (string-match "perl" (shell-command-to-string (concat "file " name)))
-
-;; use 'e' to edit filenames
-(eval-after-load "dired"
-  '(progn
-     ;; provide some dired goodies
-     ;; http://www.gnu.org/software/emacs/manual/html_mono/dired-x.html
-     ;; dired-jump        C-x C-j
-     (require 'dired-x)
-
-     (setq dired-auto-revert-buffer t)
-     (define-key dired-mode-map "e" 'wdired-change-to-wdired-mode)))
-
-(define-key global-map "\C-x\C-d" 'dired)
-;; ORIGINAL: list-directory
+(use-package dired
+  :config (setq dired-auto-revert-buffer t)
+  :bind ("\C-x\C-d" . dired)  ;;ORIGINAL: list-directory
+)
 #+END_SRC
 
 * Mode: ELisp
