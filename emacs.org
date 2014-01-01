@@ -63,6 +63,29 @@ Install some packages by default. Idea taken from Emacs-Starterkit.
 #+END_SRC
 
 ** use-package
+
+See https://github.com/jwiegley/use-package
+
+(use-package PACKAGE
+:init (...)                      initialization, always for deferred modules
+:config (...)                    initialization, after deferred modules are loaded
+:bind ("C-." . ace-jump-mode))   key binding, try M-x describe-personal-keybindings
+:bind (("M-o l" . highlight-lines-matching-regexp)
+       ("M-o r" . highlight-regexp)
+       ("M-o w" . highlight-phrase))
+:commands ace-jump-mode          create autoloads
+:mode "\\.rb\\'"
+:mode ("\\.py\\'" . python-mode)
+:interpreter "ruby"
+:interpreter ("python" . python-mode)
+:defer t
+:disabled t                      stop using this
+:if window-system                predicate, e.g. to emacs server only for graphical emacs
+:defines empty-variable-definitions
+:load-path "site-lisp/ess/lisp/"
+:diminish abbrev-mode
+)
+
 #+BEGIN_SRC emacs-lisp
 (require 'use-package)
 #+END_SRC
