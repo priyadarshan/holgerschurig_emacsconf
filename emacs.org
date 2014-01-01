@@ -1505,20 +1505,6 @@ A sentence doesn't end with two spaces:
 	     (modify-syntax-entry ?- "w")))
 #+END_SRC
 
-* Mode: Folding
-
-#+BEGIN_SRC emacs-lisp
-;; SEE http://www.emacswiki.org/emacs/download/folding.el
-
-(autoload 'folding-mode "folding" "Fold mode" t)
-
-
-(eval-after-load "folding"
-  '(progn
-     (define-key folding-mode-map "\C-t" 'folding-toggle-show-hide)
-     (setq folding-isearch-install t)))
-#+END_SRC
-
 * Mode: Generic-X
 
 #+BEGIN_SRC emacs-lisp
