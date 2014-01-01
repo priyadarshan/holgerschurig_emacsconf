@@ -52,6 +52,7 @@ Install some packages by default. Idea taken from Emacs-Starterkit.
 (defvar my-packages-autoinst
   (list 'column-marker
 	'csv-mode
+	'd-mode
 	'use-package
 	'web-mode)
   "Libraries that should be installed by default.")
@@ -1465,8 +1466,8 @@ A sentence doesn't end with two spaces:
 * Mode: D
 
 #+BEGIN_SRC emacs-lisp
-(autoload 'd-mode "d-mode" "Major mode for editing D code." t)
-(add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
+(use-package d-mode
+  :mode "\\.d[i]?\\'")
 #+END_SRC
 
 * Mode: Diff
