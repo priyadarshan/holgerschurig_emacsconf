@@ -21,7 +21,7 @@
 (defconst ms-windows (equal window-system 'w32))
 #+END_SRC
 
-* Package: package           (Emacs package manager)
+* Package management
 ** Prepare cookie place for ELPA
 
 ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
@@ -44,22 +44,17 @@ Move the cookie file out into the =tmp/= directory.
 (require 'package nil 'noerror)
 #+END_SRC
 
-** Face for package list buttons
-
-The package list uses "buttons" for links. Let those buttons be marked
-without those ugly underlines.
-
-#+BEGIN_SRC emacs-lisp
-(set-face-attribute 'button nil :foreground "Blue2" :underline nil)
-#+END_SRC
-
 ** Auto-Installation of some packages
 
 Install some packages by default. Idea taken from Emacs-Starterkit.
 
 #+BEGIN_SRC emacs-lisp
 (defvar my-packages-autoinst
-  (list 'column-marker)
+  (list 'column-marker
+	'csv-mode
+	'd-mode
+	'use-package
+	'web-mode)
   "Libraries that should be installed by default.")
 
 (unless package-archive-contents
@@ -70,8 +65,40 @@ Install some packages by default. Idea taken from Emacs-Starterkit.
 #+END_SRC
 
 ** use-package
+
+See https://github.com/jwiegley/use-package
+
+(use-package PACKAGE
+:init (...)                      initialization, always for deferred modules
+:config (...)                    initialization, after deferred modules are loaded
+:bind ("C-." . ace-jump-mode))   key binding, try M-x describe-personal-keybindings
+:bind (("M-o l" . highlight-lines-matching-regexp)
+       ("M-o r" . highlight-regexp)
+       ("M-o w" . highlight-phrase))
+:commands ace-jump-mode          create autoloads
+:mode "\\.rb\\'"
+:mode ("\\.py\\'" . python-mode)
+:interpreter "ruby"
+:interpreter ("python" . python-mode)
+:defer t
+:disabled t                      stop using this
+:if window-system                predicate, e.g. to emacs server only for graphical emacs
+:defines empty-variable-definitions
+:load-path "site-lisp/ess/lisp/"
+:diminish abbrev-mode
+)
+
 #+BEGIN_SRC emacs-lisp
 (require 'use-package)
+#+END_SRC
+
+** Face for package list buttons
+
+The package list uses "buttons" for links. Let those buttons be marked
+without those ugly underlines.
+
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute 'button nil :foreground "Blue2" :underline nil)
 #+END_SRC
 
 * Functions: Moving cursor
@@ -1432,48 +1459,39 @@ A sentence doesn't end with two spaces:
 * Mode: CSV
 
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.[Cc][Ss][Vv]\\'" . csv-mode))
-(autoload 'csv-mode "csv-mode" "Major mode for editing comma-separated value files." t)
+(use-package csv-mode
+  :mode "\\.[Cc][Ss][Vv]\\'")
 #+END_SRC
 
 * Mode: D
 
 #+BEGIN_SRC emacs-lisp
-(autoload 'd-mode "d-mode" "Major mode for editing D code." t)
-(add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
+(use-package d-mode
+  :mode "\\.d[i]?\\'")
 #+END_SRC
 
 * Mode: Diff
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'diff-mode-hook
-	  '(lambda ()
-	     (setq show-trailing-whitespace -1)
-	     (setq def-file-header '((t nil)))
-	     (setq def-header '((t nil)))
-	     ))
-(setq diff-switches "-u")
+(defun my-diff-mode-hook ()
+    (setq show-trailing-whitespace t)
+    (setq def-file-header '((t nil)))
+    (setq def-header '((t nil))))
+
+(use-package diff-mode
+  :config (progn
+	    (add-hook 'diff-mode-hook 'my-diff-mode-hook)
+	    (setq diff-switches "-u")))
 #+END_SRC
 
 * Mode: Dired
 
 #+BEGIN_SRC emacs-lisp
-;; HINT: next expression is very useful for M-( in Dired mode:
-;; (string-match "perl" (shell-command-to-string (concat "file " name)))
-
-;; use 'e' to edit filenames
-(eval-after-load "dired"
-  '(progn
-     ;; provide some dired goodies
-     ;; http://www.gnu.org/software/emacs/manual/html_mono/dired-x.html
-     ;; dired-jump        C-x C-j
-     (require 'dired-x)
-
-     (setq dired-auto-revert-buffer t)
-     (define-key dired-mode-map "e" 'wdired-change-to-wdired-mode)))
-
-(define-key global-map "\C-x\C-d" 'dired)
-;; ORIGINAL: list-directory
+(use-package dired
+  :commands dired
+  :config (setq dired-auto-revert-buffer t)
+  :bind ("\C-x\C-d" . ido-dired)  ;;ORIGINAL: list-directory
+)
 #+END_SRC
 
 * Mode: ELisp
@@ -1485,20 +1503,6 @@ A sentence doesn't end with two spaces:
 	     (eldoc-mode t)
 	     ;; "-" is almost always part of a function- or variable-name
 	     (modify-syntax-entry ?- "w")))
-#+END_SRC
-
-* Mode: Folding
-
-#+BEGIN_SRC emacs-lisp
-;; SEE http://www.emacswiki.org/emacs/download/folding.el
-
-(autoload 'folding-mode "folding" "Fold mode" t)
-
-
-(eval-after-load "folding"
-  '(progn
-     (define-key folding-mode-map "\C-t" 'folding-toggle-show-hide)
-     (setq folding-isearch-install t)))
 #+END_SRC
 
 * Mode: Generic-X
@@ -1641,10 +1645,24 @@ Otherwise, kill characters backward until encountering the end of a word."
      (define-key scheme-mode-map [(control backspace)] 'my-join-line-and-indent-sexp-or-backward-kill-word)))
 #+END_SRC
 
-* Mode: Javascript (JS)
+* Mode: Javascript (js2-mode)
+
+The rename-modeline macro is from http://whattheemacsd.com/appearance.el-01.html#disqus_thread
 
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.js$" . js-mode))
+(defmacro rename-modeline (package-name mode new-name)
+  `(eval-after-load ,package-name
+     '(defadvice ,mode (after rename-modeline activate)
+        (setq mode-name ,new-name))))
+
+(use-package js2-mode
+  :mode
+  ("\\.js$" . js2-mode)
+  :init
+  (rename-modeline "js2-mode" js2-mode "js2")
+)
+
+;; auto-mode-alist
 #+END_SRC
 
 * Mode: Lua
@@ -1732,6 +1750,7 @@ Otherwise, kill characters backward until encountering the end of a word."
 
 		;; Fontify code blocks
 		org-src-fontify-natively t
+		org-src-tab-acts-natively t
 		)
 	  (add-hook 'org-mode-hook 'auto-fill-mode)
      ))
@@ -1977,6 +1996,23 @@ http://orgmode.org/manual/Editing-source-code.html#Editing-source-code
 (add-hook 'text-mode-hook
 	  '(lambda ()
 	     (auto-fill-mode 1)))
+#+END_SRC
+
+* Mode: Web-Mode
+
+See http://web-mode.org/
+
+#+BEGIN_SRC emacs-lisp
+(use-package web-mode
+  :init
+  (setq web-mode-engines-alist '(("django" . "\\.html\\'")
+                                 ("php"    . "\\.phtml\\'")
+                                 ("blade"  . "\\.blade\\."))
+        web-mode-markup-indent-offset 2
+        web-mode-css-indent-offset 2
+        web-mode-code-indent-offset 2)
+  :mode ("\\.html\\'" . web-mode)
+  )
 #+END_SRC
 
 * Mode: WordStar
@@ -2290,59 +2326,12 @@ remove the new key bindings that use pop-up buffers.
 	   magit-commit-all-when-nothing-staged nil
 	   magit-stage-all-confirm nil
 	   magit-unstage-all-confirm nil
+	   magit-status-buffer-switch-function 'switch-to-buffer
 	   magit-refresh-file-buffer-hook '(revert-buffer))
      ))
 
 (autoload 'magit-get-top-dir "magit" nil t)
 
-(defun my-magit-status (dir)
-  (interactive (list (or (and (not current-prefix-arg)
-                              (magit-get-top-dir default-directory))
-                         (magit-read-top-dir (and (consp current-prefix-arg)
-                                                  (> (car current-prefix-arg) 4))))))
-  (if magit-save-some-buffers
-      (save-some-buffers (eq magit-save-some-buffers 'dontask)))
-  (let ((topdir (magit-get-top-dir dir)))
-    (unless topdir
-      (when (y-or-n-p (format "There is no Git repository in %S.  Create one? "
-                              dir))
-        (magit-init dir)
-        (setq topdir (magit-get-top-dir dir))))
-    (when topdir
-      (let ((buf (or (magit-find-buffer 'status topdir)
-                     (generate-new-buffer
-                      (concat "*magit: "
-                              (file-name-nondirectory
-                               (directory-file-name topdir)) "*")))))
-        (switch-to-buffer buf)
-        (delete-other-windows)
-        (magit-mode-init topdir 'status #'magit-refresh-status)
-        (magit-status-mode t)))))
-(defun my-new-magit-status (dir)
-  "This is like 'magit-status', but it deletes the other windows, making the
-magit status be prominently displayed."
-  (interactive (list (if current-prefix-arg
-                         (magit-read-top-dir
-                          (> (prefix-numeric-value current-prefix-arg)
-                             4))
-                       (or (magit-get-top-dir)
-                           (magit-read-top-dir nil)))))
-  (let ((topdir (magit-get-top-dir dir)))
-    (unless topdir
-      (when (y-or-n-p
-             (format "There is no Git repository in %S.  Create one? " dir))
-        (magit-init dir)
-        (setq topdir (magit-get-top-dir dir))))
-    (when topdir
-      (magit-save-some-buffers topdir)
-      (let ((buf (or (magit-find-buffer 'magit-status-mode topdir)
-                     (generate-new-buffer
-                      (concat "*magit: "
-                              (file-name-nondirectory
-                               (directory-file-name topdir)) "*")))))
-        (magit-mode-display-buffer buf magit-status-buffer-switch-function)
-	(delete-other-windows)
-        (magit-mode-init topdir 'magit-status-mode #'magit-refresh-status)))))
 (defun magit-refresh-status ()
   (magit-git-exit-code "update-index" "--refresh")
   (magit-create-buffer-sections
@@ -2350,7 +2339,7 @@ magit status be prominently displayed."
       (run-hooks 'magit-status-insert-sections-hook)))
   (run-hooks 'magit-refresh-status-hook))
 
-(global-set-key "\C-cm" 'my-magit-status)
+(global-set-key "\C-cm" 'magit-status)
 ;; ORIGINAL: undefined
 #+END_SRC
 
