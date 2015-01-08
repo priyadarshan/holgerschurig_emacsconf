@@ -31,6 +31,4 @@
 		   )
       org-replace-disputed-keys t)
 
-
-(add-to-list 'load-path (concat (mapconcat 'identity (file-expand-wildcards (concat dotfiles-dir "elpa/org-20*")) "") "/"))
 (org-babel-load-file "~/.emacs.d/emacs.org") ;; TODO
