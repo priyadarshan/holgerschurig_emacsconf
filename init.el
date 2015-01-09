@@ -24,31 +24,6 @@
 
 
 
-;;; Package management
-
-;; Please don't load outdated byte code
-(setq load-prefer-newer t)
-
-;; ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
-;; Move the cookie file out into the =tmp/= directory.
-(setq url-configuration-directory (concat dotfiles-dir "tmp/"))
-
-(require 'package)
-(setq package-enable-at-startup nil)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-
-(package-initialize)
-
-;; Bootstrap `use-package'
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-(require 'use-package)
-
-
-
-
 ;;; Load emacs.org
 
 ;; Some values must be set before emacs.org auto-loads org.el ...

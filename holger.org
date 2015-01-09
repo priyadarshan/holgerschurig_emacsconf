@@ -4,7 +4,60 @@
 # STARTUP: oddeven
 # STARTUP: overview
 
-* OS - Environment
+* use-package
+
+See http://github.com/jwiegley/use-package/
+ or http://www.lunaryorn.com/2015/01/06/my-emacs-configuration-with-use-package.html
+
+
+(use-package PACKAGE
+:init (...)                      run if defered, when :commands is there, or after requiring the package
+:config (...)                    only run after modules has been are loaded
+:idle (...)                      like :init, but run when emacs is idle
+:idle-priority 3                 lower is run first, default is 5
+:pre-load                        run before anything else
+:bind ("C-." . testpkg))         key binding, try M-x describe-personal-keybindings
+:bind (("M-o l" . highlight-lines-matching-regexp)
+       ("M-o r" . highlight-regexp)
+       ("M-o w" . highlight-phrase))
+:commands testpkg                create autoload, not needed for things in :bind
+:mode "\\.rb\\'"
+:mode ("\\.py\\'" . python-mode)
+:interpreter "ruby"
+:interpreter ("python" . python-mode)
+:ensure t                        load it from MELPA
+:defer t
+:demand t                        opposite of :defer
+:disabled t                      stop using this
+:if window-system                predicate, e.g. to emacs server only for graphical emacs
+:defines empty-variable-defs     helps with byte-compilation
+:load-path "site-lisp/ess/lisp/"
+:diminish abbrev-mode
+)
+
+#+BEGIN_SRC emacs-lisp
+;; Please don't load outdated byte code
+(setq load-prefer-newer t)
+
+;; ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
+;; Move the cookie file out into the =tmp/= directory.
+(setq url-configuration-directory (concat dotfiles-dir "tmp/"))
+
+(require 'package)
+(setq package-enable-at-startup nil)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+
+(package-initialize)
+
+;; Bootstrap `use-package'
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(require 'use-package)
+#+END_SRC
+
+* OS and environment
 
 #+BEGIN_SRC emacs-lisp
 (defconst ms-windows (equal window-system 'w32))
