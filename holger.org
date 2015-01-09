@@ -69,6 +69,7 @@ See http://github.com/jwiegley/use-package/
 (load (concat dotfiles-dir "private.el") 'noerror 'nomessage)
 #+END_SRC
 
+
 * Functions
 ** Moving cursor
 *** multiple key binding
@@ -1517,3 +1518,43 @@ This is old code that I still need to evaluate:
   (savehist-mode 1)
 )
 #+END_SRC
+** magit
+
+=magit-rigid-key-bindings= must be set before magit is loaded. It will
+remove the new key bindings that use pop-up buffers.
+
+#+BEGIN_SRC emacs-lisp
+(setq magit-rigid-key-bindings t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package magit
+  :ensure t
+  :defer t
+  :config
+  (progn
+     (setq magit-save-some-buffers 'dontask
+	   magit-commit-all-when-nothing-staged nil
+	   magit-stage-all-confirm nil
+	   magit-unstage-all-confirm nil
+	   magit-status-buffer-switch-function 'switch-to-buffer
+	   magit-refresh-file-buffer-hook '(revert-buffer)
+	   magit-diff-use-overlays t
+	   )
+     ;(set-face-foreground 'magit-diff-add "green4")
+     ;(set-face-foreground 'magit-diff-del "red3")
+     )
+  :bind ("C-c m" . magit-status)
+  :commands (magit-get-top-dir)
+)
+
+;;(autoload 'magit-get-top-dir "magit" nil t)
+
+(defun magit-refresh-status ()
+  (magit-git-exit-code "update-index" "--refresh")
+  (magit-create-buffer-sections
+    (magit-with-section 'status nil
+      (run-hooks 'magit-status-insert-sections-hook)))
+  (run-hooks 'magit-refresh-status-hook))
+#+END_SRC
+
