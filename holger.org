@@ -261,8 +261,8 @@ rather than line counts."
 	(re-search-forward "[\n\C-m]" nil 'end (1- line))
       (forward-line (1- line)))))
 
-(global-set-key (kbd "M-g g") 'my-goto-line)
-(global-set-key (kbd "M-g M-g") 'my-goto-line)
+(bind-key "M-g g"   'my-goto-line)
+(bind-key "M-g M-g" 'my-goto-line)
 #+END_SRC
 
 ** Yank and Delete
@@ -320,8 +320,7 @@ Deletes whitespace at join."
 				 (delete-indentation t)
 			       (kill-line arg)))
 
-(global-set-key (kbd "C-k") 'kill-and-join-forward)
-;; ORIGINAL: deleteline
+(bind-key "C-k" 'kill-and-join-forward)
 #+END_SRC
 
 
@@ -361,7 +360,7 @@ See also the command `yank-pop' (\\[yank-pop])."
       (setq this-command 'yank))
   nil)
 
-(global-set-key "\C-y" 'my-yank)
+(bind-key "C-y" 'my-yank)
 ;; ORIGNAL: yank
 #+END_SRC
 
@@ -396,7 +395,6 @@ otherwise delete."
 (bind-key "<deletechar>" 'delete-char-dynamic)
 (bind-key "<delete>" 'delete-char-dynamic)
 (bind-key "C-d" 'delete-char-dynamic)
-;; ORIGINAL: delete-char
 #+END_SRC
 
 ** Indentation
@@ -427,11 +425,9 @@ Let yanked text immediately be indented, based on an old version of
 *** Swap RET and C-j
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "RET") 'newline-and-indent)
-;; ORIGINAL: newline
+(bind-key "RET" 'newline-and-indent)
 
-(global-set-key (kbd "\C-j") 'newline)
-;; ORIGINAL: newline-and-indent
+(bind-key "C-j" 'newline)
 #+END_SRC
 
 ** Searching
@@ -443,8 +439,7 @@ Let yanked text immediately be indented, based on an old version of
       ;; Save Isearch stuff
       isearch-resume-in-command-history t)
 
-(define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
-;; ORIGINAL: isearch-yank-line
+(bind-key "C-y" 'isearch-yank-kill isearch-mode-map)
 #+END_SRC
 
 *** grep
@@ -462,8 +457,7 @@ subdirectories:
       (setq needle (if (equal needle "") default needle))
       (grep (concat "egrep -s -i -n -r " needle " *")))))
 
-(global-set-key (kbd "C-x g") 'my-grep)
-;; ORIGINAL: undefined
+(bind-key "C-x g" 'my-grep)
 
 #+END_SRC
 
@@ -477,8 +471,7 @@ subdirectories:
     (occur (if isearch-regexp isearch-string (regexp-quote isearch-string))))
   (pop-to-buffer "*Occur*"))
 
-(define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
-;; ORIGINAL: isearch-other-meta-char
+(bind-key "C-o" 'isearch-occur isearch-mode-map)
 #+END_SRC
 
 ** Miscelleanous
@@ -539,15 +532,12 @@ there are several windows open."
   ;;   (delete-frame))
   )
 
-(global-set-key "\C-xk" 'my--kill-buffer-and-window)
-;; ORIGINAL: kill-buffer
+(bind-key "C-x k" 'my--kill-buffer-and-window)
 
 
-(global-set-key (kbd "<M-down>") 'enlarge-window)
-;; ORIGINAL: undefined
+(bind-key "<M-down>" 'enlarge-window)
 
-(global-set-key (kbd "<M-up>") 'shrink-window)
-;; ORIGINAL: undefined
+(bind-key "<M-up>" 'shrink-window)
 
 
 (defun my-zoom-next-buffer2 ()
@@ -590,8 +580,7 @@ are two windows displayed, act like C-x1:"
     (delete-other-windows)
   ))
 
-(global-set-key [(f5)] 'my-explode-window)
-;; ORIGINAL: undefined
+(bind-key "<f5>" 'my-explode-window)
 #+END_SRC
 
 ** Buffers
@@ -779,13 +768,12 @@ If more than one window is open, then just move to the previous one."
     ))
 
 
-(global-set-key [(f6)] 'bubble-buffer-next)
-(global-set-key [(shift f6)] 'bubble-buffer-previous)
+(bind-key "<f6>"   'bubble-buffer-next)
+(bind-key "S-<f6>" 'bubble-buffer-previous)
 
 
 ;; Insert buffer at current position
-(global-set-key "\C-xI" 'insert-buffer)
-;; ORIGINAL: undefined
+(bind-key "C-x I" 'insert-buffer)
 
 
 ;; Protect *scratch*
@@ -886,8 +874,7 @@ To remove this protection, call this command with a negative prefix argument."
 		  (compile compile-command))
 	(compile compile-command)))))
 
-(global-set-key [(f7)] 'my-compile)
-;; ORIGINAL: undefined
+(bind-key "<f7>" 'my-compile)
 
 
 (defun set-compile-command (&optional cmd)
@@ -918,12 +905,11 @@ To remove this protection, call this command with a negative prefix argument."
 
 #+BEGIN_SRC emacs-lisp
 
-(global-set-key [(f8)] 'next-error)
-;; ORIGINAL: undefined
+(bind-key "<f8>" 'next-error)
 
-(global-set-key [(shift f8)] 'previous-error)
-;; ORIGINAL: undefined
+(bind-key "S-<f8>" 'previous-error)
 #+END_SRC
+
 
 * Mouse
 
@@ -1006,7 +992,6 @@ Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
 	     :commands
 	     find-file-at-point
 	     :bind ("C-x C-p" . find-file-at-point)
-	     ;; ORIGINAL: mark-page
 	     )
 
 ;; rebind C-x C-f and others to the ffap bindings (see variable ffap-bindings)
@@ -1045,10 +1030,7 @@ Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
 
 
 ;; quickly safe
-(global-set-key [(f2)] 'save-buffer)
-;; ORIGINAL: 2C-commands
-(global-set-key [(shift f2)] '2C-command)
-;; ORIGINAL: undefined
+(bind-key "<f2>" 'save-buffer)
 #+END_SRC
 
 * Help
@@ -1060,7 +1042,7 @@ Make 'l' (like last) go to the previous position in emacs help.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'help-mode-hook
 	  '(lambda ()
-	     (define-key help-mode-map "l" 'help-go-back)))
+	     (bind-key "I" 'help-go-back help-mode-map)))
 #+END_SRC
 
 ** F1 key searches in help or opens man page
@@ -1078,8 +1060,7 @@ Make 'l' (like last) go to the previous position in emacs help.
 	    (describe-function fn)
 	  (man (current-word)))))))
 
-(global-set-key [(f1)] 'my-help)
-;; ORIGINAL: help-command
+(bind-key "<f1>" 'my-help)
 #+END_SRC
 
 ** Apropos
@@ -1089,8 +1070,7 @@ Make 'l' (like last) go to the previous position in emacs help.
 (setq apropos-do-all t)
 
 ;; Help should search more than just commands
-(global-set-key (kbd "C-h a") 'apropos)
-;; ORIGINAL: apropos-command
+(bind-key "C-h a" 'apropos)
 #+END_SRC
 
 * Display
@@ -1395,8 +1375,7 @@ This is old code that I still need to evaluate:
     (ibuffer)
     (ibuffer-jump-to-buffer recent-buffer-name)))
 
-;(global-set-key "\C-x\C-b" 'my-ibuffer)
-;; ORIGINAL: list-buffers
+;(bind-key "C-x C-b" 'my-ibuffer)
 
 ;; http://curiousprogrammer.wordpress.com/2009/04/02/ibuffer/
 (defun ibuffer-ediff-marked-buffers ()
@@ -1407,8 +1386,7 @@ This is old code that I still need to evaluate:
       (error (format "%s buffer%s been marked (needs to be 2)"
                      len (if (= len 1) " has" "s have"))))
     (ediff-buffers (car marked-buffers) (cadr marked-buffers))))
-(define-key ibuffer-mode-map "e" 'ibuffer-ediff-marked-buffers)
-;; ORIGINAL: ibuffer-visit-buffer
+(bind-key "e" 'ibuffer-ediff-marked-buffers ibuffer-mode-map)
 
 *** Package: ido
 
@@ -1427,7 +1405,7 @@ This is old code that I still need to evaluate:
 #+BEGIN_SRC emacs-lisp
 (use-package ace-jump-mode
   :ensure t
-  :bind ("M-j" . ace-jump-mode)
+  :bind ("C-." . ace-jump-mode)
 )
 #+END_SRC
 
@@ -1452,7 +1430,6 @@ This is old code that I still need to evaluate:
   :commands
   find-file-at-point
   :bind (("C-x C-p" . find-file-at-point))
-  ;; ORIGINAL: mark-page
   )
 
 ;; rebind C-x C-f and others to the ffap bindings (see variable ffap-bindings)
