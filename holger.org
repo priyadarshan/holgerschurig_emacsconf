@@ -620,59 +620,60 @@ And here my glue-code:
 (bind-key "<f6>"   'bubble-buffer-next)
 (bind-key "S-<f6>" 'bubble-buffer-previous)
 #+END_SRC
+** Protect buffers
 
+https://raw.githubusercontent.com/lewang/le_emacs_libs/master/keep-buffers.el
 
+By default, "*scratch*" is protected and erased when killed, "*Messages*"
+is never killed or erased.  You can customize easily using elisp:
 
+;; protect all buffers starting with "*scratch"
+(push '("\\`*scratch" . erase) keep-buffers-protected-list)
 
-;; Protect *scratch*
-;; http://www.emacswiki.org/emacs/ProtBuf
+#+BEGIN_SRC emacs-lisp
+(eval-when-compile
+  (require 'cl))
 
-(defvar protect-buffer-from-kill-mode nil
-  "*If non-`nil', then prevent buffer from being accidentally killed.
-This variable is local to all buffers.")
-(progn
-  (make-variable-buffer-local 'protect-buffer-from-kill-mode)
-  (put 'protect-buffer-from-kill-mode 'permanent-local t)
-  (or (assq 'protect-buffer-from-kill-mode minor-mode-alist)
-      (setq minor-mode-alist (cons '(protect-buffer-from-kill-mode " prot")
-                                   minor-mode-alist))))
+(define-minor-mode keep-buffers-mode
+  "when active, killing protected buffers results in burying them instead.
+Some may also be erased, which is undo-able."
+  :init-value nil
+  :global t
+  :group 'keep-buffers
+  :lighter ""
+  :version "1.4"
+  (if keep-buffers-mode
+      ;; Setup the hook
+      (add-hook 'kill-buffer-query-functions 'keep-buffers-query)
+    (remove-hook 'kill-buffer-query-functions 'keep-buffers-query)))
 
-(defun protect-buffer-from-kill-mode (&optional prefix buffer)
-  "Protect buffer from being killed.
-To remove this protection, call this command with a negative prefix argument."
-  (interactive "P")
-  (or buffer (setq buffer (current-buffer)))
-  (save-excursion
-    ;; Each cond does its own set-buffer *after* comparing prefix just in
-    ;; case there's a buffer-local variable `prefix' to screw up the works.
-    (cond
-     ((null prefix)
-      (set-buffer buffer)
-      (setq protect-buffer-from-kill-mode
-            (not protect-buffer-from-kill-mode)))
-     ((>= prefix 0)
-      (set-buffer buffer)
-      (setq protect-buffer-from-kill-mode t))
-     (t
-      (set-buffer buffer)
-      (setq protect-buffer-from-kill-mode nil)))
-    ;; This is always done because kill-buffer-query-functions might have
-    ;; been buffer-local when this package was initially loaded, leaving
-    ;; the global value unchanged.
-    (add-hook 'kill-buffer-query-functions 'protect-buffer-from-kill)))
+(defcustom keep-buffers-protected-alist
+  '(("\\`\\*scratch\\*\\'" . erase)
+    ("\\`\\*Messages\\*\\'" . nil))
+  "an alist '((\"regex1\" . 'erase) (\"regex2\" . nil))
 
-;; This function is listed in kill-buffer-query-functions; it should return
-;; nil if the buffer should not be killed, t otherwise.
-(defun protect-buffer-from-kill ()
-  (cond
-   (protect-buffer-from-kill-mode
-    (message "Buffer \"%s\" is protected from being killed." (buffer-name))
-    nil)
-   (t)))
+CAR of each cons cell is the buffer matching regexp.  If CDR is
+not nil then the matching buffer is erased then buried.
 
-(add-hook 'kill-buffer-query-functions 'protect-buffer-from-kill)
+If the CDR is nil, then the buffer is only buried."
+  :type '(alist)
+  :group 'keep-buffers
+  )
 
-(protect-buffer-from-kill-mode nil (get-buffer "*scratch*"))
+(defun keep-buffers-query ()
+  "The query function that disable deletion of buffers we protect."
+  (let ((crit (dolist (crit keep-buffers-protected-alist)
+                (when (string-match (car crit) (buffer-name))
+                  (return crit)))))
+    (if crit
+        (progn
+          (when (cdr crit)
+            (erase-buffer))
+          (bury-buffer)
+          nil)
+      t)))
+
+(keep-buffers-mode 1)
 #+END_SRC
 * Entering/exiting Emacs
 
