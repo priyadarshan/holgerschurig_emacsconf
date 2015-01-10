@@ -57,11 +57,6 @@ See http://github.com/jwiegley/use-package/
 (require 'use-package)
 #+END_SRC
 
-* OS and environment
-
-#+BEGIN_SRC emacs-lisp
-(defconst ms-windows (equal window-system 'w32))
-#+END_SRC
 * Entering/exiting Emacs
 #+BEGIN_SRC emacs-lisp
 (setq ;; Do without annoying startup msg.
@@ -758,18 +753,20 @@ Auto decompress compressed files.
 (bind-key "<f2>" 'save-buffer)
 #+END_SRC
 * Display
-** Display: Frame display
+** Automatically load .Xresources after changes
+
+Sample ~/.Xresources:
+
+#+BEGIN_EXAMPLE
+Emacs.geometry: 120x55
+Emacs.Font:	terminus 11
+Emacs.verticalScrollBars: right
+Emacs.toolBar: off
+Emacs*Background: #000000
+Emacs*Foreground: #7f7f7f
+#+END_EXAMPLE
 
 #+BEGIN_SRC emacs-lisp
-;; ~/.Xresources
-;; Emacs.geometry: 120x55
-;; Emacs.Font:	terminus 11
-;; Emacs.verticalScrollBars: right
-;; Emacs.toolBar: off
-;; Emacs*Background: #000000
-;; Emacs*Foreground: #7f7f7f
-
-;; Automatically merge ~/.Xresources after changes
 (defun merge-x-resources ()
   (let ((file (file-name-nondirectory (buffer-file-name))))
     (when (or (string= file ".Xdefaults")
@@ -777,17 +774,11 @@ Auto decompress compressed files.
       (start-process "xrdb" nil "xrdb" "-merge" (buffer-file-name))
       (message (format "Merged %s into X resource database" file)))))
 (add-hook 'after-save-hook 'merge-x-resources)
-
-;; Where to position a new frame (C-x 5 2)
-;; Also where to open a new frame from emacsclient
-;; (setq default-frame-alist '((xxx . 10)
-;; 			    (left-fringe . 1)
-;; 			    (right-fringe . 0)
-;; 			    (menu-bar-lines . 1)
-;; 			    (tool-bar-lines . 1)
-;; 			    (left . 0))
-
-(if ms-windows
+#+END_SRC
+** Fixed frame display
+#+BEGIN_SRC emacs-lisp
+(if (equal window-system 'w32)
+    ;; Windows settings
     (setq initial-frame-alist
 	  '(
 	    ;;(background-color . "black")
@@ -797,6 +788,7 @@ Auto decompress compressed files.
 	    (tool-bar-lines . 0)
 	    (left-fringe . 1)
 	    (right-fringe . 0)))
+  ;; Linux settings
   (setq initial-frame-alist
 	`(;;(background-color . "black")
 	  ;;(foreground-color . "LightGray")
@@ -812,15 +804,15 @@ Auto decompress compressed files.
 	  (width . 120)
 	  (height . 55)
 	  )))
-
-;; default-frame-alist is defined in terms of initial-frame-alist.  Don't
-;; use copy-sequence here -- it doesn't copy the list elements, just the
-;; list's cons cells.  Use copy-alist instead.
+#+END_SRC
+** Set default frame attributes
+default-frame-alist is defined in terms of initial-frame-alist.  Don't
+use copy-sequence here -- it doesn't copy the list elements, just the
+list's cons cells.  Use copy-alist instead.
+#+BEGIN_SRC emacs-lisp
 (setq default-frame-alist (copy-alist initial-frame-alist))
 #+END_SRC
-
-** Display: Font lock and faces
-*** Key word font-lock
+** Font-Lock some keywords
 #+BEGIN_SRC emacs-lisp
 (defface my--todo-face
   '((t :foreground "red"
@@ -838,53 +830,15 @@ Auto decompress compressed files.
 (add-hook 'font-lock-mode-hook 'my--hint-facify)
 #+END_SRC
 
-*** Font faces
-
-Based on from
-http://www.reddit.com/r/emacs/comments/9nh64/ask_emacs_which_color_theme_do_you_use/,
-by Zenspider
-
+** Line truncation
 #+BEGIN_SRC emacs-lisp
-(custom-set-faces
-
- '(font-lock-constant-face
-   ((((class color) (min-colors 88) (background light)) (:foreground "SlateBlue4"))))
-
- '(font-lock-string-face
-   ((((class color) (min-colors 88) (background light)) (:foreground "Forest Green"))))
-
- '(font-lock-keyword-face ((t (:weight bold))))
- ;; Selected text
- '(region ((t (:background "gold" :foreground "gtk_selection_fg_color"))))
- )
+(setq ;; don't display continuation lines
+      truncate-lines t
+      ;; respect truncate-lines:
+      truncate-partial-width-windows nil)
 #+END_SRC
-
-** Display: Truncation lines
-
-#+BEGIN_SRC emacs-lisp
-(setq default-truncate-lines t)
-(setq truncate-partial-width-windows nil)
-(defun my-wrap-mode-on ()
-  "Minor mode for making buffer not wrap long lines to next line."
-  (interactive)
-  (setq truncate-lines nil))
-
-(defun my-wrap-mode-off ()
-  "Minor mode for making buffer wrap long lines to next line."
-  (interactive)
-  (setq truncate-lines t))
-
-(defun my-toggle-wrap-mode ()
-  "Switch wrap mode from wrap to non-wrap, or vice-versa."
-  (interactive)
-  (if (eq truncate-lines nil)
-      (my-wrap-mode-off)
-    (my-wrap-mode-on)))
-#+END_SRC
-
-** Display: Whitespace
-
-Let typing errors be obvious
+** Show trailing whitespace
+This makes typing errors more obvious.
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'find-file-hook
@@ -897,19 +851,23 @@ Let typing errors be obvious
 		 (setq show-trailing-whitespace nil)
 	       (setq show-trailing-whitespace t))))
 #+END_SRC
-** Display: General
+** Don't wait for window manager when font changes
+Avoid Emacs hanging for a while changing default font
 
 #+BEGIN_SRC emacs-lisp
-;; Avoid Emacs hanging for a while changing default font
 (modify-frame-parameters nil '((wait-for-wm . nil)))
+#+END_SRC
 
-;; Display various non-editing buffers in their own frames
+** Handle some buffers specials (no toolbar, extra frame)
+Display various non-editing buffers in their own frames and show those
+special buffer frames without a tool bar
+
+#+BEGIN_SRC emacs-lisp
 (add-to-list 'special-display-buffer-names "*Backtrace*")
-
-;; Display those special buffer frames without a tool bar
-;; now in .Xresources
-;; (add-to-list 'special-display-frame-alist '(tool-bar-lines . 0))
-
+(add-to-list 'special-display-frame-alist '(tool-bar-lines . 0))
+#+END_SRC
+** Misc settings for text vs. windowing systems
+#+BEGIN_SRC emacs-lisp
 (if window-system
     ;; X11, Windows, etc
     (progn
@@ -923,57 +881,45 @@ Let typing errors be obvious
     ;; No "very" visible cursor
     (setq visible-cursor nil)
     ))
-
-;; Visible bell, beeps are annoying
+#+END_SRC
+** No audible bell
+No audible bell, beeps are annoying
+#+BEGIN_SRC emacs-lisp
 (setq visible-bell t)
+#+END_SRC
 
-;; Let parenthesis behave
-(show-paren-mode 1)
-(setq show-paren-delay 0
-      blink-matching-parent nil)
-(set-face-background 'show-paren-match-face "#d0d0d0")
-
-
-;; Display page delimiter ^L as a horizontal line
-(or standard-display-table (setq standard-display-table (make-display-table)))
-(aset standard-display-table ?\f (vconcat (make-vector 72 ?-) "^L"))
-
-;; Let emacs react way faster
+** Let emacs react faster to keystrokes
+#+BEGIN_SRC emacs-lisp
 (setq echo-keystrokes 0.1
       idle-update-delay 0.35)
 #+END_SRC
-
-** Display: Minibuffer
-
-#+BEGIN_SRC emacs-lisp
-;; C-c clears minibuffer
-(define-key minibuffer-local-map "\C-c" (lambda () (interactive) (delete-minibuffer-contents)))
-
-(setq
- ;; Don't insert current directory into minubuffer
- insert-default-directory nil
- ;; enable recursive minibuffer
- enable-recursive-minibuffers nil
- ;; minibuffer window expands vertically as necessary to hold the text that
- ;; you put in the minibuffer
- resize-mini-windows t
- )
-
-;; dim the ignored part of the file name
-(file-name-shadow-mode 1)
-
-;; allow to type space chars in minibuffer input
-;; (for `timeclock-in', for example)
-(define-key minibuffer-local-completion-map " " nil)
-(define-key minibuffer-local-must-match-map " " nil)
-#+END_SRC
-
-** Display: Menu
+** Menu
 
 Get rid of the Games in the Tools menu.
 
-#+BEGIN_SRC emacs-lisp
+# BEGIN_SRC emacs-lisp
 (define-key menu-bar-tools-menu [games] nil)
+# END_SRC
+* Minibuffer
+#+BEGIN_SRC emacs-lisp
+(setq ;; Don't insert current directory into minubuffer
+      insert-default-directory nil
+
+      ;; enable recursive minibuffer, they're a nuisance
+      enable-recursive-minibuffers nil
+
+      ;; minibuffer window expands vertically as necessary to hold the text that
+      ;; you put in the minibuffer
+      resize-mini-windows t
+      )
+#+END_SRC
+
+Allow to type space chars in minibuffer input (for `timeclock-in', for
+example).
+
+#+BEGIN_SRC emacs-lisp
+(define-key minibuffer-local-completion-map " " nil)
+(define-key minibuffer-local-must-match-map " " nil)
 #+END_SRC
 * Searching
 ** Package: isearch
@@ -1134,6 +1080,35 @@ Let yanked text immediately be indented, based on an old version of
       vc-handled-backends nil
 )
 #+END_SRC
+
+** Let parenthesis behave
+#+BEGIN_SRC emacs-lisp
+(show-paren-mode 1)
+(setq show-paren-delay 0
+      blink-matching-parent nil)
+(set-face-background 'show-paren-match-face "#d0d0d0")
+#+END_SRC
+
+** DISABLED Font faces
+
+Based on from
+http://www.reddit.com/r/emacs/comments/9nh64/ask_emacs_which_color_theme_do_you_use/,
+by Zenspider
+
+# BEGIN_SRC emacs-lisp
+(custom-set-faces
+
+ '(font-lock-constant-face
+   ((((class color) (min-colors 88) (background light)) (:foreground "SlateBlue4"))))
+
+ '(font-lock-string-face
+   ((((class color) (min-colors 88) (background light)) (:foreground "Forest Green"))))
+
+ '(font-lock-keyword-face ((t (:weight bold))))
+ ;; Selected text
+ '(region ((t (:background "gold" :foreground "gtk_selection_fg_color"))))
+ )
+# END_SRC
 ** qmake project files
 Don't open Qt's *.pro files as IDLWAVE files.
 
