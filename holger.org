@@ -57,19 +57,53 @@ See http://github.com/jwiegley/use-package/
 (require 'use-package)
 #+END_SRC
 
-
 * OS and environment
 
 #+BEGIN_SRC emacs-lisp
 (defconst ms-windows (equal window-system 'w32))
 #+END_SRC
+* Entering/exiting Emacs
+#+BEGIN_SRC emacs-lisp
+(setq ;; Do without annoying startup msg.
+      inhibit-startup-message t
 
+      ;; This inhibits the initial startup echo area message.
+      inhibit-startup-echo-area-message "schurig"
+
+      ;; Don't ask when running revert-buffer
+      revert-without-query (quote (""))
+
+      ;; Empty scratch message
+      initial-scratch-message nil
+
+      ;; Include current buffer name in the title bar
+      frame-title-format '(buffer-file-name "%f" ("%b"))
+
+      ;; Set up default editing mode.
+      major-mode 'indented-text-mode
+
+      ;; Custom file, part one
+      custom-file (concat dotfiles-dir "custom.el")
+
+      ;; Delete previous identical history entries
+      history-delete-duplicates t
+      )
+#+END_SRC
+
+** Load customization file
+#+BEGIN_SRC emacs-lisp
+(if (file-exists-p custom-file) (load-file custom-file))
+#+END_SRC
+** Simpler yes or no prompt
+Get rid of yes-or-no questions - y or n is enough
+#+BEGIN_SRC emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
 * Load private data
 
 #+BEGIN_SRC emacs-lisp
 (load (concat dotfiles-dir "private.el") 'noerror 'nomessage)
 #+END_SRC
-
 * Cursor
 ** Nicer scroll handling
 
@@ -271,7 +305,6 @@ rather than line counts."
 (bind-key "M-g g"   'my-goto-line)
 (bind-key "M-g M-g" 'my-goto-line)
 #+END_SRC
-
 * Yank and Delete
 ** Delete word or yank
 The following may be of interest to people who (a) are happy with
@@ -417,7 +450,6 @@ otherwise delete."
       tab-always-indent 'complete
       completions-format 'vertical)
 #+END_SRC
-
 * Windows handling
 ** delete-window
 If only one window in frame, `delete-frame'.
@@ -675,62 +707,16 @@ If the CDR is nil, then the buffer is only buried."
 
 (keep-buffers-mode 1)
 #+END_SRC
-* Entering/exiting Emacs
+** Easier kill buffers with processes
+Don't asks you if you want to kill a buffer with a live process
+attached to it:
+
+http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/
 
 #+BEGIN_SRC emacs-lisp
-;; get rid of yes-or-no questions - y or n is enough
-(fset 'yes-or-no-p 'y-or-n-p)
-
-;; Delete 'process-kill-buffer-query-function from kill-buffer-query-function.
-;; http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/
 (setq kill-buffer-query-functions
-  (remq 'process-kill-buffer-query-function kill-buffer-query-functions))
-
-(setq ;; Do without annoying startup msg.
-      inhibit-startup-message t
-
-      ;; This inhibits the initial startup echo area message.
-      inhibit-startup-echo-area-message "schurig"
-
-      ;; Don't ask when running revert-buffer
-      revert-without-query (quote (""))
-
-      ;; Empty scratch message
-      initial-scratch-message nil
-
-      ;; Include current buffer name in the title bar
-      frame-title-format '(buffer-file-name "%f" ("%b"))
-
-      ;; Don't ask for killing emacs
-      ;;(setq confirm-kill-emacs t)
-
-      ;; Set up default editing mode.
-      major-mode 'indented-text-mode
-
-      ;; Custom file, part one
-      custom-file (concat dotfiles-dir "custom.el")
-      )
-
-;; Custom file, part two
-(if (file-exists-p custom-file) (load-file custom-file))
-#+END_SRC
-
-** Delete previous identical history entries
-#+BEGIN_SRC emacs-lisp
-(setq history-delete-duplicates t
-      tabify-regexp "^\t* [ \t]+"
-      )
-#+END_SRC
-
-** Don't run version control hooks
-
-Don't run vc-git & friends, we have magit
-
-#+BEGIN_SRC emacs-lisp
-(defun vc-find-file-hook ()
-  "Dummy, overriding the one in vc-hooks.el"
-  (setq vc-mode nil))
-(setq vc-handled-backends nil)
+      (remq 'process-kill-buffer-query-function
+	     kill-buffer-query-functions))
 #+END_SRC
 * File opening/saving
 
@@ -1149,6 +1135,14 @@ Let yanked text immediately be indented, based on an old version of
 
 
 * Programming
+#+BEGIN_SRC emacs-lisp
+(setq ;; Tabify only initial whitespace
+      tabify-regexp "^\t* [ \t]+"
+
+      ;; We only use git, not other version controls
+      vc-handled-backends nil
+)
+#+END_SRC
 ** Commenting
 #+BEGIN_SRC emacs-lisp
 (bind-key "C-c c" 'comment-dwim)
