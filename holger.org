@@ -300,7 +300,6 @@ http://www.emacswiki.org/emacs/DefaultKillingAndYanking#toc2
    (if mark-active (list (region-beginning) (region-end))
      (list (save-excursion (backward-word 1) (point)) (point)))))
 #+END_SRC
-
 ** Selection deletion
 Use delete-selection mode:
 
@@ -372,9 +371,19 @@ See also the command `yank-pop' (\\[yank-pop])."
 (bind-key "C-y" 'my-yank)
 # END_SRC
 
+** Dynamic char deletion
 
 The following is from Boojum's post in
 [[http://www.reddit.com/r/emacs/comments/b1r8a/remacs_tell_us_about_the_obscure_but_useful/]].
+
+I don't want to kill the comment, just the prefix to it. So that
+
+// The quick brown fox[]
+// jumps over the lazy dog.
+
+becomes
+
+// The quick brown fox[] jumps over the lazy dog.
 
 #+BEGIN_SRC emacs-lisp
 (defun delete-char-dynamic (&optional arg)
@@ -396,6 +405,7 @@ otherwise delete."
                  (/= (char-before) ?\  ))
         (insert-char ?  1)
         (backward-char)))))
+
 ;; Make delete-selection-mode work with it
 (put 'delete-char-dynamic 'delete-selection 'supersede)
 
@@ -404,6 +414,7 @@ otherwise delete."
 (bind-key "<delete>" 'delete-char-dynamic)
 (bind-key "C-d" 'delete-char-dynamic)
 #+END_SRC
+
 * Entering text
 
 Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
