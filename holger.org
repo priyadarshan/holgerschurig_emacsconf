@@ -934,7 +934,6 @@ example).
 #+END_SRC
 
 ** grep
-
 Prompts you for an expression, defaulting to the symbol that your
 cursor is on, and greps for that in the current directory and all
 subdirectories:
@@ -952,8 +951,7 @@ subdirectories:
 
 #+END_SRC
 
-** Invoke isearch from Occur
-
+** Invoke isearch from occur
 #+BEGIN_SRC emacs-lisp
 (defun isearch-occur ()
   "Invoke `occur' from within isearch."
@@ -965,17 +963,16 @@ subdirectories:
 (bind-key "C-o" 'isearch-occur isearch-mode-map)
 #+END_SRC
 * Help
-** Go to last help buffer
-Make 'l' (like last) go to the previous position in emacs help.
+** Go to back to previous help buffer
+Make 'b' (back) go to the previous position in emacs help.
 
 [[http://www.emacswiki.org/cgi-bin/wiki/EmacsNiftyTricks]]
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'help-mode-hook
 	  '(lambda ()
-	     (bind-key "I" 'help-go-back help-mode-map)))
+	     (bind-key "b" 'help-go-back help-mode-map)))
 #+END_SRC
-
 ** F1 key searches in help or opens man page
 
 #+BEGIN_SRC emacs-lisp
