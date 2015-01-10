@@ -418,16 +418,13 @@ otherwise delete."
       completions-format 'vertical)
 #+END_SRC
 
-* Frames (Windows)
+* Windows handling
+** delete-window
+If only one window in frame, `delete-frame'.
+
+From http://www.emacswiki.org/emacs/frame-cmds.el
 
 #+BEGIN_SRC emacs-lisp
-;; http://www.emacswiki.org/emacs/frame-cmds.el
-
-;; Deleting frames ("X11-Windows") isn't as easy as it should
-;;
-;; Override delete-window to actually delete the frame if the buffer is
-;; the only currently displayed buffer.
-
 (defadvice delete-window (around delete-window (&optional window) activate)
   (interactive)
   (save-current-buffer
@@ -436,12 +433,13 @@ otherwise delete."
     (if (one-window-p t)
 	(delete-frame)
       ad-do-it (selected-window))))
+#+END_SRC
+** new kill-buffer-and-window
+Replacement for interactive `kill-buffer'. We cannot redefine
+`kill-buffer', because other elisp code relies on it's exact
+behavior.
 
-
-;; Candidate as replacement for `kill-buffer', at least when used
-;; interactively. Should not just redefine `kill-buffer', because some
-;; programs count on a specific other buffer taking the place of the
-;; killed buffer (in the window).
+#+BEGIN_SRC emacs-lisp
 (defun my--kill-buffer-and-window (&optional buffer)
   "Kill buffer BUFFER-OR-NAME.
 The argument may be a buffer or the name of an existing buffer.
@@ -461,13 +459,22 @@ there are several windows open."
   )
 
 (bind-key "C-x k" 'my--kill-buffer-and-window)
+#+END_SRC
 
-
+** Window sizing
+#+BEGIN_SRC emacs-lisp
 (bind-key "<M-down>" 'enlarge-window)
 
 (bind-key "<M-up>" 'shrink-window)
 
+#+END_SRC
 
+** Window zooming (F5)
+
+If there is only one window displayed, act like C-x 2. If there are
+two windows displayed, act like C-x 1
+
+#+BEGIN_SRC emacs-lisp
 (defun my-zoom-next-buffer2 ()
   (let ((curbuf (current-buffer))
 	(firstbuf nil))
@@ -753,7 +760,6 @@ To remove this protection, call this command with a negative prefix argument."
 
 (protect-buffer-from-kill-mode nil (get-buffer "*scratch*"))
 #+END_SRC
-
 * Entering/exiting Emacs
 
 #+BEGIN_SRC emacs-lisp
