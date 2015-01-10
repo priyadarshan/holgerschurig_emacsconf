@@ -315,18 +315,18 @@ Be silent when killing text from read only buffer:
 (setq kill-read-only-ok t)
 #+END_SRC
 
-** Delete whitespace when kill-line at end
-Delete annoying spaces when kill-line at end of line and the
-next line is indented:
+** Join lines at killing
+If at end of line, join with following; otherwise kill line.
+Deletes whitespace at join.
 
 #+BEGIN_SRC emacs-lisp
 (defun kill-and-join-forward (&optional arg)
   "If at end of line, join with following; otherwise kill line.
 Deletes whitespace at join."
-			     (interactive "P")
-			     (if (and (eolp) (not (bolp)))
-				 (delete-indentation t)
-			       (kill-line arg)))
+  (interactive "P")
+  (if (and (eolp) (not (bolp)))
+      (delete-indentation t)
+    (kill-line arg)))
 
 (bind-key "C-k" 'kill-and-join-forward)
 #+END_SRC
