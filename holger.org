@@ -693,6 +693,22 @@ Auto decompress compressed files.
 #+BEGIN_SRC emacs-lisp
 (bind-key "<f2>" 'save-buffer)
 #+END_SRC
+** Package: recentf
+
+#+BEGIN_SRC emacs-lisp
+;; Save recent files
+(setq recentf-save-file (concat dotfiles-dir "tmp/recentf.el")
+      recentf-exclude '("bbdb$"
+			"svn-commit.tmp$"
+			".git/COMMIT_EDITMSG$"
+			".git/TAG_EDITMSG")
+      recentf-max-saved-items 1000
+      recentf-auto-cleanup 300
+      recentf-max-menu-items 20)
+
+(recentf-mode 1)
+#+END_SRC
+
 * Display
 ** Automatically load .Xresources after changes
 
@@ -1248,8 +1264,8 @@ I read http://tuhdo.github.io/helm-intro.html
 	  ;; scroll 8 lines other window using M-<next>/M-<prior>
 	  helm-scroll-amount 8
 
-	  ;; TODO test this out
-	  ;; helm-ff-file-name-history-use-recentf t
+	  ;; test this out
+	  helm-ff-file-name-history-use-recentf t
 	  )
     (helm-mode)
     (helm-autoresize-mode t)

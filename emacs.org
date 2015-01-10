@@ -948,22 +948,6 @@ See http://web-mode.org/
      ))
 #+END_SRC
 
-* Package: recentf
-
-#+BEGIN_SRC emacs-lisp
-;; Save recent files
-(setq recentf-save-file (concat dotfiles-dir "tmp/recentf.el")
-      recentf-exclude '("bbdb$"
-			"svn-commit.tmp$"
-			".git/COMMIT_EDITMSG$"
-			".git/TAG_EDITMSG")
-      recentf-max-saved-items 1000
-      recentf-auto-cleanup 300
-      recentf-max-menu-items 20)
-
-(recentf-mode 1)
-#+END_SRC
-
 * Package: server
 
 #+BEGIN_SRC emacs-lisp
