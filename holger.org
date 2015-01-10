@@ -1228,6 +1228,10 @@ Let yanked text immediately be indented, based on an old version of
 
 
 * Programming
+** Commenting
+#+BEGIN_SRC emacs-lisp
+(bind-key "C-c c" 'comment-dwim)
+#+END_SRC
 ** Don't untabify if deleting a tab
 Deleting past a tab normally changes tab into spaces. Don't do that,
 kill the tab instead.
@@ -1318,8 +1322,7 @@ kill the tab instead.
 
 (bind-key "S-<f8>" 'previous-error)
 #+END_SRC
-
-** magit
+** Package: magit
 
 =magit-rigid-key-bindings= must be set before magit is loaded. It will
 remove the new key bindings that use pop-up buffers.
@@ -1358,7 +1361,6 @@ remove the new key bindings that use pop-up buffers.
       (run-hooks 'magit-status-insert-sections-hook)))
   (run-hooks 'magit-refresh-status-hook))
 #+END_SRC
-
 ** ffap (find-file-at-point)
 
 #+BEGIN_SRC emacs-lisp
@@ -1460,7 +1462,6 @@ This is old code that I still need to evaluate:
 (bind-key "e" 'ibuffer-ediff-marked-buffers ibuffer-mode-map)
 
 ** Package: ido
-
 * Package: ace-jump-buffer
 
 #+BEGIN_SRC emacs-lisp
@@ -1469,7 +1470,6 @@ This is old code that I still need to evaluate:
   :bind ("C-c j" . ace-jump-buffer)
   )
 #+END_SRC
-
 * Package: ace-jump-mode
 
 #+BEGIN_SRC emacs-lisp
@@ -1548,6 +1548,7 @@ This is old code that I still need to evaluate:
     )
   )
 #+END_SRC
+
 * Package: savehist (save mini-buffer history)
 #+BEGIN_SRC emacs-lisp
 (use-package savehist
