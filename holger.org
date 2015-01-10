@@ -1224,34 +1224,61 @@ remove the new key bindings that use pop-up buffers.
 )
 #+END_SRC
 * Package: helm
+
+I read http://tuhdo.github.io/helm-intro.html
+
 #+BEGIN_SRC emacs-lisp
 (use-package helm
+  :defer t
   :ensure helm
   :diminish helm-mode
-  :init
-  (progn
-    (require 'helm-config)
-    (setq helm-candidate-number-limit 100)
-    ;; From https://gist.github.com/antifuchs/9238468
-    (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
-          helm-input-idle-delay 0.01  ; this actually updates things
-                                        ; reeeelatively quickly.
-          helm-quick-update t
-          helm-M-x-requires-pattern nil
-          helm-ff-skip-boring-files t)
-    (helm-mode))
+  :bind (("C-x b"   . helm-mini)
+	 ("C-x C-b" . helm-buffers-list)
+	 ("C-h a"   . helm-apropos)
+	 ("C-x C-f" . helm-find-files)
+	 ("M-y"     . helm-show-kill-ring)
+	 ("M-x"     . helm-M-x)
+	 )
   :config
   (progn
-    ;; Unicode
-    (add-to-list 'helm-completing-read-handlers-alist
-                 '(insert-char . ido)))
-	:bind (("C-x b"   . helm-mini)
-	       ;("C-x b"     . helm-buffers-list)
-	       ("C-h a"     . helm-apropos)
-	       ;;("M-y"       . helm-show-kill-ring)
-	       ;;("M-x"       . helm-M-x)
-	       ;;("C-x c o"   . helm-occur)
-	       ))
+    (require 'helm-config)
+    ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+    ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+    ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+    ;; (from http://tuhdo.github.io/helm-intro.html)
+    (global-set-key (kbd "C-c h") 'helm-command-prefix)
+    (global-unset-key (kbd "C-x c"))
+
+    (when (executable-find "curl")
+      (setq helm-google-suggest-use-curl-p t))
+
+    (setq helm-candidate-number-limit 100
+	  ;; My helm config for pretty fast updates when hitting RET too quickly after typing fast:
+	  ;; (https://gist.github.com/antifuchs/9238468)
+          ;; update fast sources immediately (doesn't).
+          helm-idle-delay 0.0
+	  ;; this actually updates things reeeelatively quickly
+          helm-input-idle-delay 0.01
+          helm-quick-update t
+          helm-M-x-requires-pattern nil
+          helm-ff-skip-boring-files t
+
+	  ;; open helm buffer inside current window, not occupy whole other window
+	  helm-split-window-in-side-p t
+	  ;; move to end or beginning of source when reaching top or bottom of source.
+	  helm-move-to-line-cycle-in-source t
+	  ;; search for library in `require' and `declare-function' sexp.
+	  helm-ff-search-library-in-sexp t
+	  ;; scroll 8 lines other window using M-<next>/M-<prior>
+	  helm-scroll-amount 8
+
+	  ;; TODO test this out
+	  ;; helm-ff-file-name-history-use-recentf t
+	  )
+    (helm-mode)
+    (helm-autoresize-mode t)
+    )
+)
 #+END_SRC
 * Package: helm-descbinds
 #+BEGIN_SRC emacs-lisp
@@ -1261,8 +1288,8 @@ remove the new key bindings that use pop-up buffers.
   :bind (("C-h b" . helm-descbinds)
          ("C-h w" . helm-descbinds)))
 #+END_SRC
-* Package: ibuffer
-#+BEGIN_SRC emacs-lisp
+* DISABLED Package: ibuffer
+# BEGIN_SRC emacs-lisp
 (use-package ibuffer
   :defer t
   :bind (("C-x C-b" . ibuffer))
@@ -1280,7 +1307,7 @@ remove the new key bindings that use pop-up buffers.
 	ibuffer-old-time 4
   )
 )
-#+END_SRC
+# END_SRC
 * DISABLED Package: ido
 # BEGIN_SRC emacs-lisp
 (use-package ido
