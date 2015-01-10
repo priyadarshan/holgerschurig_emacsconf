@@ -1018,182 +1018,6 @@ Let yanked text immediately be indented, based on an old version of
 
 
 
-* Programming
-** Tab handling
-Tabify only initial whitespace
-
-#+BEGIN_SRC emacs-lisp
-(setq tabify-regexp "^\t* [ \t]+")
-#+END_SRC
-
-Deleting past a tab normally changes tab into spaces. Don't do that,
-kill the tab instead.
-
-#+BEGIN_SRC emacs-lisp
-(setq backward-delete-char-untabify-method nil)
-#+END_SRC
-** Disable vc backends
-We only use git, not other version controls:
-
-#+BEGIN_SRC emacs-lisp
-(setq vc-handled-backends nil)
-#+END_SRC
-
-** Let parenthesis behave
-#+BEGIN_SRC emacs-lisp
-(show-paren-mode 1)
-(setq show-paren-delay 0
-      blink-matching-parent nil)
-(set-face-background 'show-paren-match-face "#d0d0d0")
-#+END_SRC
-
-** qmake project files
-Don't open Qt's *.pro files as IDLWAVE files.
-
-TODO: look for a real qmake-mode
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.pro$" . fundamental-mode))
-#+END_SRC
-** C++ mode for .h and .inl
-;; Open *.h files normally in c++ mode
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
-(add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
-#+END_SRC
-** Commenting
-#+BEGIN_SRC emacs-lisp
-(bind-key "C-c c" 'comment-dwim)
-#+END_SRC
-** Compilation
-#+BEGIN_SRC emacs-lisp
-(defun my-compile ()
-  (interactive)
-  (delete-other-windows)
-  (save-buffer)
-  (if (fboundp 'eproject-root)
-      (let ((default-directory (eproject-root)))
-	(compile compile-command))
-    (compile compile-command)))
-
-(bind-key "<f7>" 'my-compile)
-
-
-(defun set-compile-command (&optional cmd)
-  "Helper for to set compile-command"
-  (interactive "scmd: ")
-  (setq compile-command cmd))
-#+END_SRC
-
-*** Auto close compile log if there are no errors
-
-[[http://www.emacswiki.org/emacs/ModeCompile]]
-
-#+BEGIN_SRC emacs-lisp
-(defun compile-autoclose (buffer string)
-  (cond ((string-match "finished" string)
-	 ;; (message "Build maybe successful: closing window.")
-	 (run-with-timer 1 nil
-			 'delete-window
-			 (get-buffer-window buffer t)))
-	(t
-	 (message "Compilation exited abnormally: %s" string))))
-(setq compilation-finish-functions 'compile-autoclose
-      compilation-ask-about-save nil
-      compilation-scroll-output t)
-#+END_SRC
-
-*** Error navigation
-
-#+BEGIN_SRC emacs-lisp
-
-(bind-key "<f8>" 'next-error)
-
-(bind-key "S-<f8>" 'previous-error)
-#+END_SRC
-** Mode: ELisp
-Just hover over an elisp function to see the arguments.
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'emacs-lisp-mode-hook
-	  '(lambda ()
-	     ;; automatically give help about function syntax
-	     (eldoc-mode t)
-	     ;; "-" is almost always part of a function- or variable-name
-	     (modify-syntax-entry ?- "w")))
-#+END_SRC
-** Mode: Semantic
-#+BEGIN_SRC emacs-lisp
-(semantic-mode 1)
-#+END_SRC
-** Package: column-marker
-
-#+BEGIN_SRC emacs-lisp
-(defun my-column-marker-at-80 ()
-  (interactive)
-  (column-marker-1 80)
-)
-
-(use-package column-marker
-  :defer t
-  :ensure t
-  :commands column-marker-1
-  :init
-  (add-hook 'c-mode-hook 'my-column-marker-at-80)
-  )
-#+END_SRC
-** Package: magit
-
-=magit-rigid-key-bindings= must be set before magit is loaded. It will
-remove the new key bindings that use pop-up buffers.
-
-#+BEGIN_SRC emacs-lisp
-(setq magit-rigid-key-bindings t)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(use-package magit
-  :ensure t
-  :defer t
-  :config
-  (progn
-     (setq magit-save-some-buffers 'dontask
-	   magit-commit-all-when-nothing-staged nil
-	   magit-stage-all-confirm nil
-	   magit-unstage-all-confirm nil
-	   magit-status-buffer-switch-function 'switch-to-buffer
-	   magit-refresh-file-buffer-hook '(revert-buffer)
-	   magit-diff-use-overlays t
-	   )
-     ;(set-face-foreground 'magit-diff-add "green4")
-     ;(set-face-foreground 'magit-diff-del "red3")
-     )
-  :bind ("C-c m" . magit-status)
-  :commands (magit-get-top-dir)
-)
-
-;;(autoload 'magit-get-top-dir "magit" nil t)
-
-(defun magit-refresh-status ()
-  (magit-git-exit-code "update-index" "--refresh")
-  (magit-create-buffer-sections
-    (magit-with-section 'status nil
-      (run-hooks 'magit-status-insert-sections-hook)))
-  (run-hooks 'magit-refresh-status-hook))
-#+END_SRC
-** Package: org-babel
-
-#+BEGIN_SRC emacs-lisp
-(use-package org
-  :diminish org-mode
-  :init
-  (progn
-    (setq org-src-fontify-natively t  ; inside src block use the colors like the major mode of the src type
-          org-src-tab-acts-natively t ; inside a src block let tab act like it was in major mode of the src type
-	  org-src-preserve-indentation t ; don't add two indentation spaces into src blocks
-          )
-    )
-  )
-#+END_SRC
 
 
 * Package: ace-jump-buffer
@@ -1380,3 +1204,183 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   (savehist-mode 1)
 )
 #+END_SRC
+
+
+
+* Programming
+** Tab handling
+Tabify only initial whitespace
+
+#+BEGIN_SRC emacs-lisp
+(setq tabify-regexp "^\t* [ \t]+")
+#+END_SRC
+
+Deleting past a tab normally changes tab into spaces. Don't do that,
+kill the tab instead.
+
+#+BEGIN_SRC emacs-lisp
+(setq backward-delete-char-untabify-method nil)
+#+END_SRC
+** Disable vc backends
+We only use git, not other version controls:
+
+#+BEGIN_SRC emacs-lisp
+(setq vc-handled-backends nil)
+#+END_SRC
+
+** Let parenthesis behave
+#+BEGIN_SRC emacs-lisp
+(show-paren-mode 1)
+(setq show-paren-delay 0
+      blink-matching-parent nil)
+(set-face-background 'show-paren-match-face "#d0d0d0")
+#+END_SRC
+
+** qmake project files
+Don't open Qt's *.pro files as IDLWAVE files.
+
+TODO: look for a real qmake-mode
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.pro$" . fundamental-mode))
+#+END_SRC
+** C++ mode for .h and .inl
+;; Open *.h files normally in c++ mode
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
+#+END_SRC
+** Commenting
+#+BEGIN_SRC emacs-lisp
+(bind-key "C-c c" 'comment-dwim)
+#+END_SRC
+** Compilation
+#+BEGIN_SRC emacs-lisp
+(defun my-compile ()
+  (interactive)
+  (delete-other-windows)
+  (save-buffer)
+  (if (fboundp 'eproject-root)
+      (let ((default-directory (eproject-root)))
+	(compile compile-command))
+    (compile compile-command)))
+
+(bind-key "<f7>" 'my-compile)
+
+
+(defun set-compile-command (&optional cmd)
+  "Helper for to set compile-command"
+  (interactive "scmd: ")
+  (setq compile-command cmd))
+#+END_SRC
+
+*** Auto close compile log if there are no errors
+
+[[http://www.emacswiki.org/emacs/ModeCompile]]
+
+#+BEGIN_SRC emacs-lisp
+(defun compile-autoclose (buffer string)
+  (cond ((string-match "finished" string)
+	 ;; (message "Build maybe successful: closing window.")
+	 (run-with-timer 1 nil
+			 'delete-window
+			 (get-buffer-window buffer t)))
+	(t
+	 (message "Compilation exited abnormally: %s" string))))
+(setq compilation-finish-functions 'compile-autoclose
+      compilation-ask-about-save nil
+      compilation-scroll-output t)
+#+END_SRC
+
+*** Error navigation
+
+#+BEGIN_SRC emacs-lisp
+
+(bind-key "<f8>" 'next-error)
+
+(bind-key "S-<f8>" 'previous-error)
+#+END_SRC
+** Mode: ELisp
+Just hover over an elisp function to see the arguments.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'emacs-lisp-mode-hook
+	  '(lambda ()
+	     ;; automatically give help about function syntax
+	     (eldoc-mode t)
+	     ;; "-" is almost always part of a function- or variable-name
+	     (modify-syntax-entry ?- "w")))
+#+END_SRC
+** Mode: Semantic
+#+BEGIN_SRC emacs-lisp
+(semantic-mode 1)
+#+END_SRC
+** Package: column-marker
+
+#+BEGIN_SRC emacs-lisp
+(defun my-column-marker-at-80 ()
+  (interactive)
+  (column-marker-1 80)
+)
+
+(use-package column-marker
+  :defer t
+  :ensure t
+  :commands column-marker-1
+  :init
+  (add-hook 'c-mode-hook 'my-column-marker-at-80)
+  )
+#+END_SRC
+** Package: magit
+
+=magit-rigid-key-bindings= must be set before magit is loaded. It will
+remove the new key bindings that use pop-up buffers.
+
+#+BEGIN_SRC emacs-lisp
+(setq magit-rigid-key-bindings t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package magit
+  :ensure t
+  :defer t
+  :config
+  (progn
+     (setq magit-save-some-buffers 'dontask
+	   magit-commit-all-when-nothing-staged nil
+	   magit-stage-all-confirm nil
+	   magit-unstage-all-confirm nil
+	   magit-status-buffer-switch-function 'switch-to-buffer
+	   magit-refresh-file-buffer-hook '(revert-buffer)
+	   magit-diff-use-overlays t
+	   )
+     ;(set-face-foreground 'magit-diff-add "green4")
+     ;(set-face-foreground 'magit-diff-del "red3")
+     )
+  :bind ("C-c m" . magit-status)
+  :commands (magit-get-top-dir)
+)
+
+;;(autoload 'magit-get-top-dir "magit" nil t)
+
+(defun magit-refresh-status ()
+  (magit-git-exit-code "update-index" "--refresh")
+  (magit-create-buffer-sections
+    (magit-with-section 'status nil
+      (run-hooks 'magit-status-insert-sections-hook)))
+  (run-hooks 'magit-refresh-status-hook))
+#+END_SRC
+** Package: org-babel
+
+#+BEGIN_SRC emacs-lisp
+(use-package org
+  :diminish org-mode
+  :init
+  (progn
+    (setq org-src-fontify-natively t  ; inside src block use the colors like the major mode of the src type
+          org-src-tab-acts-natively t ; inside a src block let tab act like it was in major mode of the src type
+	  org-src-preserve-indentation t ; don't add two indentation spaces into src blocks
+          )
+    )
+  )
+#+END_SRC
+
