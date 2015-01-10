@@ -281,15 +281,16 @@ rather than line counts."
 #+END_SRC
 
 * Yank and Delete
-** Delete words or Yank
+** Delete word or yank
 The following may be of interest to people who (a) are happy with
 "C-w" and friends for killing and yanking, (b) use
 "transient-mark-mode", (c) also like the traditional Unix tty
-behaviour that "C-w" deletes a word backwards and (d) use
-GnuEmacs. It tweaks "C-w" so that, if the mark is inactive, it
-deletes a word backwards instead of killing the region:
+behaviour that "C-w" deletes a word backwards. It tweaks "C-w" so
+that, if the mark is inactive, it deletes a word backwards instead of
+killing the region. Without that tweak, the C-w would create an error
+text without an active region.
 
-http://www.emacswiki.org/cgi-bin/wiki/DefaultKillingAndYanking
+http://www.emacswiki.org/emacs/DefaultKillingAndYanking#toc2
 
 #+BEGIN_SRC emacs-lisp
 (defadvice kill-region (before unix-werase activate compile)
