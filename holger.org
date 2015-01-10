@@ -1173,7 +1173,9 @@ TODO: look for a real qmake-mode
 )
 
 (use-package column-marker
+  :defer t
   :ensure t
+  :commands column-marker-1
   :init
   (add-hook 'c-mode-hook 'my-column-marker-at-80)
   )
