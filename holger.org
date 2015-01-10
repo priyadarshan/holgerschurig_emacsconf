@@ -562,96 +562,6 @@ are two windows displayed, act like C-x1:"
 ;; Insert buffer at current position
 (bind-key "C-x I" 'insert-buffer)
 #+END_SRC
-** Bubble buffers
-(Almost) verbatim copy of  http://www.xsteve.at/prg/emacs/bubble-buffer.el
-
-#+BEGIN_SRC emacs-lisp
-(defvar bubble-buffer-max-display-length (- (frame-width) 5)
-  "Maximum number of characters to display in the minibuffer when bubbling.")
-
-(defvar bubble-buffer-omit-regexp "\\(^ .+$\\|\\*Messages\\*\\)"
-  "Regexp for buffer-names that should be skipped when bubbling buffers with
-bubble-buffer-next and bubble-buffer-previous.
-For example you could use \"\\\\*.+\\\\*\" to exclude all buffers that contain two *'s.")
-;"\\*.+\\*"
-
-(defun bubble-buffer-omit-buffer (buffer)
-  "return nil if the buffer should be omitted, otherwise the buffer name"
-  (let ((buf-name (buffer-name buffer)))
-    (unless (and bubble-buffer-omit-regexp (string-match bubble-buffer-omit-regexp buf-name))
-      buf-name)))
-
-
-(defun bubble-buffer-next()
-  "Bubble down one entry in the buffer list.
-   Switch to the next buffer on the list"
-  (interactive)
-  (if (not (eq last-command 'bubble-buffer-next))
-      (progn (setq bubble-buffer-list (copy-alist (buffer-list)))
-             (delq (get-buffer " *Minibuf-0*") bubble-buffer-list)
-             (delq (get-buffer " *Minibuf-1*") bubble-buffer-list)
-             (setq bubble-buffer-buried-list nil)))
-  (let* ((cur-buf (current-buffer))
-         (b-list (delq nil (mapcar 'bubble-buffer-omit-buffer (cdr bubble-buffer-list))))
-         (doit b-list)
-         (rest nil)
-         (s))
-    (while doit
-      (add-to-list 'bubble-buffer-buried-list (car bubble-buffer-list))
-      (bury-buffer (car bubble-buffer-list))
-      (setq bubble-buffer-list (cdr bubble-buffer-list))
-      (switch-to-buffer (car bubble-buffer-list))
-      (setq rest (cdr (copy-alist bubble-buffer-list)))
-      (while rest
-        (bury-buffer (car rest))
-        (setq rest (cdr rest)))
-      (setq doit (not (bubble-buffer-omit-buffer (current-buffer)))))
-    ;;(message "%S" bubble-buffer-list)
-    (if b-list
-        (progn
-          (setq b-list (cdr b-list))
-          (setq s (concat
-                   "Next: "
-                   (if b-list (format "%S" b-list "") "")
-                   "[end-of-bubble-list]"))
-          (message "%s" (concat
-			 (substring s 0 (min bubble-buffer-max-display-length (length s)))
-			 " ...")))
-      (message "Already at the end of the buffer-list"))))
-
-(defun bubble-buffer-previous()
-  "Undo one bubbling step from bubble-buffer-next.
-   Switch to the buffer before the bubbled up buffer in the buffer list"
-  (interactive)
-  (unless (eq last-command 'bubble-buffer-next)
-    (setq bubble-buffer-buried-list nil))
-  (setq this-command 'bubble-buffer-next)
-  (if bubble-buffer-buried-list
-      (progn
-        (let ((doit t)
-              (s)
-              (b-list))
-          (while doit
-            (add-to-list 'bubble-buffer-list (car bubble-buffer-buried-list))
-            (switch-to-buffer (car bubble-buffer-buried-list))
-            (setq bubble-buffer-buried-list (cdr bubble-buffer-buried-list))
-            (setq doit (not (bubble-buffer-omit-buffer (current-buffer))))))
-        (setq b-list (delq nil (mapcar 'bubble-buffer-omit-buffer bubble-buffer-buried-list)))
-        (setq s (concat
-                 "Prev: "
-                 (if b-list (format "%S" b-list "") "")
-                 "[beginning-of-bubble-list]"))
-        (message "%s" (concat
-		       (substring s 0 (min bubble-buffer-max-display-length (length s))) " ...")))
-    (message "Already at the start of the bubble-buffer-list")))
-#+END_SRC
-
-And here my glue-code:
-
-#+BEGIN_SRC emacs-lisp
-(bind-key "<f6>"   'bubble-buffer-next)
-(bind-key "S-<f6>" 'bubble-buffer-previous)
-#+END_SRC
 ** Protect buffers
 
 https://raw.githubusercontent.com/lewang/le_emacs_libs/master/keep-buffers.el
@@ -717,6 +627,38 @@ http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/
 (setq kill-buffer-query-functions
       (remq 'process-kill-buffer-query-function
 	     kill-buffer-query-functions))
+#+END_SRC
+** Package: cycbuf
+#+BEGIN_SRC emacs-lisp
+(use-package cycbuf
+  :ensure t
+  :defer t
+  :bind (("<f6>"   . cycbuf-switch-to-next-buffer)
+	 ("S-<f6>" . cycbuf-switch-to-previous-buffer))
+  :init
+  (progn
+    (setq cycbuf-dont-show-regexp
+        '("^ "
+	  "^\\*cycbuf\\*$"
+	  "^\\*scratch\\*$"
+	  "^\\*Backtrace\\*$"
+	  "^\\*Ibuffer\\*$"
+	  "^\\*Messages\\*$"
+	  "^\\*Help\\*$"
+	  "^\\*magit"
+	  ))
+    (setq ;; sort by recency
+          cycbuf-buffer-sort-function 'cycbuf-sort-by-recency
+	  ;; Format of header
+	  cycbuf-attributes-list
+	  '(("M"          2                      left  cycbuf-get-modified-string)
+	    ("Buffer"     cycbuf-get-name-length left  cycbuf-get-name)
+	    (""           2                      left  " ")
+	    ("Directory"  cycbuf-get-file-length left  cycbuf-get-file-name)
+	    (""           2                      left  "  ")
+	    ("Mode"      12                      left  cycbuf-get-mode-name)
+	    )))
+)
 #+END_SRC
 * File opening/saving
 ** Basic settings
@@ -1259,7 +1201,6 @@ remove the new key bindings that use pop-up buffers.
     )
   )
 #+END_SRC
-
 
 
 * Package: ace-jump-buffer
