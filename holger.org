@@ -70,14 +70,6 @@ See http://github.com/jwiegley/use-package/
 (load (concat dotfiles-dir "private.el") 'noerror 'nomessage)
 #+END_SRC
 
-* Mouse
-
-Paste at text-cursor, not at mouse-cursor:
-
-#+BEGIN_SRC emacs-lisp
-(setq mouse-yank-at-point t)
-#+END_SRC
-
 * Cursor
 ** Nicer scroll handling
 
@@ -413,14 +405,6 @@ otherwise delete."
 (bind-key "<deletechar>" 'delete-char-dynamic)
 (bind-key "<delete>" 'delete-char-dynamic)
 (bind-key "C-d" 'delete-char-dynamic)
-#+END_SRC
-
-* Entering text
-
-Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
-
-#+BEGIN_SRC emacs-lisp
-(setq read-quoted-char-radix 10)
 #+END_SRC
 * Completion
 
@@ -1122,7 +1106,6 @@ Let typing errors be obvious
 #+END_SRC
 
 
-
 ** Display: Menu
 
 Get rid of the Games in the Tools menu.
@@ -1212,16 +1195,29 @@ Make 'l' (like last) go to the previous position in emacs help.
 ;; Help should search more than just commands
 (bind-key "C-h a" 'apropos)
 #+END_SRC
-* Localisation
+* Miscelleanous
+** Mouse
+
+Paste at text-cursor, not at mouse-cursor:
+
+#+BEGIN_SRC emacs-lisp
+(setq mouse-yank-at-point t)
+#+END_SRC
+
+** Localisation
 
 A sentence doesn't end with two spaces:
 
 #+BEGIN_SRC emacs-lisp
 (setq sentence-end-double-space nil)
 #+END_SRC
+** Decimal entry of quoted characters
+Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
 
-* Miscelleanous
-
+#+BEGIN_SRC emacs-lisp
+(setq read-quoted-char-radix 10)
+#+END_SRC
+** dos2unix
 #+BEGIN_SRC emacs-lisp
 (defun dos2unix()
   "convert dos (^M) end of line to unix end of line"
