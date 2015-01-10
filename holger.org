@@ -322,7 +322,7 @@ Deletes whitespace at join."
 (bind-key "C-k" 'kill-and-join-forward)
 #+END_SRC
 
-** DISABLED: Yank
+** DISABLED Yank
 
 # BEGIN_SRC emacs-lisp
 (defun my-yank (&optional arg)
@@ -1126,7 +1126,7 @@ Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
   (insert (format-time-string "%a, %e %b %Y %H:%M:%S %z")))
 #+END_SRC
 
-** DISABLED: Indent yanked text
+** DISABLED Indent yanked text
 Let yanked text immediately be indented, based on an old version of
 [[http://www.emacswiki.org/emacs/AutoIndentation]]:
 
