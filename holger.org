@@ -683,15 +683,6 @@ http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/
 
 (setq auto-save-list-file-prefix (concat dotfiles-dir "tmp/auto-save-list/saves-"))
 #+END_SRC
-** Find file at point
-#+BEGIN_SRC emacs-lisp
-(use-package ffap
-  :defer t
-  :commands
-  find-file-at-point
-  :bind ("C-x C-p" . find-file-at-point)
-  )
-#+END_SRC
 ** Decompress compressed files
 Auto decompress compressed files.
 
@@ -1136,21 +1127,6 @@ Just hover over an elisp function to see the arguments.
   (add-hook 'c-mode-hook 'my-column-marker-at-80)
   )
 #+END_SRC
-** Package: ffap (find-file-at-point)
-
-#+BEGIN_SRC emacs-lisp
-(use-package ffap
-  :commands
-  find-file-at-point
-  :bind (("C-x C-p" . find-file-at-point))
-  )
-
-;; rebind C-x C-f and others to the ffap bindings (see variable ffap-bindings)
-;; (ffap-bindings)
-;; C-u C-x C-f finds the file at point
-;; (setq ffap-require-prefix t)
-#+END_SRC
-
 ** Package: magit
 
 =magit-rigid-key-bindings= must be set before magit is loaded. It will
