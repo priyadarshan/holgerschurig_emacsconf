@@ -136,7 +136,7 @@ command from COMMANDS."
 ** Home / End
 Based on this, we define new home/end functions:
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-list
 (defvar my--previous-position 0)
 
 (defun my-home ()
@@ -154,8 +154,13 @@ Based on this, we define new home/end functions:
     (beginning-of-defun)
     (goto-char (point-min))
     (goto-char my--previous-position)))
-(substitute-key-definition 'move-beginning-of-line 'my-home (current-global-map))
+(bind-key "C-a" 'my-home)
+(bind-key "<home>" 'my-home)
+#+END_SRC
 
+And the same for end:
+
+#+BEGIN_SRC emacs-lisp
 (defun my-end ()
   "Depending on how many times it was called moves the point to:
 
@@ -170,7 +175,8 @@ Based on this, we define new home/end functions:
     (end-of-defun)
     (goto-char (point-max))
     (goto-char my--previous-position)))
-(substitute-key-definition 'move-end-of-line 'my-end (current-global-map))
+(bind-key "C-e" 'my-end)
+(bind-key "<end>" 'my-end)
 #+END_SRC
 
 ** Recenter
@@ -193,13 +199,15 @@ bottom position is almost identical to the middle position.
 	(recenter 4)
 	(recenter -1)
 	(set-window-start (selected-window) my--previous-position)))))
-(substitute-key-definition 'recenter-top-bottom 'my-recenter (current-global-map))
+(bind-key "C-l" 'my-recenter)
 #+END_SRC
 
 ** Nicer scroll handling
 
-#+BEGIN_SRC emacs-lisp
+Normally, Emacs does a "jumpy" scroll when you scroll exceeds the
+currend displayed buffer. This makes scrolling smooth.
 
+#+BEGIN_SRC emacs-lisp
 (setq scroll-conservatively 1000000
       scroll-preserve-screen-position 1)
 #+END_SRC
