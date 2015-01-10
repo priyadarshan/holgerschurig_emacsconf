@@ -79,6 +79,15 @@ Paste at text-cursor, not at mouse-cursor:
 #+END_SRC
 
 * Cursor
+** Nicer scroll handling
+
+Normally, Emacs does a "jumpy" scroll when you scroll exceeds the
+currend displayed buffer. This makes scrolling smooth.
+
+#+BEGIN_SRC emacs-lisp
+(setq scroll-conservatively 1000000
+      scroll-preserve-screen-position 1)
+#+END_SRC
 ** multiple key binding
 First we define code that allows us to bind multiple functions to
 repeated commands. Taken from
@@ -200,16 +209,6 @@ bottom position is almost identical to the middle position.
 	(recenter -1)
 	(set-window-start (selected-window) my--previous-position)))))
 (bind-key "C-l" 'my-recenter)
-#+END_SRC
-
-** Nicer scroll handling
-
-Normally, Emacs does a "jumpy" scroll when you scroll exceeds the
-currend displayed buffer. This makes scrolling smooth.
-
-#+BEGIN_SRC emacs-lisp
-(setq scroll-conservatively 1000000
-      scroll-preserve-screen-position 1)
 #+END_SRC
 
 ** Nicer goto-line
