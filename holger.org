@@ -416,22 +416,8 @@ otherwise delete."
       ;; lets TAB do completion as well
       tab-always-indent 'complete
       completions-format 'vertical)
-
-;; Doesn't work with ido
-;; (partial-completion-mode 1)
-;; (setq completion-auto-help 'lazy)
 #+END_SRC
 
-* Indentation
-#+END_SRC
-
-** Swap RET and C-j
-
-#+BEGIN_SRC emacs-lisp
-(bind-key "RET" 'newline-and-indent)
-
-(bind-key "C-j" 'newline)
-#+END_SRC
 * Frames (Windows)
 
 #+BEGIN_SRC emacs-lisp
@@ -1193,6 +1179,13 @@ Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
 
 #+BEGIN_SRC emacs-lisp
 (setq read-quoted-char-radix 10)
+#+END_SRC
+** Swap RET and C-j
+
+#+BEGIN_SRC emacs-lisp
+(bind-key "RET" 'newline-and-indent)
+
+(bind-key "C-j" 'newline)
 #+END_SRC
 ** dos2unix
 #+BEGIN_SRC emacs-lisp
