@@ -4,11 +4,10 @@
 # STARTUP: oddeven
 # STARTUP: overview
 
-* use-package
+* package and use-package
 
 See http://github.com/jwiegley/use-package/
  or http://www.lunaryorn.com/2015/01/06/my-emacs-configuration-with-use-package.html
-
 
 (use-package PACKAGE
 :init (...)                      run if defered, when :commands is there, or after requiring the package
@@ -45,11 +44,17 @@ See http://github.com/jwiegley/use-package/
 
 (require 'package)
 (setq package-enable-at-startup nil)
+
+;(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/"))
+
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+
+; When using melpa-stable instead of melpa, magit won't run:
+;(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
 
 (package-initialize)
 
-;; Bootstrap `use-package'
+;; Automatically install `use-package'
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
