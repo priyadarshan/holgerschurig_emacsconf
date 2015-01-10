@@ -423,28 +423,6 @@ otherwise delete."
 #+END_SRC
 
 * Indentation
-** Indent yanked text
-Let yanked text immediately be indented, based on an old version of
-[[http://www.emacswiki.org/emacs/AutoIndentation]]:
-
-# TODO: update with a newer version
-
-#+BEGIN_SRC emacs-lisp
-(defadvice yank (after indent-region activate)
-  (if (member major-mode
-              '(emacs-lisp-mode scheme-mode lisp-mode
-                                c-mode c++-mode objc-mode
-                                latex-mode plain-tex-mode))
-      (let ((mark-even-if-inactive t))
-        (indent-region (region-beginning) (region-end) nil))))
-
-(defadvice yank-pop (after indent-region activate)
-  (if (member major-mode
-              '(emacs-lisp-mode scheme-mode lisp-mode
-                                c-mode c++-mode objc-mode
-                                latex-mode plain-tex-mode))
-      (let ((mark-even-if-inactive t))
-	(indent-region (region-beginning) (region-end) nil))))
 #+END_SRC
 
 ** Swap RET and C-j
@@ -1203,7 +1181,6 @@ Paste at text-cursor, not at mouse-cursor:
 #+BEGIN_SRC emacs-lisp
 (setq mouse-yank-at-point t)
 #+END_SRC
-
 ** Localisation
 
 A sentence doesn't end with two spaces:
@@ -1232,6 +1209,29 @@ Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
   (insert (format-time-string "%a, %e %b %Y %H:%M:%S %z")))
 #+END_SRC
 
+** DISABLED: Indent yanked text
+Let yanked text immediately be indented, based on an old version of
+[[http://www.emacswiki.org/emacs/AutoIndentation]]:
+
+# TODO: update with a newer version
+
+# BEGIN_SRC emacs-lisp
+(defadvice yank (after indent-region activate)
+  (if (member major-mode
+              '(emacs-lisp-mode scheme-mode lisp-mode org-mode
+                                c-mode c++-mode objc-mode
+                                latex-mode plain-tex-mode))
+      (let ((mark-even-if-inactive t))
+        (indent-region (region-beginning) (region-end) nil))))
+
+(defadvice yank-pop (after indent-region activate)
+  (if (member major-mode
+              '(emacs-lisp-mode scheme-mode lisp-mode org-mode
+                                c-mode c++-mode objc-mode
+                                latex-mode plain-tex-mode))
+      (let ((mark-even-if-inactive t))
+	(indent-region (region-beginning) (region-end) nil))))
+# END_SRC
 
 
 * Programming
