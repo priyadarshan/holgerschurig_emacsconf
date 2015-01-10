@@ -719,24 +719,8 @@ http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/
 	     kill-buffer-query-functions))
 #+END_SRC
 * File opening/saving
-
+** Basic settings
 #+BEGIN_SRC emacs-lisp
-(use-package ffap
-	     :commands
-	     find-file-at-point
-	     :bind ("C-x C-p" . find-file-at-point)
-	     )
-
-;; rebind C-x C-f and others to the ffap bindings (see variable ffap-bindings)
-;; (ffap-bindings)
-;; C-u C-x C-f finds the file at point
-;; (setq ffap-require-prefix t)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-;; Auto decompress compressed files.
-(auto-compression-mode t)
-
 (setq ;; Never show GTK file open dialog
       use-file-dialog nil
       ;; don't add newlines to end of buffer when scrolling, but show them
@@ -752,17 +736,25 @@ http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/
       ;; Disable auto-save (#init.el# file-names)
       auto-save-default nil)
 
-;; Don't open Qt's *.pro files as IDLWAVE files TODO move to development
-(add-to-list 'auto-mode-alist '("\\.pro$" . fundamental-mode))
-
-;; Open *.h files normally in c++ mode
-(add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
-(add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
-
 (setq auto-save-list-file-prefix (concat dotfiles-dir "tmp/auto-save-list/saves-"))
+#+END_SRC
+** Find file at point
+#+BEGIN_SRC emacs-lisp
+(use-package ffap
+  :defer t
+  :commands
+  find-file-at-point
+  :bind ("C-x C-p" . find-file-at-point)
+  )
+#+END_SRC
+** Decompress compressed files
+Auto decompress compressed files.
 
-
-;; quickly safe
+#+BEGIN_SRC emacs-lisp
+(auto-compression-mode t)
+#+END_SRC
+** Quickly save (F2)
+#+BEGIN_SRC emacs-lisp
 (bind-key "<f2>" 'save-buffer)
 #+END_SRC
 * Display
@@ -976,7 +968,6 @@ Let typing errors be obvious
 (define-key minibuffer-local-must-match-map " " nil)
 #+END_SRC
 
-
 ** Display: Menu
 
 Get rid of the Games in the Tools menu.
@@ -1142,6 +1133,19 @@ Let yanked text immediately be indented, based on an old version of
       ;; We only use git, not other version controls
       vc-handled-backends nil
 )
+#+END_SRC
+** qmake project files
+Don't open Qt's *.pro files as IDLWAVE files.
+
+TODO: look for a real qmake-mode
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.pro$" . fundamental-mode))
+#+END_SRC
+** C++ mode for .h and .inl
+;; Open *.h files normally in c++ mode
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
 #+END_SRC
 ** Commenting
 #+BEGIN_SRC emacs-lisp
