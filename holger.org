@@ -1164,6 +1164,17 @@ TODO: look for a real qmake-mode
 
 (bind-key "S-<f8>" 'previous-error)
 #+END_SRC
+** Mode: ELisp
+Just hover over an elisp function to see the arguments.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'emacs-lisp-mode-hook
+	  '(lambda ()
+	     ;; automatically give help about function syntax
+	     (eldoc-mode t)
+	     ;; "-" is almost always part of a function- or variable-name
+	     (modify-syntax-entry ?- "w")))
+#+END_SRC
 ** Package: column-marker
 
 #+BEGIN_SRC emacs-lisp
