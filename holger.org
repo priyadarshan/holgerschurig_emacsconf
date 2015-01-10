@@ -1066,14 +1066,26 @@ Let yanked text immediately be indented, based on an old version of
 # END_SRC
 
 
-* Programming
-#+BEGIN_SRC emacs-lisp
-(setq ;; Tabify only initial whitespace
-      tabify-regexp "^\t* [ \t]+"
 
-      ;; We only use git, not other version controls
-      vc-handled-backends nil
-)
+* Programming
+** Tab handling
+Tabify only initial whitespace
+
+#+BEGIN_SRC emacs-lisp
+(setq tabify-regexp "^\t* [ \t]+")
+#+END_SRC
+
+Deleting past a tab normally changes tab into spaces. Don't do that,
+kill the tab instead.
+
+#+BEGIN_SRC emacs-lisp
+(setq backward-delete-char-untabify-method nil)
+#+END_SRC
+** Disable vc backends
+We only use git, not other version controls:
+
+#+BEGIN_SRC emacs-lisp
+(setq vc-handled-backends nil)
 #+END_SRC
 
 ** Let parenthesis behave
@@ -1084,26 +1096,6 @@ Let yanked text immediately be indented, based on an old version of
 (set-face-background 'show-paren-match-face "#d0d0d0")
 #+END_SRC
 
-** DISABLED Font faces
-
-Based on from
-http://www.reddit.com/r/emacs/comments/9nh64/ask_emacs_which_color_theme_do_you_use/,
-by Zenspider
-
-# BEGIN_SRC emacs-lisp
-(custom-set-faces
-
- '(font-lock-constant-face
-   ((((class color) (min-colors 88) (background light)) (:foreground "SlateBlue4"))))
-
- '(font-lock-string-face
-   ((((class color) (min-colors 88) (background light)) (:foreground "Forest Green"))))
-
- '(font-lock-keyword-face ((t (:weight bold))))
- ;; Selected text
- '(region ((t (:background "gold" :foreground "gtk_selection_fg_color"))))
- )
-# END_SRC
 ** qmake project files
 Don't open Qt's *.pro files as IDLWAVE files.
 
@@ -1121,60 +1113,16 @@ TODO: look for a real qmake-mode
 #+BEGIN_SRC emacs-lisp
 (bind-key "C-c c" 'comment-dwim)
 #+END_SRC
-** Don't untabify if deleting a tab
-Deleting past a tab normally changes tab into spaces. Don't do that,
-kill the tab instead.
-
-#+BEGIN_SRC emacs-lisp
-(setq backward-delete-char-untabify-method nil)
-#+END_SRC
-
 ** Compilation
-*** Byte compilation
-#+BEGIN_SRC emacs-lisp
-(defun my--bcc-compile-source-file (fullname)
-  "Compiles an elisp file into the byte-cache"
-  (let (cachename
-        hist-ent loaded-from-bcc-cache
-        bcc-loaded-fake-cache-entry)
-
-    (when (and bcc-enabled
-               (not (save-match-data
-                      (bcc-in-blacklist fullname bcc-blacklist))))
-
-      (setq cachename (file-truename (bcc-cache-file-name fullname)))
-      (make-directory (file-name-directory cachename) t)
-
-      (when (and bcc-regenerate-toplevel
-                 (file-newer-than-file-p fullname cachename))
-
-        (bcc-regenerate-cache fullname cachename nil))
-
-      (when (file-readable-p cachename)
-        (unless bcc-loaded-fake-cache-entry
-          (setq loaded-from-bcc-cache t))))
-    ))
-#+END_SRC
-
-*** Compile or byte-compile
-
 #+BEGIN_SRC emacs-lisp
 (defun my-compile ()
-  "Compile elisp or cpp"
   (interactive)
   (delete-other-windows)
   (save-buffer)
-  (if (or (eq major-mode 'lisp-mode) (eq major-mode 'emacs-lisp-mode))
-      (progn
-	(ignore-errors (my--kill-buffer-and-window (get-buffer-create "*Compile-Log*")))
-	; Now try to compile this file
-	(my--bcc-compile-source-file (buffer-file-name))
-	)
-    (progn
-      (if (fboundp 'eproject-root)
-	  (let ((default-directory (eproject-root)))
-		  (compile compile-command))
-	(compile compile-command)))))
+  (if (fboundp 'eproject-root)
+      (let ((default-directory (eproject-root)))
+	(compile compile-command))
+    (compile compile-command)))
 
 (bind-key "<f7>" 'my-compile)
 
@@ -1211,6 +1159,35 @@ kill the tab instead.
 
 (bind-key "S-<f8>" 'previous-error)
 #+END_SRC
+** Package: column-marker
+
+#+BEGIN_SRC emacs-lisp
+(defun my-column-marker-at-80 ()
+  (interactive)
+  (column-marker-1 80)
+)
+
+(use-package column-marker
+  :ensure t
+  :init
+  (add-hook 'c-mode-hook 'my-column-marker-at-80)
+  )
+#+END_SRC
+** Package: ffap (find-file-at-point)
+
+#+BEGIN_SRC emacs-lisp
+(use-package ffap
+  :commands
+  find-file-at-point
+  :bind (("C-x C-p" . find-file-at-point))
+  )
+
+;; rebind C-x C-f and others to the ffap bindings (see variable ffap-bindings)
+;; (ffap-bindings)
+;; C-u C-x C-f finds the file at point
+;; (setq ffap-require-prefix t)
+#+END_SRC
+
 ** Package: magit
 
 =magit-rigid-key-bindings= must be set before magit is loaded. It will
@@ -1250,126 +1227,60 @@ remove the new key bindings that use pop-up buffers.
       (run-hooks 'magit-status-insert-sections-hook)))
   (run-hooks 'magit-refresh-status-hook))
 #+END_SRC
-** ffap (find-file-at-point)
+** Package: org-babel
 
 #+BEGIN_SRC emacs-lisp
-(use-package ffap
-  :commands
-  find-file-at-point
-  :bind (("C-x C-p" . find-file-at-point))
-  )
-
-;; rebind C-x C-f and others to the ffap bindings (see variable ffap-bindings)
-;; (ffap-bindings)
-;; C-u C-x C-f finds the file at point
-;; (setq ffap-require-prefix t)
-#+END_SRC
-
-** column-marker
-
-#+BEGIN_SRC emacs-lisp
-(defun my-column-marker-at-80 ()
-  (interactive)
-  (column-marker-1 80)
-)
-
-(use-package column-marker
-  :ensure t
+(use-package org
+  :diminish org-mode
   :init
-  (add-hook 'c-mode-hook 'my-column-marker-at-80)
+  (progn
+    (setq org-src-fontify-natively t  ; inside src block use the colors like the major mode of the src type
+          org-src-tab-acts-natively t ; inside a src block let tab act like it was in major mode of the src type
+	  org-src-preserve-indentation t ; don't add two indentation spaces into src blocks
+          )
+    )
   )
 #+END_SRC
 
 
-* Package: ibuffer
 
-#+BEGIN_SRC emacs-lisp
-(use-package ibuffer
-  :bind (("C-x C-b" . ibuffer))
-)
-#+END_SRC
-
-This is old code that I still need to evaluate:
-
-(setq ibuffer-display-summary nil
-      ;;ibuffer-use-header-line t
-      ;;ibuffer-default-sorting-mode 'major-mode
-      ;;
-      ;; Don't ask when killing a buffer
-      ibuffer-expert t
-      ;;
-      ibuffer-show-empty-filter-groups nil
-      ibuffer-old-time 4
-      ;; And now my filters:
-      ibuffer-saved-filter-groups
-      '(("default"
-	 ("dired" (mode . dired-mode))
-	 ("erc" (mode . erc-mode))
-	 ("Org-Mode" (or
-		    (name . "^\\*Calendar\\*$")
-		    (name . "^diary$")
-		    (name . "^\\*Org.*")
-		    (mode . muse-mode)))
-	 ("Mail" (or
-		  (name . "^contacts$")
-		  (name . "^\\*BBDB\\*$")
-		  (name . "^Folder$")
-		  (name . "^Summary$")
-		  (name . "^\\.draft/")))
-	 ("magit" (name . "^\\*magit"))
-	 ("emacs" (name . "^\\*"))
-	 )))
-
-;; reverse group order
-(defadvice ibuffer-generate-filter-groups (after reverse-ibuffer-groups ()
-						   activate)
-  (setq ad-return-value (nreverse ad-return-value)))
-
-(add-hook 'ibuffer-mode-hook
-	  (lambda ()
-	    (ibuffer-auto-mode 1)
-	    (ibuffer-switch-to-saved-filter-groups "default")))
-
-(defun my-ibuffer ()
-  "Open ibuffer with cursor pointed to most recent buffer name"
-  (interactive)
-  (let ((recent-buffer-name (buffer-name)))
-    (ibuffer)
-    (ibuffer-jump-to-buffer recent-buffer-name)))
-
-;(bind-key "C-x C-b" 'my-ibuffer)
-
-;; http://curiousprogrammer.wordpress.com/2009/04/02/ibuffer/
-(defun ibuffer-ediff-marked-buffers ()
-  (interactive)
-  (let* ((marked-buffers (ibuffer-get-marked-buffers))
-         (len (length marked-buffers)))
-    (unless (= 2 len)
-      (error (format "%s buffer%s been marked (needs to be 2)"
-                     len (if (= len 1) " has" "s have"))))
-    (ediff-buffers (car marked-buffers) (cadr marked-buffers))))
-(bind-key "e" 'ibuffer-ediff-marked-buffers ibuffer-mode-map)
-
-** Package: ido
 * Package: ace-jump-buffer
-
 #+BEGIN_SRC emacs-lisp
 (use-package ace-jump-buffer
   :ensure t
+  :defer t
   :bind ("C-c j" . ace-jump-buffer)
   )
 #+END_SRC
 * Package: ace-jump-mode
-
 #+BEGIN_SRC emacs-lisp
 (use-package ace-jump-mode
   :ensure t
+  :defer t
   :bind ("C-." . ace-jump-mode)
 )
 #+END_SRC
+* Package: ibuffer
+#+BEGIN_SRC emacs-lisp
+(use-package ibuffer
+  :defer t
+  :bind (("C-x C-b" . ibuffer))
+  :config
+  (setq ;; don't display size of files
+        ibuffer-display-summary nil
 
+	;; don't sort by recent files
+	;;ibuffer-default-sorting-mode 'major-mode
+
+	;; Don't ask for "dangerous" operations, e.g. killing a buffer
+	ibuffer-expert t
+
+	;; number of hours before a buffer is considered "old"
+	ibuffer-old-time 4
+  )
+)
+#+END_SRC
 * Package: ido
-
 #+BEGIN_SRC emacs-lisp
 (use-package ido
   :defer nul
@@ -1423,21 +1334,6 @@ This is old code that I still need to evaluate:
   (ido-ubiquitous-mode 1)
   )
 #+END_SRC
-* Package: org-babel
-
-#+BEGIN_SRC emacs-lisp
-(use-package org
-  :diminish org-mode
-  :init
-  (progn
-    (setq org-src-fontify-natively t  ; inside src block use the colors like the major mode of the src type
-          org-src-tab-acts-natively t ; inside a src block let tab act like it was in major mode of the src type
-	  org-src-preserve-indentation t ; don't add two indentation spaces into src blocks
-          )
-    )
-  )
-#+END_SRC
-
 * Package: savehist (save mini-buffer history)
 #+BEGIN_SRC emacs-lisp
 (use-package savehist
