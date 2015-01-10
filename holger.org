@@ -1327,9 +1327,12 @@ remove the new key bindings that use pop-up buffers.
     (add-to-list 'completion-ignored-extensions ".toc")
 
     (use-package ido-vertical-mode
+      :ensure t
       :init (ido-vertical-mode 1))
 
     (use-package idomenu
+      :defer t
+      :ensure t
       :bind ("C-x C-i" . idomenu))
     )
   )
