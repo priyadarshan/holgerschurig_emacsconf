@@ -518,8 +518,18 @@ are two windows displayed, act like C-x1:"
 (bind-key "<f5>" 'my-explode-window)
 #+END_SRC
 * Buffers
+** Insert buffer
+
+|-------+---------------|
+| C-x i | insert file   |
+|-------+---------------|
+| C-x I | insert buffer |
+|-------+---------------|
 
 #+BEGIN_SRC emacs-lisp
+;; Insert buffer at current position
+(bind-key "C-x I" 'insert-buffer)
+#+END_SRC
 
 ;; http://www.xsteve.at/prg/emacs/bubble-buffer.el
 (defvar bubble-buffer-max-display-length (- (frame-width) 5)
@@ -624,8 +634,6 @@ If more than one window is open, then just move to the previous one."
 (bind-key "S-<f6>" 'bubble-buffer-previous)
 
 
-;; Insert buffer at current position
-(bind-key "C-x I" 'insert-buffer)
 
 
 ;; Protect *scratch*
