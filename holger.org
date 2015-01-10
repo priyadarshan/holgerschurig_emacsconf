@@ -301,14 +301,6 @@ http://www.emacswiki.org/emacs/DefaultKillingAndYanking#toc2
      (list (save-excursion (backward-word 1) (point)) (point)))))
 #+END_SRC
 
-** Tab deletion
-Deleting past a tab normally changes tab into spaces. Don't do that,
-kill the tab instead. TODO move to programming section?
-
-#+BEGIN_SRC emacs-lisp
-(setq backward-delete-char-untabify-method nil)
-#+END_SRC
-
 ** Selection deletion
 Use delete-selection mode:
 
@@ -1236,6 +1228,14 @@ A sentence doesn't end with two spaces:
 
 
 * Programming
+** Don't untabify if deleting a tab
+Deleting past a tab normally changes tab into spaces. Don't do that,
+kill the tab instead.
+
+#+BEGIN_SRC emacs-lisp
+(setq backward-delete-char-untabify-method nil)
+#+END_SRC
+
 ** Compilation
 *** Byte compilation
 #+BEGIN_SRC emacs-lisp
