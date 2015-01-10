@@ -642,13 +642,7 @@ http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/
   (progn
     (setq cycbuf-dont-show-regexp
         '("^ "
-	  "^\\*cycbuf\\*$"
-	  "^\\*scratch\\*$"
-	  "^\\*Backtrace\\*$"
-	  "^\\*Ibuffer\\*$"
-	  "^\\*Messages\\*$"
-	  "^\\*Help\\*$"
-	  "^\\*magit"
+	  "^\\*"
 	  ))
     (setq ;; sort by recency
           cycbuf-buffer-sort-function 'cycbuf-sort-by-recency
