@@ -331,8 +331,9 @@ Deletes whitespace at join."
 (bind-key "C-k" 'kill-and-join-forward)
 #+END_SRC
 
+** DISABLED: Yank
 
-#+BEGIN_SRC emacs-lisp
+# BEGIN_SRC emacs-lisp
 (defun my-yank (&optional arg)
   "Reinsert (\"paste\") the last stretch of killed text.
 More precisely, reinsert the stretch of killed text most recently
@@ -369,8 +370,7 @@ See also the command `yank-pop' (\\[yank-pop])."
   nil)
 
 (bind-key "C-y" 'my-yank)
-;; ORIGNAL: yank
-#+END_SRC
+# END_SRC
 
 
 The following is from Boojum's post in
