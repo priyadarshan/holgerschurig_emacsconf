@@ -99,10 +99,13 @@ Get rid of yes-or-no questions - y or n is enough
 #+BEGIN_SRC emacs-lisp
 (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
-* Load private data
+* Private data
 
 #+BEGIN_SRC emacs-lisp
+(setq user-full-name "Holger Schurig"
+      user-mail-address "holgerschurig@gmail.com")
 (load (concat dotfiles-dir "private.el") 'noerror 'nomessage)
+
 #+END_SRC
 * Cursor
 ** Nicer scroll handling
@@ -1212,6 +1215,7 @@ remove the new key bindings that use pop-up buffers.
   )
 #+END_SRC
 * Package: ace-jump-mode
+
 #+BEGIN_SRC emacs-lisp
 (use-package ace-jump-mode
   :ensure t
