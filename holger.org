@@ -974,7 +974,6 @@ Make 'b' (back) go to the previous position in emacs help.
 	     (bind-key "b" 'help-go-back help-mode-map)))
 #+END_SRC
 ** F1 key searches in help or opens man page
-
 #+BEGIN_SRC emacs-lisp
 (defun my-help ()
   "If function given tries to `describe-function' otherwise uses
@@ -992,9 +991,8 @@ Make 'b' (back) go to the previous position in emacs help.
 #+END_SRC
 
 ** Apropos
-
+Check all variables and non-interactive functions as well
 #+BEGIN_SRC emacs-lisp
-;; check all variables and non-interactive functions as well
 (setq apropos-do-all t)
 
 ;; Help should search more than just commands
@@ -1002,14 +1000,12 @@ Make 'b' (back) go to the previous position in emacs help.
 #+END_SRC
 * Miscelleanous
 ** Mouse
-
 Paste at text-cursor, not at mouse-cursor:
 
 #+BEGIN_SRC emacs-lisp
 (setq mouse-yank-at-point t)
 #+END_SRC
 ** Localisation
-
 A sentence doesn't end with two spaces:
 
 #+BEGIN_SRC emacs-lisp
@@ -1022,7 +1018,6 @@ Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
 (setq read-quoted-char-radix 10)
 #+END_SRC
 ** Swap RET and C-j
-
 #+BEGIN_SRC emacs-lisp
 (bind-key "RET" 'newline-and-indent)
 
@@ -1035,8 +1030,11 @@ Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
   (interactive)
   (goto-char(point-min))
   (while (search-forward "\r" nil t) (replace-match "")))
+#+END_SRC
+** 822date
+Inserts something like "Fri,  1 Dec 2006 15:41:36 +0100"
 
-; Fri,  1 Dec 2006 15:41:36 +0100
+#+BEGIN_SRC emacs-lisp
 (defun 822date ()
   "Insert date at point format the RFC822 way."
   (interactive)
