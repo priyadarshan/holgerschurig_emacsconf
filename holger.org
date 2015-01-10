@@ -1215,19 +1215,21 @@ remove the new key bindings that use pop-up buffers.
 #+END_SRC
 * Package: helm
 
-I read http://tuhdo.github.io/helm-intro.html
+Very good intro: http://tuhdo.github.io/helm-intro.html
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm
   :defer t
   :ensure helm
   :diminish helm-mode
-  :bind (("C-x b"   . helm-mini)
-	 ("C-x C-b" . helm-buffers-list)
+  :bind (
 	 ("C-h a"   . helm-apropos)
+	 ("C-x C-b" . helm-buffers-list)
 	 ("C-x C-f" . helm-find-files)
-	 ("M-y"     . helm-show-kill-ring)
+	 ("M-s o"   . helm-occur)
 	 ("M-x"     . helm-M-x)
+	 ("M-y"     . helm-show-kill-ring)
+         ("C-x b"   . helm-mini)
 	 )
   :config
   (progn
@@ -1241,6 +1243,9 @@ I read http://tuhdo.github.io/helm-intro.html
 
     (when (executable-find "curl")
       (setq helm-google-suggest-use-curl-p t))
+
+    ;; allow "find man at point" for C-c h m (helm-man-woman)
+    (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
     (setq helm-candidate-number-limit 100
 	  ;; My helm config for pretty fast updates when hitting RET too quickly after typing fast:
@@ -1264,10 +1269,20 @@ I read http://tuhdo.github.io/helm-intro.html
 
 	  ;; test this out
 	  helm-ff-file-name-history-use-recentf t
+
+	  ;; define browser
+	  helm-browse-url-chromium-program "google-chrome-beta"
+	  helm-google-suggest-default-browser-function 'helm-browse-url-chromium
+	  helm-home-url "http://www.google.de"
 	  )
     (helm-mode)
     (helm-autoresize-mode t)
-    )
+
+    (bind-key "o"   'helm-occur          helm-command-map)
+
+    ;; this is kind of a goto:
+    (bind-key "g"   'helm-all-mark-rings helm-command-map)
+    );; end progn
 )
 #+END_SRC
 * Package: helm-descbinds
