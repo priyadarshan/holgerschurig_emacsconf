@@ -1223,6 +1223,44 @@ remove the new key bindings that use pop-up buffers.
   :bind ("C-." . ace-jump-mode)
 )
 #+END_SRC
+* Package: helm
+#+BEGIN_SRC emacs-lisp
+(use-package helm
+  :ensure helm
+  :diminish helm-mode
+  :init
+  (progn
+    (require 'helm-config)
+    (setq helm-candidate-number-limit 100)
+    ;; From https://gist.github.com/antifuchs/9238468
+    (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
+          helm-input-idle-delay 0.01  ; this actually updates things
+                                        ; reeeelatively quickly.
+          helm-quick-update t
+          helm-M-x-requires-pattern nil
+          helm-ff-skip-boring-files t)
+    (helm-mode))
+  :config
+  (progn
+    ;; Unicode
+    (add-to-list 'helm-completing-read-handlers-alist
+                 '(insert-char . ido)))
+	:bind (("C-x b"   . helm-mini)
+	       ;("C-x b"     . helm-buffers-list)
+	       ("C-h a"     . helm-apropos)
+	       ;;("M-y"       . helm-show-kill-ring)
+	       ;;("M-x"       . helm-M-x)
+	       ;;("C-x c o"   . helm-occur)
+	       ))
+#+END_SRC
+* Package: helm-descbinds
+#+BEGIN_SRC emacs-lisp
+(use-package helm-descbinds
+  :ensure t
+  :defer t
+  :bind (("C-h b" . helm-descbinds)
+         ("C-h w" . helm-descbinds)))
+#+END_SRC
 * Package: ibuffer
 #+BEGIN_SRC emacs-lisp
 (use-package ibuffer
@@ -1243,11 +1281,11 @@ remove the new key bindings that use pop-up buffers.
   )
 )
 #+END_SRC
-* Package: ido
-#+BEGIN_SRC emacs-lisp
+* DISABLED Package: ido
+# BEGIN_SRC emacs-lisp
 (use-package ido
   :defer nul
-  :init (ido-mode 'both)
+  ;; :init (ido-mode 'buffer)
   :config
   (progn
     (setq ido-save-directory-list-file (concat dotfiles-dir "tmp/ido.last")
@@ -1299,7 +1337,7 @@ remove the new key bindings that use pop-up buffers.
   :init
   (ido-ubiquitous-mode 1)
   )
-#+END_SRC
+# END_SRC
 * Package: savehist (save mini-buffer history)
 #+BEGIN_SRC emacs-lisp
 (use-package savehist
