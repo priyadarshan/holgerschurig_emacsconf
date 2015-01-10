@@ -57,6 +57,7 @@ See http://github.com/jwiegley/use-package/
 (require 'use-package)
 #+END_SRC
 
+
 * OS and environment
 
 #+BEGIN_SRC emacs-lisp
@@ -69,10 +70,16 @@ See http://github.com/jwiegley/use-package/
 (load (concat dotfiles-dir "private.el") 'noerror 'nomessage)
 #+END_SRC
 
+* Mouse
 
-* Functions
-** Moving cursor
-*** multiple key binding
+Paste at text-cursor, not at mouse-cursor:
+
+#+BEGIN_SRC emacs-lisp
+(setq mouse-yank-at-point t)
+#+END_SRC
+
+* Cursor
+** multiple key binding
 First we define code that allows us to bind multiple functions to
 repeated commands. Taken from
 [[http://www.emacswiki.org/cgi-bin/wiki/DoubleKeyBinding]]:
@@ -126,7 +133,7 @@ command from COMMANDS."
   `(eval (nth (seq-times ,name ,(length commands) ,body) ',commands)))
 #+END_SRC
 
-*** Home / End
+** Home / End
 Based on this, we define new home/end functions:
 
 #+BEGIN_SRC emacs-lisp
@@ -166,7 +173,7 @@ Based on this, we define new home/end functions:
 (substitute-key-definition 'move-end-of-line 'my-end (current-global-map))
 #+END_SRC
 
-*** Recenter
+** Recenter
 This is built-in into Emacs 23, but doesn't work as nice, e.g. the
 bottom position is almost identical to the middle position.
 
@@ -189,7 +196,7 @@ bottom position is almost identical to the middle position.
 (substitute-key-definition 'recenter-top-bottom 'my-recenter (current-global-map))
 #+END_SRC
 
-*** Nicer scroll handling
+** Nicer scroll handling
 
 #+BEGIN_SRC emacs-lisp
 
@@ -197,7 +204,7 @@ bottom position is almost identical to the middle position.
       scroll-preserve-screen-position 1)
 #+END_SRC
 
-*** Nicer goto-line
+** Nicer goto-line
 
 Doesn't modify minibuffer-history, but use it's own little history
 list.
@@ -266,8 +273,8 @@ rather than line counts."
 (bind-key "M-g M-g" 'my-goto-line)
 #+END_SRC
 
-** Yank and Delete
-*** Delete words or Yank
+* Yank and Delete
+** Delete words or Yank
 The following may be of interest to people who (a) are happy with
 "C-w" and friends for killing and yanking, (b) use
 "transient-mark-mode", (c) also like the traditional Unix tty
@@ -286,7 +293,7 @@ http://www.emacswiki.org/cgi-bin/wiki/DefaultKillingAndYanking
      (list (save-excursion (backward-word 1) (point)) (point)))))
 #+END_SRC
 
-*** Tab deletion
+** Tab deletion
 Deleting past a tab normally changes tab into spaces. Don't do that,
 kill the tab instead. TODO move to programming section?
 
@@ -294,21 +301,21 @@ kill the tab instead. TODO move to programming section?
 (setq backward-delete-char-untabify-method nil)
 #+END_SRC
 
-*** Selection deletion
+** Selection deletion
 Use delete-selection mode:
 
 #+BEGIN_SRC emacs-lisp
 (delete-selection-mode t)
 #+END_SRC
 
-*** Deletion in readonly buffer
+** Deletion in readonly buffer
 Be silent when killing text from read only buffer:
 
 #+BEGIN_SRC emacs-lisp
 (setq kill-read-only-ok t)
 #+END_SRC
 
-*** Delete whitespace when kill-line at end
+** Delete whitespace when kill-line at end
 Delete annoying spaces when kill-line at end of line and the
 next line is indented:
 
@@ -397,9 +404,31 @@ otherwise delete."
 (bind-key "<delete>" 'delete-char-dynamic)
 (bind-key "C-d" 'delete-char-dynamic)
 #+END_SRC
+* Entering text
 
-** Indentation
-*** Indent yanked text
+Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
+
+#+BEGIN_SRC emacs-lisp
+(setq read-quoted-char-radix 10)
+#+END_SRC
+* Completion
+
+#+BEGIN_SRC emacs-lisp
+(setq ;; ignore case when reading a file name completion
+      read-file-name-completion-ignore-case t
+      ;; do not consider case significant in completion (GNU Emacs default)
+      completion-ignore-case t
+      ;; lets TAB do completion as well
+      tab-always-indent 'complete
+      completions-format 'vertical)
+
+;; Doesn't work with ido
+;; (partial-completion-mode 1)
+;; (setq completion-auto-help 'lazy)
+#+END_SRC
+
+* Indentation
+** Indent yanked text
 Let yanked text immediately be indented, based on an old version of
 [[http://www.emacswiki.org/emacs/AutoIndentation]]:
 
@@ -423,75 +452,14 @@ Let yanked text immediately be indented, based on an old version of
 	(indent-region (region-beginning) (region-end) nil))))
 #+END_SRC
 
-*** Swap RET and C-j
+** Swap RET and C-j
 
 #+BEGIN_SRC emacs-lisp
 (bind-key "RET" 'newline-and-indent)
 
 (bind-key "C-j" 'newline)
 #+END_SRC
-
-** Searching
-*** Package: isearch
-#+BEGIN_SRC emacs-lisp
-(setq ;; Scrolling while searching
-      isearch-allow-scroll t
-
-      ;; Save Isearch stuff
-      isearch-resume-in-command-history t)
-
-(bind-key "C-y" 'isearch-yank-kill isearch-mode-map)
-#+END_SRC
-
-*** grep
-
-Prompts you for an expression, defaulting to the symbol that your
-cursor is on, and greps for that in the current directory and all
-subdirectories:
-
-#+BEGIN_SRC emacs-lisp
-(defun my-grep ()
-  "grep the whole directory for something defaults to term at cursor position"
-  (interactive)
-  (let ((default (thing-at-point 'symbol)))
-    (let ((needle (or (read-string (concat "grep for '" default "': ")) default)))
-      (setq needle (if (equal needle "") default needle))
-      (grep (concat "egrep -s -i -n -r " needle " *")))))
-
-(bind-key "C-x g" 'my-grep)
-
-#+END_SRC
-
-*** Invoke isearch from Occur
-
-#+BEGIN_SRC emacs-lisp
-(defun isearch-occur ()
-  "Invoke `occur' from within isearch."
-  (interactive)
-  (let ((case-fold-search isearch-case-fold-search))
-    (occur (if isearch-regexp isearch-string (regexp-quote isearch-string))))
-  (pop-to-buffer "*Occur*"))
-
-(bind-key "C-o" 'isearch-occur isearch-mode-map)
-#+END_SRC
-
-** Miscelleanous
-
-#+BEGIN_SRC emacs-lisp
-(defun dos2unix()
-  "convert dos (^M) end of line to unix end of line"
-  (interactive)
-  (goto-char(point-min))
-  (while (search-forward "\r" nil t) (replace-match "")))
-
-; Fri,  1 Dec 2006 15:41:36 +0100
-(defun 822date ()
-  "Insert date at point format the RFC822 way."
-  (interactive)
-  (insert (format-time-string "%a, %e %b %Y %H:%M:%S %z")))
-#+END_SRC
-
-** Frames (Windows)
+* Frames (Windows)
 
 #+BEGIN_SRC emacs-lisp
 ;; http://www.emacswiki.org/emacs/frame-cmds.el
@@ -583,8 +551,7 @@ are two windows displayed, act like C-x1:"
 
 (bind-key "<f5>" 'my-explode-window)
 #+END_SRC
-
-** Buffers
+* Buffers
 
 #+BEGIN_SRC emacs-lisp
 ;; http://www.emacswiki.org/emacs/mybuffers.el
@@ -828,98 +795,6 @@ To remove this protection, call this command with a negative prefix argument."
 (protect-buffer-from-kill-mode nil (get-buffer "*scratch*"))
 #+END_SRC
 
-** Compilation
-*** Byte compilation
-#+BEGIN_SRC emacs-lisp
-(defun my--bcc-compile-source-file (fullname)
-  "Compiles an elisp file into the byte-cache"
-  (let (cachename
-        hist-ent loaded-from-bcc-cache
-        bcc-loaded-fake-cache-entry)
-
-    (when (and bcc-enabled
-               (not (save-match-data
-                      (bcc-in-blacklist fullname bcc-blacklist))))
-
-      (setq cachename (file-truename (bcc-cache-file-name fullname)))
-      (make-directory (file-name-directory cachename) t)
-
-      (when (and bcc-regenerate-toplevel
-                 (file-newer-than-file-p fullname cachename))
-
-        (bcc-regenerate-cache fullname cachename nil))
-
-      (when (file-readable-p cachename)
-        (unless bcc-loaded-fake-cache-entry
-          (setq loaded-from-bcc-cache t))))
-    ))
-#+END_SRC
-
-*** Compile or byte-compile
-
-#+BEGIN_SRC emacs-lisp
-(defun my-compile ()
-  "Compile elisp or cpp"
-  (interactive)
-  (delete-other-windows)
-  (save-buffer)
-  (if (or (eq major-mode 'lisp-mode) (eq major-mode 'emacs-lisp-mode))
-      (progn
-	(ignore-errors (my--kill-buffer-and-window (get-buffer-create "*Compile-Log*")))
-	; Now try to compile this file
-	(my--bcc-compile-source-file (buffer-file-name))
-	)
-    (progn
-      (if (fboundp 'eproject-root)
-	  (let ((default-directory (eproject-root)))
-		  (compile compile-command))
-	(compile compile-command)))))
-
-(bind-key "<f7>" 'my-compile)
-
-
-(defun set-compile-command (&optional cmd)
-  "Helper for to set compile-command"
-  (interactive "scmd: ")
-  (setq compile-command cmd))
-#+END_SRC
-
-*** Auto close compile log if there are no errors
-
-[[http://www.emacswiki.org/emacs/ModeCompile]]
-
-#+BEGIN_SRC emacs-lisp
-(defun compile-autoclose (buffer string)
-  (cond ((string-match "finished" string)
-	 ;; (message "Build maybe successful: closing window.")
-	 (run-with-timer 1 nil
-			 'delete-window
-			 (get-buffer-window buffer t)))
-	(t
-	 (message "Compilation exited abnormally: %s" string))))
-(setq compilation-finish-functions 'compile-autoclose
-      compilation-ask-about-save nil
-      compilation-scroll-output t)
-#+END_SRC
-
-*** Error navigation
-
-#+BEGIN_SRC emacs-lisp
-
-(bind-key "<f8>" 'next-error)
-
-(bind-key "S-<f8>" 'previous-error)
-#+END_SRC
-
-
-* Mouse
-
-Paste at text-cursor, not at mouse-cursor
-
-#+BEGIN_SRC emacs-lisp
-(setq mouse-yank-at-point t)
-#+END_SRC
-
 * Entering/exiting Emacs
 
 #+BEGIN_SRC emacs-lisp
@@ -977,15 +852,6 @@ Don't run vc-git & friends, we have magit
   (setq vc-mode nil))
 (setq vc-handled-backends nil)
 #+END_SRC
-
-* Entering text
-
-Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
-
-#+BEGIN_SRC emacs-lisp
-(setq read-quoted-char-radix 10)
-#+END_SRC
-
 * File opening/saving
 
 #+BEGIN_SRC emacs-lisp
@@ -1033,47 +899,6 @@ Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
 ;; quickly safe
 (bind-key "<f2>" 'save-buffer)
 #+END_SRC
-
-* Help
-** Go to last help buffer
-Make 'l' (like last) go to the previous position in emacs help.
-
-[[http://www.emacswiki.org/cgi-bin/wiki/EmacsNiftyTricks]]
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'help-mode-hook
-	  '(lambda ()
-	     (bind-key "I" 'help-go-back help-mode-map)))
-#+END_SRC
-
-** F1 key searches in help or opens man page
-
-#+BEGIN_SRC emacs-lisp
-(defun my-help ()
-  "If function given tries to `describe-function' otherwise uses
-`manual-entry' to display manpage of a `current-word'."
-  (interactive)
-  (let ((var (variable-at-point)))
-    (if (symbolp var)
-	(describe-variable var)
-      (let ((fn (function-called-at-point)))
-	(if fn
-	    (describe-function fn)
-	  (man (current-word)))))))
-
-(bind-key "<f1>" 'my-help)
-#+END_SRC
-
-** Apropos
-
-#+BEGIN_SRC emacs-lisp
-;; check all variables and non-interactive functions as well
-(setq apropos-do-all t)
-
-;; Help should search more than just commands
-(bind-key "C-h a" 'apropos)
-#+END_SRC
-
 * Display
 ** Display: Frame display
 
@@ -1294,8 +1119,89 @@ Get rid of the Games in the Tools menu.
 #+BEGIN_SRC emacs-lisp
 (define-key menu-bar-tools-menu [games] nil)
 #+END_SRC
+* Searching
+** Package: isearch
+#+BEGIN_SRC emacs-lisp
+(setq ;; Scrolling while searching
+      isearch-allow-scroll t
 
-* Language, German localisation
+      ;; Save Isearch stuff
+      isearch-resume-in-command-history t)
+
+(bind-key "C-y" 'isearch-yank-kill isearch-mode-map)
+#+END_SRC
+
+** grep
+
+Prompts you for an expression, defaulting to the symbol that your
+cursor is on, and greps for that in the current directory and all
+subdirectories:
+
+#+BEGIN_SRC emacs-lisp
+(defun my-grep ()
+  "grep the whole directory for something defaults to term at cursor position"
+  (interactive)
+  (let ((default (thing-at-point 'symbol)))
+    (let ((needle (or (read-string (concat "grep for '" default "': ")) default)))
+      (setq needle (if (equal needle "") default needle))
+      (grep (concat "egrep -s -i -n -r " needle " *")))))
+
+(bind-key "C-x g" 'my-grep)
+
+#+END_SRC
+
+** Invoke isearch from Occur
+
+#+BEGIN_SRC emacs-lisp
+(defun isearch-occur ()
+  "Invoke `occur' from within isearch."
+  (interactive)
+  (let ((case-fold-search isearch-case-fold-search))
+    (occur (if isearch-regexp isearch-string (regexp-quote isearch-string))))
+  (pop-to-buffer "*Occur*"))
+
+(bind-key "C-o" 'isearch-occur isearch-mode-map)
+#+END_SRC
+* Help
+** Go to last help buffer
+Make 'l' (like last) go to the previous position in emacs help.
+
+[[http://www.emacswiki.org/cgi-bin/wiki/EmacsNiftyTricks]]
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'help-mode-hook
+	  '(lambda ()
+	     (bind-key "I" 'help-go-back help-mode-map)))
+#+END_SRC
+
+** F1 key searches in help or opens man page
+
+#+BEGIN_SRC emacs-lisp
+(defun my-help ()
+  "If function given tries to `describe-function' otherwise uses
+`manual-entry' to display manpage of a `current-word'."
+  (interactive)
+  (let ((var (variable-at-point)))
+    (if (symbolp var)
+	(describe-variable var)
+      (let ((fn (function-called-at-point)))
+	(if fn
+	    (describe-function fn)
+	  (man (current-word)))))))
+
+(bind-key "<f1>" 'my-help)
+#+END_SRC
+
+** Apropos
+
+#+BEGIN_SRC emacs-lisp
+;; check all variables and non-interactive functions as well
+(setq apropos-do-all t)
+
+;; Help should search more than just commands
+(bind-key "C-h a" 'apropos)
+#+END_SRC
+* Localisation
 
 A sentence doesn't end with two spaces:
 
@@ -1303,24 +1209,180 @@ A sentence doesn't end with two spaces:
 (setq sentence-end-double-space nil)
 #+END_SRC
 
-* Completion
+* Miscelleanous
 
 #+BEGIN_SRC emacs-lisp
-(setq ;; ignore case when reading a file name completion
-      read-file-name-completion-ignore-case t
-      ;; do not consider case significant in completion (GNU Emacs default)
-      completion-ignore-case t
-      ;; lets TAB do completion as well
-      tab-always-indent 'complete
-      completions-format 'vertical)
+(defun dos2unix()
+  "convert dos (^M) end of line to unix end of line"
+  (interactive)
+  (goto-char(point-min))
+  (while (search-forward "\r" nil t) (replace-match "")))
 
-;; Doesn't work with ido
-;; (partial-completion-mode 1)
-;; (setq completion-auto-help 'lazy)
+; Fri,  1 Dec 2006 15:41:36 +0100
+(defun 822date ()
+  "Insert date at point format the RFC822 way."
+  (interactive)
+  (insert (format-time-string "%a, %e %b %Y %H:%M:%S %z")))
 #+END_SRC
 
-* Important Packages I cannot live without
-** Package: ibuffer
+
+
+* Programming
+** Compilation
+*** Byte compilation
+#+BEGIN_SRC emacs-lisp
+(defun my--bcc-compile-source-file (fullname)
+  "Compiles an elisp file into the byte-cache"
+  (let (cachename
+        hist-ent loaded-from-bcc-cache
+        bcc-loaded-fake-cache-entry)
+
+    (when (and bcc-enabled
+               (not (save-match-data
+                      (bcc-in-blacklist fullname bcc-blacklist))))
+
+      (setq cachename (file-truename (bcc-cache-file-name fullname)))
+      (make-directory (file-name-directory cachename) t)
+
+      (when (and bcc-regenerate-toplevel
+                 (file-newer-than-file-p fullname cachename))
+
+        (bcc-regenerate-cache fullname cachename nil))
+
+      (when (file-readable-p cachename)
+        (unless bcc-loaded-fake-cache-entry
+          (setq loaded-from-bcc-cache t))))
+    ))
+#+END_SRC
+
+*** Compile or byte-compile
+
+#+BEGIN_SRC emacs-lisp
+(defun my-compile ()
+  "Compile elisp or cpp"
+  (interactive)
+  (delete-other-windows)
+  (save-buffer)
+  (if (or (eq major-mode 'lisp-mode) (eq major-mode 'emacs-lisp-mode))
+      (progn
+	(ignore-errors (my--kill-buffer-and-window (get-buffer-create "*Compile-Log*")))
+	; Now try to compile this file
+	(my--bcc-compile-source-file (buffer-file-name))
+	)
+    (progn
+      (if (fboundp 'eproject-root)
+	  (let ((default-directory (eproject-root)))
+		  (compile compile-command))
+	(compile compile-command)))))
+
+(bind-key "<f7>" 'my-compile)
+
+
+(defun set-compile-command (&optional cmd)
+  "Helper for to set compile-command"
+  (interactive "scmd: ")
+  (setq compile-command cmd))
+#+END_SRC
+
+*** Auto close compile log if there are no errors
+
+[[http://www.emacswiki.org/emacs/ModeCompile]]
+
+#+BEGIN_SRC emacs-lisp
+(defun compile-autoclose (buffer string)
+  (cond ((string-match "finished" string)
+	 ;; (message "Build maybe successful: closing window.")
+	 (run-with-timer 1 nil
+			 'delete-window
+			 (get-buffer-window buffer t)))
+	(t
+	 (message "Compilation exited abnormally: %s" string))))
+(setq compilation-finish-functions 'compile-autoclose
+      compilation-ask-about-save nil
+      compilation-scroll-output t)
+#+END_SRC
+
+*** Error navigation
+
+#+BEGIN_SRC emacs-lisp
+
+(bind-key "<f8>" 'next-error)
+
+(bind-key "S-<f8>" 'previous-error)
+#+END_SRC
+
+** magit
+
+=magit-rigid-key-bindings= must be set before magit is loaded. It will
+remove the new key bindings that use pop-up buffers.
+
+#+BEGIN_SRC emacs-lisp
+(setq magit-rigid-key-bindings t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package magit
+  :ensure t
+  :defer t
+  :config
+  (progn
+     (setq magit-save-some-buffers 'dontask
+	   magit-commit-all-when-nothing-staged nil
+	   magit-stage-all-confirm nil
+	   magit-unstage-all-confirm nil
+	   magit-status-buffer-switch-function 'switch-to-buffer
+	   magit-refresh-file-buffer-hook '(revert-buffer)
+	   magit-diff-use-overlays t
+	   )
+     ;(set-face-foreground 'magit-diff-add "green4")
+     ;(set-face-foreground 'magit-diff-del "red3")
+     )
+  :bind ("C-c m" . magit-status)
+  :commands (magit-get-top-dir)
+)
+
+;;(autoload 'magit-get-top-dir "magit" nil t)
+
+(defun magit-refresh-status ()
+  (magit-git-exit-code "update-index" "--refresh")
+  (magit-create-buffer-sections
+    (magit-with-section 'status nil
+      (run-hooks 'magit-status-insert-sections-hook)))
+  (run-hooks 'magit-refresh-status-hook))
+#+END_SRC
+
+** ffap (find-file-at-point)
+
+#+BEGIN_SRC emacs-lisp
+(use-package ffap
+  :commands
+  find-file-at-point
+  :bind (("C-x C-p" . find-file-at-point))
+  )
+
+;; rebind C-x C-f and others to the ffap bindings (see variable ffap-bindings)
+;; (ffap-bindings)
+;; C-u C-x C-f finds the file at point
+;; (setq ffap-require-prefix t)
+#+END_SRC
+
+** column-marker
+
+#+BEGIN_SRC emacs-lisp
+(defun my-column-marker-at-80 ()
+  (interactive)
+  (column-marker-1 80)
+)
+
+(use-package column-marker
+  :ensure t
+  :init
+  (add-hook 'c-mode-hook 'my-column-marker-at-80)
+  )
+#+END_SRC
+
+
+* Package: ibuffer
 
 #+BEGIN_SRC emacs-lisp
 (use-package ibuffer
@@ -1389,10 +1451,9 @@ This is old code that I still need to evaluate:
     (ediff-buffers (car marked-buffers) (cadr marked-buffers))))
 (bind-key "e" 'ibuffer-ediff-marked-buffers ibuffer-mode-map)
 
-*** Package: ido
+** Package: ido
 
-* Packages
-** ace-jump-buffer
+* Package: ace-jump-buffer
 
 #+BEGIN_SRC emacs-lisp
 (use-package ace-jump-buffer
@@ -1401,7 +1462,7 @@ This is old code that I still need to evaluate:
   )
 #+END_SRC
 
-** ace-jump-mode
+* Package: ace-jump-mode
 
 #+BEGIN_SRC emacs-lisp
 (use-package ace-jump-mode
@@ -1410,36 +1471,7 @@ This is old code that I still need to evaluate:
 )
 #+END_SRC
 
-** column-marker
-
-#+BEGIN_SRC emacs-lisp
-(defun my-column-marker-at-80 ()
-  (interactive)
-  (column-marker-1 80)
-)
-
-(use-package column-marker
-  :ensure t
-  :init
-  (add-hook 'c-mode-hook 'my-column-marker-at-80)
-  )
-#+END_SRC
-** ffap (find-file-at-point)
-
-#+BEGIN_SRC emacs-lisp
-(use-package ffap
-  :commands
-  find-file-at-point
-  :bind (("C-x C-p" . find-file-at-point))
-  )
-
-;; rebind C-x C-f and others to the ffap bindings (see variable ffap-bindings)
-;; (ffap-bindings)
-;; C-u C-x C-f finds the file at point
-;; (setq ffap-require-prefix t)
-#+END_SRC
-
-** ido
+* Package: ido
 
 #+BEGIN_SRC emacs-lisp
 (use-package ido
@@ -1494,7 +1526,7 @@ This is old code that I still need to evaluate:
   (ido-ubiquitous-mode 1)
   )
 #+END_SRC
-** org-babel
+* Package: org-babel
 
 #+BEGIN_SRC emacs-lisp
 (use-package org
@@ -1508,7 +1540,7 @@ This is old code that I still need to evaluate:
     )
   )
 #+END_SRC
-** savehist (save mini-buffer history)
+* Package: savehist (save mini-buffer history)
 #+BEGIN_SRC emacs-lisp
 (use-package savehist
   :init
@@ -1518,43 +1550,3 @@ This is old code that I still need to evaluate:
   (savehist-mode 1)
 )
 #+END_SRC
-** magit
-
-=magit-rigid-key-bindings= must be set before magit is loaded. It will
-remove the new key bindings that use pop-up buffers.
-
-#+BEGIN_SRC emacs-lisp
-(setq magit-rigid-key-bindings t)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(use-package magit
-  :ensure t
-  :defer t
-  :config
-  (progn
-     (setq magit-save-some-buffers 'dontask
-	   magit-commit-all-when-nothing-staged nil
-	   magit-stage-all-confirm nil
-	   magit-unstage-all-confirm nil
-	   magit-status-buffer-switch-function 'switch-to-buffer
-	   magit-refresh-file-buffer-hook '(revert-buffer)
-	   magit-diff-use-overlays t
-	   )
-     ;(set-face-foreground 'magit-diff-add "green4")
-     ;(set-face-foreground 'magit-diff-del "red3")
-     )
-  :bind ("C-c m" . magit-status)
-  :commands (magit-get-top-dir)
-)
-
-;;(autoload 'magit-get-top-dir "magit" nil t)
-
-(defun magit-refresh-status ()
-  (magit-git-exit-code "update-index" "--refresh")
-  (magit-create-buffer-sections
-    (magit-with-section 'status nil
-      (run-hooks 'magit-status-insert-sections-hook)))
-  (run-hooks 'magit-refresh-status-hook))
-#+END_SRC
-
