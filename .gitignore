@@ -4,8 +4,7 @@
 /holger.el
 /places
 /tmp/
-/elpa/*.txt
-/elpa/*/*
+/elpa/
 /org/
 /semanticdb/
 /GTAGS
