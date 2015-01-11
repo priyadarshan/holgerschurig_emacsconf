@@ -1348,6 +1348,11 @@ TODO: look for a real qmake-mode
 
 (bind-key "S-<f8>" 'previous-error)
 #+END_SRC
+** Mark files with shebank executable
+#+BEGIN_SRC emacs-lisp
+(add-hook 'after-save-hook
+	  'executable-make-buffer-file-executable-if-script-p)
+#+END_SRC
 ** Mode: C++
 ;; Open *.h files normally in c++ mode
 #+BEGIN_SRC emacs-lisp
