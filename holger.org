@@ -309,6 +309,22 @@ rather than line counts."
 (bind-key "M-g g"   'my-goto-line)
 (bind-key "M-g M-g" 'my-goto-line)
 #+END_SRC
+** Package: expand-region
+
+Home page: https://github.com/magnars/expand-region.el
+
+C-+ Expand region increases the selected region by semantic units.
+
+You can then either continue to press C-+ to expand even further, or
+use + and - after the first expand to expand further / shrink again.
+
+#+BEGIN_SRC emacs-lisp
+(use-package expand-region
+  :ensure t
+  :defer t
+  :bind ("C-+" . er/expand-region)
+  )
+#+END_SRC
 * Yank and Delete
 ** Delete word or yank
 The following may be of interest to people who (a) are happy with
