@@ -870,6 +870,40 @@ Get rid of the Games in the Tools menu.
   :defer nil
 )
 #+END_SRC
+** Modeline
+
+http://emacs.stackexchange.com/questions/281/how-do-i-get-a-fancier-mode-line-that-uses-solid-colors-and-triangles
+
+We could either use http://www.emacswiki.org/emacs/PowerLine
+
+#+BEGIN_SRC emacs-lisp
+(use-package powerline
+  :ensure t
+  :init
+  (powerline-default-theme)
+)
+#+END_SRC
+
+... or https://github.com/Bruce-Connor/smart-mode-line
+
+# BEGIN_SRC emacs-lisp
+(use-package smart-mode-line-powerline-theme
+  :ensure t
+)
+(use-package smart-mode-line
+  :ensure t
+  :init
+  (progn
+    (setq sml/theme "powerline"
+	  sml/mode-width 'full
+	  )
+    ;;(setq powerline-arrow-shape 'curve)
+    ;;(setq powerline-default-separator-dir '(right . left))
+    (sml/setup)
+    )
+)
+# END_SRC
+
 * Minibuffer
 #+BEGIN_SRC emacs-lisp
 (setq ;; Don't insert current directory into minubuffer
