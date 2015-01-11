@@ -1021,6 +1021,19 @@ C-x w
   :commands describe-unbound-keys
 )
 #+END_SRC
+** Show keytable
+
+Beside (describe-personal-keybindings) you might want to have a keytable:
+
+#+BEGIN_SRC emacs-lisp
+(use-package keytable
+  :defer t
+  :load-path "elisp/"
+  :commands my-keytable
+  ;; :init
+  ;; (define-key global-map [menu-bar tools keytable] '("Keytable" . my-keytable))
+)
+#+END_SRC
 * Miscelleanous
 ** Mouse
 Paste at text-cursor, not at mouse-cursor:
