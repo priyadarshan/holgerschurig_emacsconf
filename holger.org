@@ -1069,6 +1069,21 @@ Paste at text-cursor, not at mouse-cursor:
 #+BEGIN_SRC emacs-lisp
 (setq mouse-yank-at-point t)
 #+END_SRC
+
+Let the mouse-wheel move the cursor in a sane manner.
+#+begin_src emacs-lisp
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+(setq mouse-wheel-progressive-speed nil)
+(setq mouse-wheel-follow-mouse +1)
+#+end_src
+
+When it is /typing time/, do not show the mouse cursor. Be at ease, it will
+return once you move it again.
+
+#+begin_src emacs-lisp
+(setq make-pointer-invisible +1)
+#+end_src
+
 ** Localisation
 A sentence doesn't end with two spaces:
 
