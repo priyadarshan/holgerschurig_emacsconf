@@ -1461,3 +1461,40 @@ remove the new key bindings that use pop-up buffers.
     )
 )
 #+END_SRC
+** Package: helm-projectile
+This is needed by the following "projectile" package.
+#+BEGIN_SRC emacs-lisp
+(use-package helm-projectile
+  :ensure t
+  :defer t
+  :commands helm-projectile-on
+)
+#+END_SRC
+** Package: projectile
+
+This construct delays the loading and initialization of projectile
+only after "C-c p h":
+
+#+BEGIN_SRC emacs-lisp
+(defun my-projectile-init ()
+  (interactive)
+  (projectile-global-mode)
+  (setq projectile-completion-system 'helm
+	projectile-switch-project-action 'helm-projectile
+	)
+  (helm-projectile-on)
+  ;;(bind-kpey "C-c p a" 'projectile-ag projectile-mode-map)
+  (helm-projectile)
+  )
+(use-package projectile
+  :ensure t
+  :defer t
+  :bind ("C-c p h" . my-projectile-init)
+  :commands (projectile-global-mode)
+  :diminish projectile-mode
+  :init
+  (setq projectile-cache-file          (concat dotfiles-dir "tmp/projectile.cache")
+	projectile-known-projects-file (concat dotfiles-dir "tmp/projectile-bookmarks.eld")
+	)
+)
+#+END_SRC
