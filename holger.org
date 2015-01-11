@@ -1384,3 +1384,36 @@ remove the new key bindings that use pop-up buffers.
   )
 #+END_SRC
 
+** Package: helm-gtags
+#+BEGIN_SRC emacs-lisp
+(use-package helm-gtags
+  :ensure t
+  :defer t
+  :bind (("M-." . helm-gtags-dwim)
+	 ("M-," . helm-gtags-pop-stack)
+	 ;;("M-#" . helm-gtags-select)
+	 )
+  :init
+  (progn
+    (setq helm-gtags-prefix-key "\C-cg"
+	  helm-gtags-suggested-key-mapping t
+	  )
+    )
+  :config
+  (progn
+    ;; Enable helm-gtags-mode
+    ;;(add-hook 'dired-mode-hook 'helm-gtags-mode)
+    ;;(add-hook 'eshell-mode-hook 'helm-gtags-mode)
+    (add-hook 'c-mode-hook 'helm-gtags-mode)
+    (add-hook 'c++-mode-hook 'helm-gtags-mode)
+    (add-hook 'asm-mode-hook 'helm-gtags-mode)
+
+    (setq helm-gtags-ignore-case t
+	  helm-gtags-auto-update t
+	  helm-gtags-use-input-at-cursor t
+	  helm-gtags-pulse-at-cursor t
+	  helm-gtags-path-style 'relative
+	  )
+    )
+)
+#+END_SRC
