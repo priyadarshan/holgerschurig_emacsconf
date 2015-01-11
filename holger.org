@@ -1,4 +1,5 @@
 #+TITLE: Holger's Emacs Startup File
+#+SEQ_TODO: TODO DISABLED | DONE
 #+STARTUP: oddeven
 #+STARTUP: content
 #+STARTUP: entitiespretty
