@@ -1431,8 +1431,9 @@ TODO: enable it only in some modes
 	  company-dabbrev-downcase nil
 	  company-dabbrev-other-buffers t
 	  ;; trigger insertion of candidate on Whitespace, closing paren or punctuation
-	  company-auto-complete t
 	  company-idle-delay 0.1
+	  ;; but this is not good: if i'd write ".git ", it would create ".github" out of it.
+	  ;;company-auto-complete t
 	  company-selection-wrap-around t
 	  ;; company-show-numbers t  ;; use Alt-<num> to select
 	  )
