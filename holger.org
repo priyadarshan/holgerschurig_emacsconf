@@ -1040,6 +1040,7 @@ Let yanked text immediately be indented, based on an old version of
 
 
 
+
 * Package: ace-jump-buffer
 #+BEGIN_SRC emacs-lisp
 (use-package ace-jump-buffer
@@ -1227,6 +1228,7 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 
 
 
+
 * Programming
 ** Tab handling
 Tabify only initial whitespace
@@ -1330,10 +1332,11 @@ Just hover over an elisp function to see the arguments.
 	     ;; "-" is almost always part of a function- or variable-name
 	     (modify-syntax-entry ?- "w")))
 #+END_SRC
-** Mode: Semantic
-#+BEGIN_SRC emacs-lisp
+** DISABLED Mode: Semantic
+TODO: enable it only in some modes
+# BEGIN_SRC emacs-lisp
 (semantic-mode 1)
-#+END_SRC
+# END_SRC
 ** Package: column-marker
 
 #+BEGIN_SRC emacs-lisp
