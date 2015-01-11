@@ -1453,7 +1453,10 @@ Sample color customization
    `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
 
 ** Package: helm-projectile
-This is needed by the following "projectile" package.
+
+This is just an autoloader for helm-projectile, as soon as
+helm-projectile-on is executed.
+
 #+BEGIN_SRC emacs-lisp
 (use-package helm-projectile
   :ensure t
@@ -1551,8 +1554,13 @@ remove the new key bindings that use pop-up buffers.
 #+END_SRC
 ** Package: projectile
 
-This construct delays the loading and initialization of projectile
-only after "C-c p h":
+Home page: http://batsov.com/projectile/
+
+A projectile is any directory that has a .git directory, or a
+.projectile file in it.
+
+
+(my-projectile-init) is called via "C-c p h". It loads projectile when needed.
 
 #+BEGIN_SRC emacs-lisp
 (defun my-projectile-init ()
@@ -1568,12 +1576,15 @@ only after "C-c p h":
 (use-package projectile
   :ensure t
   :defer t
-  :bind ("C-c p h" . my-projectile-init)
-  :commands (projectile-global-mode)
+  :bind ("C-c p h" . my-projectile-init) ;; re-routed to helm-projectile
+  :commands (projectile-global-mode projectile-on)
   :diminish projectile-mode
   :init
-  (setq projectile-cache-file          (concat dotfiles-dir "tmp/projectile.cache")
-	projectile-known-projects-file (concat dotfiles-dir "tmp/projectile-bookmarks.eld")
-	)
+  (progn
+    (add-hook 'prog-mode-hook 'projectile-on)
+    (setq projectile-cache-file          (concat dotfiles-dir "tmp/projectile.cache")
+	  projectile-known-projects-file (concat dotfiles-dir "tmp/projectile-bookmarks.eld")
+	  )
+    )
 )
 #+END_SRC
