@@ -864,6 +864,13 @@ Get rid of the Games in the Tools menu.
 # BEGIN_SRC emacs-lisp
 (define-key menu-bar-tools-menu [games] nil)
 # END_SRC
+** Theme
+#+BEGIN_SRC emacs-lisp
+(use-package afternoon-theme
+  :ensure t
+  :defer nil
+)
+#+END_SRC
 * Minibuffer
 #+BEGIN_SRC emacs-lisp
 (setq ;; Don't insert current directory into minubuffer
