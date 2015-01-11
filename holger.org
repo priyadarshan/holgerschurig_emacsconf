@@ -1484,19 +1484,6 @@ Sample color customization
    `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
    `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
 
-** Package: helm-projectile
-
-This is just an autoloader for helm-projectile, as soon as
-helm-projectile-on is executed.
-
-#+BEGIN_SRC emacs-lisp
-(use-package helm-projectile
-  :ensure t
-  :defer t
-  :commands helm-projectile-on
-)
-#+END_SRC
-
 ** Package: helm-gtags
 
 Home page: https://github.com/syohex/emacs-helm-gtags
@@ -1589,7 +1576,19 @@ remove the new key bindings that use pop-up buffers.
     )
   )
 #+END_SRC
-** Package: projectile
+** DISABLED Package: helm-projectile
+
+This is just an autoloader for helm-projectile, as soon as
+helm-projectile-on is executed.
+
+# BEGIN_SRC emacs-lisp
+(use-package helm-projectile
+  :ensure t
+  :defer t
+  :commands helm-projectile-on
+)
+# END_SRC
+** DISABLED Package: projectile
 
 Home page: http://batsov.com/projectile/
 
@@ -1599,7 +1598,7 @@ A projectile is any directory that has a .git directory, or a
 
 (my-projectile-init) is called via "C-c p h". It loads projectile when needed.
 
-#+BEGIN_SRC emacs-lisp
+# BEGIN_SRC emacs-lisp
 (defun my-projectile-init ()
   (interactive)
   (projectile-global-mode)
@@ -1614,7 +1613,7 @@ A projectile is any directory that has a .git directory, or a
   :ensure t
   :defer t
   :bind ("C-c p h" . my-projectile-init) ;; re-routed to helm-projectile
-  :commands (projectile-global-mode projectile-on)
+  :commands (projectile-on projectile-global-mode)
   :diminish projectile-mode
   :init
   (progn
@@ -1624,4 +1623,4 @@ A projectile is any directory that has a .git directory, or a
 	  )
     )
 )
-#+END_SRC
+# END_SRC
