@@ -1399,22 +1399,58 @@ TODO: enable it only in some modes
 (use-package company
   :ensure t
   :defer t
-  ;;:diminish t
+  :diminish company-mode
   :bind (("C-<tab>" . company-complete)
 	 ("s-<SPC>" . company-complete))
   :commands (global-company-mode)
   :init
   (progn
-    ;;(add-hook 'emacs-lisp-mode-hook 'global-company-mode)
-    (add-hook 'c-mode-hook          'global-company-mode)
-    (add-hook 'c++-mode-hook        'global-company-mode)
+    (add-hook 'after-init-hook 'global-company-mode)
+    (setq company-backends '(;; company-bbdb
+			     company-nxml
+			     company-css
+			     company-elisp
+			     ;; company-eclim
+			     ;; company-semantic
+			     ;; company-clang
+			     ;; company-xcode
+			     ;; company-ropemacs
+			     company-cmake
+			     company-capf
+			     (company-dabbrev-code
+			      company-gtags
+			      ;; company-etags
+			      company-keywords)
+			     ;; company-oddmuse
+			     company-files
+			     company-dabbrev))
     )
   :config
   (progn
-    (delete 'company-semantic company-backends)
+    (setq company-elisp-detect-function-context nil
+	  company-dabbrev-downcase nil
+	  company-dabbrev-other-buffers t
+	  ;; trigger insertion of candidate on Whitespace, closing paren or punctuation
+	  company-auto-complete t
+	  company-idle-delay 0.1
+	  company-selection-wrap-around t
+	  ;; company-show-numbers t  ;; use Alt-<num> to select
+	  )
     )
 )
 #+END_SRC
+
+
+Sample color customization
+
+(let ((bg (face-attribute 'default :background)))
+  (custom-set-faces
+   `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
+   `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
+   `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
+   `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+   `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
+
 ** Package: helm-projectile
 This is needed by the following "projectile" package.
 #+BEGIN_SRC emacs-lisp
