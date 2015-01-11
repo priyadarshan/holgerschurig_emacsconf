@@ -1125,6 +1125,9 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
     ;; allow "find man at point" for C-c h m (helm-man-woman)
     (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
+    ;; ignore Emacs save files
+    (add-to-list 'helm-boring-file-regexp-list "\\.#")
+
     (setq helm-candidate-number-limit 100
 	  ;; My helm config for pretty fast updates when hitting RET too quickly after typing fast:
 	  ;; (https://gist.github.com/antifuchs/9238468)
