@@ -1516,6 +1516,7 @@ remove the new key bindings that use pop-up buffers.
 	   magit-status-buffer-switch-function 'switch-to-buffer
 	   magit-refresh-file-buffer-hook '(revert-buffer)
 	   magit-diff-use-overlays t
+	   magit-completing-read-function 'completing-read
 	   )
      ;(set-face-foreground 'magit-diff-add "green4")
      ;(set-face-foreground 'magit-diff-del "red3")
