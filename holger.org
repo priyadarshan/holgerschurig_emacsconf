@@ -1426,8 +1426,14 @@ TODO: enable it only in some modes
   (add-hook 'c-mode-hook 'my-column-marker-at-80)
   )
 #+END_SRC
-** Package: company (complete anything
+** Package: company (complete anything)
 #+BEGIN_SRC emacs-lisp
+
+(use-package company-c-headers
+  :ensure t
+  :defer t
+  :commands company-c-headers
+)
 (use-package company
   :ensure t
   :defer t
@@ -1439,6 +1445,7 @@ TODO: enable it only in some modes
   (progn
     (add-hook 'after-init-hook 'global-company-mode)
     (setq company-backends '(;; company-bbdb
+			     company-c-headers
 			     company-nxml
 			     company-css
 			     company-elisp
