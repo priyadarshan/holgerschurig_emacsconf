@@ -1440,3 +1440,24 @@ remove the new key bindings that use pop-up buffers.
     )
 )
 #+END_SRC
+** Package: company (complete anything
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :ensure t
+  :defer t
+  ;;:diminish t
+  :bind (("C-<tab>" . company-complete)
+	 ("s-<SPC>" . company-complete))
+  :commands (global-company-mode)
+  :init
+  (progn
+    ;;(add-hook 'emacs-lisp-mode-hook 'global-company-mode)
+    (add-hook 'c-mode-hook          'global-company-mode)
+    (add-hook 'c++-mode-hook        'global-company-mode)
+    )
+  :config
+  (progn
+    (delete 'company-semantic company-backends)
+    )
+)
+#+END_SRC
