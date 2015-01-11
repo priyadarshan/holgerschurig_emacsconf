@@ -1,8 +1,7 @@
 #+TITLE: Holger's Emacs Startup File
-#+SEQ_TODO: TODO DISABLED | DONE
-# OPTIONS: H:2 num:nil toc:t
-# STARTUP: oddeven
-# STARTUP: overview
+#+STARTUP: oddeven
+#+STARTUP: content
+#+STARTUP: entitiespretty
 
 * package and use-package
 
