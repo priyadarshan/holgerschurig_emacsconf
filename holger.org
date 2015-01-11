@@ -1498,6 +1498,11 @@ helm-projectile-on is executed.
 #+END_SRC
 
 ** Package: helm-gtags
+
+Home page: https://github.com/syohex/emacs-helm-gtags
+
+This uses GNU GLOBAL to browser tags.
+
 #+BEGIN_SRC emacs-lisp
 (use-package helm-gtags
   :ensure t
