@@ -1484,6 +1484,22 @@ Sample color customization
    `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
    `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
 
+** Package: dtrt-indent (tab guessing)
+#+BEGIN_SRC emacs-lisp
+(defun my-start-dtrt ()
+  (dtrt-indent-mode 1)
+)
+(use-package dtrt-indent
+  :ensure t
+  :defer t
+  :commands dtrt-indent-mode
+  :init
+  (progn
+    (add-hook 'prog-mode-hook   'my-start-dtrt)
+    )
+)
+#+END_SRC
+
 ** Package: helm-gtags
 
 Home page: https://github.com/syohex/emacs-helm-gtags
