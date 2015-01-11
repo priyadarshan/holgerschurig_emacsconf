@@ -713,6 +713,11 @@ Auto decompress compressed files.
 #+BEGIN_SRC emacs-lisp
 (bind-key "<f2>" 'save-buffer)
 #+END_SRC
+** Autorevert
+#+begin_src emacs-lisp
+(global-auto-revert-mode 1)
+#+end_src
+
 ** Package: recentf
 
 #+BEGIN_SRC emacs-lisp
