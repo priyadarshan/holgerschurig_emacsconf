@@ -64,7 +64,9 @@ See http://github.com/jwiegley/use-package/
 
 * Entering/exiting Emacs
 #+BEGIN_SRC emacs-lisp
-(setq ;; Do without annoying startup msg.
+(setq gc-cons-threshold 10000000
+
+      ;; Do without annoying startup msg.
       inhibit-startup-message t
 
       ;; This inhibits the initial startup echo area message.
