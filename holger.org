@@ -111,13 +111,10 @@ Get rid of yes-or-no questions - y or n is enough
 #+END_SRC
 * Cursor
 ** Nicer scroll handling
-
-Normally, Emacs does a "jumpy" scroll when you scroll exceeds the
-currend displayed buffer. This makes scrolling smooth.
-
 #+BEGIN_SRC emacs-lisp
-(setq scroll-conservatively 1000000
-      scroll-preserve-screen-position 1)
+(use-package smooth-scrolling
+  :ensure t
+)
 #+END_SRC
 ** multiple key binding
 First we define code that allows us to bind multiple functions to
