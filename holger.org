@@ -1430,8 +1430,8 @@ TODO: enable it only in some modes
     (setq company-elisp-detect-function-context nil
 	  company-dabbrev-downcase nil
 	  company-dabbrev-other-buffers t
+	  company-idle-delay 0.25
 	  ;; trigger insertion of candidate on Whitespace, closing paren or punctuation
-	  company-idle-delay 0.1
 	  ;; but this is not good: if i'd write ".git ", it would create ".github" out of it.
 	  ;;company-auto-complete t
 	  company-selection-wrap-around t
