@@ -1589,6 +1589,22 @@ Sample color customization
 )
 #+END_SRC
 
+** DISABLED Package: flyspell
+Home page: https://github.com/flycheck/flycheck
+
+Unfortunately it doesn't seem to be able to check inside org-babel's
+source blocks :-(
+
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck
+  :disabled t
+  :ensure t
+  ;; :diminish fly-check-mode
+  :config
+  (progn
+    (add-hook 'after-init-hook #'global-flycheck-mode)
+  ))
+#+END_SRC
 ** Package: helm-gtags
 
 Home page: https://github.com/syohex/emacs-helm-gtags
