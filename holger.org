@@ -1418,6 +1418,47 @@ Just hover over an elisp function to see the arguments.
 	     ;; "-" is almost always part of a function- or variable-name
 	     (modify-syntax-entry ?- "w")))
 #+END_SRC
+** Mode: web-mode
+
+Home page: http://web-mode.org/
+
+#+BEGIN_SRC emacs-lisp
+(defun my-web-mode-hook ()
+  ;; (whitespace-turn-off)
+  ;; (rainbow-turn-off)
+  ;; (visual-line-mode)
+  ;; (local-set-key (kbd "RET") 'newline-and-indent)
+  (setq web-mode-markup-indent-offset 2
+	web-mode-css-indent-offset 2
+	web-mode-code-indent-offset 2
+	web-mode-indent-style 2
+	web-mode-style-padding 1
+	web-mode-script-padding 1
+	web-mode-block-padding 0)
+  ;;(gcr/untabify-buffer-hook))
+)
+(use-package web-mode
+  :ensure t
+  :defer t
+  :mode (("\\.html\\'" . web-mode)
+	 ("\\.css\\'" . web-mode)
+	 ("\\.json\\'" . web-mode)
+	 ("\\.js\\'" . web-mode)
+	 )
+  :init
+  (add-hook 'web-mode-hook 'my-web-mode-hook)
+  :config
+  (progn
+    (setq web-mode-enable-block-partial-invalidation t
+	  web-mode-engines-alist '(("ctemplate" . "\\.html$"))
+	  )
+    )
+)
+
+;; TODO move away
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "xdg-open")
+#+END_SRC
 ** DISABLED Mode: Semantic
 TODO: enable it only in some modes
 # BEGIN_SRC emacs-lisp
