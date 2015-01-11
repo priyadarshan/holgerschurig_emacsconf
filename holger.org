@@ -1195,7 +1195,7 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 	  helm-ff-file-name-history-use-recentf t
 
 	  ;; define browser
-	  helm-browse-url-chromium-program "google-chrome-beta"
+	  helm-browse-url-chromium-program "xdg-open"
 	  helm-google-suggest-default-browser-function 'helm-browse-url-chromium
 	  helm-home-url "http://www.google.de"
 	  )
