@@ -882,6 +882,15 @@ Get rid of the Games in the Tools menu.
 # BEGIN_SRC emacs-lisp
 (define-key menu-bar-tools-menu [games] nil)
 # END_SRC
+** Unique buffer names
+
+Make two buffers with the same file name open distinguishable.
+https://www.gnu.org/software/emacs/manual/html_node/emacs/Uniquify.html
+
+#+begin_src emacs-lisp
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+#+end_src
 ** Theme
 #+BEGIN_SRC emacs-lisp
 (use-package afternoon-theme
