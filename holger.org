@@ -1265,12 +1265,6 @@ TODO: look for a real qmake-mode
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.pro$" . fundamental-mode))
 #+END_SRC
-** C++ mode for .h and .inl
-;; Open *.h files normally in c++ mode
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
-(add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
-#+END_SRC
 ** Commenting
 #+BEGIN_SRC emacs-lisp
 (bind-key "C-c c" 'comment-dwim)
@@ -1321,6 +1315,12 @@ TODO: look for a real qmake-mode
 
 (bind-key "S-<f8>" 'previous-error)
 #+END_SRC
+** Mode: C++
+;; Open *.h files normally in c++ mode
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
+#+END_SRC
 ** Mode: ELisp
 Just hover over an elisp function to see the arguments.
 
@@ -1352,6 +1352,70 @@ TODO: enable it only in some modes
   :init
   (add-hook 'c-mode-hook 'my-column-marker-at-80)
   )
+#+END_SRC
+** Package: company (complete anything
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :ensure t
+  :defer t
+  ;;:diminish t
+  :bind (("C-<tab>" . company-complete)
+	 ("s-<SPC>" . company-complete))
+  :commands (global-company-mode)
+  :init
+  (progn
+    ;;(add-hook 'emacs-lisp-mode-hook 'global-company-mode)
+    (add-hook 'c-mode-hook          'global-company-mode)
+    (add-hook 'c++-mode-hook        'global-company-mode)
+    )
+  :config
+  (progn
+    (delete 'company-semantic company-backends)
+    )
+)
+#+END_SRC
+** Package: helm-projectile
+This is needed by the following "projectile" package.
+#+BEGIN_SRC emacs-lisp
+(use-package helm-projectile
+  :ensure t
+  :defer t
+  :commands helm-projectile-on
+)
+#+END_SRC
+
+** Package: helm-gtags
+#+BEGIN_SRC emacs-lisp
+(use-package helm-gtags
+  :ensure t
+  :defer t
+  :bind (("M-." . helm-gtags-dwim)
+	 ("M-," . helm-gtags-pop-stack)
+	 ;;("M-#" . helm-gtags-select)
+	 )
+  :init
+  (progn
+    (setq helm-gtags-prefix-key "\C-cg"
+	  helm-gtags-suggested-key-mapping t
+	  )
+    )
+  :config
+  (progn
+    ;; Enable helm-gtags-mode
+    ;;(add-hook 'dired-mode-hook 'helm-gtags-mode)
+    ;;(add-hook 'eshell-mode-hook 'helm-gtags-mode)
+    (add-hook 'c-mode-hook 'helm-gtags-mode)
+    (add-hook 'c++-mode-hook 'helm-gtags-mode)
+    (add-hook 'asm-mode-hook 'helm-gtags-mode)
+
+    (setq helm-gtags-ignore-case t
+	  helm-gtags-auto-update t
+	  helm-gtags-use-input-at-cursor t
+	  helm-gtags-pulse-at-cursor t
+	  helm-gtags-path-style 'relative
+	  )
+    )
+)
 #+END_SRC
 ** Package: magit
 
@@ -1405,70 +1469,6 @@ remove the new key bindings that use pop-up buffers.
           )
     )
   )
-#+END_SRC
-
-** Package: helm-gtags
-#+BEGIN_SRC emacs-lisp
-(use-package helm-gtags
-  :ensure t
-  :defer t
-  :bind (("M-." . helm-gtags-dwim)
-	 ("M-," . helm-gtags-pop-stack)
-	 ;;("M-#" . helm-gtags-select)
-	 )
-  :init
-  (progn
-    (setq helm-gtags-prefix-key "\C-cg"
-	  helm-gtags-suggested-key-mapping t
-	  )
-    )
-  :config
-  (progn
-    ;; Enable helm-gtags-mode
-    ;;(add-hook 'dired-mode-hook 'helm-gtags-mode)
-    ;;(add-hook 'eshell-mode-hook 'helm-gtags-mode)
-    (add-hook 'c-mode-hook 'helm-gtags-mode)
-    (add-hook 'c++-mode-hook 'helm-gtags-mode)
-    (add-hook 'asm-mode-hook 'helm-gtags-mode)
-
-    (setq helm-gtags-ignore-case t
-	  helm-gtags-auto-update t
-	  helm-gtags-use-input-at-cursor t
-	  helm-gtags-pulse-at-cursor t
-	  helm-gtags-path-style 'relative
-	  )
-    )
-)
-#+END_SRC
-** Package: company (complete anything
-#+BEGIN_SRC emacs-lisp
-(use-package company
-  :ensure t
-  :defer t
-  ;;:diminish t
-  :bind (("C-<tab>" . company-complete)
-	 ("s-<SPC>" . company-complete))
-  :commands (global-company-mode)
-  :init
-  (progn
-    ;;(add-hook 'emacs-lisp-mode-hook 'global-company-mode)
-    (add-hook 'c-mode-hook          'global-company-mode)
-    (add-hook 'c++-mode-hook        'global-company-mode)
-    )
-  :config
-  (progn
-    (delete 'company-semantic company-backends)
-    )
-)
-#+END_SRC
-** Package: helm-projectile
-This is needed by the following "projectile" package.
-#+BEGIN_SRC emacs-lisp
-(use-package helm-projectile
-  :ensure t
-  :defer t
-  :commands helm-projectile-on
-)
 #+END_SRC
 ** Package: projectile
 
