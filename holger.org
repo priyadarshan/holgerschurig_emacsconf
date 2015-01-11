@@ -1002,6 +1002,25 @@ Check all variables and non-interactive functions as well
 ;; Help should search more than just commands
 (bind-key "C-h a" 'apropos)
 #+END_SRC
+** Show unbound keys
+
+If you call it and enter 5 as complexity, you'll see something like
+
+#+BEGIN_EXAMPLE
+34 unbound keys with complexity at most 5:
+C-x y
+C-x x
+C-x w
+...
+#+END_EXAMPLE
+
+#+BEGIN_SRC emacs-lisp
+(use-package unbound
+  :ensure t
+  :defer t
+  :commands describe-unbound-keys
+)
+#+END_SRC
 * Miscelleanous
 ** Mouse
 Paste at text-cursor, not at mouse-cursor:
