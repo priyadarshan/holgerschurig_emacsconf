@@ -1428,7 +1428,6 @@ TODO: enable it only in some modes
 #+END_SRC
 ** Package: company (complete anything)
 #+BEGIN_SRC emacs-lisp
-
 (use-package company-c-headers
   :ensure t
   :defer t
@@ -1596,6 +1595,13 @@ remove the new key bindings that use pop-up buffers.
           org-src-tab-acts-natively t ; inside a src block let tab act like it was in major mode of the src type
 	  org-src-preserve-indentation t ; don't add two indentation spaces into src blocks
           )
+    )
+  :config
+  (progn
+    (setq org-src-window-setup 'current-window)
+    ;; normally I'd need C-c ' to exit, but this enables the same exit
+    ;; method I have in when doing a commit in magit.
+    (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map)
     )
   )
 #+END_SRC
