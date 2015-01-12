@@ -109,6 +109,172 @@ Get rid of yes-or-no questions - y or n is enough
 (load (concat dotfiles-dir "private.el") 'noerror 'nomessage)
 
 #+END_SRC
+* Display
+** Fixed frame display
+#+BEGIN_SRC emacs-lisp
+(if (equal window-system 'w32)
+    ;; Windows settings
+    (setq initial-frame-alist
+	  '(
+	    ;;(background-color . "black")
+	    ;;(foreground-color . "LightGray")
+	    (horizontal-scroll-bars . nil)
+	    (vertical-scroll-bars . right)
+	    (tool-bar-lines . 0)
+	    (left-fringe . 1)
+	    (right-fringe . 0)))
+  ;; Linux settings
+  (setq initial-frame-alist
+	`(;;(background-color . "black")
+	  ;;(foreground-color . "LightGray")
+	  (horizontal-scroll-bars . nil)
+	  (vertical-scroll-bars . right)
+	  (tool-bar-lines . 0)
+	  (left-fringe . 1)
+	  (right-fringe . 0)
+	  ;;(height . ,(if (or (not my-win32)
+	  ;;		   have-win32-sixbyten-font)
+	  ;;	       (my-frame-percent-to-char-height 97)
+	  ;;	     70))
+	  (width . 120)
+	  (height . 55)
+	  )))
+#+END_SRC
+** Set default frame attributes
+default-frame-alist is defined in terms of initial-frame-alist.  Don't
+use copy-sequence here -- it doesn't copy the list elements, just the
+list's cons cells.  Use copy-alist instead.
+#+BEGIN_SRC emacs-lisp
+(setq default-frame-alist (copy-alist initial-frame-alist))
+#+END_SRC
+** Don't wait for window manager when font changes
+Avoid Emacs hanging for a while changing default font
+
+#+BEGIN_SRC emacs-lisp
+(modify-frame-parameters nil '((wait-for-wm . nil)))
+#+END_SRC
+** Theme
+#+BEGIN_SRC emacs-lisp
+(use-package afternoon-theme
+  :ensure t
+  :defer nil
+)
+#+END_SRC
+** Font-Lock some keywords
+#+BEGIN_SRC emacs-lisp
+(defface my--todo-face
+  '((t :foreground "red"
+       :weight bold))
+  "Font for showing TODO words."
+  :group 'basic-faces)
+
+;; Highlight each of TODO TODO: FIXME FIXME: XXX XXX: \todo
+(defun my--hint-facify ()
+   (unless (or (eq 'diff-mode major-mode) (eq 'script-mode major-mode))
+     (font-lock-add-keywords nil '(
+	 ("\\(\\<\\(\\(FIXME\\|TODO\\|XXX\\):?\\>\\)\\|\\\\todo\\)" 1 'my--todo-face t)
+	 ))))
+
+(add-hook 'font-lock-mode-hook 'my--hint-facify)
+#+END_SRC
+
+** Line truncation
+#+BEGIN_SRC emacs-lisp
+(setq ;; don't display continuation lines
+      truncate-lines t
+      ;; respect truncate-lines:
+      truncate-partial-width-windows nil)
+#+END_SRC
+** Show trailing whitespace
+This makes typing errors more obvious.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'find-file-hook
+	  '(lambda ()
+	     ;; This hack allows the diff-mode hook to set the
+	     ;; variable to -1. The find-file-hook fires after the
+	     ;; diff-mode hook, so we get the -1 and are able to turn
+	     ;; off the display of trailing whitespaces.
+	     (if (eq show-trailing-whitespace -1)
+		 (setq show-trailing-whitespace nil)
+	       (setq show-trailing-whitespace t))))
+#+END_SRC
+
+** Handle some buffers specials (no toolbar, extra frame)
+Display various non-editing buffers in their own frames and show those
+special buffer frames without a tool bar
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'special-display-buffer-names "*Backtrace*")
+(add-to-list 'special-display-frame-alist '(tool-bar-lines . 0))
+#+END_SRC
+** Misc settings for text vs. windowing systems
+#+BEGIN_SRC emacs-lisp
+(if window-system
+    ;; X11, Windows, etc
+    (progn
+      ;; Windowing systems are fast enought
+      (column-number-mode t)
+      ;; Turn off blinking
+      (blink-cursor-mode -1)
+      )
+  ;; Text mode
+  (progn
+    ;; No "very" visible cursor
+    (setq visible-cursor nil)
+    ))
+#+END_SRC
+** No audible bell
+No audible bell, beeps are annoying
+#+BEGIN_SRC emacs-lisp
+(setq visible-bell t)
+#+END_SRC
+
+** Let emacs react faster to keystrokes
+#+BEGIN_SRC emacs-lisp
+(setq echo-keystrokes 0.1
+      idle-update-delay 0.35)
+#+END_SRC
+** Menu
+
+Get rid of the Games in the Tools menu.
+
+# BEGIN_SRC emacs-lisp
+(define-key menu-bar-tools-menu [games] nil)
+# END_SRC
+** Modeline
+
+http://emacs.stackexchange.com/questions/281/how-do-i-get-a-fancier-mode-line-that-uses-solid-colors-and-triangles
+
+We could either use http://www.emacswiki.org/emacs/PowerLine
+
+#+BEGIN_SRC emacs-lisp
+(use-package powerline
+  :ensure t
+  :init
+  (powerline-default-theme)
+)
+#+END_SRC
+
+... or https://github.com/Bruce-Connor/smart-mode-line
+
+# BEGIN_SRC emacs-lisp
+(use-package smart-mode-line-powerline-theme
+  :ensure t
+)
+(use-package smart-mode-line
+  :ensure t
+  :init
+  (progn
+    (setq sml/theme "powerline"
+	  sml/mode-width 'full
+	  )
+    ;;(setq powerline-arrow-shape 'curve)
+    ;;(setq powerline-default-separator-dir '(right . left))
+    (sml/setup)
+    )
+)
+# END_SRC
 * Cursor
 ** Nicer scroll handling
 #+BEGIN_SRC emacs-lisp
@@ -577,7 +743,6 @@ then second time the hot key is pressed.
   :bind ("C-x 1" . zygospore-toggle-delete-other-windows)
 )
 #+END_SRC
-
 * Buffers
 ** Insert buffer
 
@@ -703,38 +868,7 @@ http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/
 
 (setq auto-save-list-file-prefix (concat dotfiles-dir "tmp/auto-save-list/saves-"))
 #+END_SRC
-** Decompress compressed files
-Auto decompress compressed files.
 
-#+BEGIN_SRC emacs-lisp
-(auto-compression-mode t)
-#+END_SRC
-** Quickly save (F2)
-#+BEGIN_SRC emacs-lisp
-(bind-key "<f2>" 'save-buffer)
-#+END_SRC
-** Autorevert
-#+begin_src emacs-lisp
-(global-auto-revert-mode 1)
-#+end_src
-
-** Package: recentf
-
-#+BEGIN_SRC emacs-lisp
-;; Save recent files
-(setq recentf-save-file (concat dotfiles-dir "tmp/recentf.el")
-      recentf-exclude '("bbdb$"
-			"svn-commit.tmp$"
-			".git/COMMIT_EDITMSG$"
-			".git/TAG_EDITMSG")
-      recentf-max-saved-items 1000
-      recentf-auto-cleanup 300
-      recentf-max-menu-items 20)
-
-(recentf-mode 1)
-#+END_SRC
-
-* Display
 ** Automatically load .Xresources after changes
 
 Sample ~/.Xresources:
@@ -757,131 +891,20 @@ Emacs*Foreground: #7f7f7f
       (message (format "Merged %s into X resource database" file)))))
 (add-hook 'after-save-hook 'merge-x-resources)
 #+END_SRC
-** Fixed frame display
-#+BEGIN_SRC emacs-lisp
-(if (equal window-system 'w32)
-    ;; Windows settings
-    (setq initial-frame-alist
-	  '(
-	    ;;(background-color . "black")
-	    ;;(foreground-color . "LightGray")
-	    (horizontal-scroll-bars . nil)
-	    (vertical-scroll-bars . right)
-	    (tool-bar-lines . 0)
-	    (left-fringe . 1)
-	    (right-fringe . 0)))
-  ;; Linux settings
-  (setq initial-frame-alist
-	`(;;(background-color . "black")
-	  ;;(foreground-color . "LightGray")
-	  (horizontal-scroll-bars . nil)
-	  (vertical-scroll-bars . right)
-	  (tool-bar-lines . 0)
-	  (left-fringe . 1)
-	  (right-fringe . 0)
-	  ;;(height . ,(if (or (not my-win32)
-	  ;;		   have-win32-sixbyten-font)
-	  ;;	       (my-frame-percent-to-char-height 97)
-	  ;;	     70))
-	  (width . 120)
-	  (height . 55)
-	  )))
-#+END_SRC
-** Set default frame attributes
-default-frame-alist is defined in terms of initial-frame-alist.  Don't
-use copy-sequence here -- it doesn't copy the list elements, just the
-list's cons cells.  Use copy-alist instead.
-#+BEGIN_SRC emacs-lisp
-(setq default-frame-alist (copy-alist initial-frame-alist))
-#+END_SRC
-** Font-Lock some keywords
-#+BEGIN_SRC emacs-lisp
-(defface my--todo-face
-  '((t :foreground "red"
-       :weight bold))
-  "Font for showing TODO words."
-  :group 'basic-faces)
-
-;; Highlight each of TODO TODO: FIXME FIXME: XXX XXX: \todo
-(defun my--hint-facify ()
-   (unless (or (eq 'diff-mode major-mode) (eq 'script-mode major-mode))
-     (font-lock-add-keywords nil '(
-	 ("\\(\\<\\(\\(FIXME\\|TODO\\|XXX\\):?\\>\\)\\|\\\\todo\\)" 1 'my--todo-face t)
-	 ))))
-
-(add-hook 'font-lock-mode-hook 'my--hint-facify)
-#+END_SRC
-
-** Line truncation
-#+BEGIN_SRC emacs-lisp
-(setq ;; don't display continuation lines
-      truncate-lines t
-      ;; respect truncate-lines:
-      truncate-partial-width-windows nil)
-#+END_SRC
-** Show trailing whitespace
-This makes typing errors more obvious.
+** Autorevert
+#+begin_src emacs-lisp
+(global-auto-revert-mode 1)
+#+end_src
+** Decompress compressed files
+Auto decompress compressed files.
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'find-file-hook
-	  '(lambda ()
-	     ;; This hack allows the diff-mode hook to set the
-	     ;; variable to -1. The find-file-hook fires after the
-	     ;; diff-mode hook, so we get the -1 and are able to turn
-	     ;; off the display of trailing whitespaces.
-	     (if (eq show-trailing-whitespace -1)
-		 (setq show-trailing-whitespace nil)
-	       (setq show-trailing-whitespace t))))
+(auto-compression-mode t)
 #+END_SRC
-** Don't wait for window manager when font changes
-Avoid Emacs hanging for a while changing default font
-
+** Quickly save (F2)
 #+BEGIN_SRC emacs-lisp
-(modify-frame-parameters nil '((wait-for-wm . nil)))
+(bind-key "<f2>" 'save-buffer)
 #+END_SRC
-
-** Handle some buffers specials (no toolbar, extra frame)
-Display various non-editing buffers in their own frames and show those
-special buffer frames without a tool bar
-
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'special-display-buffer-names "*Backtrace*")
-(add-to-list 'special-display-frame-alist '(tool-bar-lines . 0))
-#+END_SRC
-** Misc settings for text vs. windowing systems
-#+BEGIN_SRC emacs-lisp
-(if window-system
-    ;; X11, Windows, etc
-    (progn
-      ;; Windowing systems are fast enought
-      (column-number-mode t)
-      ;; Turn off blinking
-      (blink-cursor-mode -1)
-      )
-  ;; Text mode
-  (progn
-    ;; No "very" visible cursor
-    (setq visible-cursor nil)
-    ))
-#+END_SRC
-** No audible bell
-No audible bell, beeps are annoying
-#+BEGIN_SRC emacs-lisp
-(setq visible-bell t)
-#+END_SRC
-
-** Let emacs react faster to keystrokes
-#+BEGIN_SRC emacs-lisp
-(setq echo-keystrokes 0.1
-      idle-update-delay 0.35)
-#+END_SRC
-** Menu
-
-Get rid of the Games in the Tools menu.
-
-# BEGIN_SRC emacs-lisp
-(define-key menu-bar-tools-menu [games] nil)
-# END_SRC
 ** Unique buffer names
 
 Make two buffers with the same file name open distinguishable.
@@ -891,46 +914,21 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Uniquify.html
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 #+end_src
-** Theme
-#+BEGIN_SRC emacs-lisp
-(use-package afternoon-theme
-  :ensure t
-  :defer nil
-)
-#+END_SRC
-** Modeline
-
-http://emacs.stackexchange.com/questions/281/how-do-i-get-a-fancier-mode-line-that-uses-solid-colors-and-triangles
-
-We could either use http://www.emacswiki.org/emacs/PowerLine
+** Package: recentf
 
 #+BEGIN_SRC emacs-lisp
-(use-package powerline
-  :ensure t
-  :init
-  (powerline-default-theme)
-)
+;; Save recent files
+(setq recentf-save-file (concat dotfiles-dir "tmp/recentf.el")
+      recentf-exclude '("bbdb$"
+			"svn-commit.tmp$"
+			".git/COMMIT_EDITMSG$"
+			".git/TAG_EDITMSG")
+      recentf-max-saved-items 1000
+      recentf-auto-cleanup 300
+      recentf-max-menu-items 20)
+
+(recentf-mode 1)
 #+END_SRC
-
-... or https://github.com/Bruce-Connor/smart-mode-line
-
-# BEGIN_SRC emacs-lisp
-(use-package smart-mode-line-powerline-theme
-  :ensure t
-)
-(use-package smart-mode-line
-  :ensure t
-  :init
-  (progn
-    (setq sml/theme "powerline"
-	  sml/mode-width 'full
-	  )
-    ;;(setq powerline-arrow-shape 'curve)
-    ;;(setq powerline-default-separator-dir '(right . left))
-    (sml/setup)
-    )
-)
-# END_SRC
 
 * Minibuffer
 #+BEGIN_SRC emacs-lisp
@@ -1496,9 +1494,12 @@ TODO: enable it only in some modes
 ** Package: column-marker
 
 #+BEGIN_SRC emacs-lisp
-(defun my-column-marker-at-80 ()
+(defun my--column-marker-at-80 ()
   (interactive)
-  (column-marker-1 80)
+  (column-marker-2 80)
+     ;(set-face-foreground 'magit-diff-add "green4")
+  ;; column-marker-1
+  ;; xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 )
 
 (use-package column-marker
@@ -1506,7 +1507,7 @@ TODO: enable it only in some modes
   :ensure t
   :commands column-marker-1
   :init
-  (add-hook 'c-mode-hook 'my-column-marker-at-80)
+  (add-hook 'c-mode-hook 'my--column-marker-at-80)
   )
 #+END_SRC
 ** Package: company (complete anything)
