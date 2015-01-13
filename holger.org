@@ -1671,6 +1671,7 @@ remove the new key bindings that use pop-up buffers.
 (use-package magit
   :ensure t
   :defer t
+  :diminish magit-auto-revert-mode  ;; disable "MRev" in the status line
   :config
   (progn
      (setq magit-save-some-buffers 'dontask
