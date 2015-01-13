@@ -45,9 +45,9 @@ See http://github.com/jwiegley/use-package/
 (require 'package)
 (setq package-enable-at-startup nil)
 
-;(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/"))
-
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 
 ; When using melpa-stable instead of melpa, magit won't run:
 ;(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
@@ -1590,20 +1590,23 @@ Sample color customization
 )
 #+END_SRC
 
-** DISABLED Package: flyspell
+** Package: flycheck
 Home page: https://github.com/flycheck/flycheck
 
 Unfortunately it doesn't seem to be able to check inside org-babel's
 source blocks :-(
 
 #+BEGIN_SRC emacs-lisp
+(defun my--start-flycheck ()
+  (flycheck-mode 1)
+)
 (use-package flycheck
-  :disabled t
   :ensure t
   ;; :diminish fly-check-mode
-  :config
+  :commands flycheck-mode
+  :init
   (progn
-    (add-hook 'after-init-hook #'global-flycheck-mode)
+    (add-hook 'prog-mode-hook 'my--start-flycheck)
   ))
 #+END_SRC
 ** Package: helm-gtags
