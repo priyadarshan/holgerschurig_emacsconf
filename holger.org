@@ -1587,7 +1587,7 @@ Sample color customization
 
 ** Package: dtrt-indent (tab guessing)
 #+BEGIN_SRC emacs-lisp
-(defun my-start-dtrt ()
+(defun my--start-dtrt ()
   (dtrt-indent-mode 1)
 )
 (use-package dtrt-indent
@@ -1596,7 +1596,7 @@ Sample color customization
   :commands dtrt-indent-mode
   :init
   (progn
-    (add-hook 'prog-mode-hook   'my-start-dtrt)
+    (add-hook 'c-mode-hook 'my--start-dtrt)
     )
 )
 #+END_SRC
