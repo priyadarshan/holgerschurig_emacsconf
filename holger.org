@@ -1244,8 +1244,7 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 (use-package helm-descbinds
   :ensure t
   :defer t
-  :bind (("C-h b" . helm-descbinds)
-         ("C-h w" . helm-descbinds)))
+  :bind ("C-h b" . helm-descbinds))
 #+END_SRC
 * DISABLED Package: ibuffer
 # BEGIN_SRC emacs-lisp
