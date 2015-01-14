@@ -202,11 +202,11 @@
   "Font for showing TODO words."
   :group 'basic-faces)
 
-;; Highlight each of TODO TODO: FIXME FIXME: XXX XXX: \todo
+;; Highlight each of TODO FIXME XXX DISABLED \todo
 (defun my--hint-facify ()
    (unless (or (eq 'diff-mode major-mode) (eq 'script-mode major-mode))
      (font-lock-add-keywords nil '(
-	 ("\\(\\<\\(\\(FIXME\\|TODO\\|XXX\\):?\\>\\)\\|\\\\todo\\)" 1 'my--todo-face t)
+	 ("\\(\\<\\(\\(FIXME\\|TODO\\|XXX\\|DISABLED\\|\\:disabled\\):?\\>\\)\\|\\\\todo\\)" 1 'my--todo-face t)
 	 ))))
 
 (add-hook 'font-lock-mode-hook 'my--hint-facify)
