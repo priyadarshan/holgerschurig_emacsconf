@@ -1212,21 +1212,24 @@ If the CDR is nil, then the buffer is only buried."
 ;;  Very good intro: http://tuhdo.github.io/helm-intro.html
 ;;
 (use-package helm
-  :defer t
+  :defer nil
   :ensure helm
   :diminish helm-mode
   :bind (
 	 ("C-h a"   . helm-apropos)
-	 ("C-x C-b" . helm-buffers-list)
 	 ("C-x C-f" . helm-find-files)
 	 ("M-s o"   . helm-occur)
 	 ("M-x"     . helm-M-x)
 	 ("M-y"     . helm-show-kill-ring)
-         ("C-x b"   . helm-mini)
+         ("C-x C-b"   . helm-mini)
 	 )
-  :config
+  :init
   (progn
     (require 'helm-config)
+    (helm-mode)
+    )
+  :config
+  (progn
     ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
     ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
     ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
@@ -1268,15 +1271,12 @@ If the CDR is nil, then the buffer is only buried."
 	  helm-google-suggest-default-browser-function 'helm-browse-url-chromium
 	  helm-home-url "http://www.google.de"
 	  )
-    (helm-mode)
     (helm-autoresize-mode t)
 
     ;; ignore Emacs save files
     (add-to-list 'helm-boring-file-regexp-list "\\.#")
 
-    (bind-key "o"   'helm-occur          helm-command-map)
-
-    ;; this is kind of a goto:
+    ;; this is kind of a goto, you can visit all marks
     (bind-key "g"   'helm-all-mark-rings helm-command-map)
     );; end progn
 )
