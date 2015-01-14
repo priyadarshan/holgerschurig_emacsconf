@@ -7,7 +7,7 @@
 
 
 
-;;;: * DISABLED Byte-Code cache
+;;; * DISABLED Byte-Code cache
 
 ;; (eval-after-load "byte-code-cache"
 ;;   '(setq bcc-cache-directory (concat dotfiles-dir "tmp/byte-cache")
