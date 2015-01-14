@@ -1492,16 +1492,22 @@ If the CDR is nil, then the buffer is only buried."
 (add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
 
 ;;; ** Mode: ELisp
-;;  Just hover over an elisp function to see the arguments.
-;;
-(add-hook 'emacs-lisp-mode-hook
-	  '(lambda ()
-	     ;; automatically give help about function syntax
-	     (eldoc-mode t)
-	     ;; "-" is almost always part of a function- or variable-name
-	     (modify-syntax-entry ?- "w")))
+
+(defun my--elisp-setup ()
+  ;; Setup imenu
+  ;;(setq imenu-prev-index-position-function nil)
+  (add-to-list 'imenu-generic-expression '("Section" "^;;; \\(\\* .+\\)$" 1) t)
+
+  ;; automatically give help about function syntax
+  (eldoc-mode t)
+  ;; "-" is almost always part of a function- or variable-name
+  (modify-syntax-entry ?- "w"))
+
+(add-hook 'emacs-lisp-mode-hook 'my--elisp-setup)
+
 
 ;;; ** Mode: Python
+
 (defun my-tab-setup ()
   (interactive)
   (dtrt-indent-mode 0)
@@ -1855,3 +1861,4 @@ If the CDR is nil, then the buffer is only buried."
 ;; 	  )
 ;;     )
 ;; )
+
