@@ -1,5 +1,6 @@
 ;;; * My home directory
-(setq dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name)))
+(defvar dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name))
+  "My emacs dotfiles directory, ~/.emacs.d on Linux")
 
 
 ;;;: * Debugging
