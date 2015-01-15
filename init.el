@@ -1517,6 +1517,21 @@ If the CDR is nil, then the buffer is only buried."
 	python-indent-guess-indent-offset t))
 (add-hook 'python-mode-hook 'my-tab-setup)
 
+
+;;; * Mode: Shell
+
+(defun my-shell-tab-setup ()
+  (interactive)
+  (setq indent-tabs-mode t
+	tab-width 4
+	tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84))
+  (define-key text-mode-map "\C-i" 'self-insert-command)
+  )
+
+(add-hook 'shell-mode-hook 'my-shell-tab-setup)
+(add-hook 'sh-mode-hook 'my-shell-tab-setup)
+
+
 ;;; ** Mode: web-mode
 ;;
 ;;  Home page: http://web-mode.org/
