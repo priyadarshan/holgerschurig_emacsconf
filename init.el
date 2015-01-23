@@ -1596,11 +1596,13 @@ If the CDR is nil, then the buffer is only buried."
 
 ;;; ** Package: company (complete anything)
 (use-package company-c-headers
+  :disabled t
   :ensure t
   :defer t
   :commands company-c-headers
 )
 (use-package company
+  :disabled t
   :ensure t
   :defer t
   :diminish company-mode
