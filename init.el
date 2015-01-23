@@ -1684,6 +1684,7 @@ If the CDR is nil, then the buffer is only buried."
   (flycheck-mode 1)
 )
 (use-package flycheck
+  :disabled t
   :ensure t
   ;; :diminish fly-check-mode
   :commands flycheck-mode
