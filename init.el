@@ -3,7 +3,7 @@
   "My emacs dotfiles directory, ~/.emacs.d on Linux")
 
 
-;;;: * Debugging
+;;: * Debugging
 (setq message-log-max 10000)
 
 
@@ -1486,10 +1486,46 @@ If the CDR is nil, then the buffer is only buried."
 (add-hook 'after-save-hook
 	  'executable-make-buffer-file-executable-if-script-p)
 
-;;; ** Mode: C++
+;;; ** Mode: C, C++
 ;;  ;; Open *.h files normally in c++ mode
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
+
+(defun my-c-mode-common-setup ()
+  (define-key c-mode-map (kbd "RET") 'newline)
+  (turn-off-auto-fill)
+  (c-toggle-auto-newline 1)
+  (modify-syntax-entry ?_ "w")
+  ;; c-mode overrides the global newline-and-indent. Strangely,
+  ;; cc-mode keeps the global. We don't care, we always set it :-)
+  (local-set-key (kbd "RET") 'newline-and-indent)
+  (setq fill-column 76
+	;; Let RET break and continue a comment
+	;; C doesn't start functions with a ( in the first column
+	open-paren-in-column-0-is-defun-start nil
+	;; Insert TABs inside literals
+	c-tab-always-indent 1
+	;; Tell cc-mode not to check for old-style (K&R) function
+	;; declarations. This speeds up indenting a lot (I hear).
+	c-recognize-knr-p nil
+	;; Jump to errors, please
+	compilation-auto-jump-to-first-error t
+	;; Turn of elect, TODO: consider hungry-delete
+	c-electric-flag nil
+	;; But if it's on, let a "#" go to the left, for #if/#else/#endif
+	c-electric-pound-behavior '(alignleft)
+	;; No abbrevs
+	abbrev-mode nil
+	;; Preferred tab width
+	tab-width 4
+	c-basic-offset 4
+	;; Default style
+	c-default-style '((java-mode . "java")
+			  (awk-mode . "awk")
+			  (other . "linux"))
+	)
+  )
+(add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 
 ;;; ** Mode: ELisp
 
