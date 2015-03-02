@@ -1542,6 +1542,13 @@ If the CDR is nil, then the buffer is only buried."
 (add-hook 'emacs-lisp-mode-hook 'my--elisp-setup)
 
 
+;;; ** Mode: Markdown
+(use-package markdown-mode
+  :ensure t
+  :mode (("\\.md\\'"       . markdown-mode)
+	 ("\\.markdown\\'" . markdown-mode))
+  )
+
 ;;; ** Mode: Python
 
 (defun my-tab-setup ()
