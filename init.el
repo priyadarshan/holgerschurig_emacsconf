@@ -1226,7 +1226,7 @@ If the CDR is nil, then the buffer is only buried."
 	 )
   :init
   (progn
-    (require 'helm-config)
+    (require 'helm-config nil t)
     (helm-mode)
     )
   :config
