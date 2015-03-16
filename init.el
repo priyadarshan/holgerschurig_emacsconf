@@ -1781,13 +1781,14 @@ If the CDR is nil, then the buffer is only buried."
     (add-hook 'prog-mode-hook 'my--start-flycheck)
   ))
 
-;;; ** Package: helm-gtags
+;;; ** DISABLED Package: helm-gtags
 ;;
 ;;  Home page: https://github.com/syohex/emacs-helm-gtags
 ;;
 ;;  This uses GNU GLOBAL to browser tags.
 ;;
 (use-package helm-gtags
+  :disabled t
   :ensure t
   :defer t
   :bind (("M-." . helm-gtags-dwim)
