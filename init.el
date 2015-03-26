@@ -1271,12 +1271,6 @@ If the CDR is nil, then the buffer is only buried."
     (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
     (setq helm-candidate-number-limit 100
-	  ;; My helm config for pretty fast updates when hitting RET too quickly after typing fast:
-	  ;; (https://gist.github.com/antifuchs/9238468)
-          ;; update fast sources immediately (doesn't).
-          helm-idle-delay 0.0
-	  ;; this actually updates things reeeelatively quickly
-          helm-input-idle-delay 0.01
           helm-quick-update t
           helm-M-x-requires-pattern nil
           helm-ff-skip-boring-files t
