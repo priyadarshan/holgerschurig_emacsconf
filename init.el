@@ -1232,6 +1232,31 @@ If the CDR is nil, then the buffer is only buried."
 
 
 
+;;; ** Package: org (must be before helm)
+
+(use-package org
+  :ensure t
+  :init
+  (progn
+    (setq org-replace-disputed-keys t    ; allow Shift-Cursor to mark stuff
+          org-default-notes-file (expand-file-name "notes.org" dotfiles-dir))
+          )
+  :config
+  (progn
+    (setq org-src-window-setup 'current-window
+          org-src-fontify-natively t     ; inside src block use the colors like the major mode of the src type
+          org-src-tab-acts-natively t    ; inside a src block let tab act like it was in major mode of the src type
+          org-src-preserve-indentation t ; don't add two indentation spaces into src blocks
+	  )
+    ;; normally I'd need C-c ' to exit, but this enables the same exit
+    ;; method I have in when doing a commit in magit.
+    (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map)
+    )
+)
+
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; * Package: helm
@@ -1878,25 +1903,6 @@ If the CDR is nil, then the buffer is only buried."
       (run-hooks 'magit-status-insert-sections-hook)))
   (run-hooks 'magit-refresh-status-hook))
 
-;;; ** Package: org-babel
-;;
-(use-package org
-  :init
-  (progn
-    (setq org-src-fontify-natively t     ; inside src block use the colors like the major mode of the src type
-          org-src-tab-acts-natively t    ; inside a src block let tab act like it was in major mode of the src type
-  	  org-src-preserve-indentation t ; don't add two indentation spaces into src blocks
-          )
-    )
-  :config
-  (progn
-    (setq org-src-window-setup 'current-window)
-    ;; normally I'd need C-c ' to exit, but this enables the same exit
-    ;; method I have in when doing a commit in magit.
-    (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map)
-    )
-  )
-
 ;;; ** DISABLED Package: helm-projectile
 ;;
 ;;  This is just an autoloader for helm-projectile, as soon as
@@ -1942,4 +1948,3 @@ If the CDR is nil, then the buffer is only buried."
 ;; 	  )
 ;;     )
 ;; )
-
