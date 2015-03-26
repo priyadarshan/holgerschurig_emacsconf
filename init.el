@@ -193,7 +193,8 @@
 ;;; ** Theme
 (use-package afternoon-theme
   :ensure t
-  :defer nil
+  :config
+  (load-theme 'afternoon t)
 )
 
 ;;; ** Font-Lock some keywords
