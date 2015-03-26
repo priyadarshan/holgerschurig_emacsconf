@@ -271,15 +271,22 @@
 ;;
 ;; (define-key menu-bar-tools-menu [games] nil)
 
-;;; ** DISABLED Modeline
+;;; ** Powerline (modeline setup)
 ;;
 ;;  http://emacs.stackexchange.com/questions/281/how-do-i-get-a-fancier-mode-line-that-uses-solid-colors-and-triangles
 ;;
 ;;  We could either use http://www.emacswiki.org/emacs/PowerLine
 ;;
+(use-package powerline
+  :ensure t
+  :init
+  (powerline-default-theme)
+  ;; I used to use, but because of some "left" string this didn't work anymore
+  ;; (powerline-center-theme)
+)
 
 ;;
-;;  ... or https://github.com/Bruce-Connor/smart-mode-line
+;;  ... or https://github.com/Malabarba/smart-mode-line/
 ;;
 ;; (use-package smart-mode-line-powerline-theme
 ;;   :ensure t
@@ -288,8 +295,12 @@
 ;;   :ensure t
 ;;   :init
 ;;   (progn
-;;     (setq sml/theme "powerline"
+;;     (setq ;;sml/theme "powerline"
+;;           sml/theme nil
+;; 	  sml/shorten-directory t
+;; 	  sml/shorten-modes t
 ;; 	  sml/mode-width 'full
+;; 	  ;; sml/name-width 32
 ;; 	  )
 ;;     ;;(setq powerline-arrow-shape 'curve)
 ;;     ;;(setq powerline-default-separator-dir '(right . left))
@@ -297,7 +308,11 @@
 ;;     )
 ;; )
 
-
+;; (sml/apply-theme 'dark)
+;; (sml/apply-theme 'light)
+;; (sml/apply-theme 'respectful)
+;; (sml/apply-theme 'powerline)
+;; (sml/apply-theme 'automatic)
 
 
 
