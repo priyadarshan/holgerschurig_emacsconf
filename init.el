@@ -1856,7 +1856,6 @@ If the CDR is nil, then the buffer is only buried."
 ;;; ** Package: org-babel
 ;;
 (use-package org
-  :diminish org-mode
   :init
   (progn
     (setq org-src-fontify-natively t  ; inside src block use the colors like the major mode of the src type
