@@ -1698,18 +1698,18 @@ If the CDR is nil, then the buffer is only buried."
 ;;     `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
 ;;
 ;;; ** Package: dtrt-indent (tab guessing)
-(defun my--start-dtrt ()
-  (dtrt-indent-mode 1)
-)
-(use-package dtrt-indent
-  :ensure t
-  :defer t
-  :commands dtrt-indent-mode
-  :init
-  (progn
-    (add-hook 'c-mode-hook 'my--start-dtrt)
-    )
-)
+;(defun my--start-dtrt ()
+;  (dtrt-indent-mode 1)
+;)
+;(use-package dtrt-indent
+;  :ensure t
+;  :defer t
+;  :commands dtrt-indent-mode
+;  :init
+;  (progn
+;    (add-hook 'c-mode-hook 'my--start-dtrt)
+;    )
+;)
 
 ;;
 ;;; ** Package: flycheck
