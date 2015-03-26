@@ -270,17 +270,12 @@
 ;;
 ;; (define-key menu-bar-tools-menu [games] nil)
 
-;;; ** Modeline
+;;; ** DISABLED Modeline
 ;;
 ;;  http://emacs.stackexchange.com/questions/281/how-do-i-get-a-fancier-mode-line-that-uses-solid-colors-and-triangles
 ;;
 ;;  We could either use http://www.emacswiki.org/emacs/PowerLine
 ;;
-(use-package powerline
-  :ensure t
-  :init
-  (powerline-default-theme)
-)
 
 ;;
 ;;  ... or https://github.com/Bruce-Connor/smart-mode-line
