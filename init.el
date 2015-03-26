@@ -1858,9 +1858,9 @@ If the CDR is nil, then the buffer is only buried."
 (use-package org
   :init
   (progn
-    (setq org-src-fontify-natively t  ; inside src block use the colors like the major mode of the src type
-          org-src-tab-acts-natively t ; inside a src block let tab act like it was in major mode of the src type
-	  org-src-preserve-indentation t ; don't add two indentation spaces into src blocks
+    (setq org-src-fontify-natively t     ; inside src block use the colors like the major mode of the src type
+          org-src-tab-acts-natively t    ; inside a src block let tab act like it was in major mode of the src type
+  	  org-src-preserve-indentation t ; don't add two indentation spaces into src blocks
           )
     )
   :config
