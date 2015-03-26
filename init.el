@@ -1548,7 +1548,7 @@ If the CDR is nil, then the buffer is only buried."
 
 (defun my-tab-setup ()
   (interactive)
-  (dtrt-indent-mode 0)
+  ;(dtrt-indent-mode 0)
   (setq indent-tabs-mode t
 	tab-width 4
 	python-indent-offset 4
