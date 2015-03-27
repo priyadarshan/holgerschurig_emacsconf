@@ -1767,8 +1767,10 @@ If the CDR is nil, then the buffer is only buried."
 ;    )
 ;)
 
-;;
-;;; ** Package: flycheck
+
+
+
+;;; ** Package: DISABLED flycheck
 ;;  Home page: https://github.com/flycheck/flycheck
 ;;
 ;;  Unfortunately it doesn't seem to be able to check inside org-babel's
