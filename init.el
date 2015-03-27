@@ -1691,7 +1691,7 @@ If the CDR is nil, then the buffer is only buried."
 
 
 
-;;; ** Package: DISABLED company (complete anything)
+;;; ** DISABLED Package: company (complete anything)
 
 (use-package company-c-headers
   :disabled t
@@ -1775,7 +1775,7 @@ If the CDR is nil, then the buffer is only buried."
 
 
 
-;;; ** Package: DISABLED flycheck
+;;; ** DISABLED Package: flycheck
 ;;  Home page: https://github.com/flycheck/flycheck
 ;;
 ;;  Unfortunately it doesn't seem to be able to check inside org-babel's
