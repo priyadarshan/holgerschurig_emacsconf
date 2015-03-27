@@ -1025,7 +1025,7 @@ If the CDR is nil, then the buffer is only buried."
 (bind-key "C-y" 'isearch-yank-kill isearch-mode-map)
 
 ;;
-;;; ** grep
+;;; ** Command; my-grep
 ;;  Prompts you for an expression, defaulting to the symbol that your
 ;;  cursor is on, and greps for that in the current directory and all
 ;;  subdirectories:
@@ -1038,7 +1038,7 @@ If the CDR is nil, then the buffer is only buried."
       (setq needle (if (equal needle "") default needle))
       (grep (concat "egrep -s -i -n -r " needle " *")))))
 
-(bind-key "C-x g" 'my-grep)
+(bind-key "M-s g" 'my-grep)
 
 
 ;;
