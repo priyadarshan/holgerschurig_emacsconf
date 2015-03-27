@@ -1682,13 +1682,17 @@ If the CDR is nil, then the buffer is only buried."
   (add-hook 'c-mode-hook 'my--column-marker-at-80)
   )
 
-;;; ** Package: company (complete anything)
+
+
+;;; ** Package: DISABLED company (complete anything)
+
 (use-package company-c-headers
   :disabled t
   :ensure t
   :defer t
   :commands company-c-headers
-)
+  )
+
 (use-package company
   :disabled t
   :ensure t
@@ -1696,7 +1700,7 @@ If the CDR is nil, then the buffer is only buried."
   :diminish company-mode
   :bind (("C-<tab>" . company-complete)
 	 ("s-<SPC>" . company-complete))
-  :commands (global-company-mode)
+  :commands global-company-mode
   :init
   (progn
     (add-hook 'after-init-hook 'global-company-mode)
