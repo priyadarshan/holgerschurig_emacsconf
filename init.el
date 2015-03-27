@@ -1271,6 +1271,8 @@ If the CDR is nil, then the buffer is only buried."
 	 ("C-h a"   . helm-apropos)
 	 ("C-x C-f" . helm-find-files)
 	 ("M-s o"   . helm-occur)
+	 ("M-s i"   . helm-imenu)
+	 ("M-s m"   . helm-imenu)
 	 ("M-x"     . helm-M-x)
 	 ("M-y"     . helm-show-kill-ring)
          ("C-x C-b"   . helm-mini)
@@ -1577,7 +1579,7 @@ If the CDR is nil, then the buffer is only buried."
 (defun my--elisp-setup ()
   ;; Setup imenu
   ;;(setq imenu-prev-index-position-function nil)
-  (add-to-list 'imenu-generic-expression '("Section" "^;;; \\(\\* .+\\)$" 1) t)
+  (add-to-list 'imenu-generic-expression '("Section" "^;;; \\(\\*+ .+\\)$" 1) t)
 
   ;; automatically give help about function syntax
   (eldoc-mode t)
