@@ -1677,7 +1677,7 @@ If the CDR is nil, then the buffer is only buried."
 (use-package column-marker
   :defer t
   :ensure t
-  :commands column-marker-1
+  :commands (column-marker-1 column-marker-2)
   :init
   (add-hook 'c-mode-hook 'my--column-marker-at-80)
   )
