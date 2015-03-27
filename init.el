@@ -1320,7 +1320,7 @@ If the CDR is nil, then the buffer is only buried."
 	  helm-ff-file-name-history-use-recentf t
 
 	  ;; define browser
-	  helm-browse-url-chromium-program "xdg-open"
+	  helm-browse-url-chromium-program "x-www-browser"
 	  helm-google-suggest-default-browser-function 'helm-browse-url-chromium
 	  helm-home-url "http://www.google.de"
 	  )
@@ -1663,9 +1663,9 @@ If the CDR is nil, then the buffer is only buried."
     )
 )
 
-;; TODO move away
+;;; *** Default browser
 (setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "xdg-open")
+      browse-url-generic-program "x-www-browser")
 
 ;;; ** DISABLED Mode: Semantic
 ;;  TODO: enable it only in some modes
