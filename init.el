@@ -1254,6 +1254,11 @@ If the CDR is nil, then the buffer is only buried."
     )
 )
 
+(eval-after-load 'ox-html
+  '(progn
+     (setq org-html-postamble-format '(("en" "<p class=\"author\">Author: %a</p><p class=\"creator\">Created with %c</p>"))
+           org-html-postamble t)
+ ))
 
 
 
