@@ -1239,8 +1239,12 @@ If the CDR is nil, then the buffer is only buried."
   :init
   (progn
     (setq org-replace-disputed-keys t    ; allow Shift-Cursor to mark stuff
-          org-default-notes-file (expand-file-name "notes.org" dotfiles-dir))
-          )
+	  org-default-notes-file (expand-file-name "notes.org" dotfiles-dir)
+	  ;; Time stamp handling
+	  org-display-custom-times t
+	  org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")
+	  org-time-stamp-custom-formats '("<%Y-%m-%d>")
+          ))
   :config
   (progn
     (setq org-src-window-setup 'current-window
