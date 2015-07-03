@@ -1617,6 +1617,12 @@ If the CDR is nil, then the buffer is only buried."
 (add-hook 'python-mode-hook 'my-tab-setup)
 
 
+;;; ** Mode: Rust
+(use-package rust-mode
+  :ensure t
+  :mode (("\\.rs\\'"       . rust-mode))
+  )
+
 ;;; ** Mode: Shell
 
 (defun my-shell-tab-setup ()
