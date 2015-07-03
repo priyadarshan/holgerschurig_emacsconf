@@ -1617,7 +1617,7 @@ If the CDR is nil, then the buffer is only buried."
 (add-hook 'python-mode-hook 'my-tab-setup)
 
 
-;;; * Mode: Shell
+;;; ** Mode: Shell
 
 (defun my-shell-tab-setup ()
   (interactive)
