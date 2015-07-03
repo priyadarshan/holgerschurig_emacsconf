@@ -1888,30 +1888,16 @@ If the CDR is nil, then the buffer is only buried."
 )
 
 ;;; ** Package: magit
-;;
-;;  =magit-rigid-key-bindings= must be set before magit is loaded. It will
-;;  remove the new key bindings that use pop-up buffers.
-;;
-(setq magit-rigid-key-bindings t)
 
-;;
 (use-package magit
   :ensure t
   :defer t
-  :diminish magit-auto-revert-mode  ;; disable "MRev" in the status line
   :config
   (progn
-     (setq magit-save-some-buffers 'dontask
-	   magit-commit-all-when-nothing-staged nil
-	   magit-stage-all-confirm nil
-	   magit-unstage-all-confirm nil
-	   magit-status-buffer-switch-function 'switch-to-buffer
-	   magit-refresh-file-buffer-hook '(revert-buffer)
-	   magit-diff-use-overlays t
-	   magit-completing-read-function 'completing-read
-	   )
-     ;(set-face-foreground 'magit-diff-add "green4")
-     ;(set-face-foreground 'magit-diff-del "red3")
+    (setq magit-revert-buffers t
+	  magit-status-buffer-switch-function 'switch-to-buffer
+	  magit-save-repository-buffers 'dontask
+	  )
      )
   :bind ("C-c m" . magit-status)
   :commands (magit-get-top-dir)
