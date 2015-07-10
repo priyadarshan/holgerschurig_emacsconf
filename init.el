@@ -1536,6 +1536,17 @@ If the CDR is nil, then the buffer is only buried."
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
 
+;; somehow a the first visited file stays in "gnu" style when I set the c-default-style
+;; just in the common hook
+(defun my-c-initialization-setup ()
+  ;; Default style
+  (setq c-default-style '((java-mode . "javax")
+			  (awk-mode . "awk")
+			  (other . "linux")))
+   )
+(add-hook 'c-initialization-hook 'my-c-initialization-setup)
+
+
 (defun my-c-mode-common-setup ()
   (define-key c-mode-map (kbd "RET") 'newline)
   (turn-off-auto-fill)
@@ -1564,10 +1575,6 @@ If the CDR is nil, then the buffer is only buried."
 	;; Preferred tab width
 	tab-width 4
 	c-basic-offset 4
-	;; Default style
-	c-default-style '((java-mode . "java")
-			  (awk-mode . "awk")
-			  (other . "linux"))
 	)
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
