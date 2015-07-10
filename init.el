@@ -1164,37 +1164,6 @@ If the CDR is nil, then the buffer is only buried."
   (interactive)
   (insert (format-time-string "%a, %e %b %Y %H:%M:%S %z")))
 
-;;
-;;; ** DISABLED Indent yanked text
-;;  Let yanked text immediately be indented, based on an old version of
-;;  [[http://www.emacswiki.org/emacs/AutoIndentation]]:
-;;
-;;  # TODO: update with a newer version
-;;
-;; (defadvice yank (after indent-region activate)
-;;   (if (member major-mode
-;;               '(emacs-lisp-mode scheme-mode lisp-mode org-mode
-;;                                 c-mode c++-mode objc-mode
-;;                                 latex-mode plain-tex-mode))
-;;       (let ((mark-even-if-inactive t))
-;;         (indent-region (region-beginning) (region-end) nil))))
-;;
-;; (defadvice yank-pop (after indent-region activate)
-;;   (if (member major-mode
-;;               '(emacs-lisp-mode scheme-mode lisp-mode org-mode
-;;                                 c-mode c++-mode objc-mode
-;;                                 latex-mode plain-tex-mode))
-;;       (let ((mark-even-if-inactive t))
-;; 	(indent-region (region-beginning) (region-end) nil))))
-
-;;
-;;
-;;
-;;
-;;
-;;
-
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
