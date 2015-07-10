@@ -1557,12 +1557,13 @@ newline to the correct position"
 
 
 (defun my-c-mode-common-setup ()
-  (turn-off-auto-fill)
-  (c-toggle-auto-newline 1)
-  (modify-syntax-entry ?_ "w")
   (define-key c-mode-map "(" 'self-insert-command)
   (define-key c-mode-map ")" 'self-insert-command)
   (define-key c-mode-map "{" 'my-c-electric-brace-open)
+  (turn-off-auto-fill)
+  (c-toggle-auto-newline 1)
+  ;; This makes things like super_function_for_you a word
+  (modify-syntax-entry ?_ "w")
   (setq fill-column 76
 	;; Let RET break and continue a comment
 	;; C doesn't start functions with a ( in the first column
