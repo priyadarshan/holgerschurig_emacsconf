@@ -1526,7 +1526,7 @@ If the CDR is nil, then the buffer is only buried."
 
 (bind-key "S-<f8>" 'previous-error)
 
-;;; ** Mark files with shebank executable
+;;; ** Mark files with shebang executable
 (add-hook 'after-save-hook
 	  'executable-make-buffer-file-executable-if-script-p)
 
