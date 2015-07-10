@@ -1607,14 +1607,14 @@ newline to the correct position"
 
 ;;; ** Mode: Python
 
-(defun my-tab-setup ()
+(defun my-python-setup ()
   (interactive)
-  ;(dtrt-indent-mode 0)
   (setq indent-tabs-mode t
-	tab-width 4
-	python-indent-offset 4
-	python-indent-guess-indent-offset t))
-(add-hook 'python-mode-hook 'my-tab-setup)
+	;; this fixes the weird indentation when entering a colon
+	;; from http://emacs.stackexchange.com/questions/3322/python-auto-indent-problem
+	electric-indent-chars (delq ?: electric-indent-chars)
+	))
+(add-hook 'python-mode-hook 'my-python-setup)
 
 
 ;;; * Mode: Shell
