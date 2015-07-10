@@ -790,14 +790,6 @@ are two windows displayed, act like C-x1:"
 
 (bind-key "<f5>" 'my-explode-window)
 
-;;; ** Package: zygospore
-;;  This makes C-x 1 a toggle: the 2nd frame will get away, and come back
-;;  then second time the hot key is pressed.
-(use-package zygospore
-  :ensure t
-  :defer t
-  :bind ("C-x 1" . zygospore-toggle-delete-other-windows)
-)
 
 
 
