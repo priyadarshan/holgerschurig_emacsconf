@@ -1572,9 +1572,6 @@ If the CDR is nil, then the buffer is only buried."
 	c-electric-pound-behavior '(alignleft)
 	;; No abbrevs
 	abbrev-mode nil
-	;; Preferred tab width
-	tab-width 4
-	c-basic-offset 4
 	)
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
