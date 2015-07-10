@@ -1531,7 +1531,8 @@ If the CDR is nil, then the buffer is only buried."
 	  'executable-make-buffer-file-executable-if-script-p)
 
 ;;; ** Mode: C, C++
-;;  ;; Open *.h files normally in c++ mode
+
+;; Open *.h files normally in c++ mode
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
 
