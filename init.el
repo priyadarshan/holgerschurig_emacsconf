@@ -1536,6 +1536,17 @@ If the CDR is nil, then the buffer is only buried."
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
 
+;; from linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
+(defun c-lineup-arglist-tabs-only (ignored)
+  "Line up argument lists by tabs, not spaces"
+  (let* ((anchor (c-langelem-pos c-syntactic-element))
+         (column (c-langelem-2nd-pos c-syntactic-element))
+         (offset (- (1+ column) anchor))
+         (steps (floor offset c-basic-offset)))
+    (* (max steps 1)
+       c-basic-offset)))
+
+
 ;; somehow a the first visited file stays in "gnu" style when I set the c-default-style
 ;; just in the common hook
 (defun my-c-initialization-setup ()
@@ -1582,6 +1593,11 @@ newline to the correct position"
 	;; No abbrevs
 	abbrev-mode nil
 	)
+  (c-add-style
+   "linux-tabs-only"
+   '("linux" (c-offsets-alist (arglist-cont-nonempty
+			       c-lineup-gcc-asm-reg 
+			       c-lineup-arglist-tabs-only))))
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 
