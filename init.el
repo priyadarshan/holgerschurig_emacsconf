@@ -1547,14 +1547,22 @@ If the CDR is nil, then the buffer is only buried."
 (add-hook 'c-initialization-hook 'my-c-initialization-setup)
 
 
+(defun my-c-electric-brace-open (arg)
+  "This just inserts the spaces, a newline, and indents into the
+newline to the correct position"
+  (interactive "*P")
+  (self-insert-command (prefix-numeric-value arg))
+  (newline-and-indent)
+  )
+
+
 (defun my-c-mode-common-setup ()
-  (define-key c-mode-map (kbd "RET") 'newline)
   (turn-off-auto-fill)
   (c-toggle-auto-newline 1)
   (modify-syntax-entry ?_ "w")
-  ;; c-mode overrides the global newline-and-indent. Strangely,
-  ;; cc-mode keeps the global. We don't care, we always set it :-)
-  (local-set-key (kbd "RET") 'newline-and-indent)
+  (define-key c-mode-map "(" 'self-insert-command)
+  (define-key c-mode-map ")" 'self-insert-command)
+  (define-key c-mode-map "{" 'my-c-electric-brace-open)
   (setq fill-column 76
 	;; Let RET break and continue a comment
 	;; C doesn't start functions with a ( in the first column
@@ -1566,8 +1574,8 @@ If the CDR is nil, then the buffer is only buried."
 	c-recognize-knr-p nil
 	;; Jump to errors, please
 	compilation-auto-jump-to-first-error t
-	;; Turn of elect, TODO: consider hungry-delete
-	c-electric-flag nil
+	;; Keep electric mode on for now
+	;; c-electric-flag nil
 	;; But if it's on, let a "#" go to the left, for #if/#else/#endif
 	c-electric-pound-behavior '(alignleft)
 	;; No abbrevs
