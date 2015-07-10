@@ -1515,18 +1515,6 @@ If the CDR is nil, then the buffer is only buried."
     (* (max steps 1)
        c-basic-offset)))
 
-
-;; somehow a the first visited file stays in "gnu" style when I set the c-default-style
-;; just in the common hook
-(defun my-c-initialization-setup ()
-  ;; Default style
-  (setq c-default-style '((java-mode . "javax")
-			  (awk-mode . "awk")
-			  (other . "linux")))
-   )
-(add-hook 'c-initialization-hook 'my-c-initialization-setup)
-
-
 (defun my-c-electric-brace-open (arg)
   "This just inserts the spaces, a newline, and indents into the
 newline to the correct position"
@@ -1536,6 +1524,32 @@ newline to the correct position"
   )
 
 
+;; somehow a the first visited file stays in "gnu" style when I set the c-default-style
+;; just in the common hook
+(defun my-c-initialization-setup ()
+  ;; Default style
+  (c-add-style "linux-tabs-only"
+	       '("linux" (c-offsets-alist (arglist-cont-nonempty
+					   c-lineup-gcc-asm-reg
+					   c-lineup-arglist-tabs-only))))
+  (setq c-default-style '((java-mode . "javax")
+			  (awk-mode . "awk")
+			  (other . "linux")))
+   )
+(add-hook 'c-initialization-hook 'my-c-initialization-setup)
+
+
+;; Thinks that will only ever apply to .C files
+(defun my-c-mode-setup ()
+  (when (and buffer-file-name
+                 (string-match "linux" buffer-file-name))
+    (progn (c-set-style "linux-tabs-only")
+	   (setq tab-width 8
+		 c-basic-offset 8))))
+(add-hook 'c-mode-hook 'my-c-mode-setup)
+
+
+;; Thinks that will apply to .C and .CPP files
 (defun my-c-mode-common-setup ()
   (define-key c-mode-map "(" 'self-insert-command)
   (define-key c-mode-map ")" 'self-insert-command)
@@ -1544,7 +1558,10 @@ newline to the correct position"
   (c-toggle-auto-newline 1)
   ;; This makes things like super_function_for_you a word
   (modify-syntax-entry ?_ "w")
-  (setq fill-column 76
+  (setq fill-column 78
+	;; indent by 4 (almost) everywhere
+	tab-width 4
+	c-basic-offset 4
 	;; Let RET break and continue a comment
 	;; C doesn't start functions with a ( in the first column
 	open-paren-in-column-0-is-defun-start nil
@@ -1562,13 +1579,9 @@ newline to the correct position"
 	;; No abbrevs
 	abbrev-mode nil
 	)
-  (c-add-style
-   "linux-tabs-only"
-   '("linux" (c-offsets-alist (arglist-cont-nonempty
-			       c-lineup-gcc-asm-reg 
-			       c-lineup-arglist-tabs-only))))
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
+
 
 ;;; ** Mode: ELisp
 
