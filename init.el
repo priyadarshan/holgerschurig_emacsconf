@@ -1623,7 +1623,6 @@ newline to the correct position"
 
 ;;; ** Mode: Rust
 (use-package rust-mode
-  :ensure t
   :mode (("\\.rs\\'"       . rust-mode))
   )
 
