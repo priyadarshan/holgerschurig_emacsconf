@@ -1169,10 +1169,11 @@ If the CDR is nil, then the buffer is only buried."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; * Package: ace-jump-buffer
+
 (use-package ace-jump-buffer
   :ensure t
   :defer t
-  :bind ("C-c j" . ace-jump-buffer)
+  :bind ("C-c C-j" . ace-jump-buffer)
   )
 
 
