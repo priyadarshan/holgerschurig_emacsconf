@@ -1200,8 +1200,12 @@ If the CDR is nil, then the buffer is only buried."
   :init
   (progn
     (setq org-replace-disputed-keys t    ; allow Shift-Cursor to mark stuff
-          org-default-notes-file (expand-file-name "notes.org" dotfiles-dir))
-          )
+	  org-default-notes-file (expand-file-name "notes.org" dotfiles-dir)
+	  ;; Time stamp handling
+	  org-display-custom-times t
+	  org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")
+	  org-time-stamp-custom-formats '("<%Y-%m-%d>")
+          ))
   :config
   (progn
     (setq org-src-window-setup 'current-window
@@ -1281,7 +1285,7 @@ If the CDR is nil, then the buffer is only buried."
 	  helm-ff-file-name-history-use-recentf t
 
 	  ;; define browser
-	  helm-browse-url-chromium-program "xdg-open"
+	  helm-browse-url-chromium-program "x-www-browser"
 	  helm-google-suggest-default-browser-function 'helm-browse-url-chromium
 	  helm-home-url "http://www.google.de"
 	  )
@@ -1617,7 +1621,13 @@ newline to the correct position"
 (add-hook 'python-mode-hook 'my-python-setup)
 
 
-;;; * Mode: Shell
+;;; ** Mode: Rust
+(use-package rust-mode
+  :ensure t
+  :mode (("\\.rs\\'"       . rust-mode))
+  )
+
+;;; ** Mode: Shell
 
 (defun my-shell-tab-setup ()
   (interactive)
@@ -1667,9 +1677,9 @@ newline to the correct position"
     )
 )
 
-;; TODO move away
+;;; *** Default browser
 (setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "xdg-open")
+      browse-url-generic-program "x-www-browser")
 
 ;;; ** DISABLED Mode: Semantic
 ;;  TODO: enable it only in some modes
@@ -1695,7 +1705,7 @@ newline to the correct position"
 
 
 
-;;; ** Package: DISABLED company (complete anything)
+;;; ** DISABLED Package: company (complete anything)
 
 (use-package company-c-headers
   :disabled t
@@ -1779,7 +1789,7 @@ newline to the correct position"
 
 
 
-;;; ** Package: DISABLED flycheck
+;;; ** DISABLED Package: flycheck
 ;;  Home page: https://github.com/flycheck/flycheck
 ;;
 ;;  Unfortunately it doesn't seem to be able to check inside org-babel's
@@ -1882,30 +1892,16 @@ newline to the correct position"
 )
 
 ;;; ** Package: magit
-;;
-;;  =magit-rigid-key-bindings= must be set before magit is loaded. It will
-;;  remove the new key bindings that use pop-up buffers.
-;;
-(setq magit-rigid-key-bindings t)
 
-;;
 (use-package magit
   :ensure t
   :defer t
-  :diminish magit-auto-revert-mode  ;; disable "MRev" in the status line
   :config
   (progn
-     (setq magit-save-some-buffers 'dontask
-	   magit-commit-all-when-nothing-staged nil
-	   magit-stage-all-confirm nil
-	   magit-unstage-all-confirm nil
-	   magit-status-buffer-switch-function 'switch-to-buffer
-	   magit-refresh-file-buffer-hook '(revert-buffer)
-	   magit-diff-use-overlays t
-	   magit-completing-read-function 'completing-read
-	   )
-     ;(set-face-foreground 'magit-diff-add "green4")
-     ;(set-face-foreground 'magit-diff-del "red3")
+    (setq magit-revert-buffers t
+	  magit-status-buffer-switch-function 'switch-to-buffer
+	  magit-save-repository-buffers 'dontask
+	  )
      )
   :bind ("C-c m" . magit-status)
   :commands (magit-get-top-dir)
