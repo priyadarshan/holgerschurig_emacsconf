@@ -1176,18 +1176,21 @@ If the CDR is nil, then the buffer is only buried."
   )
 
 
+;; * Package: avy (alternative to ace-jump-mode)
 
-
+(use-package avy
+  :ensure t
+  :defer t
+  :bind ("C-." . avy-goto-word-1)
+  :config (setq avy-keys (append (number-sequence ?a ?z)
+				 (number-sequence ?0 ?9))
+                avy-style 'at-full
+		avy-all-windows nil
+		avy-highlight-first t)
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; * Package: ace-jump-mode
-;;
-(use-package ace-jump-mode
-  :ensure t
-  :defer t
-  :bind ("C-." . ace-jump-mode)
-)
 
 
 
