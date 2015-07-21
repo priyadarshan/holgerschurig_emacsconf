@@ -5,3 +5,6 @@ profile:
 	--eval "(setq profile-dotemacs-file \
         (setq load-file-name \"$(abspath init.el)\"))" \
 	-f profile-dotemacs
+
+packages:
+	$(emacs) -batch -l packages.el

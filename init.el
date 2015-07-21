@@ -195,7 +195,6 @@
 
 ;;; ** Theme
 (use-package afternoon-theme
-  :ensure t
   :config
   (load-theme 'afternoon t)
 )
@@ -281,7 +280,6 @@
 ;;  We could either use http://www.emacswiki.org/emacs/PowerLine
 ;;
 (use-package powerline
-  :ensure t
   :init
   (powerline-default-theme)
   ;; I used to use, but because of some "left" string this didn't work anymore
@@ -293,9 +291,6 @@
 
 ;;; * Cursor
 ;;; ** Nicer scroll handling
-(use-package smooth-scrolling
-  :ensure t
-)
 
 ;;; ** multiple key binding
 ;;  First we define code that allows us to bind multiple functions to
@@ -492,7 +487,6 @@ rather than line counts."
 ;;  use + and - after the first expand to expand further / shrink again.
 ;;
 (use-package expand-region
-  :ensure t
   :defer t
   :bind ("C-+" . er/expand-region)
   )
@@ -794,7 +788,6 @@ If the CDR is nil, then the buffer is only buried."
 
 ;;; ** Package: cycbuf
 (use-package cycbuf
-  :ensure t
   :defer t
   :bind (("<f6>"   . cycbuf-switch-to-next-buffer)
 	 ("S-<f6>" . cycbuf-switch-to-previous-buffer))
@@ -1013,7 +1006,6 @@ If the CDR is nil, then the buffer is only buried."
 ;;  ...
 ;;
 (use-package unbound
-  :ensure t
   :defer t
   :commands describe-unbound-keys
 )
@@ -1090,7 +1082,6 @@ If the CDR is nil, then the buffer is only buried."
 ;;; * Package: ace-jump-buffer
 
 (use-package ace-jump-buffer
-  :ensure t
   :defer t
   :bind ("C-c C-j" . ace-jump-buffer)
   )
@@ -1099,7 +1090,6 @@ If the CDR is nil, then the buffer is only buried."
 ;; * Package: avy (alternative to ace-jump-mode)
 
 (use-package avy
-  :ensure t
   :defer t
   :bind ("C-." . avy-goto-word-1)
   :config (setq avy-keys (append (number-sequence ?a ?z)
@@ -1119,7 +1109,6 @@ If the CDR is nil, then the buffer is only buried."
 ;;; ** Package: org (must be before helm)
 
 (use-package org
-  :ensure t
   :init
   (progn
     (setq org-replace-disputed-keys t    ; allow Shift-Cursor to mark stuff
@@ -1230,7 +1219,6 @@ If the CDR is nil, then the buffer is only buried."
 
 ;;; * Package: helm-descbinds
 (use-package helm-descbinds
-  :ensure t
   :defer t
   :bind ("C-h b" . helm-descbinds))
 
@@ -1440,7 +1428,6 @@ newline to the correct position"
 
 ;;; ** Mode: Markdown
 (use-package markdown-mode
-  :ensure t
   :mode (("\\.md\\'"       . markdown-mode)
 	 ("\\.markdown\\'" . markdown-mode))
   )
@@ -1497,7 +1484,6 @@ newline to the correct position"
   ;;(gcr/untabify-buffer-hook))
 )
 (use-package web-mode
-  :ensure t
   :defer t
   :mode (("\\.html\\'" . web-mode)
 	 ("\\.css\\'" . web-mode)
@@ -1530,7 +1516,6 @@ newline to the correct position"
 
 (use-package column-marker
   :defer t
-  :ensure t
   :commands (column-marker-1 column-marker-2)
   :init
   (add-hook 'c-mode-hook 'my--column-marker-at-80)
