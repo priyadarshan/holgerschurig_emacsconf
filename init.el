@@ -1,5 +1,5 @@
 ;;; * My home directory
-(defvar dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name))
+(defvar emacs-d (file-name-directory (or (buffer-file-name) load-file-name))
   "My emacs dotfiles directory, ~/.emacs.d on Linux")
 
 
@@ -11,14 +11,14 @@
 ;;; * DISABLED Byte-Code cache
 
 ;; (eval-after-load "byte-code-cache"
-;;   '(setq bcc-cache-directory (concat dotfiles-dir "tmp/byte-cache")
+;;   '(setq bcc-cache-directory (concat emacs-d "tmp/byte-cache")
 ;;         bcc-blacklist '("/recentf\\.el$" "/history\\.el$" "/desktop\\.data$")
 ;;         byte-compile-warnings t
 ;;         byte-compile-verbose nil))
 ;;
 ;; ;; HINT: byte-code-cache.el comes from EmacsWiki, you can update it
 ;; ;; with (auto-install-from-emacswiki)
-;; (load (concat dotfiles-dir "elisp/byte-code-cache.el"))
+;; (load (concat emacs-d "elisp/byte-code-cache.el"))
 
 
 
@@ -75,7 +75,7 @@
 
 ;; ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
 ;; Move the cookie file out into the =tmp/= directory.
-(setq url-configuration-directory (concat dotfiles-dir "tmp/"))
+(setq url-configuration-directory (concat emacs-d "tmp/"))
 
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -125,7 +125,7 @@
       major-mode 'indented-text-mode
 
       ;; Custom file, part one
-      custom-file (concat dotfiles-dir "custom.el")
+      custom-file (concat emacs-d "custom.el")
 
       ;; Delete previous identical history entries
       history-delete-duplicates t
@@ -152,7 +152,7 @@
 
 (setq user-full-name "Holger Schurig"
       user-mail-address "holgerschurig@gmail.com")
-(load (concat dotfiles-dir "private.el") 'noerror 'nomessage)
+(load (concat emacs-d "private.el") 'noerror 'nomessage)
 
 
 
@@ -915,13 +915,13 @@ If the CDR is nil, then the buffer is only buried."
       backup-by-copying-when-linked t
       ;; Just never create backup files at all
       ;;make-backup-files nil
-      backup-directory-alist (list (cons "." (concat dotfiles-dir "tmp/bak/")))
+      backup-directory-alist (list (cons "." (concat emacs-d "tmp/bak/")))
       ;; Make sure your text files end in a newline
       require-final-newline t
       ;; Disable auto-save (#init.el# file-names)
       auto-save-default nil)
 
-(setq auto-save-list-file-prefix (concat dotfiles-dir "tmp/auto-save-list/saves-"))
+(setq auto-save-list-file-prefix (concat emacs-d "tmp/auto-save-list/saves-"))
 
 ;;
 ;;; ** Automatically load .Xresources after changes
@@ -963,7 +963,7 @@ If the CDR is nil, then the buffer is only buried."
 ;;; ** Package: recentf
 ;;
 ;; Save recent files
-(setq recentf-save-file (concat dotfiles-dir "tmp/recentf.el")
+(setq recentf-save-file (concat emacs-d "tmp/recentf.el")
       recentf-exclude '("bbdb$"
 			"svn-commit.tmp$"
 			".git/COMMIT_EDITMSG$"
@@ -1204,7 +1204,7 @@ If the CDR is nil, then the buffer is only buried."
   :init
   (progn
     (setq org-replace-disputed-keys t    ; allow Shift-Cursor to mark stuff
-	  org-default-notes-file (expand-file-name "notes.org" dotfiles-dir)
+	  org-default-notes-file (expand-file-name "notes.org" emacs-d)
 	  ;; Time stamp handling
 	  org-display-custom-times t
 	  org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")
@@ -1352,7 +1352,7 @@ If the CDR is nil, then the buffer is only buried."
 ;;   ;; :init (ido-mode 'buffer)
 ;;   :config
 ;;   (progn
-;;     (setq ido-save-directory-list-file (concat dotfiles-dir "tmp/ido.last")
+;;     (setq ido-save-directory-list-file (concat emacs-d "tmp/ido.last")
 ;;           ;:ido-everywhere t                       ; use for many file dialogs
 ;;           ido-max-work-file-list      50         ; remember many
 ;;           ;:ido-enable-flex-matching t             ; be flexible
@@ -1411,7 +1411,7 @@ If the CDR is nil, then the buffer is only buried."
 ;;; * Package: savehist (save mini-buffer history)
 (use-package savehist
   :init
-   (setq savehist-file (concat dotfiles-dir "tmp/history.el")
+   (setq savehist-file (concat emacs-d "tmp/history.el")
       history-length 1000)
   :config
   (savehist-mode 1)
@@ -1978,8 +1978,8 @@ newline to the correct position"
 ;;   :init
 ;;   (progn
 ;;     (add-hook 'prog-mode-hook 'projectile-on)
-;;     (setq projectile-cache-file          (concat dotfiles-dir "tmp/projectile.cache")
-;; 	  projectile-known-projects-file (concat dotfiles-dir "tmp/projectile-bookmarks.eld")
+;;     (setq projectile-cache-file          (concat emacs-d "tmp/projectile.cache")
+;; 	  projectile-known-projects-file (concat emacs-d "tmp/projectile-bookmarks.eld")
 ;; 	  )
 ;;     )
 ;; )
