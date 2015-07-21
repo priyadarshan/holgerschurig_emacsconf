@@ -1,5 +1,6 @@
 ;;; * My home directory
-(defvar emacs-d (file-name-directory (or (buffer-file-name) load-file-name))
+(defvar emacs-d (file-name-directory
+		 (file-chase-links load-file-name))
   "My emacs dotfiles directory, ~/.emacs.d on Linux")
 
 
