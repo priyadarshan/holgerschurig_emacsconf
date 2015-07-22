@@ -285,26 +285,11 @@ command from COMMANDS."
 (bind-key "<end>" 'my-end)
 
 ;;; ** Recenter
-;; This is built-in into Emacs 23 (recenter-top-bottom), but doesn't
-;; work as nice, e.g. the bottom position is almost identical to the
-;; middle position.
-(defun my-recenter ()
-  "Depending on how many times it was called moves the point to:
-
-- center of screen
-- near start of screen
-- near end of center
-- back to where it was"
-  (interactive)
-  (let ((i 0)
-	(old (window-start)))
-    (while (and (<= (setq i (1+ i)) 6) (equal (window-start) old))
-      (seq-times-do nil (setq my--previous-position (window-start))
-	(recenter)
-	(recenter 4)
-	(recenter -1)
-	(set-window-start (selected-window) my--previous-position)))))
-(bind-key "C-l" 'my-recenter)
+(csetq recenter-positions '(middle 4 -4))
+(use-package window
+  :defer t
+  :bind ("C-l" . recenter-top-bottom)
+  )
 
 ;;; ** Nicer goto-line
 ;; Doesn't modify minibuffer-history, but use it's own little history
