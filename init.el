@@ -1416,7 +1416,7 @@ newline to the correct position"
 (defun my--elisp-setup ()
   ;; Setup imenu
   ;;(setq imenu-prev-index-position-function nil)
-  (add-to-list 'imenu-generic-expression '("Section" "^;;; \\(\\*+ .+\\)$" 1) t)
+  (add-to-list 'imenu-generic-expression '("Section" "^;;; \\(.*\\)" 1) t)
 
   ;; automatically give help about function syntax
   (eldoc-mode t)
