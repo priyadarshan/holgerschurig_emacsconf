@@ -658,6 +658,8 @@ If the CDR is nil, then the buffer is only buried."
 ;; Disable auto-save (#init.el# file-names)
 (csetq auto-save-default nil)
 (csetq auto-save-list-file-prefix (concat emacs-d "tmp/auto-save-list/saves-"))
+;; Kill means kill, not asking. Was:
+(setq kill-buffer-query-functions nil)
 
 ;;; ** Automatically load .Xresources after changes
 ;; Sample ~/.Xresources:
