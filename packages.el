@@ -1,7 +1,10 @@
 (defconst emacs-d
   (file-name-directory
    (file-chase-links load-file-name))
-  "The giant turtle on which the world rests.")
+  "My emacs dotfiles directory, ~/.emacs.d on Linux")
+
+;; Use new byte codes from Emacs 24.4
+(setq byte-compile--use-old-handlers nil)
 
 (setq package-archives
       '(("melpa-stable" . "http://stable.melpa.org/packages/")
