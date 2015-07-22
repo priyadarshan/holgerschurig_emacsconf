@@ -25,13 +25,15 @@
   `(funcall (or (get ',variable 'custom-set) 'set-default) ',variable ,value))
 
 
-;;** decorations
+;;;** decorations
 (csetq tool-bar-mode nil)
 (csetq menu-bar-mode nil)
 (csetq scroll-bar-mode nil)
 (csetq inhibit-startup-screen t)
 (csetq initial-scratch-message "")
 
+;;; * Theme
+(require 'afternoon-theme)
 
 ;;: * Debugging
 (csetq message-log-max 10000)
@@ -219,12 +221,6 @@
 ;;  Avoid Emacs hanging for a while changing default font
 ;;
 (modify-frame-parameters nil '((wait-for-wm . nil)))
-
-;;; ** Theme
-(use-package afternoon-theme
-  :config
-  (load-theme 'afternoon t)
-)
 
 ;;; ** Font-Lock some keywords
 (defface my--todo-face
