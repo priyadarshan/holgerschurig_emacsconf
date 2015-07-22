@@ -1201,9 +1201,3 @@ newline to the correct position"
      )
   :bind ("C-c m" . magit-status)
   :commands (magit-get-top-dir))
-(defun magit-refresh-status ()
-  (magit-git-exit-code "update-index" "--refresh")
-  (magit-create-buffer-sections
-    (magit-with-section 'status nil
-      (run-hooks 'magit-status-insert-sections-hook)))
-  (run-hooks 'magit-refresh-status-hook))
