@@ -1106,9 +1106,12 @@ If the CDR is nil, then the buffer is only buried."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; * Package: helm
-;;
 ;;  Very good intro: http://tuhdo.github.io/helm-intro.html
-;;
+(defun my-helm-imenu ()
+  "This is just like helm-imenu, but it will maximize the buffer"
+  (interactive)
+  (let ((helm-full-frame t))
+    (helm-imenu)))
 (use-package helm
   :defer nil
   :ensure helm
@@ -1117,8 +1120,8 @@ If the CDR is nil, then the buffer is only buried."
 	 ("C-h a"   . helm-apropos)
 	 ("C-x C-f" . helm-find-files)
 	 ("M-s o"   . helm-occur)
-	 ("M-s i"   . helm-imenu)
-	 ("M-s m"   . helm-imenu)
+	 ("M-s i"   . my-helm-imenu)
+	 ("M-s m"   . my-helm-imenu)
 	 ("M-x"     . helm-M-x)
 	 ("M-y"     . helm-show-kill-ring)
          ("C-x C-b"   . helm-mini)
@@ -1171,9 +1174,7 @@ If the CDR is nil, then the buffer is only buried."
     (add-to-list 'helm-boring-file-regexp-list "\\.#")
 
     ;; this is kind of a goto, you can visit all marks
-    (bind-key "g"   'helm-all-mark-rings helm-command-map)
-    )
-)
+    (bind-key "g"   'helm-all-mark-rings helm-command-map)))
 
 
 
