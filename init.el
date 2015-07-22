@@ -37,6 +37,12 @@
 (csetq scroll-bar-mode nil)
 (csetq inhibit-startup-screen t)
 
+;;; ** Theme
+(require 'eclipse-theme)
+;; put something like this into ~/.Xresources
+;; Emacs.geometry: 120x55
+;; Emacs.Font:     Terminus 11
+
 ;;; ** Entering/exiting Emacs
 ; Do without annoying startup msg.
 (csetq inhibit-startup-message t)
