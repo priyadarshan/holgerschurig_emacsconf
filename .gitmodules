@@ -1,3 +1,6 @@
 [submodule "git/profile-dotemacs"]
 	path = git/profile-dotemacs
 	url = https://github.com/abo-abo/profile-dotemacs
+[submodule "git/emacs-afternoon-theme"]
+	path = git/emacs-afternoon-theme
+	url = https://github.com/osener/emacs-afternoon-theme.git

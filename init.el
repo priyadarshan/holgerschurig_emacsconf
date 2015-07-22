@@ -99,12 +99,9 @@
 (require 'package)
 (setq package-enable-at-startup nil)
 
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-
+;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
-
-; When using melpa-stable instead of melpa, magit won't run:
-;(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
 
 ;; Automatically install `use-package'
 (unless (package-installed-p 'use-package)

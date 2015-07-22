@@ -7,7 +7,7 @@
 ;;       (expand-file-name "elpa" emacs-d))
 (package-initialize)
 (setq package-archives
-      '(("melpa" . "http://melpa.milkbox.net/packages/")
+      '(("melpa-stable" . "http://stable.melpa.org/packages/")
         ("gnu" . "http://elpa.gnu.org/packages/")))
 (package-refresh-contents)
 
@@ -15,17 +15,20 @@
   '(use-package
      afternoon-theme
      powerline
-     smooth-scrolling
      expand-region
      cycbuf
      unbound
      ace-jump-buffer
      avy
      org
+     helm
      helm-descbinds
+     savehist
      markdown-mode
+     ;; rust-mode
      web-mode
      column-marker
+     smooth-scrolling
      )
   "List of packages that I like.")
 
