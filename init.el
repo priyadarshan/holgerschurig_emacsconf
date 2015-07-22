@@ -1101,12 +1101,13 @@ If the CDR is nil, then the buffer is only buried."
 
 (use-package avy
   :defer t
-  :bind ("C-." . avy-goto-word-1)
-  :config (setq avy-keys (append (number-sequence ?a ?z)
-				 (number-sequence ?0 ?9))
-                avy-style 'at-full
-		avy-all-windows nil
-		avy-highlight-first t)
+  :bind ("C-#" . avy-goto-word-1)
+  :config (progn
+	    (csetq avy-keys (append (number-sequence ?a ?z)
+				    (number-sequence ?0 ?9)))
+	    (csetq avy-style 'at-full)
+	    (csetq avy-all-windows nil)
+	    (csetq avy-highlight-first t))
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
