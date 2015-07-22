@@ -63,10 +63,11 @@
 (csetq history-delete-duplicates t)
 
 ;;; ** Emacs internals
-(csetq gc-cons-threshold 10000000)
+(csetq gc-cons-threshold (* 10 1024 1024))
 (csetq message-log-max 10000)
 ;; Use new byte codes from Emacs 24.4
 (setq byte-compile--use-old-handlers nil)
+(csetq ad-redefinition-action 'accept)
 
 ;;; ** Default browser
 (setq browse-url-browser-function 'browse-url-generic
