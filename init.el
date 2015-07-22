@@ -31,11 +31,15 @@
 (defmacro csetq (variable value)
   `(funcall (or (get ',variable 'custom-set) 'set-default) ',variable ,value))
 
-;;; ** Decorations
+;;; ** Window Decorations
 (csetq tool-bar-mode nil)
 ;(csetq menu-bar-mode nil)
 (csetq scroll-bar-mode nil)
 (csetq inhibit-startup-screen t)
+
+;;; ** Window manager
+;;  Avoid Emacs hanging for a while after changing default font
+(modify-frame-parameters nil '((wait-for-wm . nil)))
 
 ;;; ** Theme
 (require 'eclipse-theme)
@@ -163,10 +167,6 @@
 ;;; * Display
 
 
-;;; ** Don't wait for window manager when font changes
-;;  Avoid Emacs hanging for a while changing default font
-;;
-(modify-frame-parameters nil '((wait-for-wm . nil)))
 
 ;;; ** Font-Lock some keywords
 (defface my--todo-face
