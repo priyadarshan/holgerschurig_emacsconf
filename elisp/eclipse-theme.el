@@ -48,8 +48,10 @@
   (apply 'custom-theme-set-faces 'eclipse
          (mapcar
           (lambda (x) `(,(car x) ((,class ,(cdr x)))))
-          `((default :family "DejaVu Sans Mono"
-              :height 113
+	  ;; the lines marked with XXX are from me, I want to define the font
+	  ;; in the .Xresources
+          `((default ;; XXX :family "DejaVu Sans Mono"
+              ;; XXX :height 113
               :foreground ,eclipse-fg
               :background ,eclipse-bg)
             (cursor :background ,eclipse-fg)
