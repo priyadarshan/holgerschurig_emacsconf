@@ -834,6 +834,13 @@ If the CDR is nil, then the buffer is only buried."
 (use-package dired-x
     :commands dired-jump)
 
+;;; ** flyspell
+;; correct with C-M-i
+(use-package flyspell
+  :defer t
+  :diminish flyspell-mode
+  :commands (flyspell-mode flyspell-prog-mode))
+
 ;;; ** org-mode (must be before helm)
 (use-package org
   :defer t
