@@ -69,6 +69,21 @@
 (setq byte-compile--use-old-handlers nil)
 (csetq ad-redefinition-action 'accept)
 
+;;; ** Silence byte-compiler
+(declare-function bury-buffer "window")
+(declare-function c-langelem-2nd-pos "cc-defs")
+(declare-function c-langelem-pos "cc-defs")
+(declare-function c-toggle-auto-newline "cc-cmds")
+(declare-function delete-other-windows "window")
+(declare-function delete-window "window")
+(declare-function one-window-p "window")
+(declare-function other-window "window")
+(declare-function pop-to-buffer "window")
+(declare-function recenter-top-bottom "window")
+(declare-function split-window-vertically "window")
+(declare-function switch-to-buffer "window")
+(declare-function switch-to-buffer-other-window "window")
+
 ;;; ** Default browser
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "x-www-browser")
@@ -1025,7 +1040,7 @@ If the CDR is nil, then the buffer is only buried."
 (add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
 ;; from linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
 (defvar c-syntactic-element)
-(eval-when-compile '(request c-mode))
+(defvar c-basic-offset)
 (defun c-lineup-arglist-tabs-only (ignored)
   "Line up argument lists by tabs, not spaces"
   (let* ((anchor (c-langelem-pos c-syntactic-element))
