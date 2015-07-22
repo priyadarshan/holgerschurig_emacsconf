@@ -825,6 +825,15 @@ If the CDR is nil, then the buffer is only buried."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; * Packages
 
+;;; ** dired
+(use-package dired
+    :commands dired
+    :init
+    (setq dired-listing-switches
+          "-laGh1v --group-directories-first"))
+(use-package dired-x
+    :commands dired-jump)
+
 ;;; ** org-mode (must be before helm)
 (use-package org
   :defer t
