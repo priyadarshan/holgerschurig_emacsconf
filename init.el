@@ -917,16 +917,16 @@ If the CDR is nil, then the buffer is only buried."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; * Minibuffer
-(setq ;; Don't insert current directory into minubuffer
-      insert-default-directory nil
 
-      ;; enable recursive minibuffer, they're a nuisance
-      enable-recursive-minibuffers nil
+;; Don't insert current directory into minubuffer
+(csetq insert-default-directory nil)
 
-      ;; minibuffer window expands vertically as necessary to hold the text that
-      ;; you put in the minibuffer
-      resize-mini-windows t
-      )
+;; Minibuffer window expands vertically as necessary to hold the text that
+;; you put in the minibuffer
+(csetq resize-mini-windows t) ;; was grow-only
+
+;; Read quoted chars with radix 16
+(csetq read-quoted-char-radix 16)
 
 ;;
 ;;  Allow to type space chars in minibuffer input (for `timeclock-in', for
