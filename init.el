@@ -1004,9 +1004,12 @@ If the CDR is nil, then the buffer is only buried."
 			 (get-buffer-window buffer t)))
 	(t
 	 (message "Compilation exited abnormally: %s" string))))
-(setq compilation-finish-functions 'compile-autoclose
-      compilation-ask-about-save nil
-      compilation-scroll-output t)
+(use-package compile
+    :diminish compilation-in-progress
+    :config
+    (setq compilation-finish-functions 'compile-autoclose)
+    (csetq compilation-ask-about-save nil)
+    (csetq compilation-scroll-output t))
 
 ;;; *** Error navigation
 (bind-key "<f8>" 'next-error)
