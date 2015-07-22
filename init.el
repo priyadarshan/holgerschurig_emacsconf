@@ -956,6 +956,7 @@ If the CDR is nil, then the buffer is only buried."
 
 ;;; ** Tab handling
 (use-package tabify
+  :defer t
   :commands (tabify untabify)
   :config
   ;; Tabify only initial whitespace
@@ -1103,6 +1104,7 @@ newline to the correct position"
 
 ;;; ** Mode: Markdown
 (use-package markdown-mode
+  :defer t
   :mode (("\\.md\\'"       . markdown-mode)
 	 ("\\.markdown\\'" . markdown-mode)))
 
@@ -1119,6 +1121,7 @@ newline to the correct position"
 
 ;;; ** Mode: Rust
 (use-package rust-mode
+  :defer t
   :mode (("\\.rs\\'" . rust-mode)))
 
 ;;; ** Mode: Shell
