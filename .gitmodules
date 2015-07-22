@@ -1,0 +1,3 @@
+[submodule "git/profile-dotemacs"]
+	path = git/profile-dotemacs
+	url = https://github.com/abo-abo/profile-dotemacs

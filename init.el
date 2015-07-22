@@ -1,24 +1,12 @@
 ;;; * My home directory
-(defvar dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name))
+(defvar emacs-d (file-name-directory
+		 (file-chase-links load-file-name))
   "My emacs dotfiles directory, ~/.emacs.d on Linux")
 
 
 ;;: * Debugging
 (setq message-log-max 10000)
 
-
-
-;;; * DISABLED Byte-Code cache
-
-;; (eval-after-load "byte-code-cache"
-;;   '(setq bcc-cache-directory (concat dotfiles-dir "tmp/byte-cache")
-;;         bcc-blacklist '("/recentf\\.el$" "/history\\.el$" "/desktop\\.data$")
-;;         byte-compile-warnings t
-;;         byte-compile-verbose nil))
-;;
-;; ;; HINT: byte-code-cache.el comes from EmacsWiki, you can update it
-;; ;; with (auto-install-from-emacswiki)
-;; (load (concat dotfiles-dir "elisp/byte-code-cache.el"))
 
 
 
@@ -75,7 +63,7 @@
 
 ;; ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
 ;; Move the cookie file out into the =tmp/= directory.
-(setq url-configuration-directory (concat dotfiles-dir "tmp/"))
+(setq url-configuration-directory (concat emacs-d "tmp/"))
 
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -125,7 +113,7 @@
       major-mode 'indented-text-mode
 
       ;; Custom file, part one
-      custom-file (concat dotfiles-dir "custom.el")
+      custom-file (concat emacs-d "custom.el")
 
       ;; Delete previous identical history entries
       history-delete-duplicates t
@@ -152,7 +140,7 @@
 
 (setq user-full-name "Holger Schurig"
       user-mail-address "holgerschurig@gmail.com")
-(load (concat dotfiles-dir "private.el") 'noerror 'nomessage)
+(load (concat emacs-d "private.el") 'noerror 'nomessage)
 
 
 
@@ -207,7 +195,6 @@
 
 ;;; ** Theme
 (use-package afternoon-theme
-  :ensure t
   :config
   (load-theme 'afternoon t)
 )
@@ -293,51 +280,17 @@
 ;;  We could either use http://www.emacswiki.org/emacs/PowerLine
 ;;
 (use-package powerline
-  :ensure t
   :init
   (powerline-default-theme)
   ;; I used to use, but because of some "left" string this didn't work anymore
   ;; (powerline-center-theme)
 )
 
-;;
-;;  ... or https://github.com/Malabarba/smart-mode-line/
-;;
-;; (use-package smart-mode-line-powerline-theme
-;;   :ensure t
-;; )
-;; (use-package smart-mode-line
-;;   :ensure t
-;;   :init
-;;   (progn
-;;     (setq ;;sml/theme "powerline"
-;;           sml/theme nil
-;; 	  sml/shorten-directory t
-;; 	  sml/shorten-modes t
-;; 	  sml/mode-width 'full
-;; 	  ;; sml/name-width 32
-;; 	  )
-;;     ;;(setq powerline-arrow-shape 'curve)
-;;     ;;(setq powerline-default-separator-dir '(right . left))
-;;     (sml/setup)
-;;     )
-;; )
-
-;; (sml/apply-theme 'dark)
-;; (sml/apply-theme 'light)
-;; (sml/apply-theme 'respectful)
-;; (sml/apply-theme 'powerline)
-;; (sml/apply-theme 'automatic)
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; * Cursor
 ;;; ** Nicer scroll handling
-(use-package smooth-scrolling
-  :ensure t
-)
 
 ;;; ** multiple key binding
 ;;  First we define code that allows us to bind multiple functions to
@@ -534,7 +487,6 @@ rather than line counts."
 ;;  use + and - after the first expand to expand further / shrink again.
 ;;
 (use-package expand-region
-  :ensure t
   :defer t
   :bind ("C-+" . er/expand-region)
   )
@@ -590,45 +542,6 @@ Deletes whitespace at join."
 
 (bind-key "C-k" 'kill-and-join-forward)
 
-;;
-;;; ** DISABLED Yank
-;;
-;; (defun my-yank (&optional arg)
-;;   "Reinsert (\"paste\") the last stretch of killed text.
-;; More precisely, reinsert the stretch of killed text most recently
-;; killed OR yanked. Put mark at end, and set point at
-;; beginning (the opposite of `yank'). With just
-;; \\[universal-argument] as argument, same but put mark at
-;; beginning (and point at end). With argument N, reinsert the Nth
-;; most recently killed stretch of killed text.
-;;
-;; When this command inserts killed text into the buffer, it honors
-;; `yank-excluded-properties' and `yank-handler' as described in the
-;; doc string for `insert-for-yank-1', which see.
-;;
-;; See also the command `yank-pop' (\\[yank-pop])."
-;;   (interactive "*P")
-;;   (setq yank-window-start (window-start))
-;;   ;; If we don't get all the way thru, make last-command indicate that
-;;   ;; for the following command.
-;;   (setq this-command t)
-;;   (push-mark (point))
-;;   (insert-for-yank (current-kill (cond
-;; 				  ((listp arg) 0)
-;; 				  ((eq arg '-) -2)
-;; 				  (t (1- arg)))))
-;;   (unless (consp arg)
-;;       ;; This is like exchange-point-and-mark, but doesn't activate the mark.
-;;       ;; It is cleaner to avoid activation, even though the command
-;;       ;; loop would deactivate the mark because we inserted text.
-;;       (goto-char (prog1 (mark t)
-;; 		   (set-marker (mark-marker) (point) (current-buffer)))))
-;;   ;; If we do get all the way thru, make this-command indicate that.
-;;   (if (eq this-command t)
-;;       (setq this-command 'yank))
-;;   nil)
-;;
-;; (bind-key "C-y" 'my-yank)
 
 ;;
 ;;; ** Dynamic char deletion
@@ -875,7 +788,6 @@ If the CDR is nil, then the buffer is only buried."
 
 ;;; ** Package: cycbuf
 (use-package cycbuf
-  :ensure t
   :defer t
   :bind (("<f6>"   . cycbuf-switch-to-next-buffer)
 	 ("S-<f6>" . cycbuf-switch-to-previous-buffer))
@@ -915,13 +827,13 @@ If the CDR is nil, then the buffer is only buried."
       backup-by-copying-when-linked t
       ;; Just never create backup files at all
       ;;make-backup-files nil
-      backup-directory-alist (list (cons "." (concat dotfiles-dir "tmp/bak/")))
+      backup-directory-alist (list (cons "." (concat emacs-d "tmp/bak/")))
       ;; Make sure your text files end in a newline
       require-final-newline t
       ;; Disable auto-save (#init.el# file-names)
       auto-save-default nil)
 
-(setq auto-save-list-file-prefix (concat dotfiles-dir "tmp/auto-save-list/saves-"))
+(setq auto-save-list-file-prefix (concat emacs-d "tmp/auto-save-list/saves-"))
 
 ;;
 ;;; ** Automatically load .Xresources after changes
@@ -963,7 +875,7 @@ If the CDR is nil, then the buffer is only buried."
 ;;; ** Package: recentf
 ;;
 ;; Save recent files
-(setq recentf-save-file (concat dotfiles-dir "tmp/recentf.el")
+(setq recentf-save-file (concat emacs-d "tmp/recentf.el")
       recentf-exclude '("bbdb$"
 			"svn-commit.tmp$"
 			".git/COMMIT_EDITMSG$"
@@ -1094,7 +1006,6 @@ If the CDR is nil, then the buffer is only buried."
 ;;  ...
 ;;
 (use-package unbound
-  :ensure t
   :defer t
   :commands describe-unbound-keys
 )
@@ -1171,7 +1082,6 @@ If the CDR is nil, then the buffer is only buried."
 ;;; * Package: ace-jump-buffer
 
 (use-package ace-jump-buffer
-  :ensure t
   :defer t
   :bind ("C-c C-j" . ace-jump-buffer)
   )
@@ -1180,7 +1090,6 @@ If the CDR is nil, then the buffer is only buried."
 ;; * Package: avy (alternative to ace-jump-mode)
 
 (use-package avy
-  :ensure t
   :defer t
   :bind ("C-." . avy-goto-word-1)
   :config (setq avy-keys (append (number-sequence ?a ?z)
@@ -1200,11 +1109,10 @@ If the CDR is nil, then the buffer is only buried."
 ;;; ** Package: org (must be before helm)
 
 (use-package org
-  :ensure t
   :init
   (progn
     (setq org-replace-disputed-keys t    ; allow Shift-Cursor to mark stuff
-	  org-default-notes-file (expand-file-name "notes.org" dotfiles-dir)
+	  org-default-notes-file (expand-file-name "notes.org" emacs-d)
 	  ;; Time stamp handling
 	  org-display-custom-times t
 	  org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")
@@ -1311,96 +1219,8 @@ If the CDR is nil, then the buffer is only buried."
 
 ;;; * Package: helm-descbinds
 (use-package helm-descbinds
-  :ensure t
   :defer t
   :bind ("C-h b" . helm-descbinds))
-
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; * DISABLED Package: ibuffer
-;; (use-package ibuffer
-;;   :defer t
-;;   :bind (("C-x C-b" . ibuffer))
-;;   :config
-;;   (setq ;; don't display size of files
-;;         ibuffer-display-summary nil
-;;
-;; 	;; don't sort by recent files
-;; 	;;ibuffer-default-sorting-mode 'major-mode
-;;
-;; 	;; Don't ask for "dangerous" operations, e.g. killing a buffer
-;; 	ibuffer-expert t
-;;
-;; 	;; number of hours before a buffer is considered "old"
-;; 	ibuffer-old-time 4
-;;   )
-;; )
-
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; * DISABLED Package: ido
-;; (use-package ido
-;;   :defer nul
-;;   ;; :init (ido-mode 'buffer)
-;;   :config
-;;   (progn
-;;     (setq ido-save-directory-list-file (concat dotfiles-dir "tmp/ido.last")
-;;           ;:ido-everywhere t                       ; use for many file dialogs
-;;           ido-max-work-file-list      50         ; remember many
-;;           ;:ido-enable-flex-matching t             ; be flexible
-;;           ;;ido-max-prospects 4                    ; don't spam my minibuffer
-;;           ido-confirm-unique-completion t        ; wait for RET, even with unique completio
-;;           ;;ido-enable-dot-prefix t              ; need "." to select hidden files
-;;           ido-enable-tramp-completion nil
-;;           ido-ignore-buffers '("\\`"
-;;                                "^\*Mess"
-;;                                "^\*Help*"
-;;                                "^\*Back"
-;;                                ".*Completion"
-;;                                "^\*Ido")
-;;           ido-ignore-directories '("\\`CVS/"
-;;                                    "\\.svn/"
-;;                                    "\\.git/"
-;;                                    "\\`\\.\\./"
-;;                                    "\\`\\./")
-;;
-;;           ido-default-buffer-method 'selected-window
-;;           ido-default-file-method 'selected-window
-;;           ido-enable-flex-matching t
-;;           ido-max-directory-size 100000)
-;;     ;; Ignore some files from latex / latexmk
-;;     (add-to-list 'completion-ignored-extensions ".aux")
-;;     (add-to-list 'completion-ignored-extensions ".dvi")
-;;     (add-to-list 'completion-ignored-extensions ".fdb_latexmk")
-;;     (add-to-list 'completion-ignored-extensions ".idx")
-;;     (add-to-list 'completion-ignored-extensions ".ilg")
-;;     (add-to-list 'completion-ignored-extensions ".ind")
-;;     (add-to-list 'completion-ignored-extensions ".pdf")
-;;     (add-to-list 'completion-ignored-extensions ".toc")
-;;
-;;     (use-package ido-vertical-mode
-;;       :ensure t
-;;       :init (ido-vertical-mode 1))
-;;
-;;     (use-package idomenu
-;;       :defer t
-;;       :ensure t
-;;       :bind ("C-x C-i" . idomenu))
-;;     )
-;;   )
-;;
-;; (use-package ido-ubiquitous
-;;   :init
-;;   (ido-ubiquitous-mode 1)
-;;   )
 
 
 
@@ -1411,7 +1231,7 @@ If the CDR is nil, then the buffer is only buried."
 ;;; * Package: savehist (save mini-buffer history)
 (use-package savehist
   :init
-   (setq savehist-file (concat dotfiles-dir "tmp/history.el")
+   (setq savehist-file (concat emacs-d "tmp/history.el")
       history-length 1000)
   :config
   (savehist-mode 1)
@@ -1608,7 +1428,6 @@ newline to the correct position"
 
 ;;; ** Mode: Markdown
 (use-package markdown-mode
-  :ensure t
   :mode (("\\.md\\'"       . markdown-mode)
 	 ("\\.markdown\\'" . markdown-mode))
   )
@@ -1665,7 +1484,6 @@ newline to the correct position"
   ;;(gcr/untabify-buffer-hook))
 )
 (use-package web-mode
-  :ensure t
   :defer t
   :mode (("\\.html\\'" . web-mode)
 	 ("\\.css\\'" . web-mode)
@@ -1686,10 +1504,6 @@ newline to the correct position"
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "x-www-browser")
 
-;;; ** DISABLED Mode: Semantic
-;;  TODO: enable it only in some modes
-;; (semantic-mode 1)
-
 ;;; ** Package: column-marker
 ;;
 (defun my--column-marker-at-80 ()
@@ -1702,7 +1516,6 @@ newline to the correct position"
 
 (use-package column-marker
   :defer t
-  :ensure t
   :commands (column-marker-1 column-marker-2)
   :init
   (add-hook 'c-mode-hook 'my--column-marker-at-80)
@@ -1710,203 +1523,37 @@ newline to the correct position"
 
 
 
-;;; ** DISABLED Package: company (complete anything)
-
-(use-package company-c-headers
-  :disabled t
-  :ensure t
-  :defer t
-  :commands company-c-headers
-  )
-
-(use-package company
-  :disabled t
-  :ensure t
-  :defer t
-  :diminish company-mode
-  :bind (("C-<tab>" . company-complete)
-	 ("s-<SPC>" . company-complete))
-  :commands global-company-mode
-  :init
-  (progn
-    (add-hook 'after-init-hook 'global-company-mode)
-    (setq company-backends '(;; company-bbdb
-			     company-c-headers
-			     company-nxml
-			     company-css
-			     company-elisp
-			     ;; company-eclim
-			     ;; company-semantic
-			     ;; company-clang
-			     ;; company-xcode
-			     ;; company-ropemacs
-			     company-cmake
-			     company-capf
-			     (company-dabbrev-code
-			      company-gtags
-			      ;; company-etags
-			      company-keywords)
-			     ;; company-oddmuse
-			     company-files
-			     company-dabbrev))
-    )
-  :config
-  (progn
-    (setq company-elisp-detect-function-context nil
-	  company-dabbrev-downcase nil
-	  company-dabbrev-other-buffers t
-	  company-idle-delay 0.25
-	  ;; trigger insertion of candidate on Whitespace, closing paren or punctuation
-	  ;; but this is not good: if i'd write ".git ", it would create ".github" out of it.
-	  ;;company-auto-complete t
-	  company-selection-wrap-around t
-	  ;; company-show-numbers t  ;; use Alt-<num> to select
-	  )
-    )
-)
-
-;;
-;;
-;;  Sample color customization
-;;
-;;  (let ((bg (face-attribute 'default :background)))
-;;    (custom-set-faces
-;;     `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
-;;     `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
-;;     `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
-;;     `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-;;     `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
-;;
-;;; ** Package: dtrt-indent (tab guessing)
-;(defun my--start-dtrt ()
-;  (dtrt-indent-mode 1)
-;)
-;(use-package dtrt-indent
-;  :ensure t
-;  :defer t
-;  :commands dtrt-indent-mode
-;  :init
-;  (progn
-;    (add-hook 'c-mode-hook 'my--start-dtrt)
-;    )
-;)
 
 
-
-
-;;; ** DISABLED Package: flycheck
-;;  Home page: https://github.com/flycheck/flycheck
-;;
-;;  Unfortunately it doesn't seem to be able to check inside org-babel's
-;;  source blocks :-(
-;;
-(defun my--start-flycheck ()
-  (flycheck-mode 1)
-)
-(use-package flycheck
-  :disabled t
-  :ensure t
-  ;; :diminish fly-check-mode
-  :commands flycheck-mode
-  :init
-  (progn
-    (setq flycheck-checkers '(;; ada-gnat
-			      ;; asciidoc
-			      c/c++-gcc ;; c/c++-clang c/c++-cppcheck
-			      ;; cfengine
-			      ;; chef-foodcritic
-			      ;; coffee coffee-coffeelint
-			      ;; coq
-			      css-csslint
-			      ;; d-dmd
-			      ;; elixir
-			      emacs-lisp ;; emacs-lisp-checkdoc
-			      ;; erlang
-			      ;; eruby-erubis
-			      ;; fortran-gfortran
-			      ;; go-gofmt go-golint go-vet go-build go-test go-errcheck
-			      ;; haml
-			      ;; handlebars
-			      ;; haskell-ghc haskell-hlint
-			      html-tidy
-			      ;; javascript-jshint javascript-eslint javascript-gjslint
-			      json-jsonlint
-			      ;; less
-			      ;; lua
-			      make
-			      ;; perl perl-perlcritic
-			      ;; php php-phpmd php-phpcs
-			      ;; puppet-parser puppet-lint
-			      python-flake8 python-pylint python-pycompile
-			      ;; r-lintr
-			      ;; racket
-			      ;; rpm-rpmlint
-			      rst rst-sphinx
-			      ;; ruby-rubocop ruby-rubylint ruby ruby-jruby
-			      ;; rust
-			      ;; sass
-			      ;; scala scala-scalastyle
-			      ;; scss
-			      sh-bash sh-posix-dash sh-posix-bash sh-zsh sh-shellcheck
-			      ;; slim
-			      ;; tex-chktex tex-lacheck
-			      ;; texinfo
-			      ;; verilog-verilator
-			      ;; xml-xmlstarlet xml-xmllint
-			      ;; yaml-jsyaml yaml-ruby
-			      ))
-    (add-hook 'prog-mode-hook 'my--start-flycheck)
-  ))
-
-;;; ** DISABLED Package: helm-gtags
-;;
-;;  Home page: https://github.com/syohex/emacs-helm-gtags
-;;
-;;  This uses GNU GLOBAL to browser tags.
-;;
-(use-package helm-gtags
-  :disabled t
-  :ensure t
-  :defer t
-  :bind (("M-." . helm-gtags-dwim)
-	 ("M-," . helm-gtags-pop-stack)
-	 ;;("M-#" . helm-gtags-select)
-	 )
-  :init
-  (progn
-    (setq helm-gtags-prefix-key "\C-cg"
-	  helm-gtags-suggested-key-mapping t
-	  )
-    )
-  :config
-  (progn
-    ;; Enable helm-gtags-mode
-    ;;(add-hook 'dired-mode-hook 'helm-gtags-mode)
-    ;;(add-hook 'eshell-mode-hook 'helm-gtags-mode)
-    (add-hook 'c-mode-hook 'helm-gtags-mode)
-    (add-hook 'c++-mode-hook 'helm-gtags-mode)
-    (add-hook 'asm-mode-hook 'helm-gtags-mode)
-
-    (setq helm-gtags-ignore-case t
-	  helm-gtags-auto-update t
-	  helm-gtags-use-input-at-cursor t
-	  helm-gtags-pulse-at-cursor t
-	  helm-gtags-path-style 'relative
-	  )
-    )
-)
 
 ;;; ** Package: magit
 
+;;
+;;  =magit-rigid-key-bindings= must be set before magit is loaded. It will
+;;  remove the new key bindings that use pop-up buffers.
+;;
+(setq magit-rigid-key-bindings t)
+
 (use-package magit
-  :ensure t
+  :load-path "elisp/"
   :defer t
+  :diminish magit-auto-revert-mode  ;; disable "MRev" in the status line
+  :init
+  ;; disable warning about magit-auto-revert-mode
+  (setq magit-last-seen-setup-instructions "1.4.0")
   :config
   (progn
-    (setq magit-revert-buffers t
-	  magit-status-buffer-switch-function 'switch-to-buffer
-	  magit-save-repository-buffers 'dontask
-	  )
+    (setq magit-save-some-buffers 'dontask
+          magit-commit-all-when-nothing-staged nil
+          magit-stage-all-confirm nil
+          magit-unstage-all-confirm nil
+          magit-status-buffer-switch-function 'switch-to-buffer
+          magit-refresh-file-buffer-hook '(revert-buffer)
+          magit-diff-use-overlays t
+          magit-completing-read-function 'completing-read
+          )
+     ;(set-face-foreground 'magit-diff-add "green4")
+     ;(set-face-foreground 'magit-diff-del "red3")
      )
   :bind ("C-c m" . magit-status)
   :commands (magit-get-top-dir)
@@ -1920,49 +1567,3 @@ newline to the correct position"
     (magit-with-section 'status nil
       (run-hooks 'magit-status-insert-sections-hook)))
   (run-hooks 'magit-refresh-status-hook))
-
-;;; ** DISABLED Package: helm-projectile
-;;
-;;  This is just an autoloader for helm-projectile, as soon as
-;;  helm-projectile-on is executed.
-;;
-;; (use-package helm-projectile
-;;   :ensure t
-;;   :defer t
-;;   :commands helm-projectile-on
-;; )
-
-;;; ** DISABLED Package: projectile
-;;
-;;  Home page: http://batsov.com/projectile/
-;;
-;;  A projectile is any directory that has a .git directory, or a
-;;  .projectile file in it.
-;;
-;;
-;;  (my-projectile-init) is called via "C-c p h". It loads projectile when needed.
-;;
-;; (defun my-projectile-init ()
-;;   (interactive)
-;;   (projectile-global-mode)
-;;   (setq projectile-completion-system 'helm
-;; 	projectile-switch-project-action 'helm-projectile
-;; 	)
-;;   (helm-projectile-on)
-;;   ;;(bind-kpey "C-c p a" 'projectile-ag projectile-mode-map)
-;;   (helm-projectile)
-;;   )
-;; (use-package projectile
-;;   :ensure t
-;;   :defer t
-;;   :bind ("C-c p h" . my-projectile-init) ;; re-routed to helm-projectile
-;;   :commands (projectile-on projectile-global-mode)
-;;   :diminish projectile-mode
-;;   :init
-;;   (progn
-;;     (add-hook 'prog-mode-hook 'projectile-on)
-;;     (setq projectile-cache-file          (concat dotfiles-dir "tmp/projectile.cache")
-;; 	  projectile-known-projects-file (concat dotfiles-dir "tmp/projectile-bookmarks.eld")
-;; 	  )
-;;     )
-;; )
