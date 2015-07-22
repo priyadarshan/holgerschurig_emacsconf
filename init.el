@@ -1,6 +1,8 @@
 ;; Find your way around this file with M-s i
 
-;;; * Load paths
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; * Load paths
 (defvar emacs-d (file-name-directory
 		 (file-chase-links load-file-name))
   "My emacs dotfiles directory, ~/.emacs.d on Linux")
@@ -20,30 +22,57 @@
 (add-to-list 'load-path (expand-file-name "elisp/" emacs-d))
 
 
-;;; * Customize helper
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; * Customize
 
 ;; http://lists.gnu.org/archive/html/emacs-devel/2015-04/msg01261.html
 (defmacro csetq (variable value)
   `(funcall (or (get ',variable 'custom-set) 'set-default) ',variable ,value))
 
-
 ;;; ** Decorations
 (csetq tool-bar-mode nil)
-(csetq menu-bar-mode nil)
+;(csetq menu-bar-mode nil)
 (csetq scroll-bar-mode nil)
 (csetq inhibit-startup-screen t)
-(csetq initial-scratch-message "")
 
-;;: ** Emacs internals
+;;; ** Entering/exiting Emacs
+; Do without annoying startup msg.
+(csetq inhibit-startup-message t)
+; This inhibits the initial startup echo area message.
+(eval '(csetq inhibit-startup-echo-area-message "schurig"))
+; Don't ask when running revert-buffer
+(csetq revert-without-query (quote ("")))
+; Empty scratch message
+(csetq initial-scratch-message nil)
+; Include current buffer name in the title bar
+(csetq frame-title-format '(buffer-file-name "%f" ("%b")))
+; TODO Set up default editing mode.
+; (csetq major-mode 'indented-text-mode)
+; Custom file, part one
+(csetq custom-file (concat emacs-d "custom.el"))
+; Delete previous identical history entries
+(csetq history-delete-duplicates t)
+
+;;; ** Emacs internals
+(csetq gc-cons-threshold 10000000)
 (csetq message-log-max 10000)
 
-
+;;; ** Simpler yes or no prompt
+;  Get rid of yes-or-no questions - y or n is enough
+(fset 'yes-or-no-p 'y-or-n-p)
+;;; ** Private data
+(csetq user-full-name "Holger Schurig")
+(csetq user-mail-address "holgerschurig@gmail.com")
+(load (concat emacs-d "private.el") 'noerror 'nomessage)
+;;; ** Load customization file
+(if (file-exists-p custom-file) (load-file custom-file))
 
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; * package and use-package
+;;; * Packages
 ;;
 ;;  See http://github.com/jwiegley/use-package/
 ;;   or http://www.lunaryorn.com/2015/01/06/my-emacs-configuration-with-use-package.html
@@ -117,59 +146,6 @@
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; * Entering/exiting Emacs
-
-(setq gc-cons-threshold 10000000
-
-      ;; Do without annoying startup msg.
-      inhibit-startup-message t
-
-      ;; This inhibits the initial startup echo area message.
-      inhibit-startup-echo-area-message "schurig"
-
-      ;; Don't ask when running revert-buffer
-      revert-without-query (quote (""))
-
-      ;; Empty scratch message
-      initial-scratch-message nil
-
-      ;; Include current buffer name in the title bar
-      frame-title-format '(buffer-file-name "%f" ("%b"))
-
-      ;; Set up default editing mode.
-      major-mode 'indented-text-mode
-
-      ;; Custom file, part one
-      custom-file (concat emacs-d "custom.el")
-
-      ;; Delete previous identical history entries
-      history-delete-duplicates t
-      )
-
-
-;;; ** Load customization file
-
-(if (file-exists-p custom-file) (load-file custom-file))
-
-
-;;; ** Simpler yes or no prompt
-
-;;  Get rid of yes-or-no questions - y or n is enough
-(fset 'yes-or-no-p 'y-or-n-p)
-
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; * Private data
-
-(setq user-full-name "Holger Schurig"
-      user-mail-address "holgerschurig@gmail.com")
-(load (concat emacs-d "private.el") 'noerror 'nomessage)
 
 
 
