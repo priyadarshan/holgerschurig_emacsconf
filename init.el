@@ -1113,8 +1113,15 @@ If the CDR is nil, then the buffer is only buried."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+;;; ** Package: swiper
 
+;; better searching ;-)
 
+(use-package swiper
+  :bind (([remap isearch-forward] . swiper)
+	 ([remap isearch-backward] . swiper))
+  ;; :config (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
+  )
 
 
 ;;; ** Package: org (must be before helm)
