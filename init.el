@@ -1033,17 +1033,6 @@ If the CDR is nil, then the buffer is only buried."
   :commands describe-unbound-keys
 )
 
-;;; ** Show keytable
-;;
-;;  Beside (describe-personal-keybindings) you might want to have a keytable:
-;;
-(use-package keytable
-  :defer t
-  :commands my-keytable
-  ;; :init
-  ;; (define-key global-map [menu-bar tools keytable] '("Keytable" . my-keytable))
-)
-
 
 
 
