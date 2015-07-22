@@ -20,24 +20,21 @@
 (add-to-list 'load-path (expand-file-name "elisp/" emacs-d))
 
 
-;;; * Customize
+;;; * Customize helper
 
 ;; http://lists.gnu.org/archive/html/emacs-devel/2015-04/msg01261.html
 (defmacro csetq (variable value)
   `(funcall (or (get ',variable 'custom-set) 'set-default) ',variable ,value))
 
 
-;;;** decorations
+;;; ** Decorations
 (csetq tool-bar-mode nil)
 (csetq menu-bar-mode nil)
 (csetq scroll-bar-mode nil)
 (csetq inhibit-startup-screen t)
 (csetq initial-scratch-message "")
 
-;;; * Theme
-(require 'afternoon-theme)
-
-;;: * Debugging
+;;: ** Emacs internals
 (csetq message-log-max 10000)
 
 
@@ -306,11 +303,10 @@
 ;;  We could either use http://www.emacswiki.org/emacs/PowerLine
 ;;
 (use-package powerline
-  :init
-  (powerline-default-theme)
-  ;; I used to use, but because of some "left" string this didn't work anymore
-  ;; (powerline-center-theme)
-)
+  :config
+  (when (display-graphic-p)
+    (powerline-default-theme)))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1556,17 +1552,19 @@ newline to the correct position"
   (setq magit-last-seen-setup-instructions "1.4.0")
   :config
   (progn
-    (setq magit-save-some-buffers 'dontask
-          magit-commit-all-when-nothing-staged nil
-          magit-stage-all-confirm nil
-          magit-unstage-all-confirm nil
-          magit-status-buffer-switch-function 'switch-to-buffer
-          magit-refresh-file-buffer-hook '(revert-buffer)
-          magit-diff-use-overlays t
-          magit-completing-read-function 'completing-read
-          )
-     ;(set-face-foreground 'magit-diff-add "green4")
-     ;(set-face-foreground 'magit-diff-del "red3")
+    ;; Save modified buffers without asking
+    (csetq magit-save-some-buffers 'dontask)
+    ;; (setq magit-commit-all-when-nothing-staged nil)
+    (csetq magit-stage-all-confirm nil)
+    (csetq magit-unstage-all-confirm nil)
+    ;; switch the current window to magit-status (was pop-to-buffer)
+    (csetq magit-status-buffer-switch-function 'switch-to-buffer)
+    ;; (csetq magit-refresh-file-buffer-hook '(revert-buffer))
+    (csetq magit-use-overlays nil)
+    (csetq magit-item-highlight-face nil)
+    (csetq magit-completing-read-function 'completing-read)
+    ;; (set-face-foreground 'magit-diff-add "green4")
+    ;; (set-face-foreground 'magit-diff-del "red3")
      )
   :bind ("C-c m" . magit-status)
   :commands (magit-get-top-dir)
