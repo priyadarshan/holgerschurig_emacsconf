@@ -702,9 +702,9 @@ If the CDR is nil, then the buffer is only buried."
 ;;; ** recentf
 (csetq recentf-save-file (concat emacs-d "tmp/recentf.el"))
 (csetq recentf-exclude '("bbdb$"
-       "svn-commit.tmp$"
-       ".git/COMMIT_EDITMSG$"
-       ".git/TAG_EDITMSG"))
+			 "svn-commit.tmp$"
+			 ".png$"
+			 "COMMIT_EDITMSG" "COMMIT_EDITMSG" "TAG_EDITMSG"))
 (csetq recentf-max-saved-items 1000)
 (csetq recentf-auto-cleanup 300)
 (csetq recentf-max-menu-items 20)
