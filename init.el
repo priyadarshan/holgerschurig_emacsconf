@@ -1087,7 +1087,10 @@ newline to the correct position"
   ;; automatically give help about function syntax
   (eldoc-mode t)
   ;; "-" is almost always part of a function- or variable-name
-  (modify-syntax-entry ?- "w"))
+  (modify-syntax-entry ?- "w")
+  ;; Compile Emacs Lisp source files after the visiting buffers are saved.
+  (auto-compile-mode 1)
+  )
 (add-hook 'emacs-lisp-mode-hook 'my--elisp-setup)
 
 ;;; ** Mode: Markdown
