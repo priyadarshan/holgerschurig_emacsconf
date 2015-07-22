@@ -93,42 +93,30 @@
 ;; (use-package package-name
 ;;      [:keyword [option]]...)
 ;;
-;; :init          Code to run before PACKAGE-NAME has been loaded.
-;; :config        Code to run after PACKAGE-NAME has been loaded.  Note that if
-;;                loading is deferred for any reason, this code does not execute
-;;                until the lazy load has occurred.
-;; :preface       Code to be run before everything except `:disabled'; this can
-;;                be used to define functions for use in `:if', or that should be
-;;                seen by the byte-compiler.
-;;
+;; :init          Code to run when `use-package' form evals.
+;; :config        Runs if and when package loads.
 ;; :mode          Form to be added to `auto-mode-alist'.
 ;; :interpreter   Form to be added to `interpreter-mode-alist'.
-;;
-;; :commands      Define autoloads for commands that will be defined by the
-;;                package.  This is useful if the package is being lazily loaded,
-;;                and you wish to conditionally call functions in your `:init'
-;;                block that are defined in the package.
-;;
-;; :bind          Bind keys, and define autoloads for the bound commands.
-;; :bind*         Bind keys, and define autoloads for the bound commands,
-;;                *overriding all minor mode bindings*.
-;; :bind-keymap   Bind a key prefix to an auto-loaded keymap defined in the
-;;                package.  This is like `:bind', but for keymaps.
-;; :bind-keymap*  Like `:bind-keymap', but overrides all minor mode bindings
-;; :defer         Defer loading of a package -- this is implied when using
-;;                `:commands', `:bind', `:bind*', `:mode' or `:interpreter'.
-;;                This can be an integer, to force loading after N seconds of
-;;                idle time, if the package has not already been loaded.
+;; :commands      Define autoloads for given commands.
+;; :bind          Perform key bindings, and define autoload for bound
+;;                commands.
+;; :pre-load      Code to run when `use-package' form evals and before
+;;                anything else. Unlike :init this form runs before the
+;;                package is required or autoloads added.
+;; :defer         Defer loading of package -- automatic
+;;                if :commands, :bind, :mode or :interpreter are used.
 ;; :demand        Prevent deferred loading in all cases.
-;;
-;; :if EXPR       Initialize and load only if EXPR evaluates to a non-nil value.
-;; :disabled      The package is ignored completely if this keyword is present.
-;; :defines       Declare certain variables to silence the byte-compiler.
-;; :functions     Declare certain functions to silence the byte-compiler.
-;; :load-path     Add to the `load-path' before attempting to load the package.
-;; :diminish      Support for diminish.el (if installed).
-;; :ensure        Loads the package using package.el if necessary.
-;; :pin           Pin the package to an archive.
+;; :if            Conditional loading.
+;; :disabled      Ignore everything.
+;; :defines       Define vars to silence byte-compiler.
+;; :load-path     Add to `load-path' before loading.
+;; :diminish      Support for diminish package (if it's installed).
+;; :idle          adds a form to run on an idle timer
+;; :idle-priority schedules the :idle form to run with the given
+;;                priority (lower priorities run first). Default priority
+;;                is 5; forms with the same priority are run in the order in
+;;                which they are evaluated.
+;; :ensure        loads package using package.el if necessary.
 
 ;; Please don't load outdated byte code
 (csetq load-prefer-newer t)
