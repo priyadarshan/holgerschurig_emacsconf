@@ -749,26 +749,27 @@ If the CDR is nil, then the buffer is only buried."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; * Searching
 
-;;; ** swiper (improved searching)
+;;; ** DISABLED swiper (improved searching)
 (use-package swiper
+  :disabled t
   :bind (([remap isearch-forward] . swiper))
   :config (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy))))
 
-;;; ** DISABLED isearch (incremental search)
+;;; ** isearch (incremental search)
 ;; Scrolling while searching
-;; (csetq isearch-allow-scroll t)
+(csetq isearch-allow-scroll t)
 ;; Save Isearch stuff
-;; (csetq isearch-resume-in-command-history t)
-;; (bind-key "C-y" 'isearch-yank-kill isearch-mode-map)
+(csetq isearch-resume-in-command-history t)
+(bind-key "C-y" 'isearch-yank-kill isearch-mode-map)
 
-;;; ** DISABLED occur (call isearch from occur)
-;; (defun isearch-occur ()
-;;   "Invoke `occur' from within isearch."
-;;   (interactive)
-;;   (let ((case-fold-search isearch-case-fold-search))
-;;     (occur (if isearch-regexp isearch-string (regexp-quote isearch-string))))
-;;   (pop-to-buffer "*Occur*"))
-;; (bind-key "C-o" 'isearch-occur isearch-mode-map)
+;;; ** occur (call isearch from occur)
+(defun isearch-occur ()
+  "Invoke `occur' from within isearch."
+  (interactive)
+  (let ((case-fold-search isearch-case-fold-search))
+    (occur (if isearch-regexp isearch-string (regexp-quote isearch-string))))
+  (pop-to-buffer "*Occur*"))
+(bind-key "C-o" 'isearch-occur isearch-mode-map)
 
 ;;; ** Command; my-grep
 ;; Prompts you for an expression, defaulting to the symbol that your
