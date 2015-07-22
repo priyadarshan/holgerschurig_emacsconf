@@ -21,9 +21,6 @@
 
 (add-to-list 'load-path (expand-file-name "elisp/" emacs-d))
 
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; * Customize
 
@@ -166,26 +163,28 @@
 ;;; * Display
 
 ;;; ** Font-Lock some keywords
-;; Highlight each of TODO FIXME XXX DISABLED \todo
+;; Highlight each of TODO FIXME XXX DISABLED \todo :disabled
 (defface my--todo-face
   '((t :foreground "red"
        :weight bold))
   "Font for showing TODO words."
   :group 'basic-faces)
-;; highligh ";; * FOO" at the start of a line (in elisp mode)
+(defun my--hint-facify ()
+   (unless (or (eq 'diff-mode major-mode) (eq 'script-mode major-mode))
+     (font-lock-add-keywords nil '(
+	 ("\\(\\<\\(\\(FIXME\\|TODO\\|XXX\\|DISABLED\\):?\\>\\)\\|\\\\todo\\|:disabled:?\\)" 1 'my--todo-face t)
+	 ))))
+(add-hook 'find-file-hook 'my--hint-facify)
+;; highlight ";; * FOO" at the start of a line (in elisp mode)
 (defface my--elisp-section-face
   '((t :background "yellow"
        :weight bold))
   "Font for showing elisp sections."
   :group 'basic-faces)
-(defun my--hint-facify ()
-   (unless (or (eq 'diff-mode major-mode) (eq 'script-mode major-mode))
-     (font-lock-add-keywords nil '(
-	 ("\\(\\<\\(\\(FIXME\\|TODO\\|XXX\\|DISABLED\\):?\\>\\)\\|\\\\todo\\|:disabled:?\\)" 1 'my--todo-face t)
+(font-lock-add-keywords 'emacs-lisp-mode '(
 	 ("^\\(;;;? \\*+ .+\\)" 1 'my--elisp-section-face t)
-	 ))))
-(add-hook 'find-file-hook 'my--hint-facify)
-
+	 ("^\\(;;;;;;;;+\\)" 1 'my--elisp-section-face t)
+	 ))
 ;;
 ;;; ** Line truncation
 (setq ;; don't display continuation lines
