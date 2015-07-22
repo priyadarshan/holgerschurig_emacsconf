@@ -162,42 +162,6 @@
 
 ;;; * Display
 
-;;; ** Fixed frame display
-
-(if (equal window-system 'w32)
-    ;; Windows settings
-    (setq initial-frame-alist
-	  '(
-	    ;;(background-color . "black")
-	    ;;(foreground-color . "LightGray")
-	    (horizontal-scroll-bars . nil)
-	    (vertical-scroll-bars . right)
-	    (tool-bar-lines . 0)
-	    (left-fringe . 1)
-	    (right-fringe . 0)))
-  ;; Linux settings
-  (setq initial-frame-alist
-	`(;;(background-color . "black")
-	  ;;(foreground-color . "LightGray")
-	  (horizontal-scroll-bars . nil)
-	  (vertical-scroll-bars . right)
-	  (tool-bar-lines . 0)
-	  (left-fringe . 1)
-	  (right-fringe . 0)
-	  ;;(height . ,(if (or (not my-win32)
-	  ;;		   have-win32-sixbyten-font)
-	  ;;	       (my-frame-percent-to-char-height 97)
-	  ;;	     70))
-	  (width . 120)
-	  (height . 55)
-	  )))
-
-;;; ** Set default frame attributes
-;;  default-frame-alist is defined in terms of initial-frame-alist.  Don't
-;;  use copy-sequence here -- it doesn't copy the list elements, just the
-;;  list's cons cells.  Use copy-alist instead.
-
-(setq default-frame-alist (copy-alist initial-frame-alist))
 
 ;;; ** Don't wait for window manager when font changes
 ;;  Avoid Emacs hanging for a while changing default font
