@@ -17,8 +17,24 @@
 
 (add-to-list 'load-path (expand-file-name "elisp/" emacs-d))
 
+
+;;; * Customize
+
+;; http://lists.gnu.org/archive/html/emacs-devel/2015-04/msg01261.html
+(defmacro csetq (variable value)
+  `(funcall (or (get ',variable 'custom-set) 'set-default) ',variable ,value))
+
+
+;;** decorations
+(csetq tool-bar-mode nil)
+(csetq menu-bar-mode nil)
+(csetq scroll-bar-mode nil)
+(csetq inhibit-startup-screen t)
+(csetq initial-scratch-message "")
+
+
 ;;: * Debugging
-(setq message-log-max 10000)
+(csetq message-log-max 10000)
 
 
 
