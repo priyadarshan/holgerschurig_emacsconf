@@ -1,3 +1,5 @@
+;; Find your way around this file with M-s i
+
 ;;; * Load paths
 (defvar emacs-d (file-name-directory
 		 (file-chase-links load-file-name))
@@ -1191,36 +1193,36 @@ If the CDR is nil, then the buffer is only buried."
     ;; allow "find man at point" for C-c h m (helm-man-woman)
     (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
-    (setq helm-candidate-number-limit 100
-          helm-quick-update t
-          helm-M-x-requires-pattern nil
-          helm-ff-skip-boring-files t
+    (csetq helm-imenu-delimiter " ")
+    (csetq helm-candidate-number-limit 100)
+    (csetq helm-quick-update t)
+    (setq helm-M-x-requires-pattern nil)
+    (csetq helm-ff-skip-boring-files t)
 
-	  ;; open helm buffer inside current window, not occupy whole other window
-	  helm-split-window-in-side-p t
-	  ;; move to end or beginning of source when reaching top or bottom of source.
-	  helm-move-to-line-cycle-in-source t
-	  ;; search for library in `require' and `declare-function' sexp.
-	  helm-ff-search-library-in-sexp t
-	  ;; scroll 8 lines other window using M-<next>/M-<prior>
-	  helm-scroll-amount 8
+    ;; open helm buffer inside current window, not occupy whole other window
+    (csetq helm-split-window-in-side-p t)
+    ;; move to end or beginning of source when reaching top or bottom of source.
+    (csetq helm-move-to-line-cycle-in-source t)
+    ;; search for library in `require' and `declare-function' sexp.
+    (csetq helm-ff-search-library-in-sexp t)
+    ;; scroll 8 lines other window using M-<next>/M-<prior>
+    (csetq helm-scroll-amount 8)
 
-	  ;; test this out
-	  helm-ff-file-name-history-use-recentf t
+    ;; test this out
+    (csetq helm-ff-file-name-history-use-recentf t)
 
-	  ;; define browser
-	  helm-browse-url-chromium-program "x-www-browser"
-	  helm-google-suggest-default-browser-function 'helm-browse-url-chromium
-	  helm-home-url "http://www.google.de"
-	  )
-    (helm-autoresize-mode t)
+    ;; define browser
+    (setq helm-browse-url-chromium-program "x-www-browser")
+    (csetq helm-google-suggest-default-browser-function 'helm-browse-url-chromium)
+    (csetq helm-home-url "http://www.google.de")
+    (csetq helm-autoresize-mode t)
 
     ;; ignore Emacs save files
     (add-to-list 'helm-boring-file-regexp-list "\\.#")
 
     ;; this is kind of a goto, you can visit all marks
     (bind-key "g"   'helm-all-mark-rings helm-command-map)
-    );; end progn
+    )
 )
 
 
