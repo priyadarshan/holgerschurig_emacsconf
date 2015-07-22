@@ -2,7 +2,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; * Load paths
+;;; * Load paths
 (defvar emacs-d (file-name-directory
 		 (file-chase-links load-file-name))
   "My emacs dotfiles directory, ~/.emacs.d on Linux")
@@ -21,9 +21,9 @@
 
 (add-to-list 'load-path (expand-file-name "elisp/" emacs-d))
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; * Customize
-
 ;; http://lists.gnu.org/archive/html/emacs-devel/2015-04/msg01261.html
 (defmacro csetq (variable value)
   `(funcall (or (get ',variable 'custom-set) 'set-default) ',variable ,value))
@@ -35,7 +35,7 @@
 (csetq inhibit-startup-screen t)
 
 ;;; ** Window manager
-;;  Avoid Emacs hanging for a while after changing default font
+;; Avoid Emacs hanging for a while after changing default font
 (modify-frame-parameters nil '((wait-for-wm . nil)))
 
 ;;; ** Theme
@@ -65,24 +65,30 @@
 ;;; ** Emacs internals
 (csetq gc-cons-threshold 10000000)
 (csetq message-log-max 10000)
+;; Use new byte codes from Emacs 24.4
+(setq byte-compile--use-old-handlers nil)
+
+;;; ** Default browser
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "x-www-browser")
 
 ;;; ** Simpler yes or no prompt
 ;  Get rid of yes-or-no questions - y or n is enough
 (fset 'yes-or-no-p 'y-or-n-p)
+
 ;;; ** Private data
 (csetq user-full-name "Holger Schurig")
 (csetq user-mail-address "holgerschurig@gmail.com")
 (load (concat emacs-d "private.el") 'noerror 'nomessage)
+
 ;;; ** Load customization file
 (if (file-exists-p custom-file) (load-file custom-file))
 
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; * Packages
-;;
-;;  See http://github.com/jwiegley/use-package/
-;;   or http://www.lunaryorn.com/2015/01/06/my-emacs-configuration-with-use-package.html
+;; See http://github.com/jwiegley/use-package/
+;; or http://www.lunaryorn.com/2015/01/06/my-emacs-configuration-with-use-package.html
 ;;
 ;; (use-package package-name
 ;;      [:keyword [option]]...)
@@ -123,20 +129,14 @@
 ;; :diminish      Support for diminish.el (if installed).
 ;; :ensure        Loads the package using package.el if necessary.
 ;; :pin           Pin the package to an archive.
-;;
 
 ;; Please don't load outdated byte code
-(setq load-prefer-newer t)
-
-;; Use new byte codes from Emacs 24.4
-(setq byte-compile--use-old-handlers nil)
-
+(csetq load-prefer-newer t)
 ;; ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
 ;; Move the cookie file out into the =tmp/= directory.
-(setq url-configuration-directory (concat emacs-d "tmp/"))
-
+(csetq url-configuration-directory (concat emacs-d "tmp/"))
 (require 'package)
-(setq package-enable-at-startup nil)
+(csetq package-enable-at-startup nil)
 
 ;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
@@ -146,23 +146,13 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-
 (require 'use-package)
-
-
-
-
-
-
-
-
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; * Display
 
-;;; ** Font-Lock some keywords
+;;; ** Font locking
 ;; Highlight each of TODO FIXME XXX DISABLED \todo :disabled
 (defface my--todo-face
   '((t :foreground "red"
@@ -183,18 +173,15 @@
   :group 'basic-faces)
 (font-lock-add-keywords 'emacs-lisp-mode '(
 	 ("^\\(;;;? \\*+ .+\\)" 1 'my--elisp-section-face t)
-	 ("^\\(;;;;;;;;+\\)" 1 'my--elisp-section-face t)
-	 ))
-;;
+	 ("^\\(;;;;;;;;+\\)" 1 'my--elisp-section-face t)))
+
 ;;; ** Line truncation
-(setq ;; don't display continuation lines
-      truncate-lines t
-      ;; respect truncate-lines:
-      truncate-partial-width-windows nil)
+;; don't display continuation lines
+(csetq truncate-lines t)
+;; respect truncate-lines:
+(csetq truncate-partial-width-windows nil)
 
 ;;; ** Show trailing whitespace
-;;  This makes typing errors more obvious.
-;;
 (add-hook 'find-file-hook
 	  '(lambda ()
 	     ;; This hack allows the diff-mode hook to set the
@@ -202,14 +189,10 @@
 	     ;; diff-mode hook, so we get the -1 and are able to turn
 	     ;; off the display of trailing whitespaces.
 	     (if (eq show-trailing-whitespace -1)
-		 (setq show-trailing-whitespace nil)
-	       (setq show-trailing-whitespace t))))
+		 (csetq show-trailing-whitespace nil)
+	       (csetq show-trailing-whitespace t))))
 
-;;
-;;; ** Handle some buffers specials (no toolbar, extra frame)
-;;  Display various non-editing buffers in their own frames and show those
-;;  special buffer frames without a tool bar
-;;
+;;; ** Buffers without toolbar, extra frame etc
 (add-to-list 'special-display-buffer-names "*Backtrace*")
 (add-to-list 'special-display-frame-alist '(tool-bar-lines . 0))
 
@@ -225,47 +208,29 @@
   ;; Text mode
   (progn
     ;; No "very" visible cursor
-    (setq visible-cursor nil)
-    ))
+    (csetq visible-cursor nil)))
 
 ;;; ** No audible bell
-;;  No audible bell, beeps are annoying
-(setq visible-bell t)
+(csetq visible-bell t)
 
-;;
 ;;; ** Let emacs react faster to keystrokes
-(setq echo-keystrokes 0.1
-      idle-update-delay 0.35)
-
-;;; ** Menu
-;;
-;;  Get rid of the Games in the Tools menu.
-;;
-;; (define-key menu-bar-tools-menu [games] nil)
+(csetq echo-keystrokes 0.1)
+(csetq idle-update-delay 0.35)
 
 ;;; ** Powerline (modeline setup)
-;;
-;;  http://emacs.stackexchange.com/questions/281/how-do-i-get-a-fancier-mode-line-that-uses-solid-colors-and-triangles
-;;
-;;  We could either use http://www.emacswiki.org/emacs/PowerLine
-;;
+;; http://emacs.stackexchange.com/questions/281/how-do-i-get-a-fancier-mode-line-that-uses-solid-colors-and-triangles
 (use-package powerline
   :config
   (when (display-graphic-p)
     (powerline-default-theme)))
 
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; * Cursor movement
 
-;;; * Cursor
-;;; ** Nicer scroll handling
-
-;;; ** multiple key binding
-;;  First we define code that allows us to bind multiple functions to
-;;  repeated commands. Taken from
-;;  [[http://www.emacswiki.org/cgi-bin/wiki/DoubleKeyBinding]]:
-;;
+;; First we define code that allows us to bind multiple functions to
+;; repeated commands. Taken from
+;; [[http://www.emacswiki.org/cgi-bin/wiki/DoubleKeyBinding]]:
 (defvar seq-times 0
   "Stores number of times command was executed.  It cotnains
 random data before `seq-times' macro is called.")
@@ -313,32 +278,7 @@ command from COMMANDS."
   (declare (indent 2))
   `(eval (nth (seq-times ,name ,(length commands) ,body) ',commands)))
 
-;;
 ;;; ** Home / End
-;;  Based on this, we define new home/end functions:
-;;
-;;  (defvar my--previous-position 0)
-;;
-;;  (defun my-home ()
-;;    "Depending on how many times it was called moves the point to:
-;;
-;;  - begin of indentation
-;;  - beginning of line
-;;  - begin of function
-;;  - beginning of buffer
-;;  - back to where it was"
-;;    (interactive)
-;;    (seq-times-do nil (setq my--previous-position (point))
-;;      (back-to-indentation)
-;;      (beginning-of-line)
-;;      (beginning-of-defun)
-;;      (goto-char (point-min))
-;;      (goto-char my--previous-position)))
-;;  (bind-key "C-a" 'my-home)
-;;  (bind-key "<home>" 'my-home)
-;;
-;;  And the same for end:
-;;
 (defun my-end ()
   "Depending on how many times it was called moves the point to:
 
@@ -356,11 +296,10 @@ command from COMMANDS."
 (bind-key "C-e" 'my-end)
 (bind-key "<end>" 'my-end)
 
-;;
 ;;; ** Recenter
-;;  This is built-in into Emacs 23, but doesn't work as nice, e.g. the
-;;  bottom position is almost identical to the middle position.
-;;
+;; This is built-in into Emacs 23 (recenter-top-bottom), but doesn't
+;; work as nice, e.g. the bottom position is almost identical to the
+;; middle position.
 (defun my-recenter ()
   "Depending on how many times it was called moves the point to:
 
@@ -369,7 +308,8 @@ command from COMMANDS."
 - near end of center
 - back to where it was"
   (interactive)
-  (let ((i 0) (old (window-start)))
+  (let ((i 0)
+	(old (window-start)))
     (while (and (<= (setq i (1+ i)) 6) (equal (window-start) old))
       (seq-times-do nil (setq my--previous-position (window-start))
 	(recenter)
@@ -378,14 +318,10 @@ command from COMMANDS."
 	(set-window-start (selected-window) my--previous-position)))))
 (bind-key "C-l" 'my-recenter)
 
-;;
 ;;; ** Nicer goto-line
-;;
-;;  Doesn't modify minibuffer-history, but use it's own little history
-;;  list.
-;;
-(setq my-goto-line-history '())
-
+;; Doesn't modify minibuffer-history, but use it's own little history
+;; list.
+(defvar my-goto-line-history '())
 (defun my-goto-line (line &optional buffer)
   "Goto LINE, counting from line 1 at beginning of buffer.
 Normally, move point in the current buffer, and leave mark at the
@@ -442,42 +378,45 @@ rather than line counts."
     (if (eq selective-display t)
 	(re-search-forward "[\n\C-m]" nil 'end (1- line))
       (forward-line (1- line)))))
-
 (bind-key "M-g g"   'my-goto-line)
 (bind-key "M-g M-g" 'my-goto-line)
 
-;;; ** Package: expand-region
+;;; ** expand-region
+;; Home page: https://github.com/magnars/expand-region.el
 ;;
-;;  Home page: https://github.com/magnars/expand-region.el
+;; C-+ Expand region increases the selected region by semantic units.
 ;;
-;;  C-+ Expand region increases the selected region by semantic units.
-;;
-;;  You can then either continue to press C-+ to expand even further, or
-;;  use + and - after the first expand to expand further / shrink again.
-;;
+;; You can then either continue to press C-+ to expand even further, or
+;; use + and - after the first expand to expand further / shrink again.
 (use-package expand-region
   :defer t
-  :bind ("C-+" . er/expand-region)
-  )
+  :bind ("C-+" . er/expand-region))
 
+;;; ** avy (alternative to ace-jump-mode)
 
-
+(use-package avy
+  :defer t
+  :bind ("C-#" . avy-goto-word-1)
+  :config (progn
+	    (csetq avy-keys (append (number-sequence ?a ?z)
+				    (number-sequence ?0 ?9)))
+	    (csetq avy-style 'at-full)
+	    (csetq avy-all-windows nil)
+	    (csetq avy-highlight-first t)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; * Yank and Delete
 ;;; ** Delete word or yank
-;;  The following may be of interest to people who (a) are happy with
-;;  "C-w" and friends for killing and yanking, (b) use
-;;  "transient-mark-mode", (c) also like the traditional Unix tty
-;;  behaviour that "C-w" deletes a word backwards. It tweaks "C-w" so
-;;  that, if the mark is inactive, it deletes a word backwards instead of
-;;  killing the region. Without that tweak, the C-w would create an error
-;;  text without an active region.
-;;
-;;  http://www.emacswiki.org/emacs/DefaultKillingAndYanking#toc2
-;;
+;; The following may be of interest to people who (a) are happy with
+;; "C-w" and friends for killing and yanking, (b) use
+;; "transient-mark-mode", (c) also like the traditional Unix tty
+;; behaviour that "C-w" deletes a word backwards. It tweaks "C-w" so
+;; that, if the mark is inactive, it deletes a word backwards instead
+;; of killing the region. Without that tweak, the C-w would create an
+;; error text without an active region.
+;; http://www.emacswiki.org/emacs/DefaultKillingAndYanking#toc2
 (defadvice kill-region (before unix-werase activate compile)
   "When called interactively with no active region, delete a single word
     backwards instead."
@@ -486,21 +425,16 @@ rather than line counts."
      (list (save-excursion (backward-word 1) (point)) (point)))))
 
 ;;; ** Selection deletion
-;;  Use delete-selection mode:
-;;
+;; Use delete-selection mode:
 (delete-selection-mode t)
 
-;;
 ;;; ** Deletion in readonly buffer
-;;  Be silent when killing text from read only buffer:
-;;
-(setq kill-read-only-ok t)
+;; Be silent when killing text from read only buffer:
+(csetq kill-read-only-ok t)
 
-;;
 ;;; ** Join lines at killing
-;;  If at end of line, join with following; otherwise kill line.
-;;  Deletes whitespace at join.
-;;
+;; If at end of line, join with following; otherwise kill line.
+;; Deletes whitespace at join.
 (defun kill-and-join-forward (&optional arg)
   "If at end of line, join with following; otherwise kill line.
 Deletes whitespace at join."
@@ -508,25 +442,21 @@ Deletes whitespace at join."
   (if (and (eolp) (not (bolp)))
       (delete-indentation t)
     (kill-line arg)))
-
 (bind-key "C-k" 'kill-and-join-forward)
 
 
-;;
 ;;; ** Dynamic char deletion
+;; The following is from Boojum's post in
+;; [[http://www.reddit.com/r/emacs/comments/b1r8a/remacs_tell_us_about_the_obscure_but_useful/]].
 ;;
-;;  The following is from Boojum's post in
-;;  [[http://www.reddit.com/r/emacs/comments/b1r8a/remacs_tell_us_about_the_obscure_but_useful/]].
+;; I don't want to kill the comment, just the prefix to it. So that
 ;;
-;;  I don't want to kill the comment, just the prefix to it. So that
+;; // The quick brown fox[]
+;; // jumps over the lazy dog.
 ;;
-;;  // The quick brown fox[]
-;;  // jumps over the lazy dog.
+;; becomes
 ;;
-;;  becomes
-;;
-;;  // The quick brown fox[] jumps over the lazy dog.
-;;
+;; // The quick brown fox[] jumps over the lazy dog.
 (defun delete-char-dynamic (&optional arg)
   "If at end of line, intelligently join to the following;
 otherwise delete."
@@ -546,43 +476,32 @@ otherwise delete."
                  (/= (char-before) ?\  ))
         (insert-char ?  1)
         (backward-char)))))
-
 ;; Make delete-selection-mode work with it
 (put 'delete-char-dynamic 'delete-selection 'supersede)
-
 ;; Rebind DELETE and friends to our version
 (bind-key "<deletechar>" 'delete-char-dynamic)
 (bind-key "<delete>" 'delete-char-dynamic)
 (bind-key "C-d" 'delete-char-dynamic)
 
 
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; * Completion
-;;
-(setq ;; ignore case when reading a file name completion
-      read-file-name-completion-ignore-case t
-      ;; do not consider case significant in completion (GNU Emacs default)
-      completion-ignore-case t
-      ;; lets TAB do completion as well
-      tab-always-indent 'complete
-      completions-format 'vertical)
-
-
-
+;; ignore case when reading a file name completion
+(csetq read-file-name-completion-ignore-case t)
+;; do not consider case significant in completion (GNU Emacs default)
+(setq completion-ignore-case t)
+;; lets TAB do completion as well
+(csetq tab-always-indent 'complete)
+(csetq completions-format 'vertical)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; * Windows handling
 ;;; ** delete-window
-;;  If only one window in frame, `delete-frame'.
-;;
-;;  From http://www.emacswiki.org/emacs/frame-cmds.el
-;;
+;; If only one window in frame, `delete-frame'.
+;; From http://www.emacswiki.org/emacs/frame-cmds.el
 (defadvice delete-window (around delete-window (&optional window) activate)
   (interactive)
   (save-current-buffer
@@ -593,10 +512,9 @@ otherwise delete."
       ad-do-it (selected-window))))
 
 ;;; ** new kill-buffer-and-window
-;;  Replacement for interactive `kill-buffer'. We cannot redefine
-;;  `kill-buffer', because other elisp code relies on it's exact
-;;  behavior.
-;;
+;; Replacement for interactive `kill-buffer'. We cannot redefine
+;; `kill-buffer', because other elisp code relies on it's exact
+;; behavior.
 (defun my--kill-buffer-and-window (&optional buffer)
   "Kill buffer BUFFER-OR-NAME.
 The argument may be a buffer or the name of an existing buffer.
@@ -609,27 +527,16 @@ there are several windows open."
   (setq buffer (or buffer (current-buffer)))
   (unless (one-window-p)
     (delete-window))
-  (kill-buffer buffer)
-  ;; TODO: only delete the frame if it isn't the first one
-  ;; (when (> (length (frame-list)) 1)
-  ;;   (delete-frame))
-  )
-
+  (kill-buffer buffer))
 (bind-key "C-x k" 'my--kill-buffer-and-window)
 
-;;
 ;;; ** Window sizing
 (bind-key "<M-down>" 'enlarge-window)
-
 (bind-key "<M-up>" 'shrink-window)
 
-
-;;
 ;;; ** Window zooming (F5)
-;;
-;;  If there is only one window displayed, act like C-x 2. If there are
-;;  two windows displayed, act like C-x 1
-;;
+;; If there is only one window displayed, act like C-x 2. If there are
+;; two windows displayed, act like C-x 1
 (defun my-zoom-next-buffer2 ()
   (let ((curbuf (current-buffer))
 	(firstbuf nil))
@@ -652,11 +559,7 @@ there are several windows open."
     (when firstbuf
       ;(princ (format "new buffer: %s.\n" firstbuf))
       (bury-buffer)
-      (switch-to-buffer firstbuf)
-      )
-  )
-)
-
+      (switch-to-buffer firstbuf))))
 (defun my-explode-window ()
   "If there is only one window displayed, act like C-x2. If there
 are two windows displayed, act like C-x1:"
@@ -667,43 +570,27 @@ are two windows displayed, act like C-x1:"
 	(other-window 1)
 	(my-zoom-next-buffer2)
 	(other-window -1))
-    (delete-other-windows)
-  ))
-
+    (delete-other-windows)))
 (bind-key "<f5>" 'my-explode-window)
 
 
 
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; * Buffers
+
 ;;; ** Insert buffer
-;;
-;;  |-------+---------------|
-;;  | C-x i | insert file   |
-;;  |-------+---------------|
-;;  | C-x I | insert buffer |
-;;  |-------+---------------|
-;;
+;; |-------+---------------|
+;; | C-x i | insert file   |
+;; |-------+---------------|
+;; | C-x I | insert buffer |
+;; |-------+---------------|
 ;; Insert buffer at current position
 (bind-key "C-x I" 'insert-buffer)
 
 ;;; ** Protect buffers
-;;
-;;  https://raw.githubusercontent.com/lewang/le_emacs_libs/master/keep-buffers.el
-;;
-;;  By default, "*scratch*" is protected and erased when killed, "*Messages*"
-;;  is never killed or erased.  You can customize easily using elisp:
-;;
-;;  ;; protect all buffers starting with "*scratch"
-;;  (push '("\\`*scratch" . erase) keep-buffers-protected-list)
-;;
+;; https://raw.githubusercontent.com/lewang/le_emacs_libs/master/keep-buffers.el
 (eval-when-compile
   (require 'cl))
-
 (define-minor-mode keep-buffers-mode
   "when active, killing protected buffers results in burying them instead.
 Some may also be erased, which is undo-able."
@@ -716,7 +603,6 @@ Some may also be erased, which is undo-able."
       ;; Setup the hook
       (add-hook 'kill-buffer-query-functions 'keep-buffers-query)
     (remove-hook 'kill-buffer-query-functions 'keep-buffers-query)))
-
 (defcustom keep-buffers-protected-alist
   '(("\\`\\*scratch\\*\\'" . erase)
     ("\\`\\*Messages\\*\\'" . nil))
@@ -727,9 +613,7 @@ not nil then the matching buffer is erased then buried.
 
 If the CDR is nil, then the buffer is only buried."
   :type '(alist)
-  :group 'keep-buffers
-  )
-
+  :group 'keep-buffers)
 (defun keep-buffers-query ()
   "The query function that disable deletion of buffers we protect."
   (let ((crit (dolist (crit keep-buffers-protected-alist)
@@ -742,20 +626,17 @@ If the CDR is nil, then the buffer is only buried."
           (bury-buffer)
           nil)
       t)))
-
 (keep-buffers-mode 1)
 
 ;;; ** Easier kill buffers with processes
-;;  Don't asks you if you want to kill a buffer with a live process
-;;  attached to it:
-;;
-;;  http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/
-;;
+;; Don't asks you if you want to kill a buffer with a live process
+;; attached to it:
+;; http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/
 (setq kill-buffer-query-functions
       (remq 'process-kill-buffer-query-function
 	     kill-buffer-query-functions))
 
-;;; ** Package: cycbuf
+;;; ** cycbuf (cycle buffers)
 (use-package cycbuf
   :defer t
   :bind (("<f6>"   . cycbuf-switch-to-next-buffer)
@@ -776,46 +657,39 @@ If the CDR is nil, then the buffer is only buried."
 	    ("Directory"  cycbuf-get-file-length left  cycbuf-get-file-name)
 	    (""           2                      left  "  ")
 	    ("Mode"      12                      left  cycbuf-get-mode-name)
-	    )))
-)
+	    ))))
 
-
-
-
+;;; ** ace-jump-buffer
+(use-package ace-jump-buffer
+  :defer t
+  :bind ("C-c C-j" . ace-jump-buffer)
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; * File opening/saving
+
 ;;; ** Basic settings
-(setq ;; Never show GTK file open dialog
-      use-file-dialog nil
-      ;; don't add newlines to end of buffer when scrolling, but show them
-      next-line-add-newlines nil
-      ;; Preserve hard links to the file you´re editing (this is
-      ;; especially important if you edit system files)
-      backup-by-copying-when-linked t
-      ;; Just never create backup files at all
-      ;;make-backup-files nil
-      backup-directory-alist (list (cons "." (concat emacs-d "tmp/bak/")))
-      ;; Make sure your text files end in a newline
-      require-final-newline t
-      ;; Disable auto-save (#init.el# file-names)
-      auto-save-default nil)
+;; Never show GTK file open dialog
+(csetq use-file-dialog nil)
+;; don't add newlines to end of buffer when scrolling, but show them
+(csetq next-line-add-newlines nil)
+;; Preserve hard links to the file you´re editing (this is
+;; especially important if you edit system files)
+(csetq backup-by-copying-when-linked t)
+;; Just never create backup files at all
+;;make-backup-files nil
+(csetq backup-directory-alist (list (cons "." (concat emacs-d "tmp/bak/"))))
+;; Make sure your text files end in a newline
+(csetq require-final-newline t)
+;; Disable auto-save (#init.el# file-names)
+(csetq auto-save-default nil)
+(csetq auto-save-list-file-prefix (concat emacs-d "tmp/auto-save-list/saves-"))
 
-(setq auto-save-list-file-prefix (concat emacs-d "tmp/auto-save-list/saves-"))
-
-;;
 ;;; ** Automatically load .Xresources after changes
+;; Sample ~/.Xresources:
 ;;
-;;  Sample ~/.Xresources:
-;;
-;;  Emacs.geometry: 120x55
-;;  Emacs.Font:	terminus 11
-;;  Emacs.verticalScrollBars: right
-;;  Emacs.toolBar: off
-;;  Emacs*Background: #000000
-;;  Emacs*Foreground: #7f7f7f
-;;
+;; Emacs.geometry: 120x55
+;; Emacs.Font:	terminus 11
 (defun merge-x-resources ()
   (let ((file (file-name-nondirectory (buffer-file-name))))
     (when (or (string= file ".Xdefaults")
@@ -825,84 +699,83 @@ If the CDR is nil, then the buffer is only buried."
 (add-hook 'after-save-hook 'merge-x-resources)
 
 ;;; ** Autorevert
-;;  (global-auto-revert-mode 1)
+(global-auto-revert-mode 1)
+
 ;;; ** Decompress compressed files
-;;  Auto decompress compressed files.
-;;
 (auto-compression-mode t)
 
 ;;; ** Quickly save (F2)
 (bind-key "<f2>" 'save-buffer)
 
 ;;; ** Unique buffer names
-;;
-;;  Make two buffers with the same file name open distinguishable.
-;;  https://www.gnu.org/software/emacs/manual/html_node/emacs/Uniquify.html
-;;
-;;  (require 'uniquify)
-;;  (setq uniquify-buffer-name-style 'forward)
-;;; ** Package: recentf
-;;
-;; Save recent files
-(setq recentf-save-file (concat emacs-d "tmp/recentf.el")
-      recentf-exclude '("bbdb$"
-			"svn-commit.tmp$"
-			".git/COMMIT_EDITMSG$"
-			".git/TAG_EDITMSG")
-      recentf-max-saved-items 1000
-      recentf-auto-cleanup 300
-      recentf-max-menu-items 20)
+(use-package uniquify
+  :config (csetq uniquify-buffer-name-style 'forward))
+
+;;; ** recentf
+(csetq recentf-save-file (concat emacs-d "tmp/recentf.el"))
+(csetq recentf-exclude '("bbdb$"
+       "svn-commit.tmp$"
+       ".git/COMMIT_EDITMSG$"
+       ".git/TAG_EDITMSG"))
+(csetq recentf-max-saved-items 1000)
+(csetq recentf-auto-cleanup 300)
+(csetq recentf-max-menu-items 20)
 
 (recentf-mode 1)
 
-;;
-
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; * Minibuffer
 
 ;; Don't insert current directory into minubuffer
 (csetq insert-default-directory nil)
-
-;; Minibuffer window expands vertically as necessary to hold the text that
-;; you put in the minibuffer
+;; Minibuffer window expands vertically as necessary to hold the text
+;; that you put in the minibuffer
 (csetq resize-mini-windows t) ;; was grow-only
-
 ;; Read quoted chars with radix 16
 (csetq read-quoted-char-radix 16)
-
-;;
-;;  Allow to type space chars in minibuffer input (for `timeclock-in', for
-;;  example).
-;;
+;; Allow to type space chars in minibuffer input (for `timeclock-in',
+;; for example).
 (define-key minibuffer-local-completion-map " " nil)
 (define-key minibuffer-local-must-match-map " " nil)
 
-
-
+;;; ** save mini-buffer history
+(use-package savehist
+  :init
+   (setq savehist-file (concat emacs-d "tmp/history.el")
+      history-length 1000)
+  :config
+  (savehist-mode 1))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; * Searching
-;;; ** Package: isearch
-(setq ;; Scrolling while searching
-      isearch-allow-scroll t
 
-      ;; Save Isearch stuff
-      isearch-resume-in-command-history t)
+;;; ** swiper (improved searching)
+(use-package swiper
+  :bind (([remap isearch-forward] . swiper))
+  :config (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy))))
 
-(bind-key "C-y" 'isearch-yank-kill isearch-mode-map)
+;;; ** DISABLED isearch (incremental search)
+;; Scrolling while searching
+;; (csetq isearch-allow-scroll t)
+;; Save Isearch stuff
+;; (csetq isearch-resume-in-command-history t)
+;; (bind-key "C-y" 'isearch-yank-kill isearch-mode-map)
 
-;;
+;;; ** DISABLED occur (call isearch from occur)
+;; (defun isearch-occur ()
+;;   "Invoke `occur' from within isearch."
+;;   (interactive)
+;;   (let ((case-fold-search isearch-case-fold-search))
+;;     (occur (if isearch-regexp isearch-string (regexp-quote isearch-string))))
+;;   (pop-to-buffer "*Occur*"))
+;; (bind-key "C-o" 'isearch-occur isearch-mode-map)
+
 ;;; ** Command; my-grep
-;;  Prompts you for an expression, defaulting to the symbol that your
-;;  cursor is on, and greps for that in the current directory and all
-;;  subdirectories:
-;;
+;; Prompts you for an expression, defaulting to the symbol that your
+;; cursor is on, and greps for that in the current directory and all
+;; subdirectories:
 (defun my-grep ()
   "grep the whole directory for something defaults to term at cursor position"
   (interactive)
@@ -910,33 +783,15 @@ If the CDR is nil, then the buffer is only buried."
     (let ((needle (or (read-string (concat "grep for '" default "': ")) default)))
       (setq needle (if (equal needle "") default needle))
       (grep (concat "egrep -s -i -n -r " needle " *")))))
-
 (bind-key "M-s g" 'my-grep)
 
 
-;;
-;;; ** Invoke isearch from occur
-(defun isearch-occur ()
-  "Invoke `occur' from within isearch."
-  (interactive)
-  (let ((case-fold-search isearch-case-fold-search))
-    (occur (if isearch-regexp isearch-string (regexp-quote isearch-string))))
-  (pop-to-buffer "*Occur*"))
-
-(bind-key "C-o" 'isearch-occur isearch-mode-map)
-
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; * Help
+
 ;;; ** Go to back to previous help buffer
-;;  Make 'b' (back) go to the previous position in emacs help.
-;;
-;;  [[http://www.emacswiki.org/cgi-bin/wiki/EmacsNiftyTricks]]
-;;
+;; Make 'b' (back) go to the previous position in emacs help.
+;; [[http://www.emacswiki.org/cgi-bin/wiki/EmacsNiftyTricks]]
 (add-hook 'help-mode-hook
 	  '(lambda ()
 	     (bind-key "b" 'help-go-back help-mode-map)))
@@ -953,68 +808,25 @@ If the CDR is nil, then the buffer is only buried."
 	(if fn
 	    (describe-function fn)
 	  (man (current-word)))))))
-
 (bind-key "<f1>" 'my-help)
 
-;;
 ;;; ** Apropos
-;;  Check all variables and non-interactive functions as well
-(setq apropos-do-all t)
-
-;; Help should search more than just commands
 (bind-key "C-h a" 'apropos)
-
-;;; ** Show unbound keys
-;;
-;;  If you call it and enter 5 as complexity, you'll see something like
-;;
-;;  34 unbound keys with complexity at most 5:
-;;  C-x y
-;;  C-x x
-;;  C-x w
-;;  ...
-;;
-(use-package unbound
-  :defer t
-  :commands describe-unbound-keys
-)
-
-
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; * Miscelleanous
+
 ;;; ** Mouse
-;;  Paste at text-cursor, not at mouse-cursor:
-;;
-(setq mouse-yank-at-point t)
+;; Paste at text-cursor, not at mouse-cursor:
+(csetq mouse-yank-at-point t)
 
-;;
-;;  Let the mouse-wheel move the cursor in a sane manner.
-;;  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
-;;  (setq mouse-wheel-progressive-speed nil)
-;;  (setq mouse-wheel-follow-mouse +1)
-;;
-;;  When it is /typing time/, do not show the mouse cursor. Be at ease, it will
-;;  return once you move it again.
-;;
-;;  (setq make-pointer-invisible +1)
-;;
 ;;; ** Localisation
-;;  A sentence doesn't end with two spaces:
-;;
-(setq sentence-end-double-space nil)
-
-;;; ** Decimal entry of quoted characters
-;;  Use decimal for `C-q', not octal. Hey, who's using octal nowaydays?
-;;
-(setq read-quoted-char-radix 10)
+;; A sentence doesn't end with two spaces:
+(csetq sentence-end-double-space nil)
 
 ;;; ** Swap RET and C-j
 (bind-key "RET" 'newline-and-indent)
-
 (bind-key "C-j" 'newline)
 
 ;;; ** dos2unix
@@ -1025,8 +837,7 @@ If the CDR is nil, then the buffer is only buried."
   (while (search-forward "\r" nil t) (replace-match "")))
 
 ;;; ** 822date
-;;  Inserts something like "Fri,  1 Dec 2006 15:41:36 +0100"
-;;
+;; Inserts something like "Fri,  1 Dec 2006 15:41:36 +0100"
 (defun 822date ()
   "Insert date at point format the RFC822 way."
   (interactive)
@@ -1035,45 +846,11 @@ If the CDR is nil, then the buffer is only buried."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; * Packages
 
-;;; * Package: ace-jump-buffer
-
-(use-package ace-jump-buffer
-  :defer t
-  :bind ("C-c C-j" . ace-jump-buffer)
-  )
-
-
-;; * Package: avy (alternative to ace-jump-mode)
-
-(use-package avy
-  :defer t
-  :bind ("C-#" . avy-goto-word-1)
-  :config (progn
-	    (csetq avy-keys (append (number-sequence ?a ?z)
-				    (number-sequence ?0 ?9)))
-	    (csetq avy-style 'at-full)
-	    (csetq avy-all-windows nil)
-	    (csetq avy-highlight-first t))
-  )
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;; ** Package: swiper
-
-;; better searching ;-)
-
-(use-package swiper
-  :bind (([remap isearch-forward] . swiper)
-	 ([remap isearch-backward] . swiper))
-  ;; :config (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
-  )
-
-
-;;; ** Package: org (must be before helm)
-
+;;; ** org-mode (must be before helm)
 (use-package org
+  :defer t
   :init
   (progn
     (setq org-replace-disputed-keys t    ; allow Shift-Cursor to mark stuff
@@ -1092,22 +869,14 @@ If the CDR is nil, then the buffer is only buried."
 	  )
     ;; normally I'd need C-c ' to exit, but this enables the same exit
     ;; method I have in when doing a commit in magit.
-    (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map)
-    )
-)
-
+    (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map)))
 (eval-after-load 'ox-html
   '(progn
      (setq org-html-postamble-format '(("en" "<p class=\"author\">Author: %a</p><p class=\"creator\">Created with %c</p>"))
-           org-html-postamble t)
- ))
+           org-html-postamble t)))
 
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; * Package: helm
-;;  Very good intro: http://tuhdo.github.io/helm-intro.html
+;;; ** helm
+;; Very good intro: http://tuhdo.github.io/helm-intro.html
 (defun my-helm-imenu ()
   "This is just like helm-imenu, but it will maximize the buffer"
   (interactive)
@@ -1177,70 +946,38 @@ If the CDR is nil, then the buffer is only buried."
     ;; this is kind of a goto, you can visit all marks
     (bind-key "g"   'helm-all-mark-rings helm-command-map)))
 
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; * Package: helm-descbinds
+;;; ** helm-descbinds
 (use-package helm-descbinds
   :defer t
   :bind ("C-h b" . helm-descbinds))
 
 
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; * Package: savehist (save mini-buffer history)
-(use-package savehist
-  :init
-   (setq savehist-file (concat emacs-d "tmp/history.el")
-      history-length 1000)
-  :config
-  (savehist-mode 1)
-)
-
-;;
-;;
-;;
-;;
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; * Programming
-;;; ** Tab handling
-;;  Tabify only initial whitespace
-;;
-(setq tabify-regexp "^\t* [ \t]+")
 
-;;
-;;  Deleting past a tab normally changes tab into spaces. Don't do that,
-;;  kill the tab instead.
-;;
-(setq backward-delete-char-untabify-method nil)
+;;; ** Tab handling
+(use-package tabify
+  :commands (tabify untabify)
+  :config
+  ;; Tabify only initial whitespace
+  (setq tabify-regexp "^\t* [ \t]+"))
+
+;; Deleting past a tab normally changes tab into spaces. Don't do that,
+;; kill the tab instead.
+(csetq backward-delete-char-untabify-method nil)
 
 ;;; ** Disable vc backends
-;;  We only use git, not other version controls:
-;;
+;; We only use git, not other version controls:
 (setq vc-handled-backends nil)
 
-;;
 ;;; ** Let parenthesis behave
 (show-paren-mode 1)
 (setq show-paren-delay 0
       blink-matching-parent nil)
 
-;;
 ;;; ** qmake project files
-;;  Don't open Qt's *.pro files as IDLWAVE files.
-;;
-;;  TODO: look for a real qmake-mode
+;; Don't open Qt's *.pro files as IDLWAVE files.
+;; TODO: look for a real qmake-mode
 (add-to-list 'auto-mode-alist '("\\.pro$" . fundamental-mode))
 
 ;;; ** Commenting
@@ -1255,20 +992,15 @@ If the CDR is nil, then the buffer is only buried."
       (let ((default-directory (eproject-root)))
 	(compile compile-command))
     (compile compile-command)))
-
 (bind-key "<f7>" 'my-compile)
-
 
 (defun set-compile-command (&optional cmd)
   "Helper for to set compile-command"
   (interactive "scmd: ")
   (setq compile-command cmd))
 
-;;
 ;;; *** Auto close compile log if there are no errors
-;;
-;;  [[http://www.emacswiki.org/emacs/ModeCompile]]
-;;
+;; [[http://www.emacswiki.org/emacs/ModeCompile]]
 (defun compile-autoclose (buffer string)
   (cond ((string-match "finished" string)
 	 ;; (message "Build maybe successful: closing window.")
@@ -1281,24 +1013,18 @@ If the CDR is nil, then the buffer is only buried."
       compilation-ask-about-save nil
       compilation-scroll-output t)
 
-;;
 ;;; *** Error navigation
-;;
-
 (bind-key "<f8>" 'next-error)
-
 (bind-key "S-<f8>" 'previous-error)
 
-;;; ** Mark files with shebang executable
+;;; ** Automatically se files with shebang executable
 (add-hook 'after-save-hook
 	  'executable-make-buffer-file-executable-if-script-p)
 
 ;;; ** Mode: C, C++
-
 ;; Open *.h files normally in c++ mode
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
-
 ;; from linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
 (defun c-lineup-arglist-tabs-only (ignored)
   "Line up argument lists by tabs, not spaces"
@@ -1308,16 +1034,12 @@ If the CDR is nil, then the buffer is only buried."
          (steps (floor offset c-basic-offset)))
     (* (max steps 1)
        c-basic-offset)))
-
 (defun my-c-electric-brace-open (arg)
   "This just inserts the spaces, a newline, and indents into the
 newline to the correct position"
   (interactive "*P")
   (self-insert-command (prefix-numeric-value arg))
-  (newline-and-indent)
-  )
-
-
+  (newline-and-indent))
 ;; somehow a the first visited file stays in "gnu" style when I set the c-default-style
 ;; just in the common hook
 (defun my-c-initialization-setup ()
@@ -1328,11 +1050,8 @@ newline to the correct position"
 					   c-lineup-arglist-tabs-only))))
   (setq c-default-style '((java-mode . "javax")
 			  (awk-mode . "awk")
-			  (other . "linux")))
-   )
+			  (other . "linux"))))
 (add-hook 'c-initialization-hook 'my-c-initialization-setup)
-
-
 ;; Thinks that will only ever apply to .C files
 (defun my-c-mode-setup ()
   (when (and buffer-file-name
@@ -1341,8 +1060,6 @@ newline to the correct position"
 	   (setq tab-width 8
 		 c-basic-offset 8))))
 (add-hook 'c-mode-hook 'my-c-mode-setup)
-
-
 ;; Thinks that will apply to .C and .CPP files
 (defun my-c-mode-common-setup ()
   (define-key c-mode-map "(" 'self-insert-command)
@@ -1372,33 +1089,25 @@ newline to the correct position"
 	c-electric-pound-behavior '(alignleft)
 	;; No abbrevs
 	abbrev-mode nil
-	)
-  )
+	))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 
-
 ;;; ** Mode: ELisp
-
 (defun my--elisp-setup ()
   ;; Setup imenu
   (add-to-list 'imenu-generic-expression '(""  "^;;; \\(\\*.*\\)" 1) t)
-
   ;; automatically give help about function syntax
   (eldoc-mode t)
   ;; "-" is almost always part of a function- or variable-name
   (modify-syntax-entry ?- "w"))
-
 (add-hook 'emacs-lisp-mode-hook 'my--elisp-setup)
-
 
 ;;; ** Mode: Markdown
 (use-package markdown-mode
   :mode (("\\.md\\'"       . markdown-mode)
-	 ("\\.markdown\\'" . markdown-mode))
-  )
+	 ("\\.markdown\\'" . markdown-mode)))
 
 ;;; ** Mode: Python
-
 (defun my-python-setup ()
   (interactive)
   (setq indent-tabs-mode t
@@ -1406,34 +1115,26 @@ newline to the correct position"
 	tab-width 4
 	;; this fixes the weird indentation when entering a colon
 	;; from http://emacs.stackexchange.com/questions/3322/python-auto-indent-problem
-	electric-indent-chars (delq ?: electric-indent-chars)
-	))
+	electric-indent-chars (delq ?: electric-indent-chars)))
 (add-hook 'python-mode-hook 'my-python-setup)
-
 
 ;;; ** Mode: Rust
 (use-package rust-mode
-  :mode (("\\.rs\\'"       . rust-mode))
-  )
+  :mode (("\\.rs\\'" . rust-mode)))
 
 ;;; ** Mode: Shell
-
 (defun my-shell-tab-setup ()
   (interactive)
   (setq indent-tabs-mode t
 	tab-width 4
 	tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84))
-  (define-key text-mode-map "\C-i" 'self-insert-command)
-  )
-
+  (define-key text-mode-map "\C-i" 'self-insert-command))
 (add-hook 'shell-mode-hook 'my-shell-tab-setup)
 (add-hook 'sh-mode-hook 'my-shell-tab-setup)
 
 
 ;;; ** Mode: web-mode
-;;
-;;  Home page: http://web-mode.org/
-;;
+;; Home page: http://web-mode.org/
 (defun my-web-mode-hook ()
   ;; (whitespace-turn-off)
   ;; (rainbow-turn-off)
@@ -1445,9 +1146,7 @@ newline to the correct position"
 	web-mode-indent-style 2
 	web-mode-style-padding 1
 	web-mode-script-padding 1
-	web-mode-block-padding 0)
-  ;;(gcr/untabify-buffer-hook))
-)
+	web-mode-block-padding 0))
 (use-package web-mode
   :defer t
   :mode (("\\.html\\'" . web-mode)
@@ -1458,27 +1157,13 @@ newline to the correct position"
   :init
   (add-hook 'web-mode-hook 'my-web-mode-hook)
   :config
-  (progn
-    (setq web-mode-enable-block-partial-invalidation t
-	  web-mode-engines-alist '(("ctemplate" . "\\.html$"))
-	  )
-    )
-)
+  (setq web-mode-enable-block-partial-invalidation t
+	web-mode-engines-alist '(("ctemplate" . "\\.html$"))))
 
-;;; *** Default browser
-(setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "x-www-browser")
-
-;;; ** Package: column-marker
-;;
+;;; ** column-marker
 (defun my--column-marker-at-80 ()
   (interactive)
-  (column-marker-2 80)
-     ;(set-face-foreground 'magit-diff-add "green4")
-  ;; column-marker-1
-  ;; xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-)
-
+  (column-marker-2 80))
 (use-package column-marker
   :defer t
   :commands (column-marker-1 column-marker-2)
@@ -1486,19 +1171,10 @@ newline to the correct position"
   (add-hook 'c-mode-hook 'my--column-marker-at-80)
   )
 
-
-
-
-
-
 ;;; ** Package: magit
-
-;;
-;;  =magit-rigid-key-bindings= must be set before magit is loaded. It will
-;;  remove the new key bindings that use pop-up buffers.
-;;
+;; Must be set before magit is loaded. It will remove the new key
+;; bindings that use pop-up buffers.
 (setq magit-rigid-key-bindings t)
-
 (use-package magit
   :defer t
   :diminish magit-auto-revert-mode  ;; disable "MRev" in the status line
@@ -1522,11 +1198,7 @@ newline to the correct position"
     ;; (set-face-foreground 'magit-diff-del "red3")
      )
   :bind ("C-c m" . magit-status)
-  :commands (magit-get-top-dir)
-)
-
-;;(autoload 'magit-get-top-dir "magit" nil t)
-
+  :commands (magit-get-top-dir))
 (defun magit-refresh-status ()
   (magit-git-exit-code "update-index" "--refresh")
   (magit-create-buffer-sections
