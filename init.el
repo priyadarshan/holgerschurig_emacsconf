@@ -89,8 +89,12 @@
 ;; :ensure        Loads the package using package.el if necessary.
 ;; :pin           Pin the package to an archive.
 ;;
+
 ;; Please don't load outdated byte code
 (setq load-prefer-newer t)
+
+;; Use new byte codes from Emacs 24.4
+(setq byte-compile--use-old-handlers nil)
 
 ;; ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
 ;; Move the cookie file out into the =tmp/= directory.
