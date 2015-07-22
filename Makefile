@@ -1,5 +1,8 @@
 EMACS ?= emacs
 
+run:
+	$(EMACS) -Q -l init.el
+
 profile:
 	$(EMACS) -Q -l git/profile-dotemacs/profile-dotemacs.el \
 	--eval "(setq profile-dotemacs-file \
