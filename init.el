@@ -266,6 +266,7 @@ command from COMMANDS."
   `(eval (nth (seq-times ,name ,(length commands) ,body) ',commands)))
 
 ;;; ** Home / End
+(defvar my--previous-position)
 (defun my-end ()
   "Depending on how many times it was called moves the point to:
 
@@ -858,6 +859,8 @@ If the CDR is nil, then the buffer is only buried."
     ;; normally I'd need C-c ' to exit, but this enables the same exit
     ;; method I have in when doing a commit in magit.
     (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map)))
+(defvar org-html-postamble-format)
+(defvar org-html-postamble)
 (eval-after-load 'ox-html
   '(progn
      (setq org-html-postamble-format '(("en" "<p class=\"author\">Author: %a</p><p class=\"creator\">Created with %c</p>"))
@@ -1014,6 +1017,8 @@ If the CDR is nil, then the buffer is only buried."
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
 ;; from linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
+(defvar c-syntactic-element)
+(eval-when-compile '(request c-mode))
 (defun c-lineup-arglist-tabs-only (ignored)
   "Line up argument lists by tabs, not spaces"
   (let* ((anchor (c-langelem-pos c-syntactic-element))
@@ -1030,6 +1035,7 @@ newline to the correct position"
   (newline-and-indent))
 ;; somehow a the first visited file stays in "gnu" style when I set the c-default-style
 ;; just in the common hook
+(defvar c-default-style)
 (defun my-c-initialization-setup ()
   ;; Default style
   (c-add-style "linux-tabs-only"
@@ -1049,6 +1055,10 @@ newline to the correct position"
 		 c-basic-offset 8))))
 (add-hook 'c-mode-hook 'my-c-mode-setup)
 ;; Thinks that will apply to .C and .CPP files
+(defvar c-mode-map)
+(defvar c-tab-always-indent)
+(defvar c-recognize-knr-p)
+(defvar c-electric-pound-behavior)
 (defun my-c-mode-common-setup ()
   (define-key c-mode-map "(" 'self-insert-command)
   (define-key c-mode-map ")" 'self-insert-command)
@@ -1099,6 +1109,7 @@ newline to the correct position"
 	 ("\\.markdown\\'" . markdown-mode)))
 
 ;;; ** Mode: Python
+(defvar python-indent-offset)
 (defun my-python-setup ()
   (interactive)
   (setq indent-tabs-mode t
