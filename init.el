@@ -1,8 +1,21 @@
-;;; * My home directory
+;;; * Load paths
 (defvar emacs-d (file-name-directory
 		 (file-chase-links load-file-name))
   "My emacs dotfiles directory, ~/.emacs.d on Linux")
 
+(setq package-user-dir
+      (expand-file-name "elpa" emacs-d))
+(package-initialize)
+
+(let ((emacs-git (expand-file-name "git/" emacs-d)))
+  (mapc (lambda (x)
+          (add-to-list 'load-path (expand-file-name x emacs-git)))
+        (delete ".." (directory-files emacs-git))))
+
+;; When using org-mode from GIT:
+;;(add-to-list 'load-path (expand-file-name "git/org-mode/lisp/" emacs-d))
+
+(add-to-list 'load-path (expand-file-name "elisp/" emacs-d))
 
 ;;: * Debugging
 (setq message-log-max 10000)
@@ -74,8 +87,6 @@
 
 ; When using melpa-stable instead of melpa, magit won't run:
 ;(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
-
-(package-initialize)
 
 ;; Automatically install `use-package'
 (unless (package-installed-p 'use-package)
@@ -1016,7 +1027,6 @@ If the CDR is nil, then the buffer is only buried."
 ;;
 (use-package keytable
   :defer t
-  :load-path "elisp/"
   :commands my-keytable
   ;; :init
   ;; (define-key global-map [menu-bar tools keytable] '("Keytable" . my-keytable))
@@ -1535,7 +1545,6 @@ newline to the correct position"
 (setq magit-rigid-key-bindings t)
 
 (use-package magit
-  :load-path "elisp/"
   :defer t
   :diminish magit-auto-revert-mode  ;; disable "MRev" in the status line
   :init
