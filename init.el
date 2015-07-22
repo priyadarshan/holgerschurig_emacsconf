@@ -166,8 +166,6 @@
 
 ;;; * Display
 
-
-
 ;;; ** Font-Lock some keywords
 (defface my--todo-face
   '((t :foreground "red"
@@ -179,7 +177,7 @@
 (defun my--hint-facify ()
    (unless (or (eq 'diff-mode major-mode) (eq 'script-mode major-mode))
      (font-lock-add-keywords nil '(
-	 ("\\(\\<\\(\\(FIXME\\|TODO\\|XXX\\|DISABLED\\|\\:disabled\\):?\\>\\)\\|\\\\todo\\)" 1 'my--todo-face t)
+	 ("\\(\\<\\(\\(FIXME\\|TODO\\|XXX\\|DISABLED\\):?\\>\\)\\|\\\\todo\\|:disabled:?\\)" 1 'my--todo-face t)
 	 ))))
 
 (add-hook 'font-lock-mode-hook 'my--hint-facify)
