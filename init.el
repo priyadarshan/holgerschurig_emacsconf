@@ -163,24 +163,28 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; * Display
 
 ;;; ** Font-Lock some keywords
+;; Highlight each of TODO FIXME XXX DISABLED \todo
 (defface my--todo-face
   '((t :foreground "red"
        :weight bold))
   "Font for showing TODO words."
   :group 'basic-faces)
-
-;; Highlight each of TODO FIXME XXX DISABLED \todo
+;; highligh ";; * FOO" at the start of a line (in elisp mode)
+(defface my--elisp-section-face
+  '((t :background "yellow"
+       :weight bold))
+  "Font for showing elisp sections."
+  :group 'basic-faces)
 (defun my--hint-facify ()
    (unless (or (eq 'diff-mode major-mode) (eq 'script-mode major-mode))
      (font-lock-add-keywords nil '(
 	 ("\\(\\<\\(\\(FIXME\\|TODO\\|XXX\\|DISABLED\\):?\\>\\)\\|\\\\todo\\|:disabled:?\\)" 1 'my--todo-face t)
+	 ("^\\(;;;? \\*+ .+\\)" 1 'my--elisp-section-face t)
 	 ))))
-
-(add-hook 'font-lock-mode-hook 'my--hint-facify)
+(add-hook 'find-file-hook 'my--hint-facify)
 
 ;;
 ;;; ** Line truncation
