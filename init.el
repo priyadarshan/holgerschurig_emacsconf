@@ -87,7 +87,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; * Packages
+;;; * package and use-package
 ;; See http://github.com/jwiegley/use-package/
 ;; or http://www.lunaryorn.com/2015/01/06/my-emacs-configuration-with-use-package.html
 ;;
