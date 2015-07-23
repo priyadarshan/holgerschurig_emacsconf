@@ -22,6 +22,7 @@
         (guide-key        . "melpa-stable")
         (helm             . "melpa-stable")
         (helm-descbinds   . "melpa-stable")
+        (helm-swoop       . "melpa-stable")
         (markdown-mode    . "melpa-stable")
         (org              . "melpa-stable")
         (powerline        . "melpa-stable")
