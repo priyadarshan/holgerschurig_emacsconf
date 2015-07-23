@@ -834,6 +834,75 @@ If the CDR is nil, then the buffer is only buried."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; * Org-Mode
+
+;;; ** org-bullets
+(use-package org-bullets
+  :defer t
+  :commands org-bullets-mode
+  :config
+    ;; (csetq org-bullets-bullet-list '("✿" "✸" "◉" "○"))
+    (csetq org-bullets-bullet-list '( "▶" "◆" "■" "○"))
+  )
+
+;;; ** org-mode (must be before helm)
+(use-package org
+  :defer t
+  :init
+  (progn
+    ;; allow Shift-Cursor to mark stuff
+    (csetq org-replace-disputed-keys t)
+    (csetq org-default-notes-file (expand-file-name "notes.org" emacs-d))
+    ;; Time stamp handling
+    (csetq org-display-custom-times t)
+    (csetq org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
+    (csetq org-time-stamp-custom-formats '("<%Y-%m-%d>")))
+  :config
+    (add-hook 'org-mode-hook 'org-bullets-mode)
+    (setq org-startup-indented t)
+    (setq org-startup-folded 'content)
+    (setq org-return-follows-link t)
+    ;; Various org-src related things:
+    (setq org-src-window-setup 'current-window)
+    ;; inside src block use the colors like the major mode of the src type
+    (csetq org-src-fontify-natively t)
+    ;; inside a src block let tab act like it was in major mode of the src type
+    (csetq org-src-tab-acts-natively t)
+    ;; don't add two indentation spaces into src blocks
+    (csetq org-src-preserve-indentation t)
+    ;; normally I'd need C-c ' to exit, but this enables the same exit
+    ;; method I have in when doing a commit in magit.
+    (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map))
+
+;;; *** ox
+(use-package ox
+  :defer t
+  :config
+  ;; #+OPTIONS ':t
+  (csetq org-export-with-smart-quotes t)
+  ;; #+OPTIONS num:nil
+  (csetq org-export-with-section-numbers nil)
+  ;; #+OPTIONS stat:t
+  ;; (csetq org-export-with-statistics-cookies nil)
+  ;; #+OPTIONS toc:nil, use "#+TOC: headlines 2" or similar if you need a headline
+  (csetq org-export-with-toc nil)
+  ;; #+OPTIONS ^:{}
+  (csetq org-export-with-sub-superscripts nil))
+
+;;; *** ox-html
+(use-package ox-html
+  :defer t
+  :config
+    (csetq org-html-postamble-format '(("en" "<p class=\"author\">Author: %a</p><p class=\"creator\">Created with %c</p>")))
+    (csetq org-html-validation-link nil)
+    (csetq org-html-postamble nil)
+    (csetq org-html-style-default "<style type=\"text/css\">\n <!--/*--><![CDATA[/*><!--*/\n  body { text-align: center; font-family: \"Aria\", sans-serif; }\n  #content { margin: 0 auto; width: 860px; text-align: left; }\n  #text-table-of-contents > ul > li { margin-top: 1em; }\n  .title  { text-align: center; }\n  .todo   { font-family: monospace; color: red; }\n  .done   { color: green; }\n  .tag    { background-color: #eee; font-family: monospace;\n            padding: 2px; font-size: 80%; font-weight: normal; }\n  .timestamp { color: #bebebe; }\n  .timestamp-kwd { color: #5f9ea0; }\n  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }\n  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }\n  .center { margin-left: auto; margin-right: auto; text-align: center; }\n  .underline { text-decoration: underline; }\n  #postamble p, #preamble p { font-size: 90%; margin: .2em; }\n  p.verse { margin-left: 3%; }\n  pre {\n    border: 1px solid #ccc;\n    box-shadow: 3px 3px 3px #eee;\n    padding: 8pt;\n    font-family: monospace;\n    overflow: auto;\n    margin: 1em 0;\n  }\n  pre.src {\n    position: relative;\n    overflow: visible;\n    padding-top: 8pt;\n  }\n  pre.src:before {\n    display: none;\n    position: absolute;\n    background-color: white;\n    top: -10px;\n    right: 10px;\n    padding: 3px;\n    border: 1px solid black;\n  }\n  pre.src:hover:before { display: inline;}\n  pre.src-sh:before    { content: 'sh'; }\n  pre.src-bash:before  { content: 'sh'; }\n  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }\n  pre.src-R:before     { content: 'R'; }\n  pre.src-perl:before  { content: 'Perl'; }\n  pre.src-java:before  { content: 'Java'; }\n  pre.src-sql:before   { content: 'SQL'; }\n\n  table { border-collapse:collapse; }\n  caption.t-above { caption-side: top; }\n  caption.t-bottom { caption-side: bottom; }\n  td, th { vertical-align:top;  }\n  th.right  { text-align: center;  }\n  th.left   { text-align: center;   }\n  th.center { text-align: center; }\n  td.right  { text-align: right;  }\n  td.left   { text-align: left;   }\n  td.center { text-align: center; }\n  dt { font-weight: bold; }\n  .footpara:nth-child(2) { display: inline; }\n  .footpara { display: block; }\n  .footdef  { margin-bottom: 1em; }\n  .figure { padding: 1em; }\n  .figure p { text-align: center; }\n  .inlinetask {\n    padding: 10px;\n    border: 2px solid gray;\n    margin: 10px;\n    background: #ffffcc;\n  }\n  #org-div-home-and-up\n   { text-align: right; font-size: 70%; white-space: nowrap; }\n  textarea { overflow-x: auto; }\n  .linenr { font-size: smaller }\n  .code-highlighted { background-color: #ffff00; }\n  .org-info-js_info-navigation { border-style: none; }\n  #org-info-js_console-label\n    { font-size: 10px; font-weight: bold; white-space: nowrap; }\n  .org-info-js_search-highlight\n    { background-color: #ffff00; color: #000000; font-weight: bold; }\n  .ulClassNameOrID > li {}\n  /*]]>*/-->\n</style>")
+    (csetq org-html-table-default-attributes '(:border "2" :cellspacing "0" :cellpadding "6"))
+    (csetq org-html-postamble t))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; * Packages
 
 ;;; ** dired
@@ -851,34 +920,6 @@ If the CDR is nil, then the buffer is only buried."
   :defer t
   :diminish flyspell-mode
   :commands (flyspell-mode flyspell-prog-mode))
-
-;;; ** org-mode (must be before helm)
-(use-package org
-  :defer t
-  :init
-  (progn
-    (setq org-replace-disputed-keys t    ; allow Shift-Cursor to mark stuff
-	  org-default-notes-file (expand-file-name "notes.org" emacs-d)
-	  ;; Time stamp handling
-	  org-display-custom-times t
-	  org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")
-	  org-time-stamp-custom-formats '("<%Y-%m-%d>")
-          ))
-  :config
-  (progn
-    (setq org-src-window-setup 'current-window
-          org-src-fontify-natively t     ; inside src block use the colors like the major mode of the src type
-          org-src-tab-acts-natively t    ; inside a src block let tab act like it was in major mode of the src type
-          org-src-preserve-indentation t ; don't add two indentation spaces into src blocks
-	  )
-    ;; normally I'd need C-c ' to exit, but this enables the same exit
-    ;; method I have in when doing a commit in magit.
-    (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map)))
-(eval-when-compile (require 'ox-html))
-(eval-after-load 'ox-html
-  '(progn
-     (setq org-html-postamble-format '(("en" "<p class=\"author\">Author: %a</p><p class=\"creator\">Created with %c</p>"))
-           org-html-postamble t)))
 
 ;;; ** helm
 ;; Very good intro: http://tuhdo.github.io/helm-intro.html
