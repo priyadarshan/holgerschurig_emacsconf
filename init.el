@@ -63,10 +63,26 @@
 (csetq history-delete-duplicates t)
 
 ;;; ** Emacs internals
-(csetq gc-cons-threshold 10000000)
+(csetq gc-cons-threshold (* 10 1024 1024))
 (csetq message-log-max 10000)
 ;; Use new byte codes from Emacs 24.4
 (setq byte-compile--use-old-handlers nil)
+(csetq ad-redefinition-action 'accept)
+
+;;; ** Silence byte-compiler
+(declare-function bury-buffer "window")
+(declare-function c-langelem-2nd-pos "cc-defs")
+(declare-function c-langelem-pos "cc-defs")
+(declare-function c-toggle-auto-newline "cc-cmds")
+(declare-function delete-other-windows "window")
+(declare-function delete-window "window")
+(declare-function one-window-p "window")
+(declare-function other-window "window")
+(declare-function pop-to-buffer "window")
+(declare-function recenter-top-bottom "window")
+(declare-function split-window-vertically "window")
+(declare-function switch-to-buffer "window")
+(declare-function switch-to-buffer-other-window "window")
 
 ;;; ** Default browser
 (setq browse-url-browser-function 'browse-url-generic
@@ -86,49 +102,37 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; * Packages
+;;; * package and use-package
 ;; See http://github.com/jwiegley/use-package/
 ;; or http://www.lunaryorn.com/2015/01/06/my-emacs-configuration-with-use-package.html
 ;;
 ;; (use-package package-name
 ;;      [:keyword [option]]...)
 ;;
-;; :init          Code to run before PACKAGE-NAME has been loaded.
-;; :config        Code to run after PACKAGE-NAME has been loaded.  Note that if
-;;                loading is deferred for any reason, this code does not execute
-;;                until the lazy load has occurred.
-;; :preface       Code to be run before everything except `:disabled'; this can
-;;                be used to define functions for use in `:if', or that should be
-;;                seen by the byte-compiler.
-;;
+;; :init          Code to run when `use-package' form evals.
+;; :config        Runs if and when package loads.
 ;; :mode          Form to be added to `auto-mode-alist'.
 ;; :interpreter   Form to be added to `interpreter-mode-alist'.
-;;
-;; :commands      Define autoloads for commands that will be defined by the
-;;                package.  This is useful if the package is being lazily loaded,
-;;                and you wish to conditionally call functions in your `:init'
-;;                block that are defined in the package.
-;;
-;; :bind          Bind keys, and define autoloads for the bound commands.
-;; :bind*         Bind keys, and define autoloads for the bound commands,
-;;                *overriding all minor mode bindings*.
-;; :bind-keymap   Bind a key prefix to an auto-loaded keymap defined in the
-;;                package.  This is like `:bind', but for keymaps.
-;; :bind-keymap*  Like `:bind-keymap', but overrides all minor mode bindings
-;; :defer         Defer loading of a package -- this is implied when using
-;;                `:commands', `:bind', `:bind*', `:mode' or `:interpreter'.
-;;                This can be an integer, to force loading after N seconds of
-;;                idle time, if the package has not already been loaded.
+;; :commands      Define autoloads for given commands.
+;; :bind          Perform key bindings, and define autoload for bound
+;;                commands.
+;; :pre-load      Code to run when `use-package' form evals and before
+;;                anything else. Unlike :init this form runs before the
+;;                package is required or autoloads added.
+;; :defer         Defer loading of package -- automatic
+;;                if :commands, :bind, :mode or :interpreter are used.
 ;; :demand        Prevent deferred loading in all cases.
-;;
-;; :if EXPR       Initialize and load only if EXPR evaluates to a non-nil value.
-;; :disabled      The package is ignored completely if this keyword is present.
-;; :defines       Declare certain variables to silence the byte-compiler.
-;; :functions     Declare certain functions to silence the byte-compiler.
-;; :load-path     Add to the `load-path' before attempting to load the package.
-;; :diminish      Support for diminish.el (if installed).
-;; :ensure        Loads the package using package.el if necessary.
-;; :pin           Pin the package to an archive.
+;; :if            Conditional loading.
+;; :disabled      Ignore everything.
+;; :defines       Define vars to silence byte-compiler.
+;; :load-path     Add to `load-path' before loading.
+;; :diminish      Support for diminish package (if it's installed).
+;; :idle          adds a form to run on an idle timer
+;; :idle-priority schedules the :idle form to run with the given
+;;                priority (lower priorities run first). Default priority
+;;                is 5; forms with the same priority are run in the order in
+;;                which they are evaluated.
+;; :ensure        loads package using package.el if necessary.
 
 ;; Please don't load outdated byte code
 (csetq load-prefer-newer t)
@@ -137,9 +141,10 @@
 (csetq url-configuration-directory (concat emacs-d "tmp/"))
 (require 'package)
 (csetq package-enable-at-startup nil)
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
-(add-to-list 'package-archives '("melpa"        . "http://melpa.org/packages/"))
-(add-to-list 'package-archives '("gnu"          . "http://elpa.gnu.org/packages/"))
+(setq package-archives
+      '(("melpa-stable" . "http://stable.melpa.org/packages/")
+	("melpa"        . "http://melpa.org/packages/")
+        ("gnu"          . "http://elpa.gnu.org/packages/")))
 ;; Automatically install `use-package'
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -277,6 +282,7 @@ command from COMMANDS."
   `(eval (nth (seq-times ,name ,(length commands) ,body) ',commands)))
 
 ;;; ** Home / End
+(defvar my--previous-position)
 (defun my-end ()
   "Depending on how many times it was called moves the point to:
 
@@ -295,26 +301,11 @@ command from COMMANDS."
 (bind-key "<end>" 'my-end)
 
 ;;; ** Recenter
-;; This is built-in into Emacs 23 (recenter-top-bottom), but doesn't
-;; work as nice, e.g. the bottom position is almost identical to the
-;; middle position.
-(defun my-recenter ()
-  "Depending on how many times it was called moves the point to:
-
-- center of screen
-- near start of screen
-- near end of center
-- back to where it was"
-  (interactive)
-  (let ((i 0)
-	(old (window-start)))
-    (while (and (<= (setq i (1+ i)) 6) (equal (window-start) old))
-      (seq-times-do nil (setq my--previous-position (window-start))
-	(recenter)
-	(recenter 4)
-	(recenter -1)
-	(set-window-start (selected-window) my--previous-position)))))
-(bind-key "C-l" 'my-recenter)
+(csetq recenter-positions '(middle 4 -4))
+(use-package window
+  :defer t
+  :bind ("C-l" . recenter-top-bottom)
+  )
 
 ;;; ** Nicer goto-line
 ;; Doesn't modify minibuffer-history, but use it's own little history
@@ -682,6 +673,8 @@ If the CDR is nil, then the buffer is only buried."
 ;; Disable auto-save (#init.el# file-names)
 (csetq auto-save-default nil)
 (csetq auto-save-list-file-prefix (concat emacs-d "tmp/auto-save-list/saves-"))
+;; Kill means kill, not asking. Was:
+(setq kill-buffer-query-functions nil)
 
 ;;; ** Automatically load .Xresources after changes
 ;; Sample ~/.Xresources:
@@ -712,9 +705,9 @@ If the CDR is nil, then the buffer is only buried."
 ;;; ** recentf
 (csetq recentf-save-file (concat emacs-d "tmp/recentf.el"))
 (csetq recentf-exclude '("bbdb$"
-       "svn-commit.tmp$"
-       ".git/COMMIT_EDITMSG$"
-       ".git/TAG_EDITMSG"))
+			 "svn-commit.tmp$"
+			 ".png$"
+			 "COMMIT_EDITMSG" "COMMIT_EDITMSG" "TAG_EDITMSG"))
 (csetq recentf-max-saved-items 1000)
 (csetq recentf-auto-cleanup 300)
 (csetq recentf-max-menu-items 20)
@@ -847,6 +840,22 @@ If the CDR is nil, then the buffer is only buried."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; * Packages
 
+;;; ** dired
+(use-package dired
+    :commands dired
+    :init
+    (setq dired-listing-switches
+          "-laGh1v --group-directories-first"))
+(use-package dired-x
+    :commands dired-jump)
+
+;;; ** flyspell
+;; correct with C-M-i
+(use-package flyspell
+  :defer t
+  :diminish flyspell-mode
+  :commands (flyspell-mode flyspell-prog-mode))
+
 ;;; ** org-mode (must be before helm)
 (use-package org
   :defer t
@@ -869,6 +878,8 @@ If the CDR is nil, then the buffer is only buried."
     ;; normally I'd need C-c ' to exit, but this enables the same exit
     ;; method I have in when doing a commit in magit.
     (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map)))
+(defvar org-html-postamble-format)
+(defvar org-html-postamble)
 (eval-after-load 'ox-html
   '(progn
      (setq org-html-postamble-format '(("en" "<p class=\"author\">Author: %a</p><p class=\"creator\">Created with %c</p>"))
@@ -1009,9 +1020,12 @@ If the CDR is nil, then the buffer is only buried."
 			 (get-buffer-window buffer t)))
 	(t
 	 (message "Compilation exited abnormally: %s" string))))
-(setq compilation-finish-functions 'compile-autoclose
-      compilation-ask-about-save nil
-      compilation-scroll-output t)
+(use-package compile
+    :diminish compilation-in-progress
+    :config
+    (setq compilation-finish-functions 'compile-autoclose)
+    (csetq compilation-ask-about-save nil)
+    (csetq compilation-scroll-output t))
 
 ;;; *** Error navigation
 (bind-key "<f8>" 'next-error)
@@ -1026,6 +1040,8 @@ If the CDR is nil, then the buffer is only buried."
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
 ;; from linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
+(defvar c-syntactic-element)
+(defvar c-basic-offset)
 (defun c-lineup-arglist-tabs-only (ignored)
   "Line up argument lists by tabs, not spaces"
   (let* ((anchor (c-langelem-pos c-syntactic-element))
@@ -1042,6 +1058,7 @@ newline to the correct position"
   (newline-and-indent))
 ;; somehow a the first visited file stays in "gnu" style when I set the c-default-style
 ;; just in the common hook
+(defvar c-default-style)
 (defun my-c-initialization-setup ()
   ;; Default style
   (c-add-style "linux-tabs-only"
@@ -1061,6 +1078,10 @@ newline to the correct position"
 		 c-basic-offset 8))))
 (add-hook 'c-mode-hook 'my-c-mode-setup)
 ;; Thinks that will apply to .C and .CPP files
+(defvar c-mode-map)
+(defvar c-tab-always-indent)
+(defvar c-recognize-knr-p)
+(defvar c-electric-pound-behavior)
 (defun my-c-mode-common-setup ()
   (define-key c-mode-map "(" 'self-insert-command)
   (define-key c-mode-map ")" 'self-insert-command)
@@ -1099,7 +1120,10 @@ newline to the correct position"
   ;; automatically give help about function syntax
   (eldoc-mode t)
   ;; "-" is almost always part of a function- or variable-name
-  (modify-syntax-entry ?- "w"))
+  (modify-syntax-entry ?- "w")
+  ;; Compile Emacs Lisp source files after the visiting buffers are saved.
+  (auto-compile-mode 1)
+  )
 (add-hook 'emacs-lisp-mode-hook 'my--elisp-setup)
 
 ;;; ** Mode: Markdown
@@ -1109,6 +1133,7 @@ newline to the correct position"
 	 ("\\.markdown\\'" . markdown-mode)))
 
 ;;; ** Mode: Python
+(defvar python-indent-offset)
 (defun my-python-setup ()
   (interactive)
   (setq indent-tabs-mode t
@@ -1201,9 +1226,3 @@ newline to the correct position"
      )
   :bind ("C-c m" . magit-status)
   :commands (magit-get-top-dir))
-(defun magit-refresh-status ()
-  (magit-git-exit-code "update-index" "--refresh")
-  (magit-create-buffer-sections
-    (magit-with-section 'status nil
-      (run-hooks 'magit-status-insert-sections-hook)))
-  (run-hooks 'magit-refresh-status-hook))

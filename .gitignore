@@ -1,4 +1,5 @@
 ?
+*.elc
 /abbrev_defs
 /places
 /tmp/
