@@ -1259,3 +1259,9 @@ newline to the correct position"
      )
   :bind ("C-c m" . magit-status)
   :commands (magit-get-top-dir))
+
+;;; * Emacs server
+(require 'server)
+(add-hook 'server-switch-hook 'raise-frame)
+(unless (server-running-p)
+  (server-start))
