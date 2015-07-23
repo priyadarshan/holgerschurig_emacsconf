@@ -94,6 +94,14 @@
 ;;; ** Load customization file
 (if (file-exists-p custom-file) (load-file custom-file))
 
+;;; ** Mouse
+;; Paste at text-cursor, not at mouse-cursor:
+(csetq mouse-yank-at-point t)
+
+;;; ** Localisation
+;; A sentence doesn't end with two spaces:
+(csetq sentence-end-double-space nil)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -804,14 +812,6 @@ If the CDR is nil, then the buffer is only buried."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; * Miscelleanous
-
-;;; ** Mouse
-;; Paste at text-cursor, not at mouse-cursor:
-(csetq mouse-yank-at-point t)
-
-;;; ** Localisation
-;; A sentence doesn't end with two spaces:
-(csetq sentence-end-double-space nil)
 
 ;;; ** Swap RET and C-j
 (bind-key "RET" 'newline-and-indent)
