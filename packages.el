@@ -23,7 +23,7 @@
         (helm-descbinds   . "melpa-stable")
         (markdown-mode    . "melpa-stable")
         (org              . "melpa-stable")
-        (powerline        . "melpa-stable")
+        (powerline        . "melpa")
         (savehist         . "melpa-stable")
         (smooth-scrolling . "melpa-stable")
         (swiper           . "gnu")
