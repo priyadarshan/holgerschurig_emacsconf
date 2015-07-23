@@ -683,6 +683,7 @@ If the CDR is nil, then the buffer is only buried."
 
 ;;; ** Autorevert
 (global-auto-revert-mode 1)
+(csetq revert-without-query t)
 
 ;;; ** Decompress compressed files
 (auto-compression-mode t)
