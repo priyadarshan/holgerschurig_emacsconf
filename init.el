@@ -2,6 +2,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; * Load paths
 (defvar emacs-d (file-name-directory
 		 (file-chase-links load-file-name))
@@ -30,6 +31,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; * Customize
 ;; http://lists.gnu.org/archive/html/emacs-devel/2015-04/msg01261.html
 (defmacro csetq (variable value)
@@ -94,6 +96,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; * package and use-package
 ;; See http://github.com/jwiegley/use-package/
 ;; or http://www.lunaryorn.com/2015/01/06/my-emacs-configuration-with-use-package.html
@@ -143,6 +146,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; * Display
 
 ;;; ** Font locking
@@ -169,6 +173,7 @@
 	 ("^\\(;;;;;;;;+\\)" 1 'my--elisp-section-face t)))
 
 ;;; ** Line truncation
+
 ;; don't display continuation lines
 (csetq truncate-lines t)
 ;; respect truncate-lines:
@@ -217,9 +222,10 @@
   (when (display-graphic-p)
     (powerline-default-theme)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; * Cursor movement
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; * Cursor movement
 ;; First we define code that allows us to bind multiple functions to
 ;; repeated commands. Taken from
 ;; [[http://www.emacswiki.org/cgi-bin/wiki/DoubleKeyBinding]]:
@@ -367,7 +373,6 @@ rather than line counts."
   :bind ("C-+" . er/expand-region))
 
 ;;; ** avy (alternative to ace-jump-mode)
-
 (use-package avy
   :defer t
   :bind ("C-#" . avy-goto-word-1)
@@ -382,6 +387,7 @@ rather than line counts."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; * Yank and Delete
+
 ;;; ** Delete word or yank
 ;; The following may be of interest to people who (a) are happy with
 ;; "C-w" and friends for killing and yanking, (b) use
@@ -417,7 +423,6 @@ Deletes whitespace at join."
       (delete-indentation t)
     (kill-line arg)))
 (bind-key "C-k" 'kill-and-join-forward)
-
 
 ;;; ** Dynamic char deletion
 ;; The following is from Boojum's post in
@@ -473,6 +478,7 @@ otherwise delete."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; * Windows handling
+
 ;;; ** delete-window
 ;; If only one window in frame, `delete-frame'.
 ;; From http://www.emacswiki.org/emacs/frame-cmds.el
@@ -548,8 +554,8 @@ are two windows displayed, act like C-x1:"
 (bind-key "<f5>" 'my-explode-window)
 
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; * Buffers
 
 ;;; ** Insert buffer
@@ -638,7 +644,9 @@ If the CDR is nil, then the buffer is only buried."
   :bind ("C-c C-j" . ace-jump-buffer)
   )
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; * File opening/saving
 
 ;;; ** Basic settings
@@ -700,8 +708,8 @@ If the CDR is nil, then the buffer is only buried."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; * Minibuffer
 
+;;; * Minibuffer
 ;; Don't insert current directory into minubuffer
 (csetq insert-default-directory nil)
 ;; Minibuffer window expands vertically as necessary to hold the text
@@ -724,6 +732,7 @@ If the CDR is nil, then the buffer is only buried."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; * Searching
 
 ;;; ** DISABLED swiper (improved searching)
@@ -763,6 +772,7 @@ If the CDR is nil, then the buffer is only buried."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; * Help
 
 ;;; ** Go to back to previous help buffer
@@ -791,6 +801,7 @@ If the CDR is nil, then the buffer is only buried."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; * Miscelleanous
 
 ;;; ** Mouse
@@ -820,8 +831,8 @@ If the CDR is nil, then the buffer is only buried."
   (insert (format-time-string "%a, %e %b %Y %H:%M:%S %z")))
 
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; * Packages
 
 ;;; ** dired
@@ -946,6 +957,7 @@ If the CDR is nil, then the buffer is only buried."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; * Programming
 
 ;;; ** Tab handling
@@ -1014,7 +1026,7 @@ If the CDR is nil, then the buffer is only buried."
 (bind-key "<f8>" 'next-error)
 (bind-key "S-<f8>" 'previous-error)
 
-;;; ** Automatically se files with shebang executable
+;;; ** Automatically safe files with shebang executable
 (add-hook 'after-save-hook
 	  'executable-make-buffer-file-executable-if-script-p)
 
@@ -1137,7 +1149,6 @@ newline to the correct position"
   (define-key text-mode-map "\C-i" 'self-insert-command))
 (add-hook 'shell-mode-hook 'my-shell-tab-setup)
 (add-hook 'sh-mode-hook 'my-shell-tab-setup)
-
 
 ;;; ** Mode: web-mode
 ;; Home page: http://web-mode.org/
