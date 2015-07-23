@@ -26,7 +26,6 @@
         (powerline        . "melpa-stable")
         (savehist         . "melpa-stable")
         (smooth-scrolling . "melpa-stable")
-        (swiper           . "gnu")
         (unbound          . "melpa-stable")
         (web-mode         . "melpa-stable")
 	))
