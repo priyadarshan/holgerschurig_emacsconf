@@ -472,6 +472,19 @@ otherwise delete."
 (bind-key "<delete>" 'delete-char-dynamic)
 (bind-key "C-d" 'delete-char-dynamic)
 
+;;; ** Visual undo
+;; This lets you use C-x u (undo-tree-visualize) to visually walk
+;; through the changes you've made, undo back to a certain point (or
+;; redo), and go down different branches.
+(use-package undo-tree
+  :defer t
+  :ensure t
+  :diminish undo-tree-mode
+  :idle
+  (progn
+    (global-undo-tree-mode)
+    (setq undo-tree-visualizer-timestamps t)
+    (setq undo-tree-visualizer-diff t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

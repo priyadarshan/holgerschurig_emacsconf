@@ -28,6 +28,7 @@
         (savehist         . "melpa-stable")
         (smooth-scrolling . "melpa-stable")
         (unbound          . "melpa-stable")
+        (undo-tree        . "gnu")
         (web-mode         . "melpa-stable")
 	))
 
