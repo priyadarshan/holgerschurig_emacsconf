@@ -19,6 +19,7 @@
         (column-marker    . "melpa")
         (cycbuf           . "melpa")
         (expand-region    . "melpa-stable")
+        (guide-key        . "melpa-stable")
         (helm             . "melpa-stable")
         (helm-descbinds   . "melpa-stable")
         (markdown-mode    . "melpa-stable")

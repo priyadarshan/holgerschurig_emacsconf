@@ -805,6 +805,31 @@ If the CDR is nil, then the buffer is only buried."
 ;;; ** Apropos
 (bind-key "C-h a" 'apropos)
 
+;;; ** Guide key
+;; It's hard to remember keyboard shortcuts. The guide-key package
+;; pops up help after a short delay.
+(use-package guide-key
+  :defer t
+  :diminish guide-key-mode
+  :idle
+  (progn
+    (setq guide-key/guide-key-sequence '("C-c"
+					 "C-c h"
+					 "C-h" "C-h 4"
+					 "C-x"
+					 "C-x 4"
+					 "C-x 5"
+					 "C-x 8" "C-x 8 \"" "C-x 8 '" "C-x 8 *" "C-x 8 ," "C-x 8 /" "C-x 8 1" "C-x 8 3" "C-x 8 ^" "C-x 8 _" "C-x 8 `" "C-x 8 ~"
+					 "C-x ESC"
+					 "C-x a" "C-x a i"
+					 "C-x n"
+					 "C-x v"
+					 "C-x r"
+					 "C-x @"
+					 "M-g"
+					 "M-s" "M-s h"
+					 ))
+    (guide-key-mode 1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; * Miscelleanous
