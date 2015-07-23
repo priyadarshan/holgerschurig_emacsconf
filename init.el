@@ -11,6 +11,9 @@
       (expand-file-name "elpa" emacs-d))
 (package-initialize)
 
+;; Please don't load outdated byte code
+(setq load-prefer-newer t)
+
 (let ((emacs-git (expand-file-name "git/" emacs-d)))
   (mapc (lambda (x)
           (add-to-list 'load-path (expand-file-name x emacs-git)))
@@ -20,6 +23,10 @@
 ;;(add-to-list 'load-path (expand-file-name "git/org-mode/lisp/" emacs-d))
 
 (add-to-list 'load-path (expand-file-name "elisp/" emacs-d))
+
+(require 'auto-compile)
+(auto-compile-on-load-mode 1)
+(auto-compile-on-save-mode 1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -68,21 +75,6 @@
 ;; Use new byte codes from Emacs 24.4
 (setq byte-compile--use-old-handlers nil)
 (csetq ad-redefinition-action 'accept)
-
-;;; ** Silence byte-compiler
-(declare-function bury-buffer "window")
-(declare-function c-langelem-2nd-pos "cc-defs")
-(declare-function c-langelem-pos "cc-defs")
-(declare-function c-toggle-auto-newline "cc-cmds")
-(declare-function delete-other-windows "window")
-(declare-function delete-window "window")
-(declare-function one-window-p "window")
-(declare-function other-window "window")
-(declare-function pop-to-buffer "window")
-(declare-function recenter-top-bottom "window")
-(declare-function split-window-vertically "window")
-(declare-function switch-to-buffer "window")
-(declare-function switch-to-buffer-other-window "window")
 
 ;;; ** Default browser
 (setq browse-url-browser-function 'browse-url-generic
@@ -134,8 +126,6 @@
 ;;                which they are evaluated.
 ;; :ensure        loads package using package.el if necessary.
 
-;; Please don't load outdated byte code
-(csetq load-prefer-newer t)
 ;; ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
 ;; Move the cookie file out into the =tmp/= directory.
 (csetq url-configuration-directory (concat emacs-d "tmp/"))
@@ -573,8 +563,7 @@ are two windows displayed, act like C-x1:"
 
 ;;; ** Protect buffers
 ;; https://raw.githubusercontent.com/lewang/le_emacs_libs/master/keep-buffers.el
-(eval-when-compile
-  (require 'cl))
+(eval-when-compile (require 'cl))
 (define-minor-mode keep-buffers-mode
   "when active, killing protected buffers results in burying them instead.
 Some may also be erased, which is undo-able."
@@ -873,8 +862,7 @@ If the CDR is nil, then the buffer is only buried."
     ;; normally I'd need C-c ' to exit, but this enables the same exit
     ;; method I have in when doing a commit in magit.
     (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map)))
-(defvar org-html-postamble-format)
-(defvar org-html-postamble)
+(eval-when-compile (require 'ox-html))
 (eval-after-load 'ox-html
   '(progn
      (setq org-html-postamble-format '(("en" "<p class=\"author\">Author: %a</p><p class=\"creator\">Created with %c</p>"))
@@ -1031,12 +1019,13 @@ If the CDR is nil, then the buffer is only buried."
 	  'executable-make-buffer-file-executable-if-script-p)
 
 ;;; ** Mode: C, C++
+(defvar c-syntactic-element)
+(declare-function c-toggle-auto-newline "")
+(eval-when-compile (require 'cc-mode))
 ;; Open *.h files normally in c++ mode
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
 ;; from linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
-(defvar c-syntactic-element)
-(defvar c-basic-offset)
 (defun c-lineup-arglist-tabs-only (ignored)
   "Line up argument lists by tabs, not spaces"
   (let* ((anchor (c-langelem-pos c-syntactic-element))
@@ -1053,7 +1042,6 @@ newline to the correct position"
   (newline-and-indent))
 ;; somehow a the first visited file stays in "gnu" style when I set the c-default-style
 ;; just in the common hook
-(defvar c-default-style)
 (defun my-c-initialization-setup ()
   ;; Default style
   (c-add-style "linux-tabs-only"
@@ -1073,10 +1061,6 @@ newline to the correct position"
 		 c-basic-offset 8))))
 (add-hook 'c-mode-hook 'my-c-mode-setup)
 ;; Thinks that will apply to .C and .CPP files
-(defvar c-mode-map)
-(defvar c-tab-always-indent)
-(defvar c-recognize-knr-p)
-(defvar c-electric-pound-behavior)
 (defun my-c-mode-common-setup ()
   (define-key c-mode-map "(" 'self-insert-command)
   (define-key c-mode-map ")" 'self-insert-command)
@@ -1128,7 +1112,7 @@ newline to the correct position"
 	 ("\\.markdown\\'" . markdown-mode)))
 
 ;;; ** Mode: Python
-(defvar python-indent-offset)
+(eval-when-compile (require 'python))
 (defun my-python-setup ()
   (interactive)
   (setq indent-tabs-mode t
@@ -1157,6 +1141,7 @@ newline to the correct position"
 
 ;;; ** Mode: web-mode
 ;; Home page: http://web-mode.org/
+(eval-when-compile (require 'web-mode))
 (defun my-web-mode-hook ()
   ;; (whitespace-turn-off)
   ;; (rainbow-turn-off)
