@@ -227,7 +227,6 @@
   (when (display-graphic-p)
     (powerline-default-theme)))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; * Cursor movement
 
@@ -302,10 +301,6 @@ command from COMMANDS."
 
 ;;; ** Recenter
 (csetq recenter-positions '(middle 4 -4))
-(use-package window
-  :defer t
-  :bind ("C-l" . recenter-top-bottom)
-  )
 
 ;;; ** Nicer goto-line
 ;; Doesn't modify minibuffer-history, but use it's own little history
