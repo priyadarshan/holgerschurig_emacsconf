@@ -763,13 +763,10 @@ If the CDR is nil, then the buffer is only buried."
   :bind (([remap isearch-forward] . swiper))
   :config (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy))))
 
-;;; ** DISABLED isearch (incremental search)
-;; ;; Scrolling while searching
-;; (csetq isearch-allow-scroll t)
-;; ;; Save Isearch stuff
-;; (csetq isearch-resume-in-command-history t)
-;; (bind-key "C-y" 'isearch-yank-kill isearch-mode-map)
-
+;;; ** isearch (incremental search)
+;; Scrolling while searching
+(csetq isearch-allow-scroll t)
+(bind-key "C-y" 'isearch-yank-kill isearch-mode-map)
 
 ;;; ** Command; my-grep
 ;; Prompts you for an expression, defaulting to the symbol that your
@@ -1031,12 +1028,14 @@ If the CDR is nil, then the buffer is only buried."
 ;; https://github.com/ShingoFukuyama/helm-swoop
 (use-package helm-swoop
  :defer t
- :bind (("C-s" . helm-swoop) ; use it as an isearch replacement
-	("M-s s" . helm-swoop)
+ :bind (("M-s s"   . helm-swoop)
 	("M-s M-s" . helm-swoop)
-	("M-s S" . helm-swoop-back-to-last-point))
+	("M-s S"   . helm-swoop-back-to-last-point))
  :config
  (csetq helm-swoop-split-direction 'split-window-sensibly)
+ ;; Switch to edit mode with C-c C-e, and exit edit mode with C-c C-c
+ (bind-key "C-c C" 'helm-swoop--edit-complete helm-swoop-edit-map)
+ (bind-key "C-c C-c" 'helm-swoop--edit-complete helm-swoop-edit-map)
  ;; When doing isearch, hand the word over to helm-swoop
  (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
  ;; From helm-swoop to helm-multi-swoop-all
