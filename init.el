@@ -763,21 +763,21 @@ If the CDR is nil, then the buffer is only buried."
   :bind (([remap isearch-forward] . swiper))
   :config (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy))))
 
-;;; ** isearch (incremental search)
-;; Scrolling while searching
-(csetq isearch-allow-scroll t)
-;; Save Isearch stuff
-(csetq isearch-resume-in-command-history t)
-(bind-key "C-y" 'isearch-yank-kill isearch-mode-map)
+;;; ** DISABLED isearch (incremental search)
+;; ;; Scrolling while searching
+;; (csetq isearch-allow-scroll t)
+;; ;; Save Isearch stuff
+;; (csetq isearch-resume-in-command-history t)
+;; (bind-key "C-y" 'isearch-yank-kill isearch-mode-map)
 
-;;; ** occur (call isearch from occur)
-(defun isearch-occur ()
-  "Invoke `occur' from within isearch."
-  (interactive)
-  (let ((case-fold-search isearch-case-fold-search))
-    (occur (if isearch-regexp isearch-string (regexp-quote isearch-string))))
-  (pop-to-buffer "*Occur*"))
-(bind-key "C-o" 'isearch-occur isearch-mode-map)
+;;; ** DISABLED occur (call isearch from occur)
+;; (defun isearch-occur ()
+;;   "Invoke `occur' from within isearch."
+;;   (interactive)
+;;   (let ((case-fold-search isearch-case-fold-search))
+;;     (occur (if isearch-regexp isearch-string (regexp-quote isearch-string))))
+;;   (pop-to-buffer "*Occur*"))
+;; (bind-key "C-o" 'isearch-occur isearch-mode-map)
 
 ;;; ** Command; my-grep
 ;; Prompts you for an expression, defaulting to the symbol that your
@@ -1039,9 +1039,12 @@ If the CDR is nil, then the buffer is only buried."
 ;; https://github.com/ShingoFukuyama/helm-swoop
 (use-package helm-swoop
  :defer t
- :bind (("M-s s" . helm-swoop)
+ :bind (("C-s" . helm-swoop) ; use it as an isearch replacement
+	("M-s s" . helm-swoop)
+	("M-s M-s" . helm-swoop)
 	("M-s S" . helm-swoop-back-to-last-point))
  :config
+ (csetq helm-swoop-split-direction 'split-window-sensibly)
  ;; When doing isearch, hand the word over to helm-swoop
  (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
  ;; From helm-swoop to helm-multi-swoop-all
