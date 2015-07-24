@@ -470,6 +470,19 @@ otherwise delete."
 (bind-key "<delete>" 'delete-char-dynamic)
 (bind-key "C-d" 'delete-char-dynamic)
 
+;;; ** Visual undo
+;; This lets you use C-x u (undo-tree-visualize) to visually walk
+;; through the changes you've made, undo back to a certain point (or
+;; redo), and go down different branches.
+(use-package undo-tree
+  :defer t
+  :ensure t
+  :diminish undo-tree-mode
+  :idle
+  (progn
+    (global-undo-tree-mode)
+    (setq undo-tree-visualizer-timestamps t)
+    (setq undo-tree-visualizer-diff t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -808,6 +821,31 @@ If the CDR is nil, then the buffer is only buried."
 ;;; ** Apropos
 (bind-key "C-h a" 'apropos)
 
+;;; ** Guide key
+;; It's hard to remember keyboard shortcuts. The guide-key package
+;; pops up help after a short delay.
+(use-package guide-key
+  :defer t
+  :diminish guide-key-mode
+  :idle
+  (progn
+    (setq guide-key/guide-key-sequence '("C-c"
+					 "C-c h"
+					 "C-h" "C-h 4"
+					 "C-x"
+					 "C-x 4"
+					 "C-x 5"
+					 "C-x 8" "C-x 8 \"" "C-x 8 '" "C-x 8 *" "C-x 8 ," "C-x 8 /" "C-x 8 1" "C-x 8 3" "C-x 8 ^" "C-x 8 _" "C-x 8 `" "C-x 8 ~"
+					 "C-x ESC"
+					 "C-x a" "C-x a i"
+					 "C-x n"
+					 "C-x v"
+					 "C-x r"
+					 "C-x @"
+					 "M-g"
+					 "M-s" "M-s h"
+					 ))
+    (guide-key-mode 1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -944,7 +982,7 @@ If the CDR is nil, then the buffer is only buried."
 	 )
   :init
   (progn
-    (require 'helm-config nil t)
+    (require 'helm-config)
     (helm-mode t)
     )
   :config
@@ -997,6 +1035,22 @@ If the CDR is nil, then the buffer is only buried."
   :defer t
   :bind ("C-h b" . helm-descbinds))
 
+;;; ** helm-swoop
+;; https://github.com/ShingoFukuyama/helm-swoop
+(use-package helm-swoop
+ :defer t
+ :bind (("M-s s" . helm-swoop)
+	("M-s S" . helm-swoop-back-to-last-point))
+ :config
+ ;; When doing isearch, hand the word over to helm-swoop
+ (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
+ ;; From helm-swoop to helm-multi-swoop-all
+ (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
+ ;; Move up and down like isearch
+ (define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
+ (define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
+ (define-key helm-multi-swoop-map (kbd "C-r") 'helm-previous-line)
+ (define-key helm-multi-swoop-map (kbd "C-s") 'helm-next-line))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
