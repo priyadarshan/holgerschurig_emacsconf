@@ -1027,23 +1027,22 @@ If the CDR is nil, then the buffer is only buried."
 ;;; ** helm-swoop
 ;; https://github.com/ShingoFukuyama/helm-swoop
 (use-package helm-swoop
- :defer t
- :bind (("M-s s"   . helm-swoop)
-	("M-s M-s" . helm-swoop)
-	("M-s S"   . helm-swoop-back-to-last-point))
- :config
- (csetq helm-swoop-split-direction 'split-window-sensibly)
- ;; Switch to edit mode with C-c C-e, and exit edit mode with C-c C-c
- (bind-key "C-c C" 'helm-swoop--edit-complete helm-swoop-edit-map)
- (bind-key "C-c C-c" 'helm-swoop--edit-complete helm-swoop-edit-map)
- ;; When doing isearch, hand the word over to helm-swoop
- (bind-key "M-s s" 'helm-swoop-from-isearch isearch-mode-map)
- (bind-key "M-s M-s" 'helm-swoop-from-isearch isearch-mode-map)
- ;; Move up and down like isearch
- (define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
- (define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
- (define-key helm-multi-swoop-map (kbd "C-r") 'helm-previous-line)
- (define-key helm-multi-swoop-map (kbd "C-s") 'helm-next-line))
+  :defer t
+  :bind (("M-s s"  . helm-swoop)
+	 ("M-s M-s" . helm-swoop)
+	 ("M-s S"   . helm-swoop-back-to-last-point))
+  :config
+  (csetq helm-swoop-split-direction 'split-window-sensibly)
+  ;; Switch to edit mode with C-c C-e, and exit edit mode with C-c C-c
+  (bind-key "C-c C-c" 'helm-swoop--edit-complete helm-swoop-edit-map)
+  ;; When doing isearch, hand the word over to helm-swoop
+  (bind-key "M-s s"   'helm-swoop-from-isearch isearch-mode-map)
+  (bind-key "M-s M-s" 'helm-swoop-from-isearch isearch-mode-map)
+  ;; Move up and down like isearch
+  (bind-key "C-r" 'helm-previous-line helm-swoop-map)
+  (bind-key "C-s" 'helm-next-line     helm-swoop-map)
+  (bind-key "C-r" 'helm-previous-line helm-multi-swoop-map)
+  (bind-key "C-s" 'helm-next-line     helm-multi-swoop-map))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
