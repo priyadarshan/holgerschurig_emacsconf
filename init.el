@@ -1162,9 +1162,9 @@ newline to the correct position"
 (add-hook 'c-mode-hook 'my-c-mode-setup)
 ;; Thinks that will apply to .C and .CPP files
 (defun my-c-mode-common-setup ()
-  (define-key c-mode-map "(" 'self-insert-command)
-  (define-key c-mode-map ")" 'self-insert-command)
-  (define-key c-mode-map "{" 'my-c-electric-brace-open)
+  (bind-key "(" 'self-insert-command c-mode-map)
+  (bind-key ")" 'self-insert-command c-mode-map)
+  (bind-key "{" 'my-c-electric-brace-open c-mode-map)
   (turn-off-auto-fill)
   (c-toggle-auto-newline 1)
   ;; This makes things like super_function_for_you a word
