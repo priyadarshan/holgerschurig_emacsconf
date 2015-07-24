@@ -817,24 +817,21 @@ If the CDR is nil, then the buffer is only buried."
   :defer t
   :diminish guide-key-mode
   :idle
-  (progn
-    (setq guide-key/guide-key-sequence '("C-c"
-					 "C-c h"
-					 "C-h" "C-h 4"
-					 "C-x"
-					 "C-x 4"
-					 "C-x 5"
-					 "C-x 8" "C-x 8 \"" "C-x 8 '" "C-x 8 *" "C-x 8 ," "C-x 8 /" "C-x 8 1" "C-x 8 3" "C-x 8 ^" "C-x 8 _" "C-x 8 `" "C-x 8 ~"
-					 "C-x ESC"
-					 "C-x a" "C-x a i"
-					 "C-x n"
-					 "C-x v"
-					 "C-x r"
-					 "C-x @"
-					 "M-g"
-					 "M-s" "M-s h"
-					 ))
-    (guide-key-mode 1)))
+  (csetq guide-key/guide-key-sequence
+	'("C-c" "C-h" "C-x" "M-g" "M-s"))
+  (csetq guide-key/recursive-key-sequence-flag t)
+  (guide-key-mode 1))
+
+;;; ** DISABLED Which key
+;; This is mostly better than guide-key, but only mostly. It doesn't
+;; automatically switch into a multi-column mode for C-x, for example.
+(use-package which-key
+  :disabled t
+  :config
+  (which-key-mode)
+  (which-key-setup-side-window-right-bottom)
+  )
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
