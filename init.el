@@ -860,15 +860,6 @@ If the CDR is nil, then the buffer is only buried."
 
 ;;; * Org-Mode
 
-;;; ** org-bullets
-(use-package org-bullets
-  :defer t
-  :commands org-bullets-mode
-  :config
-    ;; (csetq org-bullets-bullet-list '("✿" "✸" "◉" "○"))
-    (csetq org-bullets-bullet-list '( "▶" "◆" "■" "○"))
-  )
-
 ;;; ** org-mode (must be before helm)
 (use-package org
   :defer t
@@ -882,7 +873,6 @@ If the CDR is nil, then the buffer is only buried."
     (csetq org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
     (csetq org-time-stamp-custom-formats '("<%Y-%m-%d>")))
   :config
-    (add-hook 'org-mode-hook 'org-bullets-mode)
     (setq org-startup-indented t)
     (setq org-startup-folded 'content)
     (setq org-return-follows-link t)
