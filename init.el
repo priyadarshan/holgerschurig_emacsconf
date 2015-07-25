@@ -873,7 +873,6 @@ If the CDR is nil, then the buffer is only buried."
     (csetq org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
     (csetq org-time-stamp-custom-formats '("<%Y-%m-%d>")))
   :config
-    (setq org-startup-indented t)
     (setq org-startup-folded 'content)
     (setq org-return-follows-link t)
     ;; Various org-src related things:
