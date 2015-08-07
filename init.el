@@ -1117,7 +1117,6 @@ If the CDR is nil, then the buffer is only buried."
 
 ;;; ** Mode: C, C++
 (defvar c-syntactic-element)
-(declare-function c-toggle-auto-newline "")
 (eval-when-compile (require 'cc-mode))
 ;; Open *.h files normally in c++ mode
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
@@ -1163,7 +1162,8 @@ newline to the correct position"
   (bind-key ")" 'self-insert-command c-mode-map)
   (bind-key "{" 'my-c-electric-brace-open c-mode-map)
   (turn-off-auto-fill)
-  (c-toggle-auto-newline 1)
+  ;; Normally electric mode should be off
+  (electric-indent-local-mode -1)
   ;; This makes things like super_function_for_you a word
   (modify-syntax-entry ?_ "w")
   (setq fill-column 78
