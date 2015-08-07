@@ -13,6 +13,7 @@
 
 (setq package-pinned-packages
       '((use-package . "melpa-stable")
+        (afternoon-theme  . "melpa")
         (auto-compile     . "melpa-stable")
         (ace-jump-buffer  . "melpa")
         (avy              . "melpa")

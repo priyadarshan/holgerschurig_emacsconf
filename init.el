@@ -48,7 +48,7 @@
 (modify-frame-parameters nil '((wait-for-wm . nil)))
 
 ;;; ** Theme
-(require 'eclipse-theme)
+(require 'afternoon-theme)
 ;; put something like this into ~/.Xresources
 ;; Emacs.geometry: 120x55
 ;; Emacs.Font:     Terminus 11
@@ -172,7 +172,7 @@
 (add-hook 'find-file-hook 'my--hint-facify)
 ;; highlight ";; * FOO" at the start of a line (in elisp mode)
 (defface my--elisp-section-face
-  '((t :background "yellow"
+  '((t :background "dark blue"
        :weight bold))
   "Font for showing elisp sections."
   :group 'basic-faces)
@@ -1002,6 +1002,16 @@ If the CDR is nil, then the buffer is only buried."
 
     ;; ignore Emacs save files
     (add-to-list 'helm-boring-file-regexp-list "\\.#")
+
+    ;; see (customize-group "helm-files-faces")
+    (set-face-attribute 'helm-ff-directory       nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-ff-executable      nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-ff-file            nil :foreground 'unspecified :background 'unspecified :inherit 'unspecified)
+    (set-face-attribute 'helm-ff-invalid-symlink nil :foreground 'unspecified :background 'unspecified)
+    ;;(set-face-attribute 'helm-ff-prefix          nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-ff-symlink         nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-history-deleted    nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-history-remote     nil :foreground 'unspecified :background 'unspecified)
 
     ;; this is kind of a goto, you can visit all marks
     (bind-key "g"   'helm-all-mark-rings helm-command-map)))
