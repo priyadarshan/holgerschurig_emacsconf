@@ -693,11 +693,6 @@ If the CDR is nil, then the buffer is only buried."
   :config
   (savehist-mode 1))
 ;;;_ * Searching
-;;;_  . DISABLED swiper (improved searching)
-(use-package swiper
-  :disabled t
-  :bind (([remap isearch-forward] . swiper))
-  :config (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy))))
 ;;;_  . isearch (incremental search)
 ;; Scrolling while searching
 (csetq isearch-allow-scroll t)
