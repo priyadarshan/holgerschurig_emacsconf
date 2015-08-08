@@ -845,7 +845,12 @@ If the CDR is nil, then the buffer is only buried."
 (use-package flyspell
   :defer t
   :diminish flyspell-mode
-  :commands (flyspell-mode flyspell-prog-mode))
+  :commands (flyspell-mode flyspell-prog-mode)
+  :config
+  (csetq ispell-program-name "/usr/bin/aspell")
+  ;;make aspell faster but less correctly
+  (csetq ispell-extra-args '("--sug-mode=ultra")))
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
 ;;;_  . helm
 ;; Very good intro: http://tuhdo.github.io/helm-intro.html
 (defun my-helm-imenu ()
