@@ -34,8 +34,17 @@
 
 ;;; * Customize
 ;; http://lists.gnu.org/archive/html/emacs-devel/2015-04/msg01261.html
+;; http://oremacs.com/2015/01/17/setting-up-ediff/
+;;
+;; This macro I've put together myself after searching though the code
+;; base and not finding something similar; custom-set-variables comes
+;; close to what I want, or maybe custom-initialize-changed. Basically
+;; all I want is a setq that is aware of the custom-set property of a
+;; variable. If you know such a macro, please let me know.
 (defmacro csetq (variable value)
-  `(funcall (or (get ',variable 'custom-set) 'set-default) ',variable ,value))
+  `(funcall (or (get ',variable 'custom-set)
+		'set-default)
+	    ',variable ,value))
 
 ;;; ** Window Decorations
 (csetq tool-bar-mode nil)
