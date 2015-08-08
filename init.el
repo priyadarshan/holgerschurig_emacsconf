@@ -622,7 +622,7 @@ If the CDR is nil, then the buffer is only buried."
 (csetq use-file-dialog nil)
 ;; don't add newlines to end of buffer when scrolling, but show them
 (csetq next-line-add-newlines nil)
-;; Preserve hard links to the file youÂ´re editing (this is
+;; Preserve hard links to the file you´re editing (this is
 ;; especially important if you edit system files)
 (csetq backup-by-copying-when-linked t)
 ;; Just never create backup files at all
