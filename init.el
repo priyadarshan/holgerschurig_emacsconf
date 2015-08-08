@@ -846,16 +846,24 @@ If the CDR is nil, then the buffer is only buried."
           "-laGh1v --group-directories-first"))
 (use-package dired-x
     :commands dired-jump)
+;;;_  . ispell
+;; change dictionary with (ispell-change-dictionary) or put this into the first line:
+;; -*- ispell-dictionary: "german-new8" -*-
+(use-package ispell
+ :defer t
+ ;; try ispell-message-dictionary-alist
+ ;;make aspell faster but less correctly
+ (csetq ispell-extra-args '("--sug-mode=ultra")))
 ;;;_  . flyspell
-;; correct with C-M-i
 (use-package flyspell
-  :defer t
-  :diminish flyspell-mode
-  :commands (flyspell-mode flyspell-prog-mode)
-  :config
-  (csetq ispell-program-name "/usr/bin/aspell")
-  ;;make aspell faster but less correctly
-  (csetq ispell-extra-args '("--sug-mode=ultra")))
+ :defer t
+ :diminish flyspell-mode
+ :commands (flyspell-mode flyspell-prog-mode)
+ :config
+ (add-to-list 'flyspell-dictionaries-that-consider-dash-as-word-delimiter "german-new8")
+ (csetq flyspell-issue-welcome-flag nil)
+ ;; M-Tab is owned by the window manager, correct with C-M-i
+ (csetq flyspell-use-meta-tab nil))
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 ;;;_  . helm
 ;; Very good intro: http://tuhdo.github.io/helm-intro.html
