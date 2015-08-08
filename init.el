@@ -822,6 +822,7 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_  . allout
 (use-package allout
   :defer t
+  :diminish allout-mode
   :config
   (csetq allout-command-prefix (kbd "C-c C-c"))
   ;; (csetq allout-default-layout '()
