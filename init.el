@@ -870,9 +870,7 @@ If the CDR is nil, then the buffer is only buried."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; * Org-Mode
-
-;;; ** org-mode (must be before helm)
+;;; * Org-Mode (must be before helm)
 (use-package org
   :defer t
   :init
@@ -900,7 +898,7 @@ If the CDR is nil, then the buffer is only buried."
     ;; method I have in when doing a commit in magit.
     (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map))
 
-;;; *** ox
+;;; ** ox
 (use-package ox
   :defer t
   :config
@@ -915,7 +913,7 @@ If the CDR is nil, then the buffer is only buried."
   ;; #+OPTIONS ^:{}
   (csetq org-export-with-sub-superscripts nil))
 
-;;; *** ox-html
+;;; ** ox-html
 (use-package ox-html
   :defer t
   :config
