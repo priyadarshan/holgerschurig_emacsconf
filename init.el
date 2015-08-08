@@ -155,6 +155,18 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+;;; * Editing
+
+;;; ** Transpose
+;; http://endlessparentheses.com/transposing-keybinds-in-emacs.html
+
+(bind-key "\C-t" #'transpose-lines)
+(bind-key "\C-t" #'transpose-chars  ctl-x-map)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; * Display
 
 ;;; ** Font locking
