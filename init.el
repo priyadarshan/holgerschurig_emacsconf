@@ -160,15 +160,17 @@
 	 ))))
 (add-hook 'find-file-hook 'my--hint-facify)
 
-;; highlight long comment lines
+;; highlight special comment lines
 (defface my--elisp-section-face
-  '((t :background "dark blue"
-       :weight bold))
+  '((t :foreground "dark blue"
+       :background "dark blue"))
   "Font for showing elisp sections."
   :group 'basic-faces)
+
 (font-lock-add-keywords 'emacs-lisp-mode '(
-	 ;; ("^\\(;;;? \\*+ .+\\)" 1 'my--elisp-section-face t)
-	 ("^\\(;;;;;;;;+\\)" 1 'my--elisp-section-face t)))
+	 ("^\\(;;;?_\\) " 1 'my--elisp-section-face t)
+	 ("^\\(;;;;;;;;+\\)" 1 'my--elisp-section-face t)
+	 ))
 ;;;_  . Line truncation
 
 ;; don't display continuation lines
@@ -1101,7 +1103,7 @@ newline to the correct position"
 ;;;_  . Mode: ELisp
 (defun my--elisp-setup ()
   ;; Setup imenu TODO
-  (add-to-list 'imenu-generic-expression '(""  "^;;; \\(\\*.*\\)" 1) t)
+  (add-to-list 'imenu-generic-expression '(""  "^;;;_ \\(.*\\)" 1) t)
   ;; automatically give help about function syntax
   (eldoc-mode t)
   ;; "-" is almost always part of a function- or variable-name
