@@ -93,6 +93,9 @@
 ;;;_  . Localisation
 ;; A sentence doesn't end with two spaces:
 (csetq sentence-end-double-space nil)
+;;;_  . Customization buffer
+;; keep lisp names in the custom buffers, don't capitalize
+(csetq custom-unlispify-tag-names nil)
 ;;;_ * package and use-package
 ;; See http://github.com/jwiegley/use-package/
 ;; or http://www.lunaryorn.com/2015/01/06/my-emacs-configuration-with-use-package.html
