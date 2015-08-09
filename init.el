@@ -1096,20 +1096,43 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_  . Commenting
 (bind-key "C-c c" 'comment-dwim)
 ;;;_  . Compilation
+;; set initial compile-command to nothing, so that F7 will prompt for one
+(csetq compile-command nil)
+
+;; see savehist-minibuffer-history-variables
+;; see diminish-history-symbols
+(defvar compile-commands nil
+  "List of compile commands")
+(add-to-list 'savehist-minibuffer-history-variables 'compile-commands)
+(defun set-compile-command ()
+  "Helper for to set compile-command"
+  (interactive)
+  (let* ((src (helm-build-sync-source "Compile command"
+		:candidates 'compile-commands
+		:persistent-action #'ignore
+		:mode-line '("commands(s)" "")
+		:volatile t
+		:nomark t
+		))
+	 (cmd (helm :sources src
+		    :prompt "cmd: "
+		    :buffer "*compile-command*"
+		    :default (car compile-commands)
+		    :history 'compile-commands
+		    )))
+    (when cmd
+      (setq compile-command cmd))))
+(bind-key "S-<f7>" 'set-compile-command)
+
 (defun my-compile ()
   (interactive)
   (delete-other-windows)
   (save-buffer)
-  (if (fboundp 'eproject-root)
-      (let ((default-directory (eproject-root)))
-	(compile compile-command))
+  (unless compile-command
+    (set-compile-command))
+  (when compile-command
     (compile compile-command)))
 (bind-key "<f7>" 'my-compile)
-
-(defun set-compile-command (&optional cmd)
-  "Helper for to set compile-command"
-  (interactive "scmd: ")
-  (setq compile-command cmd))
 
 ;;; *** Auto close compile log if there are no errors
 ;; [[http://www.emacswiki.org/emacs/ModeCompile]]
