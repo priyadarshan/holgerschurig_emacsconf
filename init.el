@@ -57,8 +57,6 @@
 (csetq inhibit-startup-message t)
 ; This inhibits the initial startup echo area message.
 (eval '(csetq inhibit-startup-echo-area-message "schurig"))
-; Don't ask when running revert-buffer
-(csetq revert-without-query (quote ("")))
 ; Empty scratch message
 (csetq initial-scratch-message nil)
 ; Include current buffer name in the title bar
@@ -654,7 +652,9 @@ If the CDR is nil, then the buffer is only buried."
 (add-hook 'after-save-hook 'merge-x-resources)
 ;;;_  . Autorevert
 (global-auto-revert-mode 1)
-(csetq revert-without-query t)
+;; Don't ask when running revert-buffer when reverting files in this
+;; list of regular expressions:
+(csetq revert-without-query '(""))
 ;;;_  . Decompress compressed files
 (auto-compression-mode t)
 ;;;_  . Quickly save (F2)
