@@ -453,7 +453,9 @@ rather than line counts."
 ;; use + and - after the first expand to expand further / shrink again.
 (use-package expand-region
   :defer t
-  :bind ("C-+" . er/expand-region))
+  :bind ("C-+" . er/expand-region)
+  :config
+  (csetq expand-region-reset-fast-key    "<ESC><ESC>"))
 ;;;_  . avy (alternative to ace-jump-mode)
 (use-package avy
   :defer t
