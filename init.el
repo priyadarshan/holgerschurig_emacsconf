@@ -284,13 +284,34 @@ The list is displayed in a buffer named `*Packages*'."
 ;;;_  . Let emacs react faster to keystrokes
 (csetq echo-keystrokes 0.1)
 (csetq idle-update-delay 0.35)
-;;;_  . DISABLED Powerline (modeline setup)
-;; http://emacs.stackexchange.com/questions/281/how-do-i-get-a-fancier-mode-line-that-uses-solid-colors-and-triangles
-(use-package powerline
-  :disabled t
+;;;_  . Mode line setup
+;; Show line and column numbers in the mode-line
+(line-number-mode 1)
+(column-number-mode 1)
+;;;_  . Smart mode line
+;; https://github.com/Malabarba/smart-mode-line
+(use-package smart-mode-line
   :config
+  (csetq sml/line-number-format    "%4l")
+  (csetq sml/name-width 40) ; buffer name width in the mode-line
+  (csetq sml/mode-width 'full) ; minor mode lighters area width
+  (csetq sml/shorten-modes nil)
+  (csetq sml/no-confirm-load-theme t)
+  (csetq sml/replacer-regexp-list '())
+  (if (display-graphic-p)
+      (progn
+	(require 'smart-mode-line-powerline-theme)
+	(csetq sml/theme 'powerline)
+	)
+    (csetq sml/theme 'light))
+  (sml/setup)
   (when (display-graphic-p)
-    (powerline-default-theme)))
+    (set-face-attribute 'sml/prefix nil :foreground "white")
+    (set-face-attribute 'sml/folder nil :foreground "white")
+    (set-face-attribute 'sml/filename nil :foreground "white")
+    (set-face-attribute 'sml/position-percentage nil :foreground "#660000")
+    (set-face-attribute 'sml/modes nil :foreground "gray50"))
+  )
 ;;;_ * Cursor movement
 ;; First we define code that allows us to bind multiple functions to
 ;; repeated commands. Taken from
