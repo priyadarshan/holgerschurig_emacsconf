@@ -833,6 +833,7 @@ If the CDR is nil, then the buffer is only buried."
   (add-to-list 'allout-prefixed-keybindings '("[?s]" allout-show-current-subtree))
   (add-to-list 'allout-prefixed-keybindings '("[?S]" allout-show-all))
   (add-to-list 'allout-prefixed-keybindings '("[?H]" allout-hide-bodies))
+  (add-to-list 'allout-prefixed-keybindings '("[?b]" allout-hide-bodies))
   ;; (bind-key "C-c s" 'allout-show-current-subtree allout-mode-map-value) ; also on C-c C-c C-s
   (allout-compose-and-institute-keymap)
   )
