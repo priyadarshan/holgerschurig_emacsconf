@@ -1012,19 +1012,19 @@ If the CDR is nil, then the buffer is only buried."
     (csetq helm-candidate-number-limit 100)
     (csetq helm-quick-update t)
     (setq helm-M-x-requires-pattern nil)
+
     (csetq helm-ff-skip-boring-files t)
+    ;; search for library in `require' and `declare-function' sexp.
+    (csetq helm-ff-search-library-in-sexp t)
+    (csetq helm-ff-file-name-history-use-recentf t)
+    (csetq helm-ff-newfile-prompt-p nil)
 
     ;; open helm buffer inside current window, not occupy whole other window
     (csetq helm-split-window-in-side-p t)
     ;; move to end or beginning of source when reaching top or bottom of source.
     (csetq helm-move-to-line-cycle-in-source t)
-    ;; search for library in `require' and `declare-function' sexp.
-    (csetq helm-ff-search-library-in-sexp t)
     ;; scroll 8 lines other window using M-<next>/M-<prior>
     (csetq helm-scroll-amount 8)
-
-    ;; test this out
-    (csetq helm-ff-file-name-history-use-recentf t)
 
     ;; define browser
     (setq helm-browse-url-chromium-program "x-www-browser")
