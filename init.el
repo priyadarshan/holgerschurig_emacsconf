@@ -823,8 +823,11 @@ If the CDR is nil, then the buffer is only buried."
 (use-package allout
   :defer t
   :diminish allout-mode
+  :commands allout-mode
   :config
   (csetq allout-command-prefix (kbd "C-c C-c"))
+  ;; honor allout-layout in file-local variables
+  (csetq allout-auto-activation t)
   ;; (csetq allout-default-layout '()
   (add-to-list 'allout-prefixed-keybindings '("[(control ?h)]" allout-hide-current-subtree))
   (add-to-list 'allout-prefixed-keybindings '("[?s]" allout-show-current-subtree))
@@ -1125,8 +1128,7 @@ newline to the correct position"
   ;; Compile Emacs Lisp source files after the visiting buffers are saved.
   (unless (string= (buffer-name) "*scratch*")
     (auto-compile-mode 1)
-    (allout-mode 1)
-    (allout-hide-bodies))
+    (require 'allout))
   )
 (add-hook 'emacs-lisp-mode-hook 'my--elisp-setup)
 ;;;_  . Mode: Markdown
@@ -1228,3 +1230,7 @@ newline to the correct position"
 (add-hook 'server-switch-hook 'raise-frame)
 (unless (server-running-p)
   (server-start))
+;;;_ * Local file variables
+;; Local Variables:
+;;   allout-layout: 0
+;; End:
