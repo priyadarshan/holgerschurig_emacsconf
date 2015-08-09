@@ -45,6 +45,6 @@
     (message "Installing %s" package)
     (ignore-errors
       (package-install package)))))
-(mapcar 'my-install package-pinned-packages)
+(mapc 'my-install package-pinned-packages)
 
 nil
