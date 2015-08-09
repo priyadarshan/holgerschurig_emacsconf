@@ -105,7 +105,64 @@
 ;;;_  . Customization buffer
 ;; keep lisp names in the custom buffers, don't capitalize
 (csetq custom-unlispify-tag-names nil)
-;;;_ * package and use-package
+;;;_ * Package infrastructure
+;;;_  . package
+;; ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
+;; Move the cookie file out into the =tmp/= directory.
+(csetq url-configuration-directory (concat emacs-d "tmp/"))
+(require 'package)
+(csetq package-enable-at-startup nil)
+(csetq package-archives
+	   '(("melpa-stable" . "http://stable.melpa.org/packages/")
+		 ("melpa"        . "http://melpa.org/packages/")
+		 ("gnu"          . "http://elpa.gnu.org/packages/")
+		 ;; for org-plus-contrib
+		 ;; ("org"          . "http://orgmode.org/elpa/")
+		 ))
+
+;; This is my over version. The original version doesn't read
+;; all archives when called with no-fetch.
+(defun list-packages (&optional no-fetch)
+  "Display a list of packages.
+This first fetches the updated list of packages before
+displaying, unless a prefix argument NO-FETCH is specified.
+The list is displayed in a buffer named `*Packages*'."
+  (interactive "P")
+  (require 'finder-inf nil t)
+  ;; Initialize the package system if necessary.
+  (unless package--initialized
+    (package-initialize t))
+  (let (old-archives new-packages)
+    ;; Read the locally-cached archive-contents.
+    (package-read-all-archive-contents)
+    (setq old-archives package-archive-contents)
+    ;; Fetch the remote list of packages.
+    (unless no-fetch
+      (package-refresh-contents))
+    ;; Find which packages are new.
+    (dolist (elt package-archive-contents)
+      (unless (assq (car elt) old-archives)
+	(push (car elt) new-packages)))
+
+    ;; Generate the Package Menu.
+    (let ((buf (get-buffer-create "*Packages*")))
+      (with-current-buffer buf
+	(package-menu-mode)
+	(set (make-local-variable 'package-menu--new-package-list)
+	     new-packages)
+	(package-menu--generate nil t))
+      ;; The package menu buffer has keybindings.  If the user types
+      ;; `M-x list-packages', that suggests it should become current.
+      (switch-to-buffer buf))
+
+    (let ((upgrades (package-menu--find-upgrades)))
+      (if upgrades
+	  (message "%d package%s can be upgraded; type `%s' to mark %s for upgrading."
+		   (length upgrades)
+		   (if (= (length upgrades) 1) "" "s")
+		   (substitute-command-keys "\\[package-menu-mark-upgrades]")
+		   (if (= (length upgrades) 1) "it" "them"))))))
+;;;_  . use-package
 ;; See http://github.com/jwiegley/use-package/
 ;; or http://www.lunaryorn.com/2015/01/06/my-emacs-configuration-with-use-package.html
 ;;
@@ -137,15 +194,6 @@
 ;;                which they are evaluated.
 ;; :ensure        loads package using package.el if necessary.
 
-;; ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
-;; Move the cookie file out into the =tmp/= directory.
-(csetq url-configuration-directory (concat emacs-d "tmp/"))
-(require 'package)
-(csetq package-enable-at-startup nil)
-(setq package-archives
-      '(("melpa-stable" . "http://stable.melpa.org/packages/")
-	("melpa"        . "http://melpa.org/packages/")
-        ("gnu"          . "http://elpa.gnu.org/packages/")))
 ;; Automatically install `use-package'
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
