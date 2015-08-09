@@ -878,7 +878,11 @@ If the CDR is nil, then the buffer is only buried."
  (add-to-list 'flyspell-dictionaries-that-consider-dash-as-word-delimiter "german-new8")
  (csetq flyspell-issue-welcome-flag nil)
  ;; M-Tab is owned by the window manager, correct with C-M-i
- (csetq flyspell-use-meta-tab nil))
+ (csetq flyspell-use-meta-tab nil)
+ ;; Flyspell hijacked C-., which I want to use for tags
+ (define-key flyspell-mode-map [(control ?\.)] nil)
+ (bind-key "C-c C-s" 'flyspell-correct-word-before-point flyspell-mode-map)
+ )
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 ;;;_  . helm
 ;; Very good intro: http://tuhdo.github.io/helm-intro.html
