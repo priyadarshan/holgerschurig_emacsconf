@@ -1036,14 +1036,15 @@ If the CDR is nil, then the buffer is only buried."
     (add-to-list 'helm-boring-file-regexp-list "\\.#")
 
     ;; see (customize-group "helm-files-faces")
-    (set-face-attribute 'helm-ff-directory       nil :foreground 'unspecified :background 'unspecified)
-    (set-face-attribute 'helm-ff-executable      nil :foreground 'unspecified :background 'unspecified)
-    (set-face-attribute 'helm-ff-file            nil :foreground 'unspecified :background 'unspecified :inherit 'unspecified)
-    (set-face-attribute 'helm-ff-invalid-symlink nil :foreground 'unspecified :background 'unspecified)
-    ;;(set-face-attribute 'helm-ff-prefix          nil :foreground 'unspecified :background 'unspecified)
-    (set-face-attribute 'helm-ff-symlink         nil :foreground 'unspecified :background 'unspecified)
-    (set-face-attribute 'helm-history-deleted    nil :foreground 'unspecified :background 'unspecified)
-    (set-face-attribute 'helm-history-remote     nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-ff-directory        nil :foreground "red" :background 'unspecified)
+    (set-face-attribute 'helm-ff-dotted-directory nil :foreground "red" :background 'unspecified)
+    (set-face-attribute 'helm-ff-executable       nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-ff-file             nil :foreground 'unspecified :background 'unspecified :inherit 'unspecified)
+    (set-face-attribute 'helm-ff-invalid-symlink  nil :foreground 'unspecified :background 'unspecified)
+    ;;(set-face-attribute 'helm-ff-prefix         nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-ff-symlink          nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-history-deleted     nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-history-remote      nil :foreground 'unspecified :background 'unspecified)
 
     ;; this is kind of a goto, you can visit all marks
     (bind-key "g"   'helm-all-mark-rings helm-command-map)))
