@@ -247,10 +247,11 @@ The list is displayed in a buffer named `*Packages*'."
 	 ("^\\(;;;;;;;;+\\)" 1 'my--elisp-section-face t)
 	 ))
 ;;;_  . Line truncation
-
 ;; don't display continuation lines
-(csetq truncate-lines t)
-;; respect truncate-lines:
+(setq-default truncate-lines t)
+;; Do `M-x toggle-truncate-lines` to toggle truncation mode.
+;; `truncate-partial-width-windows' has to be nil for `toggle-truncate-lines'
+;; to work even in split windows
 (csetq truncate-partial-width-windows nil)
 ;;;_  . Show trailing whitespace
 (add-hook 'find-file-hook
