@@ -1329,6 +1329,11 @@ newline to the correct position"
      )
   :bind ("C-c m" . magit-status)
   :commands (magit-get-top-dir))
+;;;_  . Package: magit-timemachine
+(use-package git-timemachine
+  :defer t
+  :commands git-timemachine
+  )
 ;;;_ * Emacs server
 (require 'server)
 (add-hook 'server-switch-hook 'raise-frame)

@@ -21,6 +21,7 @@
         (expand-region    . "melpa-stable")
         (guide-key        . "melpa-stable")
         (iflipb           . "melpa-stable")
+        (git-timemachine  . "melpa-stable")
         (helm             . "melpa-stable")
         (helm-descbinds   . "melpa-stable")
         (helm-swoop       . "melpa")
