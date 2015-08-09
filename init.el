@@ -592,28 +592,44 @@ If the CDR is nil, then the buffer is only buried."
 (setq kill-buffer-query-functions
       (remq 'process-kill-buffer-query-function
 	     kill-buffer-query-functions))
-;;;_  . cycbuf (cycle buffers)
-(use-package cycbuf
+;;;_  . Cycle buffers with iflipb
+;; http://www.emacswiki.org/emacs/iflipb
+(use-package iflipb
   :defer t
-  :bind (("<f6>"   . cycbuf-switch-to-next-buffer)
-	 ("S-<f6>" . cycbuf-switch-to-previous-buffer))
-  :init
-  (progn
-    (setq cycbuf-dont-show-regexp
-        '("^ "
-	  "^\\*"
-	  ))
-    (setq ;; sort by recency
-          cycbuf-buffer-sort-function 'cycbuf-sort-by-recency
-	  ;; Format of header
-	  cycbuf-attributes-list
-	  '(("M"          2                      left  cycbuf-get-modified-string)
-	    ("Buffer"     cycbuf-get-name-length left  cycbuf-get-name)
-	    (""           2                      left  " ")
-	    ("Directory"  cycbuf-get-file-length left  cycbuf-get-file-name)
-	    (""           2                      left  "  ")
-	    ("Mode"      12                      left  cycbuf-get-mode-name)
-	    ))))
+  :commands (iflipb-next-buffer iflipb-previous-buffer)
+  :bind (("<f6>"   . my-iflipb-next-buffer)
+  	 ("S-<f6>" . my-iflipb-previous-buffer))
+  :config
+  (csetq iflipb-wrap-around t)
+
+  (setq my-iflipb-auto-off-timeout-sec 4.5)
+  (setq my-iflipb-auto-off-timer-canceler-internal nil)
+  (setq my-iflipb-ing-internal nil)
+  (defun my-iflipb-auto-off ()
+    (message nil)
+    (setq my-iflipb-auto-off-timer-canceler-internal nil
+	  my-iflipb-ing-internal nil))
+  (defun my-iflipb-next-buffer (arg)
+    (interactive "P")
+    (iflipb-next-buffer arg)
+    (if my-iflipb-auto-off-timer-canceler-internal
+	(cancel-timer my-iflipb-auto-off-timer-canceler-internal))
+    (run-with-idle-timer my-iflipb-auto-off-timeout-sec 0 'my-iflipb-auto-off)
+    (setq my-iflipb-ing-internal t))
+  (defun my-iflipb-previous-buffer ()
+    (interactive)
+    (iflipb-previous-buffer)
+    (if my-iflipb-auto-off-timer-canceler-internal
+	(cancel-timer my-iflipb-auto-off-timer-canceler-internal))
+    (run-with-idle-timer my-iflipb-auto-off-timeout-sec 0 'my-iflipb-auto-off)
+    (setq my-iflipb-ing-internal t))
+  (defun iflipb-first-iflipb-buffer-switch-command ()
+    "Determines whether this is the first invocation of
+  iflipb-next-buffer or iflipb-previous-buffer this round."
+    (not (and (or (eq last-command 'my-iflipb-next-buffer)
+		  (eq last-command 'my-iflipb-previous-buffer))
+	      my-iflipb-ing-internal)))
+)
 ;;;_  . ace-jump-buffer
 (use-package ace-jump-buffer
   :defer t
