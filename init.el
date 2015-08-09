@@ -52,6 +52,17 @@
 ;; put something like this into ~/.Xresources
 ;; Emacs.geometry: 120x55
 ;; Emacs.Font:     Terminus 11
+;;;_  . Blend fringe
+;; http://emacs.stackexchange.com/a/5343/115
+(defun my-blend-fringe ()
+  (interactive)
+  "Set the fringe foreground and background color to that of the theme."
+  (set-face-attribute 'fringe nil
+                      :foreground (if (string= (face-foreground 'default) "unspecified-fg")
+                                      "#f7f7f7" (face-foreground 'default))
+                      :background (if (string= (face-background 'default) "unspecified-bg")
+									  "#282828" (face-background 'default))))
+(my-blend-fringe)
 ;;;_  . Entering/exiting Emacs
 ; Do without annoying startup msg.
 (csetq inhibit-startup-message t)
