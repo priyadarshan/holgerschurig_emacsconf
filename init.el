@@ -1232,16 +1232,15 @@ newline to the correct position"
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 ;;;_  . Mode: Ediff
 ;; http://oremacs.com/2015/01/17/setting-up-ediff/
-(defun my--ediff-hook ()
-  (ediff-setup-keymap)
-  (bind-key "j" 'ediff-next-difference ediff-mode-map)
-  (bind-key "k" 'ediff-previous-difference ediff-mode-map))
-
 (use-package ediff
   :config
   (csetq ediff-window-setup-function 'ediff-setup-windows-plain)
   (csetq ediff-split-window-function 'split-window-horizontally)
   (csetq ediff-diff-options "-w")
+  (defun my--ediff-hook ()
+    (ediff-setup-keymap)
+    (bind-key "j" 'ediff-next-difference ediff-mode-map)
+    (bind-key "k" 'ediff-previous-difference ediff-mode-map))
   (add-hook 'ediff-mode-hook 'my--ediff-hook)
   (add-hook 'ediff-after-quit-hook-internal 'winner-undo))
 ;;;_  . Mode: ELisp
