@@ -1107,10 +1107,11 @@ If the CDR is nil, then the buffer is only buried."
 (defun set-compile-command ()
   "Helper for to set compile-command"
   (interactive)
-  (let* ((src (helm-build-sync-source "Compile command"
+  (let* ((helm-mode-line-string "commands(s)")
+	 (src (helm-build-sync-source "Compile command"
 		:candidates 'compile-commands
 		:persistent-action #'ignore
-		:mode-line '("commands(s)" "")
+		:mode-line t
 		:volatile t
 		:nomark t
 		))
