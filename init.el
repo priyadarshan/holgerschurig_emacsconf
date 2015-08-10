@@ -84,6 +84,8 @@
 ;; Use new byte codes from Emacs 24.4
 (setq byte-compile--use-old-handlers nil)
 (csetq ad-redefinition-action 'accept)
+;;;_  . allow some commands
+(put 'erase-buffer 'disabled nil)
 ;;;_  . Default browser
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "x-www-browser")
