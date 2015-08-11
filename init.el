@@ -1091,7 +1091,7 @@ If the CDR is nil, then the buffer is only buried."
  ;; try ispell-message-dictionary-alist
  ;;make aspell faster but less correctly
  (csetq ispell-extra-args '("--sug-mode=ultra")))
-;;;_  . flyspell
+;;;_  . flyspell and helm-flyspell
 (use-package flyspell
  :defer t
  :diminish flyspell-mode
@@ -1103,13 +1103,20 @@ If the CDR is nil, then the buffer is only buried."
  (csetq flyspell-use-meta-tab nil)
  ;; Flyspell hijacked C-., which I want to use for tags
  (define-key flyspell-mode-map [(control ?\.)] nil)
- (bind-key "C-c C-s" 'flyspell-correct-word-before-point flyspell-mode-map)
  )
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'org-mode-hook 'flyspell-mode)
 (add-hook 'latex-mode-hook 'flyspell-mode)
 (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+
+;; https://github.com/pronobis/helm-flyspell
+(use-package helm-flyspell
+  :defer t
+  :commands helm-flyspell-correct
+  :config
+  (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
+  )
 ;;;_ * Programming
 ;;;_  . Tab handling
 (use-package tabify
