@@ -918,93 +918,7 @@ If the CDR is nil, then the buffer is only buried."
     (csetq org-html-style-default "<style type=\"text/css\">\n <!--/*--><![CDATA[/*><!--*/\n  body { text-align: center; font-family: \"Aria\", sans-serif; }\n  #content { margin: 0 auto; width: 860px; text-align: left; }\n  #text-table-of-contents > ul > li { margin-top: 1em; }\n  .title  { text-align: center; }\n  .todo   { font-family: monospace; color: red; }\n  .done   { color: green; }\n  .tag    { background-color: #eee; font-family: monospace;\n            padding: 2px; font-size: 80%; font-weight: normal; }\n  .timestamp { color: #bebebe; }\n  .timestamp-kwd { color: #5f9ea0; }\n  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }\n  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }\n  .center { margin-left: auto; margin-right: auto; text-align: center; }\n  .underline { text-decoration: underline; }\n  #postamble p, #preamble p { font-size: 90%; margin: .2em; }\n  p.verse { margin-left: 3%; }\n  pre {\n    border: 1px solid #ccc;\n    box-shadow: 3px 3px 3px #eee;\n    padding: 8pt;\n    font-family: monospace;\n    overflow: auto;\n    margin: 1em 0;\n  }\n  pre.src {\n    position: relative;\n    overflow: visible;\n    padding-top: 8pt;\n  }\n  pre.src:before {\n    display: none;\n    position: absolute;\n    background-color: white;\n    top: -10px;\n    right: 10px;\n    padding: 3px;\n    border: 1px solid black;\n  }\n  pre.src:hover:before { display: inline;}\n  pre.src-sh:before    { content: 'sh'; }\n  pre.src-bash:before  { content: 'sh'; }\n  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }\n  pre.src-R:before     { content: 'R'; }\n  pre.src-perl:before  { content: 'Perl'; }\n  pre.src-java:before  { content: 'Java'; }\n  pre.src-sql:before   { content: 'SQL'; }\n\n  table { border-collapse:collapse; }\n  caption.t-above { caption-side: top; }\n  caption.t-bottom { caption-side: bottom; }\n  td, th { vertical-align:top;  }\n  th.right  { text-align: center;  }\n  th.left   { text-align: center;   }\n  th.center { text-align: center; }\n  td.right  { text-align: right;  }\n  td.left   { text-align: left;   }\n  td.center { text-align: center; }\n  dt { font-weight: bold; }\n  .footpara:nth-child(2) { display: inline; }\n  .footpara { display: block; }\n  .footdef  { margin-bottom: 1em; }\n  .figure { padding: 1em; }\n  .figure p { text-align: center; }\n  .inlinetask {\n    padding: 10px;\n    border: 2px solid gray;\n    margin: 10px;\n    background: #ffffcc;\n  }\n  #org-div-home-and-up\n   { text-align: right; font-size: 70%; white-space: nowrap; }\n  textarea { overflow-x: auto; }\n  .linenr { font-size: smaller }\n  .code-highlighted { background-color: #ffff00; }\n  .org-info-js_info-navigation { border-style: none; }\n  #org-info-js_console-label\n    { font-size: 10px; font-weight: bold; white-space: nowrap; }\n  .org-info-js_search-highlight\n    { background-color: #ffff00; color: #000000; font-weight: bold; }\n  .ulClassNameOrID > li {}\n  /*]]>*/-->\n</style>")
     (csetq org-html-table-default-attributes '(:border "2" :cellspacing "0" :cellpadding "6"))
     (csetq org-html-postamble t))
-;;;_ * Packages
-;;;_  . allout
-(use-package allout
-  :defer t
-  :diminish allout-mode
-  :commands allout-mode
-  :config
-  (csetq allout-command-prefix (kbd "C-c C-c"))
-  ;; honor allout-layout in file-local variables
-  (csetq allout-auto-activation t)
-  ;; (csetq allout-default-layout '()
-  (add-to-list 'allout-prefixed-keybindings '("[(control ?h)]" allout-hide-current-subtree))
-  (add-to-list 'allout-prefixed-keybindings '("[?s]" allout-show-current-subtree))
-  (add-to-list 'allout-prefixed-keybindings '("[?S]" allout-show-all))
-  (add-to-list 'allout-prefixed-keybindings '("[?H]" allout-hide-bodies))
-  (add-to-list 'allout-prefixed-keybindings '("[?b]" allout-hide-bodies))
-  ;; (bind-key "C-c s" 'allout-show-current-subtree allout-mode-map-value) ; also on C-c C-c C-s
-  (allout-compose-and-institute-keymap)
-  )
-;;;_  . circe (IRC client)
-;; see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Configuration
-(use-package circe
-  :defer t
-  :commands (circe)
-  :config
-  (csetq circe-default-part-message "Fire on mainboard error")
-  (csetq circe-quit-part-message "Fire on mainboard error")
-  (csetq circe-reduce-lurker-spam t)
-  ;; (circe-set-display-handler "JOIN" (lambda (&rest ignored) nil))
-  ;; (csetq circe-use-cycle-completion t)
-  (csetq circe-format-say "{nick}: {body}")
-  (csetq circe-server-killed-confirmation 'ask-and-kill-all)
-  ;; Network settings
-  (csetq circe-default-ip-family 'ipv4)
-  (csetq circe-server-auto-join-default-type 'after-auth) ; XXX try after-nick
-  (csetq circe-network-options `(("Freenode"
-				  :host "kornbluth.freenode.net"
-				  :port (6667 . 6697)
-				  :channels ("#emacs" "#emacs-circe")
-				  :nickserv-password ,freenode-password)
-				 ))
-  ;; Misc
-  ;; (setq circe-format-server-topic "*** Topic change by {userhost}: {topic-diff}")
-  (use-package lui-autopaste
-    :config
-    (add-hook 'circe-channel-mode-hook 'enable-lui-autopaste))
-  )
-
-(defun irc ()
-  "Connect to IRC"
-  (interactive)
-  (circe "Freenode"))
-;;;_  . dired
-(use-package dired
-    :commands dired
-    :init
-    (setq dired-listing-switches
-          "-laGh1v --group-directories-first"))
-(use-package dired-x
-    :commands dired-jump)
-;;;_  . ispell
-;; change dictionary with (ispell-change-dictionary) or put this into the first line:
-;; -*- ispell-dictionary: "german-new8" -*-
-(use-package ispell
- :defer t
- ;; try ispell-message-dictionary-alist
- ;;make aspell faster but less correctly
- (csetq ispell-extra-args '("--sug-mode=ultra")))
-;;;_  . flyspell
-(use-package flyspell
- :defer t
- :diminish flyspell-mode
- :commands (flyspell-mode flyspell-prog-mode)
- :config
- (add-to-list 'flyspell-dictionaries-that-consider-dash-as-word-delimiter "german-new8")
- (csetq flyspell-issue-welcome-flag nil)
- ;; M-Tab is owned by the window manager, correct with C-M-i
- (csetq flyspell-use-meta-tab nil)
- ;; Flyspell hijacked C-., which I want to use for tags
- (define-key flyspell-mode-map [(control ?\.)] nil)
- (bind-key "C-c C-s" 'flyspell-correct-word-before-point flyspell-mode-map)
- )
-(add-hook 'prog-mode-hook 'flyspell-prog-mode)
-(add-hook 'text-mode-hook 'flyspell-mode)
-(add-hook 'org-mode-hook 'flyspell-mode)
-(add-hook 'latex-mode-hook 'flyspell-mode)
-(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+;;;_ * Base Packages (often used by other packages)
 ;;;_  . helm
 ;; Very good intro: http://tuhdo.github.io/helm-intro.html
 (defun my-helm-imenu ()
@@ -1086,6 +1000,66 @@ If the CDR is nil, then the buffer is only buried."
 
     ;; this is kind of a goto, you can visit all marks
     (bind-key "g"   'helm-all-mark-rings helm-command-map)))
+;;;_ * Packages
+;;;_  . allout
+(use-package allout
+  :defer t
+  :diminish allout-mode
+  :commands allout-mode
+  :config
+  (csetq allout-command-prefix (kbd "C-c C-c"))
+  ;; honor allout-layout in file-local variables
+  (csetq allout-auto-activation t)
+  ;; (csetq allout-default-layout '()
+  (add-to-list 'allout-prefixed-keybindings '("[(control ?h)]" allout-hide-current-subtree))
+  (add-to-list 'allout-prefixed-keybindings '("[?s]" allout-show-current-subtree))
+  (add-to-list 'allout-prefixed-keybindings '("[?S]" allout-show-all))
+  (add-to-list 'allout-prefixed-keybindings '("[?H]" allout-hide-bodies))
+  (add-to-list 'allout-prefixed-keybindings '("[?b]" allout-hide-bodies))
+  ;; (bind-key "C-c s" 'allout-show-current-subtree allout-mode-map-value) ; also on C-c C-c C-s
+  (allout-compose-and-institute-keymap)
+  )
+;;;_  . circe (IRC client)
+;; see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Configuration
+(use-package circe
+  :defer t
+  :commands (circe)
+  :config
+  (csetq circe-default-part-message "Fire on mainboard error")
+  (csetq circe-quit-part-message "Fire on mainboard error")
+  (csetq circe-reduce-lurker-spam t)
+  ;; (circe-set-display-handler "JOIN" (lambda (&rest ignored) nil))
+  ;; (csetq circe-use-cycle-completion t)
+  (csetq circe-format-say "{nick}: {body}")
+  (csetq circe-server-killed-confirmation 'ask-and-kill-all)
+  ;; Network settings
+  (csetq circe-default-ip-family 'ipv4)
+  (csetq circe-server-auto-join-default-type 'after-auth) ; XXX try after-nick
+  (csetq circe-network-options `(("Freenode"
+				  :host "kornbluth.freenode.net"
+				  :port (6667 . 6697)
+				  :channels ("#emacs" "#emacs-circe")
+				  :nickserv-password ,freenode-password)
+				 ))
+  ;; Misc
+  ;; (setq circe-format-server-topic "*** Topic change by {userhost}: {topic-diff}")
+  (use-package lui-autopaste
+    :config
+    (add-hook 'circe-channel-mode-hook 'enable-lui-autopaste))
+  )
+
+(defun irc ()
+  "Connect to IRC"
+  (interactive)
+  (circe "Freenode"))
+;;;_  . dired
+(use-package dired
+    :commands dired
+    :init
+    (setq dired-listing-switches
+          "-laGh1v --group-directories-first"))
+(use-package dired-x
+    :commands dired-jump)
 ;;;_  . helm-descbinds
 (use-package helm-descbinds
   :defer t
@@ -1109,6 +1083,33 @@ If the CDR is nil, then the buffer is only buried."
   (bind-key "C-s" 'helm-next-line     helm-swoop-map)
   (bind-key "C-r" 'helm-previous-line helm-multi-swoop-map)
   (bind-key "C-s" 'helm-next-line     helm-multi-swoop-map))
+;;;_  . ispell
+;; change dictionary with (ispell-change-dictionary) or put this into the first line:
+;; -*- ispell-dictionary: "german-new8" -*-
+(use-package ispell
+ :defer t
+ ;; try ispell-message-dictionary-alist
+ ;;make aspell faster but less correctly
+ (csetq ispell-extra-args '("--sug-mode=ultra")))
+;;;_  . flyspell
+(use-package flyspell
+ :defer t
+ :diminish flyspell-mode
+ :commands (flyspell-mode flyspell-prog-mode)
+ :config
+ (add-to-list 'flyspell-dictionaries-that-consider-dash-as-word-delimiter "german-new8")
+ (csetq flyspell-issue-welcome-flag nil)
+ ;; M-Tab is owned by the window manager, correct with C-M-i
+ (csetq flyspell-use-meta-tab nil)
+ ;; Flyspell hijacked C-., which I want to use for tags
+ (define-key flyspell-mode-map [(control ?\.)] nil)
+ (bind-key "C-c C-s" 'flyspell-correct-word-before-point flyspell-mode-map)
+ )
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'org-mode-hook 'flyspell-mode)
+(add-hook 'latex-mode-hook 'flyspell-mode)
+(add-hook 'LaTeX-mode-hook 'flyspell-mode)
 ;;;_ * Programming
 ;;;_  . Tab handling
 (use-package tabify
