@@ -936,6 +936,39 @@ If the CDR is nil, then the buffer is only buried."
   ;; (bind-key "C-c s" 'allout-show-current-subtree allout-mode-map-value) ; also on C-c C-c C-s
   (allout-compose-and-institute-keymap)
   )
+;;;_  . circe (IRC client)
+;; see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Configuration
+(use-package circe
+  :defer t
+  :commands (circe)
+  :config
+  (csetq circe-default-part-message "Fire on mainboard error")
+  (csetq circe-quit-part-message "Fire on mainboard error")
+  (csetq circe-reduce-lurker-spam t)
+  ;; (circe-set-display-handler "JOIN" (lambda (&rest ignored) nil))
+  ;; (csetq circe-use-cycle-completion t)
+  (csetq circe-format-say "{nick}: {body}")
+  (csetq circe-server-killed-confirmation 'ask-and-kill-all)
+  ;; Network settings
+  (csetq circe-default-ip-family 'ipv4)
+  (csetq circe-server-auto-join-default-type 'after-auth) ; XXX try after-nick
+  (csetq circe-network-options `(("Freenode"
+				  :host "kornbluth.freenode.net"
+				  :port (6667 . 6697)
+				  :channels ("#emacs" "#emacs-circe")
+				  :nickserv-password ,freenode-password)
+				 ))
+  ;; Misc
+  ;; (setq circe-format-server-topic "*** Topic change by {userhost}: {topic-diff}")
+  (use-package lui-autopaste
+    :config
+    (add-hook 'circe-channel-mode-hook 'enable-lui-autopaste))
+  )
+
+(defun irc ()
+  "Connect to IRC"
+  (interactive)
+  (circe "Freenode"))
 ;;;_  . dired
 (use-package dired
     :commands dired
