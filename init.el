@@ -84,6 +84,8 @@
 ;; Use new byte codes from Emacs 24.4
 (setq byte-compile--use-old-handlers nil)
 (csetq ad-redefinition-action 'accept)
+;;;_  . allow some commands
+(put 'erase-buffer 'disabled nil)
 ;;;_  . Default browser
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "x-www-browser")
@@ -680,8 +682,6 @@ If the CDR is nil, then the buffer is only buried."
 (use-package iflipb
   :defer t
   :commands (iflipb-next-buffer iflipb-previous-buffer)
-  :bind (("<f6>"   . my-iflipb-next-buffer)
-  	 ("S-<f6>" . my-iflipb-previous-buffer))
   :config
   (csetq iflipb-wrap-around t)
 
@@ -699,6 +699,7 @@ If the CDR is nil, then the buffer is only buried."
 	(cancel-timer my-iflipb-auto-off-timer-canceler-internal))
     (run-with-idle-timer my-iflipb-auto-off-timeout-sec 0 'my-iflipb-auto-off)
     (setq my-iflipb-ing-internal t))
+  (bind-key "<f6>" 'my-iflipb-next-buffer)
   (defun my-iflipb-previous-buffer ()
     (interactive)
     (iflipb-previous-buffer)
@@ -706,13 +707,13 @@ If the CDR is nil, then the buffer is only buried."
 	(cancel-timer my-iflipb-auto-off-timer-canceler-internal))
     (run-with-idle-timer my-iflipb-auto-off-timeout-sec 0 'my-iflipb-auto-off)
     (setq my-iflipb-ing-internal t))
+  (bind-key "S-<f6>" 'my-iflipb-previous-buffer)
   (defun iflipb-first-iflipb-buffer-switch-command ()
     "Determines whether this is the first invocation of
   iflipb-next-buffer or iflipb-previous-buffer this round."
     (not (and (or (eq last-command 'my-iflipb-next-buffer)
 		  (eq last-command 'my-iflipb-previous-buffer))
-	      my-iflipb-ing-internal)))
-)
+	      my-iflipb-ing-internal))))
 ;;;_  . ace-jump-buffer
 (use-package ace-jump-buffer
   :defer t
@@ -1145,10 +1146,11 @@ If the CDR is nil, then the buffer is only buried."
 (defun set-compile-command ()
   "Helper for to set compile-command"
   (interactive)
-  (let* ((src (helm-build-sync-source "Compile command"
+  (let* ((helm-mode-line-string "commands(s)")
+	 (src (helm-build-sync-source "Compile command"
 		:candidates 'compile-commands
 		:persistent-action #'ignore
-		:mode-line '("commands(s)" "")
+		:mode-line t
 		:volatile t
 		:nomark t
 		))
@@ -1270,16 +1272,15 @@ newline to the correct position"
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 ;;;_  . Mode: Ediff
 ;; http://oremacs.com/2015/01/17/setting-up-ediff/
-(defun my--ediff-hook ()
-  (ediff-setup-keymap)
-  (bind-key "j" 'ediff-next-difference ediff-mode-map)
-  (bind-key "k" 'ediff-previous-difference ediff-mode-map))
-
 (use-package ediff
   :config
   (csetq ediff-window-setup-function 'ediff-setup-windows-plain)
   (csetq ediff-split-window-function 'split-window-horizontally)
   (csetq ediff-diff-options "-w")
+  (defun my--ediff-hook ()
+    (ediff-setup-keymap)
+    (bind-key "j" 'ediff-next-difference ediff-mode-map)
+    (bind-key "k" 'ediff-previous-difference ediff-mode-map))
   (add-hook 'ediff-mode-hook 'my--ediff-hook)
   (add-hook 'ediff-after-quit-hook-internal 'winner-undo))
 ;;;_  . Mode: ELisp
