@@ -1000,6 +1000,10 @@ If the CDR is nil, then the buffer is only buried."
  (bind-key "C-c C-s" 'flyspell-correct-word-before-point flyspell-mode-map)
  )
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'org-mode-hook 'flyspell-mode)
+(add-hook 'latex-mode-hook 'flyspell-mode)
+(add-hook 'LaTeX-mode-hook 'flyspell-mode)
 ;;;_  . helm
 ;; Very good intro: http://tuhdo.github.io/helm-intro.html
 (defun my-helm-imenu ()
