@@ -256,15 +256,11 @@ The list is displayed in a buffer named `*Packages*'."
 ;; to work even in split windows
 (csetq truncate-partial-width-windows nil)
 ;;;_  . Show trailing whitespace
-(add-hook 'find-file-hook
-	  '(lambda ()
-	     ;; This hack allows the diff-mode hook to set the
-	     ;; variable to -1. The find-file-hook fires after the
-	     ;; diff-mode hook, so we get the -1 and are able to turn
-	     ;; off the display of trailing whitespaces.
-	     (if (eq show-trailing-whitespace -1)
-		 (csetq show-trailing-whitespace nil)
-	       (csetq show-trailing-whitespace t))))
+(defun my--show-trailing-whitespace ()
+    (interactive)
+    (csetq show-trailing-whitespace t)
+    )
+(add-hook 'prog-mode-hook 'my--show-trailing-whitespace)
 ;;;_  . Buffers without toolbar, extra frame etc
 (add-to-list 'special-display-buffer-names "*Backtrace*")
 (add-to-list 'special-display-frame-alist '(tool-bar-lines . 0))
