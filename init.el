@@ -867,6 +867,25 @@ If the CDR is nil, then the buffer is only buried."
   "Insert date at point format the RFC822 way."
   (interactive)
   (insert (format-time-string "%a, %e %b %Y %H:%M:%S %z")))
+;;;_  . email
+;; http://emacs.stackexchange.com/questions/6105/how-to-set-proper-smtp-gmail-settings-in-emacs-in-order-to-be-able-to-work-with
+;; http://superuser.com/questions/476714/how-to-configure-emacs-smtp-for-using-a-secure-server-gmail
+(use-package smtpmail
+  :config
+  (setq ;;send-mail-function 'smtpmail-send-it ; if you use `mail'
+	;;message-send-mail-function 'smtpmail-send-it) ; if you use message/Gnus
+       ;; smtpmail-starttls-credentials '(("smtp.gmail.com" "587" nil nil))
+       ;; smtpmail-auth-credentials (expand-file-name "~/.authinfo")
+      smtpmail-default-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587
+      smtpmail-debug-info t)
+      )
+(use-package message
+  :config
+  (require 'starttls)
+  (require 'smtpmail))
+;;   (setq message-send-mail-function 'smtpmail-send-it))
 ;;;_ * Org-Mode (must be before helm)
 (use-package org
   :defer t
