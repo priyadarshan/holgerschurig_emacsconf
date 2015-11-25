@@ -720,7 +720,7 @@ If the CDR is nil, then the buffer is only buried."
 (csetq use-file-dialog nil)
 ;; don't add newlines to end of buffer when scrolling, but show them
 (csetq next-line-add-newlines nil)
-;; Preserve hard links to the file you´re editing (this is
+;; Preserve hard links to the file youÂ´re editing (this is
 ;; especially important if you edit system files)
 (csetq backup-by-copying-when-linked t)
 ;; Just never create backup files at all
@@ -1037,12 +1037,13 @@ If the CDR is nil, then the buffer is only buried."
 ;; see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Configuration
 (use-package circe
   :defer t
-  :commands (circe)
+  :commands circe
   :config
   (csetq circe-default-part-message "Fire on mainboard error")
   (csetq circe-quit-part-message "Fire on mainboard error")
   (csetq circe-reduce-lurker-spam t)
   ;; (circe-set-display-handler "JOIN" (lambda (&rest ignored) nil))
+  ;; (circe-set-display-handler "QUIT" (lambda (&rest ignored) nil))
   ;; (csetq circe-use-cycle-completion t)
   (csetq circe-format-say "{nick}: {body}")
   (csetq circe-server-killed-confirmation 'ask-and-kill-all)
