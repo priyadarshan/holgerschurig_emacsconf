@@ -1074,6 +1074,95 @@ If the CDR is nil, then the buffer is only buried."
           "-laGh1v --group-directories-first"))
 (use-package dired-x
     :commands dired-jump)
+;;;_  . gnus
+;; https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnus-guide-en.org
+;; http://www.emacswiki.org/emacs/GnusGmail
+;; http://www.xsteve.at/prg/gnus/
+;; https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
+(use-package gnus
+  :config
+
+  ;;@see http://gnus.org/manual/gnus_397.html
+
+  (setq gnus-select-method '(nnnil ""))
+  (setq gnus-secondary-select-methods  
+      '((nntp "news.gmane.org")
+        (nnimap "imap.gmail.com"
+                (nnimap-address "imap.gmail.com")
+                (nnimap-server-port 993)
+                (nnimap-stream ssl)
+
+                ;; (nnimap-authenticator login)
+
+		;; @see http://www.gnu.org/software/emacs/manual/html_node/gnus/Expiring-Mail.html
+		;; press 'E' to expire email
+		;; (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
+		;; (nnmail-expiry-wait 90))
+		)))
+
+  ;; I prefer to see only the top level message.  If a message has
+  ;; several replies or is part of a thread, only show the first
+  ;; message.  'gnus-thread-ignore-subject' will ignore the subject and
+  ;; look at 'In-Reply-To:' and 'References:' headers.
+  (setq gnus-thread-hide-subtree t)
+
+  (setq smtpmail-smtp-service 587)
+
+  ;; don't substitute my e-mail with some "-> RECEIVER" magic
+  (setq gnus-ignored-from-addresses nil)
+
+  ;; put new threats at the top
+  (setq gnus-thread-sort-functions '((not gnus-thread-sort-by-date)
+  				     (not gnus-thread-sort-by-number)))
+
+  ;; Hide HTML mail
+  (setq mm-discouraged-alternatives '("text/html" "text/richtext")
+	mm-automatic-display (-difference mm-automatic-display '("text/html" "text/enriched" "text/richtext")))
+
+  ;; The scoring system sorts articles and authors you read often to
+  ;; the beginning of the available mails. Less interesting stuff is
+  ;; located at the end.
+  (setq gnus-use-adaptive-scoring t)
+  (setq gnus-score-expiry-days 14)
+  (setq gnus-default-adaptive-score-alist
+	'((gnus-unread-mark)
+	  (gnus-ticked-mark (from 4))
+	  (gnus-dormant-mark (from 5))
+	  (gnus-saved-mark (from 20) (subject 5))
+	  (gnus-del-mark (from -2) (subject -5))
+	  (gnus-read-mark (from 2) (subject 1))
+	  (gnus-killed-mark (from 0) (subject -3))
+	  ;; (gnus-killed-mark (from -1) (subject -3))))
+	  ;; (gnus-kill-file-mark (from -9999)))
+	  ;; (gnus-expirable-mark (from -1) (subject -1))
+	  ;; (gnus-ancient-mark (subject -1))
+	  ;; (gnus-low-score-mark (subject -1))
+	  ;; (gnus-catchup-mark (subject -1))
+	  ))
+  (setq gnus-score-decay-constant 1)
+  (setq gnus-score-decay-scale 0.03)
+  (setq gnus-decay-scores t)
+
+  ;; %O          Download mark (character).
+  ;; %U          "Read" status of this article.
+  ;; %R          "A" if this article has been replied to, " "
+  ;; %z          Article zcore (character), try %i
+  ;; %I          Indentation based on thread level
+  ;; %d          Date of the article (string) in DD-MMM format
+  ;; %B          A complex trn-style thread tree (string), see gnus-sum-thread-*
+  ;; %L          Number of lines in the article (integer)
+  ;; %f          Contents of the From: or To: headers (string)
+  ;; %s          Subject if it is at the root of a thread, and "" otherwise
+  ;; Original                      "%U%R%z%I%(%[%4L: %-23,23f%]%) %s
+  (setq gnus-summary-line-format   "%U%R%z%d %I%(%-22,22f%) %s\n")
+
+  ;; %g  Shortish group name
+  ;; %A  Current article number
+  ;; %Z  A string with unread/unselected article counts
+  ;; %z  Current article score
+  ;; Original "Gnus: %g [%A] %Z"
+  (setq gnus-summary-mode-line-format "Score: %z")
+  )
 ;;;_  . helm-descbinds
 (use-package helm-descbinds
   :defer t
