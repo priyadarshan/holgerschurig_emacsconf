@@ -17,6 +17,7 @@
         (auto-compile     . "melpa-stable")
         (ace-jump-buffer  . "melpa")
         (avy              . "melpa")
+        (circe            . "melpa-stable")
         (column-marker    . "melpa")
         (expand-region    . "melpa-stable")
         (guide-key        . "melpa-stable")
