@@ -676,7 +676,6 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_  . Cycle buffers with iflipb
 ;; http://www.emacswiki.org/emacs/iflipb
 (use-package iflipb
-  :defer t
   :commands (iflipb-next-buffer iflipb-previous-buffer)
   :config
   (csetq iflipb-wrap-around t)
