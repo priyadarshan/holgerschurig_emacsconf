@@ -888,17 +888,17 @@ If the CDR is nil, then the buffer is only buried."
   :config
   ;; set binary
   (setq mu4e-mu-binary (expand-file-name "git/mu/dist/bin/mu" emacs-d))
+
   ;; Basic GMail config
   (setq mu4e-drafts-folder "/[Google Mail].Draft"
 	mu4e-trash-folder  "/[Google Mail].Papierkorb"
 	mu4e-sent-folder   "/[Google Mail].Gesendet")
 
-  ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
-  (setq mu4e-sent-messages-behavior 'delete)
-
+  ;; Don't save message to Sent Messages, Gmail/IMAP takes care of this
   ;; (See the documentation for `mu4e-sent-messages-behavior' if you have
   ;; additional non-Gmail addresses and want assign them different
   ;; behavior.)
+  (setq mu4e-sent-messages-behavior 'delete)
 
   ;; setup some handy shortcuts
   ;; you can quickly switch to your Inbox -- press ``ji''
