@@ -1146,6 +1146,7 @@ If the CDR is nil, then the buffer is only buried."
 ;; http://www.xsteve.at/prg/gnus/
 ;; https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
 (use-package gnus
+  :bind ("C-c n" . gnus)
   :config
 
   ;;http://www.xsteve.at/prg/gnus/
