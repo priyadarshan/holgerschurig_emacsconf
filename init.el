@@ -926,6 +926,9 @@ If the CDR is nil, then the buffer is only buried."
   ;; behavior.)
   (setq mu4e-sent-messages-behavior 'delete)
 
+  ;; Let me quit quickly
+  (setq mu4e-confirm-quit nil)
+
   ;; Allow display of HTML
   (setq mu4e-html2text-command "html2text -utf8 -width 72")
 
