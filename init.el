@@ -926,6 +926,11 @@ If the CDR is nil, then the buffer is only buried."
   ;; behavior.)
   (setq mu4e-sent-messages-behavior 'delete)
 
+  (setq mu4e-bookmarks '(("flag:unread AND NOT flag:trashed" "Unread messages"  ?u)
+						 ("flag:flagged"                     "Flagged messages" ?f)
+						 ("date:today..now"                  "Today's messages" ?t)
+						 ("date:7d..now"                     "Last 7 days"      ?w)))
+
   ;; you can quickly switch to your Inbox -- press ``ji''
   ;; then, when you want archive some messages, move them to
   ;; the 'All Mail' folder by pressing ``ma''.
