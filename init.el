@@ -934,6 +934,9 @@ If the CDR is nil, then the buffer is only buried."
   ;; don't keep message buffers around
   (setq message-kill-buffer-on-exit t)
 
+  ;; check from time to time for new mails
+  (setq mu4e-update-interval 120)
+
   (setq mu4e-headers-date-format "%Y-%m-%d"
 	mu4e-headers-time-format "%H:%M")
 
