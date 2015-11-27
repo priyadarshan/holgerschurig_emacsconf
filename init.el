@@ -926,6 +926,9 @@ If the CDR is nil, then the buffer is only buried."
   ;; behavior.)
   (setq mu4e-sent-messages-behavior 'delete)
 
+  ;; Allow display of HTML
+  (setq mu4e-html2text-command "html2text -utf8 -width 72")
+
   (setq mu4e-bookmarks '(("flag:unread AND NOT flag:trashed" "Unread messages"  ?u)
 						 ("flag:flagged"                     "Flagged messages" ?f)
 						 ("date:today..now"                  "Today's messages" ?t)
