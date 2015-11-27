@@ -1141,29 +1141,14 @@ If the CDR is nil, then the buffer is only buried."
 (use-package gnus
   :config
 
-  ;;@see http://gnus.org/manual/gnus_397.html
-
-  (setq gnus-select-method '(nnnil ""))
-  (setq gnus-secondary-select-methods  
-      '((nntp "news.gmane.org")
-        (nnimap "imap.gmail.com"
-                (nnimap-address "imap.gmail.com")
-                (nnimap-server-port 993)
-                (nnimap-stream ssl)
-
-                ;; (nnimap-authenticator login)
-
-		;; @see http://www.gnu.org/software/emacs/manual/html_node/gnus/Expiring-Mail.html
-		;; press 'E' to expire email
-		;; (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
-		;; (nnmail-expiry-wait 90))
-		)))
+  ;;http://www.xsteve.at/prg/gnus/
+  (setq gnus-select-method '(nntp "news.gmane.org"))
 
   ;; I prefer to see only the top level message.  If a message has
   ;; several replies or is part of a thread, only show the first
   ;; message.  'gnus-thread-ignore-subject' will ignore the subject and
   ;; look at 'In-Reply-To:' and 'References:' headers.
-  (setq gnus-thread-hide-subtree t)
+  ;; (setq gnus-thread-hide-subtree t)
 
   (setq smtpmail-smtp-service 587)
 
@@ -1184,23 +1169,26 @@ If the CDR is nil, then the buffer is only buried."
   (setq gnus-use-adaptive-scoring t)
   (setq gnus-score-expiry-days 14)
   (setq gnus-default-adaptive-score-alist
-	'((gnus-unread-mark)
-	  (gnus-ticked-mark (from 4))
-	  (gnus-dormant-mark (from 5))
-	  (gnus-saved-mark (from 20) (subject 5))
-	  (gnus-del-mark (from -2) (subject -5))
-	  (gnus-read-mark (from 2) (subject 1))
-	  (gnus-killed-mark (from 0) (subject -3))
-	  ;; (gnus-killed-mark (from -1) (subject -3))))
-	  ;; (gnus-kill-file-mark (from -9999)))
-	  ;; (gnus-expirable-mark (from -1) (subject -1))
-	  ;; (gnus-ancient-mark (subject -1))
-	  ;; (gnus-low-score-mark (subject -1))
-	  ;; (gnus-catchup-mark (subject -1))
-	  ))
+  	'((gnus-unread-mark)
+  	  (gnus-ticked-mark (from 4))
+  	  (gnus-dormant-mark (from 5))
+  	  (gnus-saved-mark (from 20) (subject 5))
+  	  (gnus-del-mark (from -2) (subject -5))
+  	  (gnus-read-mark (from 2) (subject 1))
+  	  (gnus-killed-mark (from 0) (subject -3))
+  	  ;; (gnus-killed-mark (from -1) (subject -3))))
+  	  ;; (gnus-kill-file-mark (from -9999)))
+  	  ;; (gnus-expirable-mark (from -1) (subject -1))
+  	  ;; (gnus-ancient-mark (subject -1))
+  	  ;; (gnus-low-score-mark (subject -1))
+  	  ;; (gnus-catchup-mark (subject -1))
+  	  ))
   (setq gnus-score-decay-constant 1)
   (setq gnus-score-decay-scale 0.03)
   (setq gnus-decay-scores t)
+  ;; Increase the score for followups to a sent article.
+  (add-hook 'message-sent-hook 'gnus-score-followup-article)
+  (add-hook 'message-sent-hook 'gnus-score-followup-thread)
 
   ;; %O          Download mark (character).
   ;; %U          "Read" status of this article.
@@ -1215,12 +1203,30 @@ If the CDR is nil, then the buffer is only buried."
   ;; Original                      "%U%R%z%I%(%[%4L: %-23,23f%]%) %s
   (setq gnus-summary-line-format   "%U%R%z%d %I%(%-22,22f%) %s\n")
 
-  ;; %g  Shortish group name
-  ;; %A  Current article number
-  ;; %Z  A string with unread/unselected article counts
-  ;; %z  Current article score
-  ;; Original "Gnus: %g [%A] %Z"
-  (setq gnus-summary-mode-line-format "Score: %z")
+  ;; Generate the mail headers before you edit your message.
+  (setq message-generate-headers-first t)
+
+  ;; The message buffer will be killed after sending a message.
+  (setq message-kill-buffer-on-exit t)
+
+  ;; When composing a mail, start the auto-fill-mode.
+  (add-hook 'message-mode-hook 'turn-on-auto-fill)
+
+  ;; Store gnus specific files to ~/gnus, maybe also set nnml-directory
+  (setq gnus-directory (concat emacs-d "News/")
+  	message-directory (concat emacs-d "Mail/")
+  	gnus-article-save-directory (concat emacs-d "News/saved/")
+  	gnus-kill-files-directory (concat emacs-d "News/scores/")
+  	gnus-cache-directory (concat emacs-d "News/cache/"))
+
+  ;; Added some keybindings to the gnus summary mode
+  (define-key gnus-summary-mode-map [(meta up)] '(lambda() (interactive) (scroll-other-window -1)))
+  (define-key gnus-summary-mode-map [(meta down)] '(lambda() (interactive) (scroll-other-window 1)))
+  (define-key gnus-summary-mode-map [(control down)] 'gnus-summary-next-thread)
+  (define-key gnus-summary-mode-map [(control up)] 'gnus-summary-prev-thread)
+
+  ;; Display the signatures in a less readable font.
+  ;; (require 'sigbegone)
   )
 ;;;_  . helm-descbinds
 (use-package helm-descbinds
