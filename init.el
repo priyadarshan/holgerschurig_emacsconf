@@ -908,23 +908,7 @@ If the CDR is nil, then the buffer is only buried."
   ;; 	   ("/[Gmail].Sent Mail"   . ?s)
   ;; 	   ("/[Gmail].Trash"       . ?t)))
 
-  ;; something about ourselves
-  ;; (setq mu4e-compose-signature (concat "Foo X. Bar\n" "http://www.example.com\n"))
-
-  ;; sending mail -- replace USERNAME with your gmail username
-  ;; also, make sure the gnutls command line utils are installed
-  ;; package 'gnutls-bin' in Debian/Ubuntu
-
-  ;; (require 'smtpmail)
-  ;; (setq message-send-mail-function 'smtpmail-send-it
-  ;; 	starttls-use-gnutls t
-  ;; 	smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-  ;; 	smtpmail-auth-credentials '(("smtp.gmail.com" 587 "holgerschurig@gmail.com" nil))
-  ;; 	smtpmail-default-smtp-server "smtp.gmail.com"
-  ;; 	smtpmail-smtp-server "smtp.gmail.com"
-  ;; 	smtpmail-smtp-service 587)
-
-  ;; alternatively, for emacs-24 you can use:
+  ;; Sending mail
   (setq message-send-mail-function 'smtpmail-send-it
 	smtpmail-stream-type 'starttls
 	smtpmail-default-smtp-server "smtp.gmail.com"
@@ -937,6 +921,7 @@ If the CDR is nil, then the buffer is only buried."
   ;; check from time to time for new mails
   (setq mu4e-update-interval 120)
 
+  ;; I want a nicer date/time format
   (setq mu4e-headers-date-format "%Y-%m-%d"
 	mu4e-headers-time-format "%H:%M")
 
