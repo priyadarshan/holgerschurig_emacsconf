@@ -908,9 +908,6 @@ If the CDR is nil, then the buffer is only buried."
   ;; 	   ("/[Gmail].Sent Mail"   . ?s)
   ;; 	   ("/[Gmail].Trash"       . ?t)))
 
-  ;; allow for updating mail using 'U' in the main view:
-  (setq mu4e-get-mail-command "offlineimap")
-
   ;; something about ourselves
   ;; (setq mu4e-compose-signature (concat "Foo X. Bar\n" "http://www.example.com\n"))
 
