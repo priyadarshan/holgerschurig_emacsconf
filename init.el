@@ -257,9 +257,12 @@ The list is displayed in a buffer named `*Packages*'."
 (csetq truncate-partial-width-windows nil)
 ;;;_  . Show trailing whitespace
 (defun my--show-trailing-whitespace ()
-    (interactive)
-    (csetq show-trailing-whitespace t)
-    )
+  (interactive)
+  (csetq show-trailing-whitespace t))
+(defun my--hide-trailing-whitespace ()
+  (interactive)
+  (message "hide trailing whitespace")
+  (csetq show-trailing-whitespace nil))
 (add-hook 'prog-mode-hook 'my--show-trailing-whitespace)
 ;;;_  . Buffers without toolbar, extra frame etc
 (add-to-list 'special-display-buffer-names "*Backtrace*")
@@ -937,7 +940,10 @@ If the CDR is nil, then the buffer is only buried."
 
   (setq mu4e-headers-date-format "%Y-%m-%d"
 	mu4e-headers-time-format "%H:%M")
- 
+
+  ;; Disable display of trailing whitespace
+  (csetq show-trailing-whitespace nil)
+  (add-hook 'mu4e-headers-mode-hook 'my--hide-trailing-whitespace)
   )
 ;;;_ * Org-Mode (must be before helm)
 (use-package org
