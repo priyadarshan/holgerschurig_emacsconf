@@ -1167,10 +1167,6 @@ If the CDR is nil, then the buffer is only buried."
   (setq gnus-thread-sort-functions '((not gnus-thread-sort-by-date)
   				     (not gnus-thread-sort-by-number)))
 
-  ;; Hide HTML mail
-  (setq mm-discouraged-alternatives '("text/html" "text/richtext")
-	mm-automatic-display (-difference mm-automatic-display '("text/html" "text/enriched" "text/richtext")))
-
   ;; The scoring system sorts articles and authors you read often to
   ;; the beginning of the available mails. Less interesting stuff is
   ;; located at the end.
@@ -1235,6 +1231,12 @@ If the CDR is nil, then the buffer is only buried."
 
   ;; Display the signatures in a less readable font.
   ;; (require 'sigbegone)
+  )
+(use-package mm-decode
+  :config
+  ;; Hide HTML mail
+  (setq mm-discouraged-alternatives '("text/html" "text/richtext")
+  	mm-automatic-display (-difference mm-automatic-display '("text/html" "text/enriched" "text/richtext")))
   )
 ;;;_  . helm-descbinds
 (use-package helm-descbinds
