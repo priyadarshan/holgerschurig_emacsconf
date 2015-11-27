@@ -915,6 +915,11 @@ If the CDR is nil, then the buffer is only buried."
 
   ;; allow composition with lower-case 'c' as well
   (bind-key "c" #'mu4e-compose-new mu4e-main-mode-map)
+
+  ;; Swap reply and refile
+  (bind-key "R" #'mu4e-headers-mark-for-refile mu4e-headers-mode-map)
+  (bind-key "r" #'mu4e-compose-reply mu4e-headers-mode-map)
+
   ;; Don't save message to Sent Messages, Gmail/IMAP takes care of this
   ;; (See the documentation for `mu4e-sent-messages-behavior' if you have
   ;; additional non-Gmail addresses and want assign them different
@@ -940,7 +945,7 @@ If the CDR is nil, then the buffer is only buried."
   (setq message-kill-buffer-on-exit t)
 
   ;; check from time to time for new mails
-  (setq mu4e-update-interval 120)
+  (setq mu4e-update-interval (* 5 60))
 
   ;; I want a nicer date/time format
   (setq mu4e-headers-date-format "%Y-%m-%d"
