@@ -862,25 +862,83 @@ If the CDR is nil, then the buffer is only buried."
   "Insert date at point format the RFC822 way."
   (interactive)
   (insert (format-time-string "%a, %e %b %Y %H:%M:%S %z")))
-;;;_  . email
+;;;_  . Mail & News
 ;; http://emacs.stackexchange.com/questions/6105/how-to-set-proper-smtp-gmail-settings-in-emacs-in-order-to-be-able-to-work-with
 ;; http://superuser.com/questions/476714/how-to-configure-emacs-smtp-for-using-a-secure-server-gmail
-(use-package smtpmail
+;; (use-package smtpmail
+;;   :config
+;;   (setq smtpmail-default-smtp-server "smtp.gmail.com"
+;; 	smtpmail-smtp-server "smtp.gmail.com"
+;; 	smtpmail-smtp-service 587
+;; 	smtpmail-debug-info t))
+;; (use-package message
+;;   :config
+;;   (require 'starttls)
+;;   (require 'smtpmail))
+
+;; http://www.djcbsoftware.nl/code/mu/mu4e/Gmail-configuration.html
+(use-package mu4e
+  :commands mu4e
+  :init
+  (add-to-list 'load-path (expand-file-name "git/mu/mu4e" emacs-d))
   :config
-  (setq ;;send-mail-function 'smtpmail-send-it ; if you use `mail'
-	;;message-send-mail-function 'smtpmail-send-it) ; if you use message/Gnus
-       ;; smtpmail-starttls-credentials '(("smtp.gmail.com" "587" nil nil))
-       ;; smtpmail-auth-credentials (expand-file-name "~/.authinfo")
-      smtpmail-default-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-service 587
-      smtpmail-debug-info t)
-      )
-(use-package message
-  :config
-  (require 'starttls)
-  (require 'smtpmail))
-;;   (setq message-send-mail-function 'smtpmail-send-it))
+  ;; set binary
+  (setq mu4e-mu-binary (expand-file-name "git/mu/dist/bin/mu" emacs-d))
+  ;; Basic GMail config
+  (setq mu4e-drafts-folder "/[Google Mail].Draft"
+	mu4e-trash-folder  "/[Google Mail].Papierkorb"
+	mu4e-sent-folder   "/[Google Mail].Gesendet")
+
+  ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
+  (setq mu4e-sent-messages-behavior 'delete)
+
+  ;; (See the documentation for `mu4e-sent-messages-behavior' if you have
+  ;; additional non-Gmail addresses and want assign them different
+  ;; behavior.)
+
+  ;; setup some handy shortcuts
+  ;; you can quickly switch to your Inbox -- press ``ji''
+  ;; then, when you want archive some messages, move them to
+  ;; the 'All Mail' folder by pressing ``ma''.
+  (setq mu4e-maildir-shortcuts
+	'( ("/INBOX"               . ?i)
+	   ("/[Gmail].Sent Mail"   . ?s)
+	   ("/[Gmail].Trash"       . ?t)
+	   ("/[Gmail].All Mail"    . ?a)))
+
+  ;; allow for updating mail using 'U' in the main view:
+  (setq mu4e-get-mail-command "offlineimap")
+
+  ;; something about ourselves
+  ;; (setq mu4e-compose-signature (concat "Foo X. Bar\n" "http://www.example.com\n"))
+
+  ;; sending mail -- replace USERNAME with your gmail username
+  ;; also, make sure the gnutls command line utils are installed
+  ;; package 'gnutls-bin' in Debian/Ubuntu
+
+  ;; (require 'smtpmail)
+  ;; (setq message-send-mail-function 'smtpmail-send-it
+  ;; 	starttls-use-gnutls t
+  ;; 	smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+  ;; 	smtpmail-auth-credentials '(("smtp.gmail.com" 587 "holgerschurig@gmail.com" nil))
+  ;; 	smtpmail-default-smtp-server "smtp.gmail.com"
+  ;; 	smtpmail-smtp-server "smtp.gmail.com"
+  ;; 	smtpmail-smtp-service 587)
+
+  ;; alternatively, for emacs-24 you can use:
+  (setq message-send-mail-function 'smtpmail-send-it
+	smtpmail-stream-type 'starttls
+	smtpmail-default-smtp-server "smtp.gmail.com"
+	smtpmail-smtp-server "smtp.gmail.com"
+	smtpmail-smtp-service 587)
+
+  ;; don't keep message buffers around
+  (setq message-kill-buffer-on-exit t)
+
+  (setq mu4e-headers-date-format "%Y-%m-%d"
+	mu4e-headers-time-format "%H:%M")
+ 
+  )
 ;;;_ * Org-Mode (must be before helm)
 (use-package org
   :defer t
