@@ -881,10 +881,25 @@ If the CDR is nil, then the buffer is only buried."
 
 ;; http://www.djcbsoftware.nl/code/mu/mu4e/Gmail-configuration.html
 (use-package mu4e
-  :commands mu4e
-  :bind ("C-c e" . mu4e)
+  :commands (mu4e mu4e~start mu4e~stop)
+  :bind ("C-c e" . my--mu4e-view-unread)
   :init
   (add-to-list 'load-path (expand-file-name "git/mu/mu4e" emacs-d))
+  ;; Open mu4e directly in the unread mails view, in a new frame
+  ;; https://searchcode.com/codesearch/view/25217981/
+  (defun my--mu4e-view-unread ()
+	"Open the Unread bookmark directly"
+	(interactive)
+	(select-frame (make-frame))
+	(mu4e~start)
+	(mu4e-headers-search-bookmark (mu4e-get-bookmark-query ?u)))
+  ;; helper function to close the frame again
+  (defun my--mu4e-close ()
+	"Restores the previous window configuration and burry buffer"
+	(interactive)
+	(bury-buffer)
+	(mu4e~stop)
+	(delete-frame))
   :config
   ;; set binary
   (setq mu4e-mu-binary (expand-file-name "git/mu/dist/bin/mu" emacs-d))
@@ -894,6 +909,9 @@ If the CDR is nil, then the buffer is only buried."
 	mu4e-trash-folder  "/[Google Mail].Papierkorb"
 	mu4e-sent-folder   "/[Google Mail].Gesendet")
 
+
+  ;; close the frame
+  (bind-key "q" #'my--mu4e-close mu4e-main-mode-map)
   ;; Don't save message to Sent Messages, Gmail/IMAP takes care of this
   ;; (See the documentation for `mu4e-sent-messages-behavior' if you have
   ;; additional non-Gmail addresses and want assign them different
