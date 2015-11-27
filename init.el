@@ -912,6 +912,9 @@ If the CDR is nil, then the buffer is only buried."
 
   ;; close the frame
   (bind-key "q" #'my--mu4e-close mu4e-main-mode-map)
+
+  ;; allow composition with lower-case 'c' as well
+  (bind-key "c" #'mu4e-compose-new mu4e-main-mode-map)
   ;; Don't save message to Sent Messages, Gmail/IMAP takes care of this
   ;; (See the documentation for `mu4e-sent-messages-behavior' if you have
   ;; additional non-Gmail addresses and want assign them different
