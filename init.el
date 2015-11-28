@@ -1345,41 +1345,134 @@ If the CDR is nil, then the buffer is only buried."
 ;; set initial compile-command to nothing, so that F7 will prompt for one
 (csetq compile-command nil)
 
-;; see savehist-minibuffer-history-variables
-;; see diminish-history-symbols
+
 (defvar compile-commands nil
-  "List of compile commands")
+  "The compile commands are an alist where the key is
+   is the command and the value is the time when it was
+   executed the last time. The latter is used for sorting.
+
+   Example:
+
+   '((\"make\" .  \"1448748904\")
+     (\"make -C ~/test\" . \"1448748866\"))")
+
+
+;; automatically save our compile-commands
 (add-to-list 'savehist-minibuffer-history-variables 'compile-commands)
-(defun set-compile-command ()
-  "Helper for to set compile-command"
-  (interactive)
-  (let* ((helm-mode-line-string "commands(s)")
-	 (src (helm-build-sync-source "Compile command"
-		:candidates 'compile-commands
-		:persistent-action #'ignore
-		:mode-line t
-		:volatile t
-		:nomark t
+
+
+(defun comp--sort-command-alist ()
+  "Sorts compile-commands by the value of their cons elements.
+   This sorts the entries so that recently used compile commands
+   are near the top."
+
+  (setq compile-commands (sort compile-commands (lambda (x y)
+							(not (string< (cdr x) (cdr y)))))))
+
+(defun comp--add-command (cmd)
+  "Adds a command to compile-commands if it isn't already in it.
+
+  It inserts the seconds since 1970 into the value."
+
+  ;; (message "adding command '%s'" cmd)
+  (unless (assoc cmd compile-commands)
+    (add-to-list 'compile-commands (cons cmd (format-time-string "%s")))))
+
+
+(defun comp--get-compile-commands-from-buffers ()
+  "Searches all open buffers that have a file-name associated
+   and adds compile commands from to compile-commands. Valid
+   forms for compile commands in the source code are:
+
+   // @command: make
+   ## @command: make
+   /* @command: make */
+   (setq compile-command \"make\")"
+
+  ;; (message "loading commands from buffers")
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      (when (buffer-file-name)
+	(save-excursion
+	  (goto-char (point-min))
+	  (while (re-search-forward "^.. @compile: \\(.*\\)$" nil t)
+	    (let ((s (match-string-no-properties 1)))
+	      ;; \s- whitespace character class
+	      (setq s (replace-regexp-in-string "\s-*\\*/$" "" s))
+	      (comp--add-command s)))
+	  (goto-char (point-min))
+	  (while (re-search-forward "(setq compile-command \"\\(.*\\)\")" nil t)
+	    ;; (message "via setq '%s'" (match-string-no-properties 1))
+	    (comp--add-command (match-string-no-properties 1))))))))
+
+
+(defun comp--delete-command (candidate)
+  "This deletes the selected compile-command from compile-commands."
+
+  (assq-delete-all candidate compile-commands)
+  (setq compile-commands (delq (assoc candidate compile-commands) compile-commands))
+  ;; (message "deleted: %s" candidate)
+  nil)
+
+
+;; http://wikemacs.org/wiki/How_to_write_helm_extensions
+(defun comp--helm-compile-command (arg)
+  "Interactively select a compile-command.
+
+   Releads possible commends from open buffers when run with argument."
+
+  (interactive "P")
+  (unless compile-commands
+    (setq arg 1))
+  (when arg
+    (comp--get-compile-commands-from-buffers))
+  (comp--sort-command-alist)
+  (message "commands: %s" compile-commands)
+  ;; compile-commands is now something like:
+  ;; '(("make -C foo" . 1) ("ccmake && make" . 2))
+  (let* ((src (helm-build-sync-source "Select compile command"
+		:candidates (mapcar 'car compile-commands)
+		:action '(("Select" . identity)
+			  ("Delete" . comp--delete-command))
+		:mode-line "F1 select, F2 delete"
+		;; :volatile nil
 		))
-	 (cmd (helm :sources src
+	 (ent (helm-build-dummy-source "Or enter new compile command ..."
+		:mode-line ""
+		))
+	 (cmd (helm :sources '(src ent)
 		    :prompt "cmd: "
 		    :buffer "*compile-command*"
-		    :default (car compile-commands)
-		    :history 'compile-commands
 		    )))
     (when cmd
-      (setq compile-command cmd))))
-(bind-key "S-<f7>" 'set-compile-command)
+      (message "command: %s" cmd)
+      (comp--add-command cmd)
+      (setq compile-command cmd)
+      )))
+;; (progn (set-compile-command) compile-command)
+(bind-key "S-<f7>" 'comp--helm-compile-command)
 
-(defun my-compile ()
+
+(defun comp--compile ()
   (interactive)
   (delete-other-windows)
   (save-buffer)
   (unless compile-command
-    (set-compile-command))
+    (comp--helm-compile-command nil))
   (when compile-command
-    (compile compile-command)))
-(bind-key "<f7>" 'my-compile)
+    (message "compile command: %s" compile-command)
+    (let ((cmd (assoc compile-command compile-commands)))
+      (when cmd
+	(message "assoc: %s" (assoc compile-command compile-commands))
+	(setcdr cmd (format-time-string "%s"))
+	(message "assoc: %s" (assoc compile-command compile-commands))
+	)))
+    (compile compile-command))
+(bind-key "<f7>" 'comp--compile)
+
+
+
+
 
 ;;; *** Auto close compile log if there are no errors
 ;; [[http://www.emacswiki.org/emacs/ModeCompile]]
@@ -1397,6 +1490,7 @@ If the CDR is nil, then the buffer is only buried."
     (setq compilation-finish-functions 'compile-autoclose)
     (csetq compilation-ask-about-save nil)
     (csetq compilation-scroll-output t))
+
 
 ;;; *** Error navigation
 (bind-key "<f8>" 'next-error)
