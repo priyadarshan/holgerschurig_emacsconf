@@ -1,6 +1,3 @@
 [submodule "git/profile-dotemacs"]
 	path = git/profile-dotemacs
 	url = https://github.com/abo-abo/profile-dotemacs
-[submodule "git/mu"]
-	path = git/mu
-	url = https://github.com/djcb/mu
