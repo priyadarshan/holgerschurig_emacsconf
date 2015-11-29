@@ -1310,7 +1310,9 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_  . helm-descbinds
 (use-package helm-descbinds
   :commands helm-descbinds
-  :bind ("C-h b" . helm-descbinds))
+  :bind (("C-h b" . helm-descbinds)
+	 ("C-h w" . helm-descbinds)) ;; used to be where-is
+  )
 ;;;_  . helm-swoop
 ;; https://github.com/ShingoFukuyama/helm-swoop
 (use-package helm-swoop
