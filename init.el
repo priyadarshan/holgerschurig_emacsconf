@@ -499,6 +499,13 @@ rather than line counts."
 	    (csetq avy-style 'at-full)
 	    (csetq avy-all-windows nil)
 	    (csetq avy-highlight-first t)))
+;;;_  . smartscan
+;; This makes =M-n= and =M-p= look for the symbol at point. This is
+;; very un-intrusive, no pop-up, no nothing,
+(use-package smartscan
+  :config
+  (global-smartscan-mode t)
+  )
 ;;;_ * Yank and Delete
 ;;;_  . Delete word or yank
 ;; The following may be of interest to people who (a) are happy with

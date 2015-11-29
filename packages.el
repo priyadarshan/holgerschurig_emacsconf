@@ -30,6 +30,7 @@
         (markdown-mode    . "melpa-stable")
         (org              . "melpa-stable")
         (org-bullets      . "melpa-stable")
+        (smartscan        . "melpa")
         (smart-mode-line  . "melpa")
         (smart-mode-line-powerline-theme . "melpa")
         (savehist         . "melpa-stable")
