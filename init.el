@@ -365,13 +365,34 @@ command from COMMANDS."
   `(eval (nth (seq-times ,name ,(length commands) ,body) ',commands)))
 ;;;_  . Home / End
 (defvar my--previous-position)
+
+(defun my-home ()
+  "Depending on how many times it was called moves the point to:
+
+   - begin of indentation
+   - beginning of line
+   - begin of function
+   - beginning of buffer
+   - back to where it was"
+  (interactive)
+  (seq-times-do nil (setq my--previous-position (point))
+    (back-to-indentation)
+    (beginning-of-line)
+    (beginning-of-defun)
+    (goto-char (point-min))
+    (goto-char my--previous-position)))
+;; (substitute-key-definition 'move-beginning-of-line 'my-home (current-global-map))
+(bind-key "C-a" 'my-home)
+(bind-key "<home>" 'my-home)
+
+
 (defun my-end ()
   "Depending on how many times it was called moves the point to:
 
-- end of line
-- end of function
-- end of buffer
-- back to where it was"
+   - end of line
+   - end of function
+   - end of buffer
+   - back to where it was"
   (interactive)
   (seq-times-do nil (setq my--previous-position (point))
     (end-of-line)
@@ -966,6 +987,20 @@ If the CDR is nil, then the buffer is only buried."
   ;; Disable display of trailing whitespace
   (csetq show-trailing-whitespace nil)
   (add-hook 'mu4e-headers-mode-hook 'my--hide-trailing-whitespace)
+  )
+
+;; http://mbork.pl/2015-11-28_Fixing_mml-attach-file_using_advice
+(defun mml-attach-file--go-to-eob (orig-fun &rest args)
+  "Go to the end of buffer before attaching files."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-max))
+      (apply orig-fun args))))
+
+(use-package mml
+  :config
+  (advice-add 'mml-attach-file :around #'mml-attach-file--go-to-eob)
   )
 ;;;_ * Org-Mode (must be before helm)
 (use-package org
