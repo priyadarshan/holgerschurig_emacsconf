@@ -648,8 +648,7 @@ are two windows displayed, act like C-x1:"
 	(other-window -1))
     (delete-other-windows)))
 (bind-key "<f5>" 'my-explode-window)
-
-;; ** Winner mode
+;;;_  . Winner mode
 (use-package winner
   :init
   (winner-mode))
