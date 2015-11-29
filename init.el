@@ -1180,6 +1180,8 @@ If the CDR is nil, then the buffer is only buried."
   (csetq circe-server-killed-confirmation 'ask-and-kill-all)
   ;; Network settings
   (csetq circe-default-ip-family 'ipv4)
+  (csetq circe-default-nick "schurig")
+  (csetq circe-default-user "schurig")
   (csetq circe-server-auto-join-default-type 'after-auth) ; XXX try after-nick
   (csetq circe-network-options `(("Freenode"
 				  :host "kornbluth.freenode.net"
