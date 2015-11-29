@@ -171,36 +171,50 @@ The list is displayed in a buffer named `*Packages*'."
 ;; (use-package package-name
 ;;      [:keyword [option]]...)
 ;;
-;; :init          Code to run when `use-package' form evals.
-;; :config        Runs if and when package loads.
+;; :init          Code to run before PACKAGE-NAME has been loaded.
+;; :config        Code to run after PACKAGE-NAME has been loaded.  Note that if
+;;                loading is deferred for any reason, this code does not execute
+;;                until the lazy load has occurred.
+;; :preface       Code to be run before everything except `:disabled'; this can
+;;                be used to define functions for use in `:if', or that should be
+;;                seen by the byte-compiler.
 ;; :mode          Form to be added to `auto-mode-alist'.
 ;; :interpreter   Form to be added to `interpreter-mode-alist'.
-;; :commands      Define autoloads for given commands.
-;; :bind          Perform key bindings, and define autoload for bound
-;;                commands.
-;; :pre-load      Code to run when `use-package' form evals and before
-;;                anything else. Unlike :init this form runs before the
-;;                package is required or autoloads added.
-;; :defer         Defer loading of package -- automatic
-;;                if :commands, :bind, :mode or :interpreter are used.
+;; :commands      Define autoloads for commands that will be defined by the
+;;                package.  This is useful if the package is being lazily loaded,
+;;                and you wish to conditionally call functions in your `:init'
+;;                block that are defined in the package.
+;; :bind          Bind keys, and define autoloads for the bound commands.
+;; :bind*         Bind keys, and define autoloads for the bound commands,
+;;                *overriding all minor mode bindings*.
+;; :bind-keymap   Bind a key prefix to an auto-loaded keymap defined in the
+;;                package.  This is like `:bind', but for keymaps.
+;; :bind-keymap*  Like `:bind-keymap', but overrides all minor mode bindings
+;; :defer         Defer loading of a package -- this is implied when using
+;;                `:commands', `:bind', `:bind*', `:mode' or `:interpreter'.
+;;                This can be an integer, to force loading after N seconds of
+;;                idle time, if the package has not already been loaded.
+;; :after         Defer loading of a package until after any of the named
+;;                features are loaded.
 ;; :demand        Prevent deferred loading in all cases.
-;; :if            Conditional loading.
-;; :disabled      Ignore everything.
-;; :defines       Define vars to silence byte-compiler.
-;; :load-path     Add to `load-path' before loading.
-;; :diminish      Support for diminish package (if it's installed).
-;; :idle          adds a form to run on an idle timer
-;; :idle-priority schedules the :idle form to run with the given
-;;                priority (lower priorities run first). Default priority
-;;                is 5; forms with the same priority are run in the order in
-;;                which they are evaluated.
-;; :ensure        loads package using package.el if necessary.
+;; :if EXPR       Initialize and load only if EXPR evaluates to a non-nil value.
+;; :disabled      The package is ignored completely if this keyword is present.
+;; :defines       Declare certain variables to silence the byte-compiler.
+;; :functions     Declare certain functions to silence the byte-compiler.
+;; :load-path     Add to the `load-path' before attempting to load the package.
+;; :diminish      Support for diminish.el (if installed).
+;; :ensure        Loads the package using package.el if necessary.
+;; :pin           Pin the package to an archive.
+
 
 ;; Automatically install `use-package'
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-(require 'use-package)
+(eval-when-compile
+  (require 'use-package))
+(require 'diminish)
+(require 'bind-key)
 ;;;_ * Editing
 ;;;_  . Transpose
 ;; http://endlessparentheses.com/transposing-keybinds-in-emacs.html
@@ -212,12 +226,11 @@ The list is displayed in a buffer named `*Packages*'."
 ;; through the changes you've made, undo back to a certain point (or
 ;; redo), and go down different branches.
 (use-package undo-tree
-  :defer t
   :ensure t
   :diminish undo-tree-mode
   :commands (undo-tree-visualize)
   :bind ("C-z" . undo-tree-visualize)
-  :idle
+  :config
   (progn
     (global-undo-tree-mode)
     (setq undo-tree-visualizer-timestamps t)
@@ -474,13 +487,11 @@ rather than line counts."
 ;; You can then either continue to press C-+ to expand even further, or
 ;; use + and - after the first expand to expand further / shrink again.
 (use-package expand-region
-  :defer t
   :bind ("C-+" . er/expand-region)
   :config
   (csetq expand-region-reset-fast-key    "<ESC><ESC>"))
 ;;;_  . avy (alternative to ace-jump-mode)
 (use-package avy
-  :defer t
   :bind ("C-#" . avy-goto-word-1)
   :config (progn
 	    (csetq avy-keys (append (number-sequence ?a ?z)
@@ -735,7 +746,6 @@ If the CDR is nil, then the buffer is only buried."
 	      my-iflipb-ing-internal))))
 ;;;_  . ace-jump-buffer
 (use-package ace-jump-buffer
-  :defer t
   :bind ("C-c C-j" . ace-jump-buffer)
   )
 ;;;_ * File opening/saving
@@ -854,9 +864,9 @@ If the CDR is nil, then the buffer is only buried."
 ;; It's hard to remember keyboard shortcuts. The guide-key package
 ;; pops up help after a short delay.
 (use-package guide-key
-  :defer t
+  :defer 2
   :diminish guide-key-mode
-  :idle
+  :config
   (csetq guide-key/guide-key-sequence
 	'("C-c" "C-h" "C-x" "M-g" "M-s"))
   (csetq guide-key/recursive-key-sequence-flag t)
@@ -1004,7 +1014,6 @@ If the CDR is nil, then the buffer is only buried."
   )
 ;;;_ * Org-Mode (must be before helm)
 (use-package org
-  :defer t
   :init
   (progn
     ;; allow Shift-Cursor to mark stuff
@@ -1031,7 +1040,6 @@ If the CDR is nil, then the buffer is only buried."
     (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map))
 ;;;_  . ox
 (use-package ox
-  :defer t
   :config
   ;; #+OPTIONS ':t
   (csetq org-export-with-smart-quotes t)
@@ -1045,7 +1053,6 @@ If the CDR is nil, then the buffer is only buried."
   (csetq org-export-with-sub-superscripts nil))
 ;;;_  . ox-html
 (use-package ox-html
-  :defer t
   :config
     (csetq org-html-postamble-format '(("en" "<p class=\"author\">Author: %a</p><p class=\"creator\">Created with %c</p>")))
     (csetq org-html-validation-link nil)
@@ -1062,7 +1069,6 @@ If the CDR is nil, then the buffer is only buried."
   (let ((helm-full-frame t))
     (helm-imenu)))
 (use-package helm
-  :defer nil
   :ensure helm
   :diminish helm-mode
   :bind (
@@ -1138,7 +1144,6 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_ * Packages
 ;;;_  . allout
 (use-package allout
-  :defer t
   :diminish allout-mode
   :commands allout-mode
   :config
@@ -1157,7 +1162,6 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_  . circe (IRC client)
 ;; see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Configuration
 (use-package circe
-  :defer t
   :commands circe
   :config
   (csetq circe-default-part-message "Fire on mainboard error")
@@ -1296,12 +1300,12 @@ If the CDR is nil, then the buffer is only buried."
   )
 ;;;_  . helm-descbinds
 (use-package helm-descbinds
-  :defer t
+  :commands helm-descbinds
   :bind ("C-h b" . helm-descbinds))
 ;;;_  . helm-swoop
 ;; https://github.com/ShingoFukuyama/helm-swoop
 (use-package helm-swoop
-  :defer t
+  :commands (helm-swoop helm-swoop-back-to-last-point)
   :bind (("M-s s"  . helm-swoop)
 	 ("M-s M-s" . helm-swoop)
 	 ("M-s S"   . helm-swoop-back-to-last-point))
@@ -1321,13 +1325,13 @@ If the CDR is nil, then the buffer is only buried."
 ;; change dictionary with (ispell-change-dictionary) or put this into the first line:
 ;; -*- ispell-dictionary: "german-new8" -*-
 (use-package ispell
- :defer t
- ;; try ispell-message-dictionary-alist
- ;;make aspell faster but less correctly
- (csetq ispell-extra-args '("--sug-mode=ultra")))
+  :commands ispell
+  :config
+  ;; try ispell-message-dictionary-alist
+  ;;make aspell faster but less correctly
+  (csetq ispell-extra-args '("--sug-mode=ultra")))
 ;;;_  . flyspell and helm-flyspell
 (use-package flyspell
- :defer t
  :diminish flyspell-mode
  :commands (flyspell-mode flyspell-prog-mode)
  :config
@@ -1346,7 +1350,6 @@ If the CDR is nil, then the buffer is only buried."
 
 ;; https://github.com/pronobis/helm-flyspell
 (use-package helm-flyspell
-  :defer t
   :commands helm-flyspell-correct
   :config
   (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
@@ -1354,7 +1357,6 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_ * Programming
 ;;;_  . Tab handling
 (use-package tabify
-  :defer t
   :commands (tabify untabify)
   :config
   ;; Tabify only initial whitespace
@@ -1635,7 +1637,6 @@ newline to the correct position"
 (add-hook 'emacs-lisp-mode-hook 'my--elisp-setup)
 ;;;_  . Mode: Markdown
 (use-package markdown-mode
-  :defer t
   :mode (("\\.md\\'"       . markdown-mode)
 	 ("\\.markdown\\'" . markdown-mode)))
 ;;;_  . Mode: Python
@@ -1651,7 +1652,6 @@ newline to the correct position"
 (add-hook 'python-mode-hook 'my-python-setup)
 ;;;_  . Mode: Rust
 (use-package rust-mode
-  :defer t
   :mode (("\\.rs\\'" . rust-mode)))
 ;;;_  . Mode: Shell
 (defun my-shell-tab-setup ()
@@ -1678,7 +1678,7 @@ newline to the correct position"
 	web-mode-script-padding 1
 	web-mode-block-padding 0))
 (use-package web-mode
-  :defer t
+  :commands web-mode
   :mode (("\\.html\\'" . web-mode)
 	 ("\\.css\\'" . web-mode)
 	 ("\\.json\\'" . web-mode)
@@ -1694,7 +1694,6 @@ newline to the correct position"
   (interactive)
   (column-marker-2 80))
 (use-package column-marker
-  :defer t
   :commands (column-marker-1 column-marker-2)
   :init
   (add-hook 'c-mode-hook 'my--column-marker-at-80)
@@ -1704,7 +1703,6 @@ newline to the correct position"
 ;; bindings that use pop-up buffers.
 (setq magit-rigid-key-bindings t)
 (use-package magit
-  :defer t
   :diminish magit-auto-revert-mode  ;; disable "MRev" in the status line
   :init
   ;; disable warning about magit-auto-revert-mode
@@ -1729,7 +1727,6 @@ newline to the correct position"
   :commands (magit-get-top-dir))
 ;;;_  . Package: magit-timemachine
 (use-package git-timemachine
-  :defer t
   :commands git-timemachine
   )
 ;;;_ * Emacs server
