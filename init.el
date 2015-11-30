@@ -919,6 +919,17 @@ If the CDR is nil, then the buffer is only buried."
 ;; http://www.djcbsoftware.nl/code/mu/mu4e/Gmail-configuration.html
 (use-package mu4e
   :commands (mu4e mu4e~start mu4e~stop)
+  ;; silence byte-comiler
+  :defines (mu4e-mu-binary mu4e-drafts-folder mu4e-trash-folder
+            mu4e-sent-folder mu4e-main-mode-map
+            mu4e-headers-mode-map mu4e-sent-messages-behavior
+            mu4e-confirm-quit mu4e-html2text-command
+            mu4e-bookmarks mu4e-maildir-shortcuts
+            mu4e-update-interval mu4e-headers-date-format
+            mu4e-headers-time-format)
+  :functions (mu4e-headers-search-bookmark mu4e-get-bookmark-query
+              mu4e-compose-new  mu4e-headers-mark-for-refile
+              mu4e-compose-reply)
   :bind ("C-c e" . my--mu4e-view-unread)
   :init
   (add-to-list 'load-path (expand-file-name "git/mu/mu4e" emacs-d))
