@@ -1297,7 +1297,7 @@ If the CDR is nil, then the buffer is only buried."
     (global-unset-key (kbd "C-x c"))
 
     (when (executable-find "curl")
-      (setq helm-google-suggest-use-curl-p t))
+      (setq helm-net-prefer-curl t))
 
     ;; allow "find man at point" for C-c h m (helm-man-woman)
     (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
