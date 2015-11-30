@@ -1017,20 +1017,109 @@ If the CDR is nil, then the buffer is only buried."
   (advice-add 'mml-attach-file :around #'mml-attach-file--go-to-eob)
   )
 ;;;_ * Org-Mode
+;;;_  . org
 (use-package org
-  :defer t
+  :bind (("C-c l" . org-store-link)
+	 ("C-c o" . org-open-at-point-global))
   :init
   ;; allow Shift-Cursor to mark stuff
   (csetq org-replace-disputed-keys t)
-  (csetq org-default-notes-file (expand-file-name "notes.org" emacs-d))
+  (csetq org-default-notes-file (expand-file-name "TODO.org" emacs-d))
   ;; Time stamp handling
   (csetq org-display-custom-times t)
   (csetq org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
   (csetq org-time-stamp-custom-formats '("<%Y-%m-%d>"))
   :config
+  ;; :bind cannot bind into a different map
+  (bind-key "C-TAB"   'org-cycle org-mode-map)
+  (bind-key "C-c t"   'org-show-todo-tree org-mode-map)
+  (bind-key "C-c R"   'org-reveal org-mode-map)
+  (bind-key "C-c k"   'org-cut-subtree org-mode-map)
+
+  (setq org-yank-adjusted-subtrees t)
+
+  ;; maybe I try visual-line-mode
   (add-hook 'org-mode-hook 'auto-fill-mode)
+
+  ;; make enter open the link
   (setq org-return-follows-link t)
 
+  ;; some speed commands, use ? at the start of an org-header to see which one we have
+  (setq org-use-speed-commands t)
+  (add-to-list 'org-speed-commands-user '("x" org-todo "DONE"))
+  ;; (add-to-list 'org-speed-commands-user '("y" org-todo-yesterday "DONE"))
+  ;; (add-to-list 'org-speed-commands-user '("!" my/org-clock-in-and-track))
+  ;; (add-to-list 'org-speed-commands-user '("s" call-interactively 'org-schedule))
+  ;; (add-to-list 'org-speed-commands-user '("d" my/org-move-line-to-destination))
+  ;; (add-to-list 'org-speed-commands-user '("i" call-interactively 'org-clock-in))
+  ;; (add-to-list 'org-speed-commands-user '("P" call-interactively 'org2blog/wp-post-subtree))
+  ;; (add-to-list 'org-speed-commands-user '("o" call-interactively 'org-clock-out))
+  ;; (add-to-list 'org-speed-commands-user '("$" call-interactively 'org-archive-subtree))
+  (add-to-list 'org-speed-commands-user '("N" org-narrow-to-subtree))
+  (add-to-list 'org-speed-commands-user '("W" widen))
+
+  (setq org-todo-keywords
+	'((sequence
+	   "TODO(t)"        ;; next action
+	   "TODOCUMENT(d)"  ;; next action
+	   "STARTED(s)"
+	   "WAIT(w@/!)"
+	   "PLAN(.)" "|" "DONE(x!)" "CANCELLED(c@)")
+	  (sequence "LEARN" "TRY" "TEACH" "|" "COMPLETE(x)")
+	  (sequence "TODELEGATE(-)" "DELEGATED(d)" "|" "COMPLETE(x)")))
+
+  (setq org-todo-keyword-faces
+      '(("TODO" . (:foreground "green"))
+        ("DONE" . (:foreground "cyan"))
+        ("WAIT" . (:foreground "red"))
+        ("PLAN" . (:foreground "gray"))))
+  )
+;;;_  . org-agenda
+(use-package org-agenda
+  :bind (("C-c a" . org-agenda)
+	 ("C-c w" . org-agenda-list)  ;; w like week
+	 )
+  :config
+  (bind-key "i" 'org-agenda-clock-in org-agenda-mode-map)
+  ;; (bind-key "!" 'my/org-clock-in-and-track org-agenda-mode-map)
+  )
+;;;_  . org-clock
+(use-package org-clock
+  :bind ("C-c j" . org-clock-goto) ;; jump to current task from anywhere
+  )
+;;;_  . org-capture
+(use-package org-capture
+  :bind ("C-c r" . org-capture)
+  ;; ("<f9> <f8>" . (lambda () (interactive) (org-capture nil "r")))
+  :config
+  (setq org-capture-templates
+	`(("t" "Task" entry
+	   (file+headline org-default-notes-file "Unsortiert")
+	   "* TODO %? [%%]")
+	  ;; ("s" "Scheduled task" entry
+	  ;;  (file+headline org-default-notes-file "Tasks")
+	  ;;  "* TODO %?\nSCHEDULED: %t\n"
+	  ;;  :immediate-finish t)
+	  ;; ("f" "Full task" entry
+	  ;;  (file+headline org-default-notes-file "Tasks")
+	  ;;  ,my/org-basic-task-template)
+	  ;; ("d" "Done task" entry
+	  ;;  (file+headline org-default-notes-file "Tasks")
+	  ;;  "* DONE %?\nSCHEDULED: %^t\n%?")
+	  ("n" "Note" item
+	   (file+headline org-default-notes-file "Infose"))
+	   ))
+  )
+;;;_  . org-list
+(use-package org-list
+  :defer
+  :config
+  (setq org-cycle-include-plain-lists 'integrate)
+)
+;;;_  . org-src
+(use-package org-src
+  :defer t
+  :config
   ;; Open source editor in current window
   (setq org-src-window-setup 'current-window)
   ;; inside src block use the colors like the major mode of the src type
@@ -1043,7 +1132,7 @@ If the CDR is nil, then the buffer is only buried."
   ;; normally I'd need C-c ' to exit, but this enables the same exit
   ;; method I have in when doing a commit in magit.
   (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map)
-  )
+)
 ;;;_  . ox
 (use-package ox
   :defer t
