@@ -490,7 +490,7 @@ rather than line counts."
   (csetq expand-region-reset-fast-key    "<ESC><ESC>"))
 ;;;_  . avy (alternative to ace-jump-mode)
 (use-package avy
-  :bind ("C-#" . avy-goto-word-1)
+  :bind ("C-#" . avy-goto-char-timer)
   :config (progn
 	    (csetq avy-keys (append (number-sequence ?a ?z)
 				    (number-sequence ?0 ?9)))
