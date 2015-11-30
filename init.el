@@ -6,8 +6,6 @@
 		 (file-chase-links load-file-name))
   "My emacs dotfiles directory, ~/.emacs.d on Linux")
 
-(setq package-user-dir
-      (expand-file-name "elpa" emacs-d))
 (package-initialize)
 
 ;; Please don't load outdated byte code
