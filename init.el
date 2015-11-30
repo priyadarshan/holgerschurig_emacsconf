@@ -16,9 +16,6 @@
           (add-to-list 'load-path (expand-file-name x emacs-git)))
         (delete ".." (directory-files emacs-git))))
 
-;; When using org-mode from GIT:
-;;(add-to-list 'load-path (expand-file-name "git/org-mode/lisp/" emacs-d))
-
 (add-to-list 'load-path (expand-file-name "elisp/" emacs-d))
 
 (require 'auto-compile)
@@ -1016,35 +1013,39 @@ If the CDR is nil, then the buffer is only buried."
   :config
   (advice-add 'mml-attach-file :around #'mml-attach-file--go-to-eob)
   )
-;;;_ * Org-Mode (must be before helm)
+;;;_ * Org-Mode
 (use-package org
+  :defer t
   :init
-  (progn
-    ;; allow Shift-Cursor to mark stuff
-    (csetq org-replace-disputed-keys t)
-    (csetq org-default-notes-file (expand-file-name "notes.org" emacs-d))
-    ;; Time stamp handling
-    (csetq org-display-custom-times t)
-    (csetq org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
-    (csetq org-time-stamp-custom-formats '("<%Y-%m-%d>")))
+  ;; allow Shift-Cursor to mark stuff
+  (csetq org-replace-disputed-keys t)
+  (csetq org-default-notes-file (expand-file-name "notes.org" emacs-d))
+  ;; Time stamp handling
+  (csetq org-display-custom-times t)
+  (csetq org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
+  (csetq org-time-stamp-custom-formats '("<%Y-%m-%d>"))
   :config
-    (add-hook 'org-mode-hook 'auto-fill-mode)
-    (setq org-startup-folded 'content)
-    (setq org-return-follows-link t)
-    ;; Various org-src related things:
-    (setq org-src-window-setup 'current-window)
-    ;; inside src block use the colors like the major mode of the src type
-    (csetq org-src-fontify-natively t)
-    ;; inside a src block let tab act like it was in major mode of the src type
-    (csetq org-src-tab-acts-natively t)
-    ;; don't add two indentation spaces into src blocks
-    (csetq org-src-preserve-indentation t)
-    ;; normally I'd need C-c ' to exit, but this enables the same exit
-    ;; method I have in when doing a commit in magit.
-    (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map))
+  (add-hook 'org-mode-hook 'auto-fill-mode)
+  (setq org-return-follows-link t)
+
+  ;; Open source editor in current window
+  (setq org-src-window-setup 'current-window)
+  ;; inside src block use the colors like the major mode of the src type
+  (csetq org-src-fontify-natively t)
+  ;; inside a src block let tab act like it was in major mode of the src type
+  (csetq org-src-tab-acts-natively t)
+  ;; don't add two indentation spaces into src blocks
+  (csetq org-src-preserve-indentation t)
+
+  ;; normally I'd need C-c ' to exit, but this enables the same exit
+  ;; method I have in when doing a commit in magit.
+  (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map)
+  )
 ;;;_  . ox
 (use-package ox
+  :defer t
   :config
+  ;; The following make some +OPTIONS permanent:
   ;; #+OPTIONS ':t
   (csetq org-export-with-smart-quotes t)
   ;; #+OPTIONS num:nil
@@ -1057,6 +1058,7 @@ If the CDR is nil, then the buffer is only buried."
   (csetq org-export-with-sub-superscripts nil))
 ;;;_  . ox-html
 (use-package ox-html
+  :defer t
   :config
     (csetq org-html-postamble-format '(("en" "<p class=\"author\">Author: %a</p><p class=\"creator\">Created with %c</p>")))
     (csetq org-html-validation-link nil)
