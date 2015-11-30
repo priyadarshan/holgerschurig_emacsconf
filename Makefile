@@ -21,18 +21,18 @@ git/mu/INSTALL: git/mu/autogen.sh
 	cd git/mu; \
 	autoreconf -i
 
-git/mu/Makefile: git/mu/INSTALL
+confmu git/mu/Makefile: git/mu/INSTALL
 	cd git/mu; \
 	./configure \
 		--disable-webkit \
 		--disable-guile \
 		--prefix=$(PWD)/git/mu/dist
 
-git/mu/mu/mu: git/mu/Makefile
+compmu git/mu/mu/mu: git/mu/Makefile
 	$(MAKE) -C git/mu
 
 all:: git/mu/dist/bin/mu
-git/mu/dist/bin/mu: git/mu/mu/mu
+instmu git/mu/dist/bin/mu: git/mu/mu/mu
 	$(MAKE) -C git/mu install
 
 cleanmu:
