@@ -750,6 +750,7 @@ If the CDR is nil, then the buffer is only buried."
 	      my-iflipb-ing-internal))))
 ;;;_  . ace-jump-buffer
 (use-package ace-jump-buffer
+  :disabled t
   :bind ("C-c C-j" . ace-jump-buffer)
   )
 ;;;_ * File opening/saving
