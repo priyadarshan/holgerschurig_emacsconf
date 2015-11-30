@@ -1033,18 +1033,54 @@ If the CDR is nil, then the buffer is only buried."
   :init
   ;; allow Shift-Cursor to mark stuff
   (csetq org-replace-disputed-keys t)
+
+  ;; modules to load together with org-mode
+  (setq org-modules '(;; org-bbdb
+		      ;; org-bibtex
+		      ;; org-docview
+		      ;; org-gnus
+		      ;; org-mhe
+		      ;; org-rmail
+		      ;; org-w3m
+                      ;; org-annotate-file
+                      ;; org-collector
+                      ;; org-drill
+                      ;; org-eval
+                      ;; org-expiry
+                      ;; org-gnus
+                      ;; org-habit
+                      ;; org-info
+                      ;; org-interactive-query
+                      ;; org-irc
+                      ;; org-jsinfo
+                      ;; org-man
+                      ;; org-mouse
+                      ;; org-panel
+                      ;; org-protocol
+                      ;; org-screen
+                      ;; org-toc
+		      ))
+
+  :config
+  ;; My main file
   (csetq org-default-notes-file (expand-file-name "TODO.org" emacs-d))
-  ;; Time stamp handling
+
+  ;; don't fold for now
+  (setq org-startup-folded nil)
+
+  ;; Time stamp format
   (csetq org-display-custom-times t)
   (csetq org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
   (csetq org-time-stamp-custom-formats '("<%Y-%m-%d>"))
-  :config
+
   ;; :bind cannot bind into a different map
   (bind-key "C-TAB"   'org-cycle org-mode-map)
+  (bind-key "C-c C-j" 'helm-org-in-buffer-headings org-mode-map) ;; was org-goto
   (bind-key "C-c t"   'org-show-todo-tree org-mode-map)
   (bind-key "C-c R"   'org-reveal org-mode-map)
   (bind-key "C-c k"   'org-cut-subtree org-mode-map)
 
+  ;; adjust level
   (setq org-yank-adjusted-subtrees t)
 
   ;; maybe I try visual-line-mode
@@ -1054,18 +1090,16 @@ If the CDR is nil, then the buffer is only buried."
   (setq org-return-follows-link t)
 
   ;; some speed commands, use ? at the start of an org-header to see which one we have
-  (setq org-use-speed-commands t)
   (add-to-list 'org-speed-commands-user '("x" org-todo "DONE"))
-  ;; (add-to-list 'org-speed-commands-user '("y" org-todo-yesterday "DONE"))
-  ;; (add-to-list 'org-speed-commands-user '("!" my/org-clock-in-and-track))
-  ;; (add-to-list 'org-speed-commands-user '("s" call-interactively 'org-schedule))
-  ;; (add-to-list 'org-speed-commands-user '("d" my/org-move-line-to-destination))
-  ;; (add-to-list 'org-speed-commands-user '("i" call-interactively 'org-clock-in))
-  ;; (add-to-list 'org-speed-commands-user '("P" call-interactively 'org2blog/wp-post-subtree))
-  ;; (add-to-list 'org-speed-commands-user '("o" call-interactively 'org-clock-out))
-  ;; (add-to-list 'org-speed-commands-user '("$" call-interactively 'org-archive-subtree))
+  (add-to-list 'org-speed-commands-user '("y" org-todo-yesterday "DONE"))
+  (add-to-list 'org-speed-commands-user '("!" my/org-clock-in-and-track))
+  (add-to-list 'org-speed-commands-user '("s" call-interactively 'org-schedule))
+  (add-to-list 'org-speed-commands-user '("i" call-interactively 'org-clock-in))
+  (add-to-list 'org-speed-commands-user '("o" call-interactively 'org-clock-out))
+  (add-to-list 'org-speed-commands-user '("$" call-interactively 'org-archive-subtree))
   (add-to-list 'org-speed-commands-user '("N" org-narrow-to-subtree))
   (add-to-list 'org-speed-commands-user '("W" widen))
+  ;; (add-to-list 'org-speed-commands-user '("P" call-interactively 'org2blog/wp-post-subtree))
 
   ;; "!"    record time stamp
   ;; "@"    add note with time
@@ -1102,8 +1136,12 @@ If the CDR is nil, then the buffer is only buried."
   ;; use extra drawer
   (setq org-log-into-drawer t)
 
+  ;; when my day ends
+  (setq org-use-effective-time t
+	org-extend-today-until 17)
+
   ;; Resume clocking tasks when emacs is restarted
-  (org-clock-persistence-insinuate)
+  ;; (org-clock-persistence-insinuate)
 
   ;; TODO creates error
   ;; (setq org-global-properties
@@ -1111,6 +1149,13 @@ If the CDR is nil, then the buffer is only buried."
 
   ;; Try column with this:
   ;; (setq org-columns-default-format "%80ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
+
+  ;; misc refile settings
+  (setq org-reverse-note-order t)
+  (setq org-refile-allow-creating-parent-nodes 'confirm)
+  (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+
+  ;; (setq org-blank-before-new-entry nil)
 )
 ;;;_  . org-agenda
 ;; http://www.suenkler.info/docs/emacs-orgmode/
@@ -1207,18 +1252,27 @@ If the CDR is nil, then the buffer is only buried."
   ;; Don't clock out when moving task to a done state
   ;; (setq org-clock-out-when-done nil)
 
-  ;; Save the running clock and all clock history when exiting Emacs, 
+  ;; Save the running clock and all clock history when exiting Emacs,
   ;; load it on startup
-  (setq org-clock-persist t)
+  ;; (setq org-clock-persist t)
 
   ;; Disable auto clock resolution
   (setq org-clock-auto-clock-resolution nil)
   )
 ;;;_  . org-list
 (use-package org-list
-  :defer
+  :defer t
+  :functions (org-item-re)
   :config
+  ;; tab changes visibility of lists like headers
   (setq org-cycle-include-plain-lists 'integrate)
+
+  ;; speed commands are fun, not only on the headers, but also on lists
+  (defun my/org-use-speed-commands-for-headings-and-lists ()
+    "Activate speed commands on list items too."
+    (or (and (looking-at org-outline-regexp) (looking-back "^\**"))
+	(save-excursion (and (looking-at (org-item-re)) (looking-back "^[ \t]*")))))
+  (setq org-use-speed-commands 'my/org-use-speed-commands-for-headings-and-lists)
 )
 ;;;_  . org-src
 (use-package org-src
