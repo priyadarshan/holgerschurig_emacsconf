@@ -1478,9 +1478,9 @@ If the CDR is nil, then the buffer is only buried."
   (when arg
     (comp--get-compile-commands-from-buffers))
   (comp--sort-command-alist)
-  (message "commands: %s" compile-commands)
   ;; compile-commands is now something like:
   ;; '(("make -C foo" . 1) ("ccmake && make" . 2))
+  ;; (message "commands: %s" compile-commands)
   (let* ((src (helm-build-sync-source "Select compile command"
 		:candidates (mapcar 'car compile-commands)
 		:action '(("Select" . identity)
