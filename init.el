@@ -571,6 +571,9 @@ otherwise delete."
 (bind-key "<deletechar>" 'delete-char-dynamic)
 (bind-key "<delete>" 'delete-char-dynamic)
 (bind-key "C-d" 'delete-char-dynamic)
+;;;_  . X11 clipboard
+(when (display-graphic-p)
+  (csetq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 ;;;_ * Completion
 ;; ignore case when reading a file name completion
 (csetq read-file-name-completion-ignore-case t)
