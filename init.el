@@ -903,12 +903,14 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_  . Mail & News
 ;; http://emacs.stackexchange.com/questions/6105/how-to-set-proper-smtp-gmail-settings-in-emacs-in-order-to-be-able-to-work-with
 ;; http://superuser.com/questions/476714/how-to-configure-emacs-smtp-for-using-a-secure-server-gmail
-;; (use-package smtpmail
-;;   :config
-;;   (setq smtpmail-default-smtp-server "smtp.gmail.com"
-;; 	smtpmail-smtp-server "smtp.gmail.com"
-;; 	smtpmail-smtp-service 587
-;; 	smtpmail-debug-info t))
+(use-package smtpmail
+  :config
+  (setq smtpmail-default-smtp-server "smtp.gmail.com"
+	smtpmail-smtp-server "smtp.gmail.com"
+	smtpmail-stream-type 'starttls
+	smtpmail-smtp-service 587
+	smtpmail-debug-info t))
+
 ;; (use-package message
 ;;   :config
 ;;   (require 'starttls)
@@ -982,12 +984,7 @@ If the CDR is nil, then the buffer is only buried."
 	   ))
 
   ;; Sending mail
-  (setq message-send-mail-function 'smtpmail-send-it
-	smtpmail-stream-type 'starttls
-	smtpmail-default-smtp-server "smtp.gmail.com"
-	smtpmail-smtp-server "smtp.gmail.com"
-	smtpmail-smtp-service 587)
-
+  (setq message-send-mail-function 'smtpmail-send-it)
   ;; don't keep message buffers around
   (setq message-kill-buffer-on-exit t)
 
