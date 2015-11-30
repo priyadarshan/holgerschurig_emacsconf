@@ -1066,23 +1066,53 @@ If the CDR is nil, then the buffer is only buried."
   (add-to-list 'org-speed-commands-user '("N" org-narrow-to-subtree))
   (add-to-list 'org-speed-commands-user '("W" widen))
 
+  ;; "!"    record time stamp
+  ;; "@"    add note with time
+  ;; "x/y"  use x when entering state, y when leaving state
+  ;; the first letter can be used with C-c C-t
   (setq org-todo-keywords
 	'((sequence
-	   "TODO(t)"        ;; next action
-	   "TODOCUMENT(d)"  ;; next action
-	   "STARTED(s)"
-	   "WAIT(w@/!)"
-	   "PLAN(.)" "|" "DONE(x!)" "CANCELLED(c@)")
+	   "TODO(t)"
+	   "STARTED(s!)"
+	   "WAITING(w@/!)"
+	   ;; "PROJ(p)" ;; larger project
+	   "DELEGATED(d@/!)"
+	   "|" ;; now follow done state
+	   "DONE(x!)"
+	   ;; "ZKTO(z)"
+	   "CANCELED(c@)")
+	  (sequence "APPT(a)" "|" "DONE(x!)" "CANCELED(c@)")
 	  (sequence "LEARN" "TRY" "TEACH" "|" "COMPLETE(x)")
 	  (sequence "TODELEGATE(-)" "DELEGATED(d)" "|" "COMPLETE(x)")))
-
+  
   (setq org-todo-keyword-faces
-      '(("TODO" . (:foreground "green"))
-        ("DONE" . (:foreground "cyan"))
-        ("WAIT" . (:foreground "red"))
-        ("PLAN" . (:foreground "gray"))))
-  )
+      '(("TODO"  . (:foreground "#b70101" :weight bold))
+        ("STARTED"  . (:foreground "#b70101" :weight bold))
+        ("WAITING"  . (:foreground "orange" :weight bold))
+        ("APPT"  . (:foreground "sienna" :weight bold))
+        ("PROJ"  . (:foreground "blue" :weight bold))
+        ("DELEGATED"  . (:foreground "forestgreen" :weight bold))
+        ;; ("ZKTO"  . (:foreground "orange" :weight bold))
+        ("DONE"  . (:foreground "forestgreen" :weight bold))
+        ("CANCELED"  . shadow)))
+
+  ;; stamp time when done
+  (setq org-log-done 'time)
+  ;; use extra drawer
+  (setq org-log-into-drawer t)
+
+  ;; Resume clocking tasks when emacs is restarted
+  (org-clock-persistence-insinuate)
+
+  ;; TODO creates error
+  ;; (setq org-global-properties
+  ;; 	'("Effort_ALL" . "0:10 0:30 1:00 2:00 3:00 4:00 5:00 6:00 8:00"))
+
+  ;; Try column with this:
+  ;; (setq org-columns-default-format "%80ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
+)
 ;;;_  . org-agenda
+;; http://www.suenkler.info/docs/emacs-orgmode/
 (use-package org-agenda
   :bind (("C-c a" . org-agenda)
 	 ("C-c w" . org-agenda-list)  ;; w like week
@@ -1090,10 +1120,47 @@ If the CDR is nil, then the buffer is only buried."
   :config
   (bind-key "i" 'org-agenda-clock-in org-agenda-mode-map)
   ;; (bind-key "!" 'my/org-clock-in-and-track org-agenda-mode-map)
-  )
-;;;_  . org-clock
-(use-package org-clock
-  :bind ("C-c j" . org-clock-goto) ;; jump to current task from anywhere
+
+  ;; Highlight current line
+  (add-hook 'org-agenda-mode-hook (defun my-org-agenda-hookfunc () (hl-line-mode 1 )))
+
+  ;; Let date stand out
+  (setq org-agenda-format-date 
+	"%Y-%m-%d ---------------------------------------------------------------------")
+
+  ;; colorize priorities
+  (setq org-agenda-fontify-priorities 
+	'((65 (:foreground "Red"))
+	  (66 (:foreground "Blue"))
+	  (67 (:foreground "Darkgreen"))))
+
+  ;; hide done tasks
+  (setq org-agenda-skip-deadline-if-done t)
+  (setq org-agenda-skip-scheduled-if-done t)
+
+  ;; normally hide the "someday" (nice-to-have) things
+  (setq org-agenda-filter-preset '("-someday"))
+
+  ;; show day schedule, not week schedule
+  (setq org-agenda-span 'day)
+
+  ;; own views
+  (setq org-agenda-custom-commands
+	'(("n" "Agenda and all TODO's"
+	   ((agenda "")
+	    (alltodo "")))
+  	  ("f" "Agenda and flagged tasks"
+  	   ((tags "flagged")
+  	    (agenda "")))
+	  ("s" "SOMEDAY" tags "someday" ((org-agenda-filter-preset '("+someday"))
+					 (org-agenda-todo-ignore-with-date nil)))
+	  ))
+
+  ;; show clock report
+  ;; (setq org-agenda-start-with-clockreport-mode nil)
+
+  ;; Keine Links, maximal bis Level 4 herunter:
+  ;; (setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 4))
   )
 ;;;_  . org-capture
 (use-package org-capture
@@ -1102,8 +1169,8 @@ If the CDR is nil, then the buffer is only buried."
   :config
   (setq org-capture-templates
 	`(("t" "Task" entry
-	   (file+headline org-default-notes-file "Unsortiert")
-	   "* TODO %? [%%]")
+	   (file+headline org-default-notes-file "Neu")
+	   "* TODO %?\n\n")
 	  ;; ("s" "Scheduled task" entry
 	  ;;  (file+headline org-default-notes-file "Tasks")
 	  ;;  "* TODO %?\nSCHEDULED: %t\n"
@@ -1117,6 +1184,34 @@ If the CDR is nil, then the buffer is only buried."
 	  ("n" "Note" item
 	   (file+headline org-default-notes-file "Infose"))
 	   ))
+  )
+;;;_  . org-clock
+(use-package org-clock
+  :bind ("C-c j" . org-clock-goto) ;; jump to current task from anywhere
+  :config
+  (setq org-clock-into-drawer "CLOCK")
+
+  ;; Yes it's long... but more is better ;)
+  (setq org-clock-history-length 35)
+
+  ;; Resume clocking task on clock-in if the clock is open
+  (setq org-clock-in-resume t)
+
+  ;; Change task state to STARTED when clocking in
+  (setq org-clock-in-switch-to-state "STARTED")
+
+  ;; this removes clocked tasks with 0:00 duration
+  ;; (setq org-clock-out-remove-zero-time-clocks t)
+
+  ;; Don't clock out when moving task to a done state
+  ;; (setq org-clock-out-when-done nil)
+
+  ;; Save the running clock and all clock history when exiting Emacs, 
+  ;; load it on startup
+  (setq org-clock-persist t)
+
+  ;; Disable auto clock resolution
+  (setq org-clock-auto-clock-resolution nil)
   )
 ;;;_  . org-list
 (use-package org-list
