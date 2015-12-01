@@ -1,6 +1,8 @@
 ;;;_ * Hide/show subtries with "C-c C-c C-s" or "C-c C-c h"
 
 
+;;;_ * Optional debug
+;; (toggle-debug-on-error)
 ;;;_ * Load paths
 (defvar emacs-d (file-name-directory
 		 (file-chase-links load-file-name))
