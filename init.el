@@ -1056,7 +1056,7 @@ If the CDR is nil, then the buffer is only buried."
 
   :config
   ;; My main file
-  (csetq org-default-notes-file (expand-file-name "TODO.org" emacs-d))
+  (csetq org-default-notes-file (expand-file-name "todo.org" emacs-d))
 
   ;; don't fold for now
   (setq org-startup-folded nil)
