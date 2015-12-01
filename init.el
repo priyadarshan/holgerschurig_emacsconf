@@ -1100,29 +1100,17 @@ If the CDR is nil, then the buffer is only buried."
   ;; "x/y"  use x when entering state, y when leaving state
   ;; the first letter can be used with C-c C-t
   (setq org-todo-keywords
-	'((sequence
-	   "TODO(t)"
-	   "STARTED(s!)"
-	   "WAITING(w@/!)"
-	   ;; "PROJ(p)" ;; larger project
-	   "DELEGATED(d@/!)"
-	   "|" ;; now follow done state
-	   "DONE(x!)"
-	   ;; "ZKTO(z)"
-	   "CANCELED(c@)")
-	  (sequence "APPT(a)" "|" "DONE(x!)" "CANCELED(c@)")
-	  (sequence "LEARN" "TRY" "TEACH" "|" "COMPLETE(x)")
-	  (sequence "TODELEGATE(-)" "DELEGATED(d)" "|" "COMPLETE(x)")))
-  
+	'((sequence "TODO(t)" "STARTED(s!)" "|" "DONE(x!)")
+	  (sequence "MAYBE(m)" "WAIT(w@/!)" "DELEGATED(d@/!)" "|" "CANCELED(c@)")
+	  ))
+
   (setq org-todo-keyword-faces
-      '(("TODO"  . (:foreground "#b70101" :weight bold))
-        ("STARTED"  . (:foreground "#b70101" :weight bold))
-        ("WAITING"  . (:foreground "orange" :weight bold))
-        ("APPT"  . (:foreground "sienna" :weight bold))
-        ("PROJ"  . (:foreground "blue" :weight bold))
-        ("DELEGATED"  . (:foreground "forestgreen" :weight bold))
-        ;; ("ZKTO"  . (:foreground "orange" :weight bold))
-        ("DONE"  . (:foreground "forestgreen" :weight bold))
+      '(("TODO"      . (:foreground "#b70101" :weight bold))
+        ("STARTED"   . (:foreground "#b70101" :weight bold))
+        ("DONE"      . (:foreground "forestgreen" :weight bold))
+        ("WAIT"      . (:foreground "orange" :weight bold))
+        ("DELEGATED" . (:foreground "forestgreen" :weight bold))
+        ("MAYBE"     . shadow)
         ("CANCELED"  . shadow)))
 
   ;; stamp time when done
@@ -1192,8 +1180,8 @@ If the CDR is nil, then the buffer is only buried."
   	  ("f" "Agenda and flagged tasks"
   	   ((tags "flagged")
   	    (agenda "")))
-	  ("s" "SOMEDAY" tags "someday" ((org-agenda-filter-preset '("+someday"))
-					 (org-agenda-todo-ignore-with-date nil)))
+	  ("s" "MAYBE" tags "someday" ((org-agenda-filter-preset '("+someday"))
+				       (org-agenda-todo-ignore-with-date nil)))
 	  ))
 
   ;; show clock report
