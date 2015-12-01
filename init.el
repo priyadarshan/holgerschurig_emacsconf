@@ -1142,6 +1142,12 @@ If the CDR is nil, then the buffer is only buried."
   (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
 
   ;; (setq org-blank-before-new-entry nil)
+
+  ;; export and open
+  (defun my-org-export-to-html-and-open ()
+    (interactive)
+    (org-open-file (org-html-export-to-html)))
+  (bind-key "<f7>" 'my-org-export-to-html-and-open org-mode-map)
 )
 ;;;_  . org-agenda
 ;; http://www.suenkler.info/docs/emacs-orgmode/
@@ -1293,6 +1299,7 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_  . ox-html
 (use-package ox-html
   :defer t
+  :commands org-html-export-to-html
   :config
   (csetq org-html-postamble-format '(("en" "<p class=\"author\">Author: %a</p><p class=\"creator\">Created with %c</p>")))
   (csetq org-html-validation-link nil)
