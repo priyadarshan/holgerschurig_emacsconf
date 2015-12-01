@@ -1158,6 +1158,8 @@ If the CDR is nil, then the buffer is only buried."
   (setq org-agenda-format-date
 	"%Y-%m-%d ---------------------------------------------------------------------")
 
+  (setq org-agenda-show-outline-path t)
+
   ;; colorize priorities
   (setq org-agenda-fontify-priorities
 	'((65 (:foreground "Red"))
