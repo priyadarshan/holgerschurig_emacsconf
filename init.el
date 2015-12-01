@@ -1199,21 +1199,11 @@ If the CDR is nil, then the buffer is only buried."
     (interactive)
     (org-capture nil "o"))
   (setq org-capture-templates
-	`(("t" "Task" entry
-	   (file+headline org-default-notes-file "Neu")
+	`(("o" "Open task" entry
+	   (file+headline org-default-notes-file "Unsortiert")
 	   "* TODO %?\n\n")
-	  ;; ("s" "Scheduled task" entry
-	  ;;  (file+headline org-default-notes-file "Tasks")
-	  ;;  "* TODO %?\nSCHEDULED: %t\n"
-	  ;;  :immediate-finish t)
-	  ;; ("f" "Full task" entry
-	  ;;  (file+headline org-default-notes-file "Tasks")
-	  ;;  ,my/org-basic-task-template)
-	  ;; ("d" "Done task" entry
-	  ;;  (file+headline org-default-notes-file "Tasks")
-	  ;;  "* DONE %?\nSCHEDULED: %^t\n%?")
 	  ("n" "Note" item
-	   (file+headline org-default-notes-file "Infose"))
+	   (file+headline org-default-notes-file "Infos"))
 	   ))
   )
 ;;;_  . org-clock
