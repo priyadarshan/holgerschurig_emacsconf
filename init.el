@@ -1092,6 +1092,7 @@ If the CDR is nil, then the buffer is only buried."
   (add-to-list 'org-speed-commands-user '("$" call-interactively 'org-archive-subtree))
   (add-to-list 'org-speed-commands-user '("N" org-narrow-to-subtree))
   (add-to-list 'org-speed-commands-user '("W" widen))
+  (add-to-list 'org-speed-commands-user '("k" org-cut-subtree))
   ;; (add-to-list 'org-speed-commands-user '("P" call-interactively 'org2blog/wp-post-subtree))
 
   ;; "!"    record time stamp
