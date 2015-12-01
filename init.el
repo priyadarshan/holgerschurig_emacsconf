@@ -1152,11 +1152,11 @@ If the CDR is nil, then the buffer is only buried."
   (add-hook 'org-agenda-mode-hook (defun my-org-agenda-hookfunc () (hl-line-mode 1 )))
 
   ;; Let date stand out
-  (setq org-agenda-format-date 
+  (setq org-agenda-format-date
 	"%Y-%m-%d ---------------------------------------------------------------------")
 
   ;; colorize priorities
-  (setq org-agenda-fontify-priorities 
+  (setq org-agenda-fontify-priorities
 	'((65 (:foreground "Red"))
 	  (66 (:foreground "Blue"))
 	  (67 (:foreground "Darkgreen"))))
