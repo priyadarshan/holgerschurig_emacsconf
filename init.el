@@ -1069,9 +1069,9 @@ If the CDR is nil, then the buffer is only buried."
   ;; :bind cannot bind into a different map
   (bind-key "C-TAB"   'org-cycle org-mode-map)
   (bind-key "C-c C-j" 'helm-org-in-buffer-headings org-mode-map) ;; was org-goto
-  (bind-key "C-c t"   'org-show-todo-tree org-mode-map)
   (bind-key "C-c R"   'org-reveal org-mode-map)
   (bind-key "C-c k"   'org-cut-subtree org-mode-map)
+  ;; (bind-key "C-c t"   'org-show-todo-tree org-mode-map)
 
   ;; adjust level
   (setq org-yank-adjusted-subtrees t)
