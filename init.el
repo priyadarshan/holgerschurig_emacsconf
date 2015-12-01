@@ -1192,9 +1192,12 @@ If the CDR is nil, then the buffer is only buried."
   )
 ;;;_  . org-capture
 (use-package org-capture
-  :bind ("C-c r" . org-capture)
+  :bind ("C-c r" . my-org-capture-todo)
   ;; ("<f9> <f8>" . (lambda () (interactive) (org-capture nil "r")))
   :config
+  (defun my-org-capture-todo ()
+    (interactive)
+    (org-capture nil "o"))
   (setq org-capture-templates
 	`(("t" "Task" entry
 	   (file+headline org-default-notes-file "Neu")
