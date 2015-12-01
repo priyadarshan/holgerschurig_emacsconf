@@ -878,15 +878,6 @@ If the CDR is nil, then the buffer is only buried."
 	'("C-c" "C-h" "C-x" "M-g" "M-s"))
   (csetq guide-key/recursive-key-sequence-flag t)
   (guide-key-mode 1))
-;;;_  . DISABLED Which key
-;; This is mostly better than guide-key, but only mostly. It doesn't
-;; automatically switch into a multi-column mode for C-x, for example.
-(use-package which-key
-  :disabled t
-  :config
-  (which-key-mode)
-  (which-key-setup-side-window-right-bottom)
-  )
 ;;;_ * Miscelleanous
 ;;;_  . Swap RET and C-j
 (bind-key "RET" 'newline-and-indent)
