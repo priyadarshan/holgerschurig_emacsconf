@@ -487,6 +487,11 @@ rather than line counts."
   :bind ("C-+" . er/expand-region)
   :config
   (csetq expand-region-reset-fast-key    "<ESC><ESC>"))
+;;;_  . bookmark
+(use-package bookmark
+  :config
+  (csetq bookmark-default-file (concat emacs-d "tmp/bookmarks.el"))
+  )
 ;;;_  . avy (alternative to ace-jump-mode)
 (use-package avy
   :bind ("C-#" . avy-goto-char-timer)
