@@ -1151,6 +1151,9 @@ If the CDR is nil, then the buffer is only buried."
   ;; Highlight current line
   (add-hook 'org-agenda-mode-hook (defun my-org-agenda-hookfunc () (hl-line-mode 1 )))
 
+  ;; which files the agenda should consider
+  (setq org-agenda-files (list org-default-notes-file))
+
   ;; Let date stand out
   (setq org-agenda-format-date
 	"%Y-%m-%d ---------------------------------------------------------------------")
