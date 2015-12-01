@@ -1101,7 +1101,7 @@ If the CDR is nil, then the buffer is only buried."
   ;; the first letter can be used with C-c C-t
   (setq org-todo-keywords
 	'((sequence "TODO(t)" "STARTED(s!)" "|" "DONE(x!)")
-	  (sequence "MAYBE(m)" "WAIT(w@/!)" "DELEGATED(d@/!)" "|" "CANCELED(c@)")
+	  (sequence "WAIT(w@/!)" "DELEGATED(d@/!)" "|" "CANCELED(c@)")
 	  ))
 
   (setq org-todo-keyword-faces
@@ -1110,7 +1110,6 @@ If the CDR is nil, then the buffer is only buried."
         ("DONE"      . (:foreground "forestgreen" :weight bold))
         ("WAIT"      . (:foreground "orange" :weight bold))
         ("DELEGATED" . (:foreground "forestgreen" :weight bold))
-        ("MAYBE"     . shadow)
         ("CANCELED"  . shadow)))
 
   ;; stamp time when done
@@ -1177,11 +1176,11 @@ If the CDR is nil, then the buffer is only buried."
 	'(("n" "Agenda and all TODO's"
 	   ((agenda "")
 	    (alltodo "")))
-  	  ("f" "Agenda and flagged tasks"
-  	   ((tags "flagged")
-  	    (agenda "")))
-	  ("s" "MAYBE" tags "someday" ((org-agenda-filter-preset '("+someday"))
-				       (org-agenda-todo-ignore-with-date nil)))
+  	  ;; ("f" "Agenda and flagged tasks"
+  	  ;;  ((tags "flagged")
+  	  ;;   (agenda "")))
+	  ("s" "Tagged 'someday'" tags "someday" ((org-agenda-filter-preset '("+someday"))
+						  (org-agenda-todo-ignore-with-date nil)))
 	  ))
 
   ;; show clock report
