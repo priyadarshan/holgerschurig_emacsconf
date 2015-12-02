@@ -1504,18 +1504,21 @@ If the CDR is nil, then the buffer is only buried."
   (add-hook 'message-sent-hook 'gnus-score-followup-article)
   (add-hook 'message-sent-hook 'gnus-score-followup-thread)
 
-  ;; %O          Download mark (character).
-  ;; %U          "Read" status of this article.
-  ;; %R          "A" if this article has been replied to, " "
-  ;; %z          Article zcore (character), try %i
-  ;; %I          Indentation based on thread level
-  ;; %d          Date of the article (string) in DD-MMM format
-  ;; %B          A complex trn-style thread tree (string), see gnus-sum-thread-*
-  ;; %L          Number of lines in the article (integer)
-  ;; %f          Contents of the From: or To: headers (string)
-  ;; %s          Subject if it is at the root of a thread, and "" otherwise
-  ;; Original                      "%U%R%z%I%(%[%4L: %-23,23f%]%) %s
-  (setq gnus-summary-line-format   "%U%R%z%d %I%(%-22,22f%) %s\n")
+  ;;  %U  "Read" status of this article.
+  ;;  %R  "A" if this article has been replied to, " "
+  ;;  %d  Date of the article (string) in DD-MMM format
+  ;;  %L  Number of lines in the article (integer)
+  ;;  %n  Name of poster
+  ;;  %B  A complex trn-style thread tree (string), see gnus-sum-thread-*
+  ;;  %S  Subject (string)
+  ;; Some others:
+  ;;  %z  Article zcore (character), try %i
+  ;;  %I  Indentation based on thread level
+  ;;  %f  Contents of the From: or To: headers (string)
+  ;;  %s  Subject if it is at the root of a thread, and "" otherwise
+  ;;  %O  Download mark (character).
+  ;; Original                    "%U%R%z%I%(%[%4L: %-23,23f%]%) %s\n"
+  (setq gnus-summary-line-format "%U%R%d %-5,5L %-20,20n %B%-80,80S\n")
 
   ;; Generate the mail headers before you edit your message.
   (setq message-generate-headers-first t)
