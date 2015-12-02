@@ -1033,15 +1033,12 @@ If the CDR is nil, then the buffer is only buried."
   (csetq org-replace-disputed-keys t)
 
   ;; modules to load together with org-mode
-  (setq org-modules '(;; org-bbdb
-		      ;; org-bibtex
-		      ;; org-docview
-		      ;; org-gnus
-		      ;; org-mhe
-		      ;; org-rmail
-		      ;; org-w3m
+  (setq org-modules '(
                       ;; org-annotate-file
+                      ;; org-bbdb
+                      ;; org-bibtex
                       ;; org-collector
+                      ;; org-docview
                       ;; org-drill
                       ;; org-eval
                       ;; org-expiry
@@ -1052,12 +1049,15 @@ If the CDR is nil, then the buffer is only buried."
                       ;; org-irc
                       ;; org-jsinfo
                       ;; org-man
+                      ;; org-mhe
                       ;; org-mouse
                       ;; org-panel
                       ;; org-protocol
+                      ;; org-rmail
                       ;; org-screen
                       ;; org-toc
-		      ))
+                      ;; org-w3m
+                      ))
 
   :config
   ;; My main file
