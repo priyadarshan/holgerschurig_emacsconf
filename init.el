@@ -1707,6 +1707,13 @@ If the CDR is nil, then the buffer is only buried."
   nil)
 
 
+(defun comp--persistent-action (candidate)
+  (with-selected-window (minibuffer-window)
+	(delete-minibuffer-contents)
+	(set-text-properties 0 (length candidate) nil candidate)
+	(insert candidate)))
+
+
 ;; http://wikemacs.org/wiki/How_to_write_helm_extensions
 (defun comp--helm-compile-command (arg)
   "Interactively select a compile-command.
@@ -1727,6 +1734,7 @@ If the CDR is nil, then the buffer is only buried."
 		:action '(("Select" . identity)
 			  ("Delete" . comp--delete-command))
 		:mode-line "F1 select, F2 delete"
+		:persistent-action 'comp--persistent-action
 		;; :volatile nil
 		))
 	 (ent (helm-build-dummy-source "Or enter new compile command ..."
