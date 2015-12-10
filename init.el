@@ -1518,7 +1518,7 @@ If the CDR is nil, then the buffer is only buried."
   ;;  %s  Subject if it is at the root of a thread, and "" otherwise
   ;;  %O  Download mark (character).
   ;; Original                    "%U%R%z%I%(%[%4L: %-23,23f%]%) %s\n"
-  (setq gnus-summary-line-format "%U%R%d %-5,5L %-20,20n %B%-80,80S\n")
+  (setq gnus-summary-line-format "%U%R%d %-20,20n %B%-80,80S\n")
 
   ;; Generate the mail headers before you edit your message.
   (setq message-generate-headers-first t)
