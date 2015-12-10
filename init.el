@@ -1548,6 +1548,15 @@ If the CDR is nil, then the buffer is only buried."
   ;; stop the annoying "move to colon" function
   (defun gnus-summary-position-point ()
     )
+
+  ;; don't word wrap patches in news articles
+  (setq fill-flowed-display-column 9999)
+  (setq gnus-treat-fill-long-lines nil)
+  (add-hook 'gnus-article-mode-hook
+	    (lambda ()
+	      (longlines 
+	      (setq truncate-lines nil)
+	      )))
 )
 
 (with-eval-after-load "gnus-art"
@@ -1580,7 +1589,7 @@ If the CDR is nil, then the buffer is only buried."
       (setq filename (concat "/tmp/" filename ".patch"))
       (when (file-exists-p filename)
 	(delete-file filename))
-    filename))
+    filename)))
 
 (use-package mm-decode
   :config
