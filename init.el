@@ -1542,9 +1542,15 @@ If the CDR is nil, then the buffer is only buried."
   (define-key gnus-summary-mode-map [(control down)] 'gnus-summary-next-thread)
   (define-key gnus-summary-mode-map [(control up)] 'gnus-summary-prev-thread)
 
-  ;; Display the signatures in a less readable font.
-  ;; (require 'sigbegone)
-  )
+  ;; Window setup
+  (setq gnus-widen-article-window t)
+
+  ;; stop the annoying "move to colon" function
+  (defun gnus-summary-position-point ()
+    )
+)
+
+
 (use-package mm-decode
   :config
   ;; Hide HTML mail
