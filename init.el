@@ -1550,6 +1550,37 @@ If the CDR is nil, then the buffer is only buried."
     )
 )
 
+(with-eval-after-load "gnus-art"
+  ;; Test code, position cursor inside and run C-C-x to evaluate:
+  ;;
+  ;; (let ((filename "[PATCH 03/05] foo"))
+  ;;   (when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
+  ;;     (message "%s -> %04d" filename (string-to-number (match-string 1 filename)))
+  ;;     ;; (message "%s" filename)
+  ;;     )
+  ;;   ))
+
+  ;; save news article body as patch, via gnus-summary-save-article-body-file "O b"
+  (defun gnus-read-save-file-name (prompt &optional filename
+					  function group headers variable
+					  dir-var)
+    (let ((patchnum))
+      (setq filename (gnus-summary-article-subject))
+      (when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
+    	(setq patchnum (string-to-number (match-string 1 filename)))
+    	(message "%s" patchnum))
+      ;; (when string-match "\\[PATCH.+?\\]" filename)
+      (setq filename (replace-regexp-in-string "\\[PATCH.+?\\]" "" filename))
+      (setq filename (replace-regexp-in-string "\[^a-zA-Z0-9]" "-" filename))
+      (setq filename (replace-regexp-in-string "\\-+" "-" filename))
+      (setq filename (replace-regexp-in-string "^-" "" filename))
+      (setq filename (replace-regexp-in-string "-$" "" filename))
+      (when patchnum
+	(setq filename (concat (format "%04d" patchnum) "-" filename)))
+      (setq filename (concat "/tmp/" filename ".patch"))
+      (when (file-exists-p filename)
+	(delete-file filename))
+    filename))
 
 (use-package mm-decode
   :config
