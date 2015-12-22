@@ -1595,6 +1595,64 @@ If the CDR is nil, then the buffer is only buried."
   (setq mm-discouraged-alternatives '("text/html" "text/richtext")
   	mm-automatic-display (-difference mm-automatic-display '("text/html" "text/enriched" "text/richtext")))
   )
+;;;_  . wanderlust
+;; http://emacs-fu.blogspot.de/2009/06/e-mail-with-wanderlust.html
+;; http://emacs-fu.blogspot.de/2009/09/wanderlust-tips-and-tricks.html
+(use-package elmo-localdir
+  :config
+  (setq elmo-localdir-folder-path "~/Maildir")
+  )
+
+(use-package wl
+  :bind ("C-c w" . wl)
+  :config
+
+  ;; use "Fwd: " not "Forward: "
+  (setq wl-forward-subject-prefix "Fwd: ")
+
+  ;; SMTP via Google Mail
+  ;; (setq wl-smtp-connection-type 'starttls
+  ;; 	wl-smtp-posting-port 587
+  ;; 	wl-smtp-authenticate-type "plain"
+  ;; 	wl-smtp-posting-user "myname"
+  ;; 	wl-smtp-posting-server "smtp.gmail.com"
+  ;; 	wl-local-domain "gmail.com"
+  ;; 	wl-message-id-domain "smtp.gmail.com")
+
+  ;; Folder setup
+  (setq ;;all system folders (draft, trash, spam, etc) are placed in the
+        ;;[Gmail]-folder, except inbox. "%" means it's an IMAP-folder
+        wl-default-folder ".INBOX"
+  	wl-draft-folder   ".[Google Mail].Draft"
+  	wl-trash-folder   ".[Google Mail].Papierkorb"
+  	wl-fcc            ".[Google Mail].Gesendet"
+
+	;;for when auto-completing folder names
+	wl-default-spec "."
+
+	;; mark sent messages as read (sent messages get sent back to you and
+	;; placed in the folder specified by wl-fcc)
+	wl-fcc-force-as-read t
+  )
+  (setq wl-folders-file (concat emacs-d "wh-folders")
+	wl-queue-folder (concat "file:" emacs-d "tmp/wl-queue")
+	wl-temporary-file-directory (concat emacs-d "tmp/wl-tmp")
+  	;; wl-spam-folder ".trash"              ;; ...spam as well
+  	;; wl-queue-folder ".queue"             ;; we don't use this
+	)
+
+  ;; heck this folder periodically, and update modeline
+  (setq wl-biff-check-folder-list ".INBOX"
+	wl-biff-check-interval 40)
+
+  ;; Folder list setup
+  (setq wl-stay-folder-window nil
+  	wl-folder-window-width 25)
+
+  ;; Summary list setup
+  (setq wl-summary-line-format "%T%P %Y-%M-%D %h:%m %30(%t%[%c %f%) %s"
+	wl-summary-sort-specs '(date subject number))
+)
 ;;;_  . helm-descbinds
 (use-package helm-descbinds
   :commands helm-descbinds
