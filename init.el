@@ -1084,8 +1084,7 @@ If the CDR is nil, then the buffer is only buried."
   ;; adjust level
   (setq org-yank-adjusted-subtrees t)
 
-  ;; maybe I try visual-line-mode
-  (add-hook 'org-mode-hook 'auto-fill-mode)
+  (add-hook 'org-mode-hook 'visual-line-mode)
 
   ;; make enter open the link
   (setq org-return-follows-link t)
@@ -1555,11 +1554,7 @@ If the CDR is nil, then the buffer is only buried."
   ;; don't word wrap patches in news articles
   (setq fill-flowed-display-column 9999)
   (setq gnus-treat-fill-long-lines nil)
-  (add-hook 'gnus-article-mode-hook
-	    (lambda ()
-	      (longlines 
-	      (setq truncate-lines nil)
-	      )))
+  (add-hook 'gnus-article-mode-hook 'visual-line-mode)
 )
 
 (with-eval-after-load "gnus-art"
