@@ -1008,6 +1008,9 @@ If the CDR is nil, then the buffer is only buried."
   ;; Disable display of trailing whitespace
   (csetq show-trailing-whitespace nil)
   (add-hook 'mu4e-headers-mode-hook 'my--hide-trailing-whitespace)
+
+  ;; Use helm for completing:
+  (setq mu4e-completing-read-function 'completing-read)
   )
 
 ;; http://mbork.pl/2015-11-28_Fixing_mml-attach-file_using_advice
