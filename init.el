@@ -1666,6 +1666,57 @@ If the CDR is nil, then the buffer is only buried."
 	wl-summary-sort-specs '(date subject number)
 	wl-summary-width 110) ;; if you change this, "rm -rf ~/.elmo/"
   )
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Message display
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; (setq wl-summary-always-sticky-folder-list nil)
+  ;; Hide
+  (setq wl-message-ignored-field-list
+	'(
+	  "^Content-.*:"
+	  "^List-.*:"
+	  "^X-.*:"
+
+	  "^Accept-Language:"
+	  "^Authentication-Results:"
+	  "^DKIM-Signature:"
+	  "^Delivered-To:"
+	  "^Errors-To:"
+	  "^Importance:"
+	  "^In-Reply-To:"
+	  "^Lines:"
+	  "^MIME-Version:"
+	  "^Message-Id:"
+	  "^Precedence:"
+	  "^Received-SPF:"
+	  "^Received:"
+	  "^References:"
+	  "^Replied:"
+	  "^Return-Path:"
+	  "^Sender:"
+	  "^Sensitivity:"
+	  "^SpamDiagnostic.*:"
+	  "^Status:"
+	  "^Thread-Index:"
+	  "^Thread-Topic:"
+	  "^User-Agent:"
+	  "^Xref:"
+	  "^x-originating-ip:"
+	  ))
+  ;; Show
+  (setq  wl-message-visible-field-list
+	 '("^X-Mailer:"))
+  ;; Sort
+  (setq wl-message-sort-field-list
+	'("^Subject"
+	  "^Date"
+	  "^From"
+	  "^Organization:"
+	  "^To"
+	  "^Cc"))
+  ;; Long lines
+  (add-hook 'mime-view-mode-hook 'visual-line-mode)
 ;;;_  . helm-descbinds
 (use-package helm-descbinds
   :commands helm-descbinds
