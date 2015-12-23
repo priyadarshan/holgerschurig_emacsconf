@@ -1616,9 +1616,6 @@ If the CDR is nil, then the buffer is only buried."
   :bind ("C-c w" . wl)
   :config
 
-  ;; use "Fwd: " not "Forward: "
-  (setq wl-forward-subject-prefix "Fwd: ")
-
   ;; SMTP via Google Mail
   ;; (setq wl-smtp-connection-type 'starttls
   ;; 	wl-smtp-posting-port 587
@@ -1640,10 +1637,6 @@ If the CDR is nil, then the buffer is only buried."
 
 	;;for when auto-completing folder names
 	wl-default-spec "."
-
-	;; mark sent messages as read (sent messages get sent back to you and
-	;; placed in the folder specified by wl-fcc)
-	wl-fcc-force-as-read t
   )
   (setq wl-folders-file (concat emacs-d "wh-folders")
 	wl-queue-folder (concat "file:" emacs-d "tmp/wl-queue")
@@ -1717,6 +1710,37 @@ If the CDR is nil, then the buffer is only buried."
 	  "^Cc"))
   ;; Long lines
   (add-hook 'mime-view-mode-hook 'visual-line-mode)
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Sending mail
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (setq ;; use "Fwd: " not "Forward: "
+        wl-forward-subject-prefix "Fwd: "
+
+	;; SMTP via Google Mail
+	wl-smtp-connection-type 'starttls
+	wl-smtp-posting-port 587
+	wl-smtp-authenticate-type "plain"
+	wl-smtp-posting-user "holgerschurig"
+	wl-smtp-posting-server "smtp.gmail.com"
+	wl-local-domain "gmail.com"
+	wl-message-id-domain "smtp.gmail.com"
+	;; TODO: password?
+
+	wl-draft-preview-attributes nil
+
+	;; mark sent messages as read (sent messages get sent back to you and
+	;; placed in the folder specified by wl-fcc)
+	wl-fcc-force-as-read t
+	)
+  )
+
+(use-package mime-edit
+  :defer t
+  :config
+  ;; don't split large messages
+  (setq mime-edit-split-message nil)
+  )
 ;;;_  . helm-descbinds
 (use-package helm-descbinds
   :commands helm-descbinds
