@@ -1651,8 +1651,8 @@ If the CDR is nil, then the buffer is only buried."
 	)
 
   ;; heck this folder periodically, and update modeline
-  (setq wl-biff-check-folder-list ".INBOX"
-	wl-biff-check-interval 40)
+  (setq wl-biff-check-folder-list '(".INBOX")
+	wl-biff-check-interval (* 5 60))
 
   ;; Folder list setup
   (setq wl-stay-folder-window nil
