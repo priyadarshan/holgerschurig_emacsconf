@@ -1616,15 +1616,6 @@ If the CDR is nil, then the buffer is only buried."
   :bind ("C-c w" . wl)
   :config
 
-  ;; SMTP via Google Mail
-  ;; (setq wl-smtp-connection-type 'starttls
-  ;; 	wl-smtp-posting-port 587
-  ;; 	wl-smtp-authenticate-type "plain"
-  ;; 	wl-smtp-posting-user "myname"
-  ;; 	wl-smtp-posting-server "smtp.gmail.com"
-  ;; 	wl-local-domain "gmail.com"
-  ;; 	wl-message-id-domain "smtp.gmail.com")
-
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Folder setup
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
