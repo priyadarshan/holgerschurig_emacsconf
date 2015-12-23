@@ -1628,7 +1628,9 @@ If the CDR is nil, then the buffer is only buried."
   ;; 	wl-local-domain "gmail.com"
   ;; 	wl-message-id-domain "smtp.gmail.com")
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Folder setup
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (setq ;;all system folders (draft, trash, spam, etc) are placed in the
         ;;[Gmail]-folder, except inbox. "%" means it's an IMAP-folder
         wl-default-folder ".INBOX"
@@ -1654,7 +1656,6 @@ If the CDR is nil, then the buffer is only buried."
   (setq wl-biff-check-folder-list '(".INBOX")
 	wl-biff-check-interval (* 5 60))
 
-  ;; Folder list setup
   (setq wl-stay-folder-window nil
   	wl-folder-window-width 25)
 
