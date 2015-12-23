@@ -1649,7 +1649,6 @@ If the CDR is nil, then the buffer is only buried."
   (setq wl-summary-line-format "%T%P %Y-%M-%D %h:%m %30(%t%[%c %f%) %s"
 	wl-summary-sort-specs '(date subject number)
 	wl-summary-width 110) ;; if you change this, "rm -rf ~/.elmo/"
-  )
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Message display
