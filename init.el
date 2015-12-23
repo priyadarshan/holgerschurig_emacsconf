@@ -1596,8 +1596,17 @@ If the CDR is nil, then the buffer is only buried."
   	mm-automatic-display (-difference mm-automatic-display '("text/html" "text/enriched" "text/richtext")))
   )
 ;;;_  . wanderlust
+;; Manual:
+;; http://wanderlust.github.io/wl-docs/wl.html
+
+;; Some tricks:
 ;; http://emacs-fu.blogspot.de/2009/06/e-mail-with-wanderlust.html
 ;; http://emacs-fu.blogspot.de/2009/09/wanderlust-tips-and-tricks.html
+;; http://emacs-fu.blogspot.de/2010/02/i-have-been-using-wanderlust-e-mail.html
+;; http://emacs-fu.blogspot.de/2011/03/searching-e-mails-with-wanderlust-and.html
+;; http://dis-dot-dat.blogspot.de/2010/04/ive-used-combination-of-mutt-emacs.html
+;; http://dis-dot-dat.blogspot.de/2010/04/my-wanderlust-setup.html
+;; http://box.matto.nl/emacsgmail.html
 (use-package elmo-localdir
   :config
   (setq elmo-localdir-folder-path "~/Maildir")
