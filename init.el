@@ -900,7 +900,7 @@ If the CDR is nil, then the buffer is only buried."
   "Insert date at point format the RFC822 way."
   (interactive)
   (insert (format-time-string "%a, %e %b %Y %H:%M:%S %z")))
-;;;_  . Mail & News
+;;;_  . smtpmail
 ;; http://emacs.stackexchange.com/questions/6105/how-to-set-proper-smtp-gmail-settings-in-emacs-in-order-to-be-able-to-work-with
 ;; http://superuser.com/questions/476714/how-to-configure-emacs-smtp-for-using-a-secure-server-gmail
 (use-package smtpmail
@@ -911,11 +911,13 @@ If the CDR is nil, then the buffer is only buried."
 	smtpmail-smtp-service 587
 	smtpmail-debug-info t))
 
+;;;_  . message DISABLED
 ;; (use-package message
 ;;   :config
 ;;   (require 'starttls)
 ;;   (require 'smtpmail))
 
+;;;_  . mu4e
 ;; http://www.djcbsoftware.nl/code/mu/mu4e/Gmail-configuration.html
 (use-package mu4e
   :commands (mu4e mu4e~start mu4e~stop)
@@ -927,6 +929,7 @@ If the CDR is nil, then the buffer is only buried."
             mu4e-bookmarks mu4e-maildir-shortcuts
             mu4e-update-interval mu4e-headers-date-format
             mu4e-headers-time-format)
+  ;; define some autoloads
   :functions (mu4e-headers-search-bookmark mu4e-get-bookmark-query
               mu4e-compose-new  mu4e-headers-mark-for-refile
               mu4e-compose-reply)
