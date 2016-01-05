@@ -805,7 +805,8 @@ If the CDR is nil, then the buffer is only buried."
   :config (csetq uniquify-buffer-name-style 'forward))
 ;;;_  . recentf
 (csetq recentf-save-file (concat emacs-d "tmp/recentf.el"))
-(csetq recentf-exclude '("bbdb$"
+(csetq recentf-exclude '("/tmp/"
+			 "bbdb$"
 			 "svn-commit.tmp$"
 			 ".png$"
 			 "COMMIT_EDITMSG" "COMMIT_EDITMSG" "TAG_EDITMSG"))
