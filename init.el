@@ -910,13 +910,43 @@ If the CDR is nil, then the buffer is only buried."
 	smtpmail-stream-type 'starttls
 	smtpmail-smtp-service 587
 	smtpmail-debug-info t))
+;;;_  . sendmail (Mutt)
+;; http://www.emacswiki.org/emacs/MuttInEmacs
+;; http://dev.mutt.org/trac/wiki/MuttFaq/Editor
+(defun my-mail-quit ()
+  (interactive)
+  (not-modified)
+  (server-edit))
+(defun my-mail-save ()
+  (interactive)
+  (save-buffer)
+  (server-edit))
+(defun my-mail-mode-hook ()
+  (flush-lines "^\\(> \n\\)*> -- \n\\(\n?> .*\\)*") ; kill quoted sigs
+  ;; (visual-line-mode t)
+  (auto-fill-mode)
+  (delete-trailing-whitespace)
+  (mail-text)
+  (fill-region (point) (point-max))
+  (not-modified)
+  (setq make-backup-files nil))
 
+(use-package sendmail
+  :commands (mail-mode)
+  :mode (("/tmp/mutt-*" . mail-mode))
+  :config
+  (add-hook 'mail-mode-hook 'my-mail-mode-hook)
+  (bind-key "C-c C-c" 'my-mail-done mail-mode-map)
+  (bind-key "C-x k" 'my-mail-quit mail-mode-map)
+  )
 ;;;_  . message DISABLED
 ;; (use-package message
 ;;   :config
 ;;   (require 'starttls)
-;;   (require 'smtpmail))
-
+;;   (require 'smtpmail)
+;;   :commands message-mode
+;;   :mode (("/mutt" . message-mode))
+)
 ;;;_  . mu4e
 ;; http://www.djcbsoftware.nl/code/mu/mu4e/Gmail-configuration.html
 (use-package mu4e
