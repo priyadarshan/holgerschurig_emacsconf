@@ -912,7 +912,9 @@ If the CDR is nil, then the buffer is only buried."
 	smtpmail-stream-type 'starttls
 	smtpmail-smtp-service 587
 	smtpmail-debug-info t))
-;;;_  . sendmail (Mutt)
+;;;_  . sendmail
+;; This is used by GNUS and also by Mutt
+
 ;; http://www.emacswiki.org/emacs/MuttInEmacs
 ;; http://dev.mutt.org/trac/wiki/MuttFaq/Editor
 (defun my-mail-quit ()
@@ -935,8 +937,12 @@ If the CDR is nil, then the buffer is only buried."
 
 (use-package sendmail
   :commands (mail-mode)
+  :defines (send-mail-function)
   :mode (("/tmp/mutt-*" . mail-mode))
   :config
+  ;; Sending mail
+  (setq send-mail-function 'smtpmail-send-it)
+
   (add-hook 'mail-mode-hook 'my-mail-mode-hook)
   (bind-key "C-c C-c" 'my-mail-done mail-mode-map)
   (bind-key "C-x k" 'my-mail-quit mail-mode-map)
