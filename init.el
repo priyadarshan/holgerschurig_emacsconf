@@ -1813,15 +1813,6 @@ If the CDR is nil, then the buffer is only buried."
   (bind-key "C-s" 'helm-next-line     helm-swoop-map)
   (bind-key "C-r" 'helm-previous-line helm-multi-swoop-map)
   (bind-key "C-s" 'helm-next-line     helm-multi-swoop-map))
-;;;_  . ispell
-;; change dictionary with (ispell-change-dictionary) or put this into the first line:
-;; -*- ispell-dictionary: "german-new8" -*-
-(use-package ispell
-  :commands ispell
-  :config
-  ;; try ispell-message-dictionary-alist
-  ;;make aspell faster but less correctly
-  (csetq ispell-extra-args '("--sug-mode=ultra")))
 ;;;_  . flyspell and helm-flyspell
 (use-package flyspell
  :diminish flyspell-mode
