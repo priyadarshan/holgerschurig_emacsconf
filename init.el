@@ -946,7 +946,7 @@ If the CDR is nil, then the buffer is only buried."
 ;;   (require 'smtpmail)
 ;;   :commands message-mode
 ;;   :mode (("/mutt" . message-mode))
-)
+;;)
 ;;;_  . mu4e
 ;; http://www.djcbsoftware.nl/code/mu/mu4e/Gmail-configuration.html
 (use-package mu4e
