@@ -1659,7 +1659,7 @@ If the CDR is nil, then the buffer is only buried."
   (setq mm-discouraged-alternatives '("text/html" "text/richtext")
   	mm-automatic-display (-difference mm-automatic-display '("text/html" "text/enriched" "text/richtext")))
   )
-;;;_  . wanderlust
+;;;_  . wanderlust DISABLED
 ;; Manual:
 ;; http://wanderlust.github.io/wl-docs/wl.html
 
@@ -1672,11 +1672,13 @@ If the CDR is nil, then the buffer is only buried."
 ;; http://dis-dot-dat.blogspot.de/2010/04/my-wanderlust-setup.html
 ;; http://box.matto.nl/emacsgmail.html
 (use-package elmo-localdir
+  :disabled t
   :config
   (setq elmo-localdir-folder-path "~/Maildir")
   )
 
 (use-package wl
+  :disabled t
   :bind ("C-c w" . wl)
   :config
 
