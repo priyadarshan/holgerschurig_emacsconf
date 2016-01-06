@@ -1512,8 +1512,6 @@ If the CDR is nil, then the buffer is only buried."
   ;; look at 'In-Reply-To:' and 'References:' headers.
   ;; (setq gnus-thread-hide-subtree t)
 
-  (setq smtpmail-smtp-service 587)
-
   ;; don't substitute my e-mail with some "-> RECEIVER" magic
   (setq gnus-ignored-from-addresses nil)
 
