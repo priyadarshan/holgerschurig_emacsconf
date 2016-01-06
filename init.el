@@ -1499,6 +1499,10 @@ If the CDR is nil, then the buffer is only buried."
   ;;http://www.xsteve.at/prg/gnus/
   (setq gnus-select-method '(nntp "news.gmane.org"))
 
+  ;; Local offlineimap repository
+  (add-to-list 'gnus-secondary-select-methods
+	       '(nnmaildir "" (directory "~/Maildir/")))
+
   ;; I prefer to see only the top level message.  If a message has
   ;; several replies or is part of a thread, only show the first
   ;; message.  'gnus-thread-ignore-subject' will ignore the subject and
