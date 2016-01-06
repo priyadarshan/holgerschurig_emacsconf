@@ -1560,7 +1560,16 @@ If the CDR is nil, then the buffer is only buried."
   ;;  %s  Subject if it is at the root of a thread, and "" otherwise
   ;;  %O  Download mark (character).
   ;; Original                    "%U%R%z%I%(%[%4L: %-23,23f%]%) %s\n"
-  (setq gnus-summary-line-format "%U%R%d %-20,20n %B%-80,80S\n")
+  (setq gnus-summary-line-format "%U%R%5i %-10,10&user-date; %-22,22n %B%-80,80S\n")
+  (setq gnus-user-date-format-alist '(
+				      ((gnus-seconds-today)           . "     %H:%M")
+				      ;; ((+ 86400 (gnus-seconds-today)) . "gestern, %H:%M")
+				      (604800                         . " %a %H:%M")
+				      ;; ((gnus-seconds-month)           . "%a %d")
+				      ;; ((gnus-seconds-year)            . "%b %d")
+				      (t                              . "%Y-%m-%d")
+				      ))
+
 
   ;; Generate the mail headers before you edit your message.
   (setq message-generate-headers-first t)
