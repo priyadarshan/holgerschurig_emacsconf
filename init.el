@@ -1584,7 +1584,19 @@ If the CDR is nil, then the buffer is only buried."
   (define-key gnus-summary-mode-map [(control up)] 'gnus-summary-prev-thread)
 
   ;; Window setup
-  (setq gnus-widen-article-window t)
+  ;; (setq gnus-widen-article-window t)
+
+  ;; re-use one article buffer for every group
+  (setq gnus-single-article-buffer t)
+
+  ;; And this switches the cursor into this other window when we select an article
+  (defun my--after-select-article (&rest args)
+    (select-window (get-buffer-window (get-buffer "*Article*")))
+    )
+  (advice-add 'gnus-summary-select-article :after 'my--after-select-article)
+  (bind-key "q"      'delete-window       gnus-article-mode-map)
+  (bind-key "<home>" 'beginning-of-buffer gnus-article-mode-map)
+  (bind-key "<end>"  'end-of-buffer       gnus-article-mode-map)
 
   ;; stop the annoying "move to colon" function
   (defun gnus-summary-position-point ()
