@@ -1585,11 +1585,6 @@ If the CDR is nil, then the buffer is only buried."
   ;; stop the annoying "move to colon" function
   (defun gnus-summary-position-point ()
     )
-
-  ;; don't word wrap patches in news articles
-  (setq fill-flowed-display-column 9999)
-  (setq gnus-treat-fill-long-lines nil)
-  (add-hook 'gnus-article-mode-hook 'visual-line-mode)
 )
 
 (with-eval-after-load "gnus-art"
