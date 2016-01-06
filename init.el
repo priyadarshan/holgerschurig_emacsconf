@@ -40,6 +40,7 @@
 (csetq tool-bar-mode nil)
 ;(csetq menu-bar-mode nil)
 (csetq scroll-bar-mode nil)
+(eval-after-load "startup" '(fset 'display-startup-echo-area-message 'ignore))
 (csetq inhibit-startup-screen t)
 ;;;_  . Window manager
 ;; Avoid Emacs hanging for a while after changing default font
