@@ -1074,6 +1074,7 @@ If the CDR is nil, then the buffer is only buried."
 (use-package org
   :bind (("C-c l" . org-store-link)
 	 ("C-c o" . org-open-at-point-global))
+  :commands (org-open-file)
   :init
   ;; allow Shift-Cursor to mark stuff
   (csetq org-replace-disputed-keys t)
@@ -1621,7 +1622,15 @@ If the CDR is nil, then the buffer is only buried."
     )
 )
 
-(with-eval-after-load "gnus-art"
+(use-package gnus-sum
+  :defer t
+  :commands (gnus-summary-last-subject gnus-summary-goto-subject)
+  )
+
+(use-package gnus-art
+  :defer t
+  :config
+
   ;; Test code, position cursor inside and run C-C-x to evaluate:
   ;;
   ;; (let ((filename "[PATCH 03/05] foo"))
