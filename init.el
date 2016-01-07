@@ -1610,8 +1610,9 @@ If the CDR is nil, then the buffer is only buried."
 
   ;; And this switches the cursor into this other window when we select an article
   (defun my--after-select-article (&rest args)
-    (select-window (get-buffer-window (get-buffer "*Article*")))
-    )
+    (let ((window (get-buffer-window (get-buffer "*Article*"))))
+      (when window
+	(select-window window))))
   (advice-add 'gnus-summary-select-article :after 'my--after-select-article)
   (bind-key "q"      'delete-window       gnus-article-mode-map)
   (bind-key "<home>" 'beginning-of-buffer gnus-article-mode-map)
