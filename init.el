@@ -510,6 +510,10 @@ rather than line counts."
   :config
   (global-smartscan-mode t)
   )
+;;;_  . Mouse scrolling
+;; Smooth scrolling (default is 5).
+(setq mouse-wheel-scroll-amount '(2 ((shift) . 1) ((control) . nil))
+      mouse-wheel-progressive-speed nil)
 ;;;_ * Yank and Delete
 ;;;_  . Delete word or yank
 ;; The following may be of interest to people who (a) are happy with
