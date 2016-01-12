@@ -1,4 +1,5 @@
-;;;_ * Hide/show subtries with "C-c C-c C-s" or "C-c C-c h"
+;; -*- eval: (allout-mode t) -*- 
+;; Hide/show subtries with "C-c C-c C-s" or "C-c C-c h"
 
 
 ;;;_ * Optional debug
@@ -2141,8 +2142,7 @@ newline to the correct position"
   (modify-syntax-entry ?- "w")
   ;; Compile Emacs Lisp source files after the visiting buffers are saved.
   (unless (string= (buffer-name) "*scratch*")
-    (auto-compile-mode 1)
-    (require 'allout))
+    (auto-compile-mode 1))
   )
 (add-hook 'emacs-lisp-mode-hook 'my--elisp-setup)
 ;;;_  . Mode: Markdown
