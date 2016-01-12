@@ -2246,6 +2246,12 @@ newline to the correct position"
 ;;;_ * Emacs server
 (require 'server)
 (add-hook 'server-switch-hook 'raise-frame)
+
+;; Disable prompt asking you if you want to kill a
+;; buffer with a live process attached to it.
+;; http://stackoverflow.com/questions/268088/how-to-remove-the-prompt-for-killing-emacsclient-buffers
+(remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
+
 (unless (server-running-p)
   (server-start))
 ;;;_ * Local file variables
