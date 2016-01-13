@@ -952,14 +952,17 @@ If the CDR is nil, then the buffer is only buried."
   (bind-key "C-c C-c" 'my-mail-done mail-mode-map)
   (bind-key "C-x k" 'my-mail-quit mail-mode-map)
   )
-;;;_  . message DISABLED
-;; (use-package message
-;;   :config
-;;   (require 'starttls)
-;;   (require 'smtpmail)
-;;   :commands message-mode
-;;   :mode (("/mutt" . message-mode))
-;;)
+;;;_  . message
+(use-package message
+  :defer t
+  :config
+  ;; When composing a mail, start the auto-fill-mode.
+  (add-hook 'message-mode-hook 'turn-on-auto-fill)
+  ;;(require 'starttls)
+  ;;(require 'smtpmail)
+  :commands message-mode
+  ;;:mode (("/mutt" . message-mode))
+)
 ;;;_  . mu4e DISABLED
 ;; http://www.djcbsoftware.nl/code/mu/mu4e/Gmail-configuration.html
 (use-package mu4e
@@ -1603,8 +1606,6 @@ If the CDR is nil, then the buffer is only buried."
   ;; The message buffer will be killed after sending a message.
   (setq message-kill-buffer-on-exit t)
 
-  ;; When composing a mail, start the auto-fill-mode.
-  (add-hook 'message-mode-hook 'turn-on-auto-fill)
 
   ;; Store gnus specific files to ~/gnus, maybe also set nnml-directory
   (setq gnus-directory (concat emacs-d "News/")
