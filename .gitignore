@@ -1,5 +1,6 @@
 ?
 *.elc
+/*.bbdb
 /abbrev_defs
 /places
 /tmp/

@@ -958,6 +958,8 @@ If the CDR is nil, then the buffer is only buried."
   :config
   ;; When composing a mail, start the auto-fill-mode.
   (add-hook 'message-mode-hook 'turn-on-auto-fill)
+  (add-hook 'message-setup-hook 'bbdb-define-all-aliases)
+  (add-hook 'gnus-startup-hook 'bbdb-insinuate-message)
   ;;(require 'starttls)
   ;;(require 'smtpmail)
   :commands message-mode
@@ -1606,6 +1608,7 @@ If the CDR is nil, then the buffer is only buried."
   ;; The message buffer will be killed after sending a message.
   (setq message-kill-buffer-on-exit t)
 
+  (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
 
   ;; Store gnus specific files to ~/gnus, maybe also set nnml-directory
   (setq gnus-directory (concat emacs-d "News/")
@@ -1699,6 +1702,35 @@ If the CDR is nil, then the buffer is only buried."
   (setq mm-discouraged-alternatives '("text/html" "text/richtext")
   	mm-automatic-display (-difference mm-automatic-display '("text/html" "text/enriched" "text/richtext")))
   )
+
+(use-package bbdb
+  :ensure t
+  :defer t
+  :commands (bbdb bbdb-insinuate-gnus bbdb-insinuate-message bbdb-define-all-aliases)
+  :bind ("C-c b" . bbdb)
+  :config
+  (bbdb-initialize 'gnus 'message)
+
+  (setq bbdb-file (concat emacs-d "db.bbdb"))
+  (setq bbdb-update-records-p 'create)
+  ;; (setq bbdb-mua-pop-up nil)
+  (setq bbdb-silent t)
+  (setq bbdb-user-mail-address-re "\\<holgerschurig@gmail.com\\>")
+  (setq bbdb-add-name t)
+  (setq bbdb-add-aka t)
+  (setq bbdb-add-mails t)
+  (setq bbdb-new-mails-primary t)
+  (setq bbdb-complete-mail-allow-cycling t)
+  (setq bbdd-phone-style nil)
+  (setq bbdb-ignore-message-alist
+		'(("From" . "mailer-daemon")
+		  ("From" . "bugs.launchpad.net")
+		  ("From" . "postmaster.twitter.com")
+		  ("From" . "plus.google.com")
+		  ("From" . "notify@twitter.com")
+		  (("To" "From") . "review@openstack.org")))
+  ;; (setq bbdb-allow-duplicates t)
+)
 ;;;_  . wanderlust DISABLED
 ;; Manual:
 ;; http://wanderlust.github.io/wl-docs/wl.html
