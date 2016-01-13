@@ -1662,17 +1662,19 @@ If the CDR is nil, then the buffer is only buried."
     	(setq patchnum (string-to-number (match-string 1 filename)))
     	(message "%s" patchnum))
       ;; (when string-match "\\[PATCH.+?\\]" filename)
-      (setq filename (replace-regexp-in-string "\\[PATCH.+?\\]" "" filename))
+	  (message "FILENAME %s" filename)
+      (setq filename (replace-regexp-in-string "\\[PATCH.*\\]" "" filename))
       (setq filename (replace-regexp-in-string "\[^a-zA-Z0-9]" "-" filename))
       (setq filename (replace-regexp-in-string "\\-+" "-" filename))
       (setq filename (replace-regexp-in-string "^-" "" filename))
       (setq filename (replace-regexp-in-string "-$" "" filename))
       (when patchnum
-	(setq filename (concat (format "%04d" patchnum) "-" filename)))
+		(setq filename (concat (format "%04d" patchnum) "-" filename)))
       (setq filename (concat "/tmp/" filename ".patch"))
       (when (file-exists-p filename)
-	(delete-file filename))
-    filename)))
+		(delete-file filename))
+	  filename))
+  )
 
 (use-package mm-decode
   :config
