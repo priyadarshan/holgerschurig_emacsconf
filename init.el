@@ -1619,7 +1619,13 @@ If the CDR is nil, then the buffer is only buried."
       (when window
 	(select-window window))))
   (advice-add 'gnus-summary-select-article :after 'my--after-select-article)
-  (bind-key "q"      'delete-window       gnus-article-mode-map)
+
+  (defun my--delete-window ()
+	(interactive)
+	(if (one-window-p)
+		(bury-buffer)
+	  (delete-window)))
+  (bind-key "q"      'my--delete-window   gnus-article-mode-map)
   (bind-key "<home>" 'beginning-of-buffer gnus-article-mode-map)
   (bind-key "<end>"  'end-of-buffer       gnus-article-mode-map)
 
