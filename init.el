@@ -1529,36 +1529,49 @@ If the CDR is nil, then the buffer is only buried."
   ;; don't substitute my e-mail with some "-> RECEIVER" magic
   (setq gnus-ignored-from-addresses nil)
 
-  ;; put new threats at the top
-  (setq gnus-thread-sort-functions '((not gnus-thread-sort-by-date)
-  				     (not gnus-thread-sort-by-number)))
-
-  ;; The scoring system sorts articles and authors you read often to
-  ;; the beginning of the available mails. Less interesting stuff is
-  ;; located at the end.
+  ;; The scoring system weights articles and authors you read often
   (setq gnus-use-adaptive-scoring t)
   (setq gnus-score-expiry-days 14)
   (setq gnus-default-adaptive-score-alist
-  	'((gnus-unread-mark)
-  	  (gnus-ticked-mark (from 4))
-  	  (gnus-dormant-mark (from 5))
-  	  (gnus-saved-mark (from 20) (subject 5))
-  	  (gnus-del-mark (from -2) (subject -5))
-  	  (gnus-read-mark (from 2) (subject 1))
-  	  (gnus-killed-mark (from 0) (subject -3))
-  	  ;; (gnus-killed-mark (from -1) (subject -3))))
-  	  ;; (gnus-kill-file-mark (from -9999)))
-  	  ;; (gnus-expirable-mark (from -1) (subject -1))
-  	  ;; (gnus-ancient-mark (subject -1))
-  	  ;; (gnus-low-score-mark (subject -1))
-  	  ;; (gnus-catchup-mark (subject -1))
+		'(
+		  ;; Original setting
+		  (gnus-kill-file-mark)						      ;; 88 "X"
+		  (gnus-unread-mark)						      ;; 32 " "
+		  ;; (gnus-read-mark (from 3) (subject 28))       ;; 82 "R"
+		  (gnus-catchup-mark (subject -8))			      ;; 67 "C"
+		  ;; (gnus-killed-mark (from -2) (subject -18))   ;; 75 "K"
+		  ;; (gnus-del-mark from -2) (subject -13)        ;; 114 "r"
+
+		  ;; New setting
+		  (gnus-read-mark (from 2) (subject 1))		      ;; 82 "R"
+		  (gnus-killed-mark (from 0) (subject -3))	      ;; 75 "K"
+		  (gnus-del-mark (from -2) (subject -5))	      ;; 114 "r"
+		  (gnus-ticked-mark (from 4))				      ;; 33 "!"
+		  (gnus-dormant-mark (from 5))				      ;; 63 "?"
+		  (gnus-saved-mark (from 4) (subject 5))	      ;; 83 "S"
+		  ;; (gnus-kill-file-mark (from -9999)))          ;; 88 "X"
+		  ;; (gnus-expirable-mark (from -1) (subject -1)) ;; 69 "E"
+		  ;; (gnus-ancient-mark (subject -1))             ;; 79 "O"
+		  ;; (gnus-low-score-mark (subject -1))           ;; 89 "Y"
   	  ))
+  (setq gnus-adaptive-word-length-limit 4)
   (setq gnus-score-decay-constant 1)
   (setq gnus-score-decay-scale 0.03)
   (setq gnus-decay-scores t)
+  (setq gnus-adaptive-word-minimum -500)
+
   ;; Increase the score for followups to a sent article.
   (add-hook 'message-sent-hook 'gnus-score-followup-article)
   (add-hook 'message-sent-hook 'gnus-score-followup-thread)
+
+  ;; put interesting stuff to the top
+  (setq gnus-thread-sort-functions
+		'(gnus-thread-sort-by-score))
+  ;; or sort by date:
+  ;; (setq gnus-thread-sort-functions
+  ;; 		'((not gnus-thread-sort-by-date)
+  ;; 		  (not gnus-thread-sort-by-number)))
+
 
   ;;  %U  "Read" status of this article.
   ;;  %R  "A" if this article has been replied to, " "
@@ -1583,7 +1596,6 @@ If the CDR is nil, then the buffer is only buried."
 				      ;; ((gnus-seconds-year)            . "%b %d")
 				      (t                              . "%Y-%m-%d")
 				      ))
-
 
   ;; Generate the mail headers before you edit your message.
   (setq message-generate-headers-first t)
