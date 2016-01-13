@@ -1645,6 +1645,10 @@ If the CDR is nil, then the buffer is only buried."
   ;; stop the annoying "move to colon" function
   (defun gnus-summary-position-point ()
     )
+
+  ;; About message expiry
+  ;; gnus-auto-expirable-marks
+  ;; gnus-auto-expirable-newsgroups
 )
 
 (use-package gnus-sum
