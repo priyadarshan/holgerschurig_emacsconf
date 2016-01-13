@@ -1520,9 +1520,9 @@ If the CDR is nil, then the buffer is only buried."
   ;; Unconditionally read the dribble file
   (setq gnus-always-read-dribble-file t)
 
-  ;; I prefer to see only the top level message.  If a message has
+  ;; If you prefer to see only the top level message. If a message has
   ;; several replies or is part of a thread, only show the first
-  ;; message.  'gnus-thread-ignore-subject' will ignore the subject and
+  ;; message. 'gnus-thread-ignore-subject' will ignore the subject and
   ;; look at 'In-Reply-To:' and 'References:' headers.
   ;; (setq gnus-thread-hide-subtree t)
 
