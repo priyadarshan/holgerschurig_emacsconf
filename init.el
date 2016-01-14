@@ -1,4 +1,4 @@
-;; -*- eval: (allout-mode t) -*- 
+;; -*- eval: (allout-mode t) -*-
 ;; Hide/show subtries with "C-c C-c C-s" or "C-c C-c h"
 
 
