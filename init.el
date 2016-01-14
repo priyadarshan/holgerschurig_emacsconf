@@ -1248,87 +1248,6 @@ If the CDR is nil, then the buffer is only buried."
   (csetq org-html-style-default "<style type=\"text/css\">\n <!--/*--><![CDATA[/*><!--*/\n  body { text-align: center; font-family: \"Aria\", sans-serif; }\n  #content { margin: 0 auto; width: 860px; text-align: left; }\n  #text-table-of-contents > ul > li { margin-top: 1em; }\n  .title  { text-align: center; }\n  .todo   { font-family: monospace; color: red; }\n  .done   { color: green; }\n  .tag    { background-color: #eee; font-family: monospace;\n            padding: 2px; font-size: 80%; font-weight: normal; }\n  .timestamp { color: #bebebe; }\n  .timestamp-kwd { color: #5f9ea0; }\n  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }\n  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }\n  .center { margin-left: auto; margin-right: auto; text-align: center; }\n  .underline { text-decoration: underline; }\n  #postamble p, #preamble p { font-size: 90%; margin: .2em; }\n  p.verse { margin-left: 3%; }\n  pre {\n    border: 1px solid #ccc;\n    box-shadow: 3px 3px 3px #eee;\n    padding: 8pt;\n    font-family: monospace;\n    overflow: auto;\n    margin: 1em 0;\n  }\n  pre.src {\n    position: relative;\n    overflow: visible;\n    padding-top: 8pt;\n  }\n  pre.src:before {\n    display: none;\n    position: absolute;\n    background-color: white;\n    top: -10px;\n    right: 10px;\n    padding: 3px;\n    border: 1px solid black;\n  }\n  pre.src:hover:before { display: inline;}\n  pre.src-sh:before    { content: 'sh'; }\n  pre.src-bash:before  { content: 'sh'; }\n  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }\n  pre.src-R:before     { content: 'R'; }\n  pre.src-perl:before  { content: 'Perl'; }\n  pre.src-java:before  { content: 'Java'; }\n  pre.src-sql:before   { content: 'SQL'; }\n\n  table { border-collapse:collapse; }\n  caption.t-above { caption-side: top; }\n  caption.t-bottom { caption-side: bottom; }\n  td, th { vertical-align:top;  }\n  th.right  { text-align: center;  }\n  th.left   { text-align: center;   }\n  th.center { text-align: center; }\n  td.right  { text-align: right;  }\n  td.left   { text-align: left;   }\n  td.center { text-align: center; }\n  dt { font-weight: bold; }\n  .footpara:nth-child(2) { display: inline; }\n  .footpara { display: block; }\n  .footdef  { margin-bottom: 1em; }\n  .figure { padding: 1em; }\n  .figure p { text-align: center; }\n  .inlinetask {\n    padding: 10px;\n    border: 2px solid gray;\n    margin: 10px;\n    background: #ffffcc;\n  }\n  #org-div-home-and-up\n   { text-align: right; font-size: 70%; white-space: nowrap; }\n  textarea { overflow-x: auto; }\n  .linenr { font-size: smaller }\n  .code-highlighted { background-color: #ffff00; }\n  .org-info-js_info-navigation { border-style: none; }\n  #org-info-js_console-label\n    { font-size: 10px; font-weight: bold; white-space: nowrap; }\n  .org-info-js_search-highlight\n    { background-color: #ffff00; color: #000000; font-weight: bold; }\n  .ulClassNameOrID > li {}\n  /*]]>*/-->\n</style>")
   (csetq org-html-table-default-attributes '(:border "2" :cellspacing "0" :cellpadding "6"))
   (csetq org-html-postamble t))
-;;;_ * Base Packages (often used by other packages)
-;;;_ ** helm
-;; Very good intro: http://tuhdo.github.io/helm-intro.html
-(defun my-helm-imenu ()
-  "This is just like helm-imenu, but it will maximize the buffer"
-  (interactive)
-  (let ((helm-full-frame t))
-    (helm-imenu)))
-(use-package helm
-  :ensure helm
-  :diminish helm-mode
-  :bind (
-	 ("C-h a"   . helm-apropos)
-	 ("C-x C-f" . helm-find-files)
-	 ("M-s o"   . helm-occur)
-	 ("M-s i"   . my-helm-imenu)
-	 ("M-s m"   . my-helm-imenu)
-	 ("M-x"     . helm-M-x)
-	 ("M-y"     . helm-show-kill-ring)
-         ("C-x C-b"   . helm-mini)
-	 )
-  :init
-  (progn
-    (require 'helm-config)
-    (helm-mode t)
-    )
-  :config
-  (progn
-    ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
-    ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
-    ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-    ;; (from http://tuhdo.github.io/helm-intro.html)
-    (bind-key "C-c h" 'helm-command-prefix)
-    (global-unset-key (kbd "C-x c"))
-
-    (when (executable-find "curl")
-      (setq helm-net-prefer-curl t))
-
-    ;; allow "find man at point" for C-c h m (helm-man-woman)
-    (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
-
-    (csetq helm-imenu-delimiter " ")
-    (csetq helm-candidate-number-limit 100)
-    (csetq helm-quick-update t)
-    (setq helm-M-x-requires-pattern nil)
-
-    (csetq helm-ff-skip-boring-files t)
-    ;; search for library in `require' and `declare-function' sexp.
-    (csetq helm-ff-search-library-in-sexp t)
-    (csetq helm-ff-file-name-history-use-recentf t)
-    (csetq helm-ff-newfile-prompt-p nil)
-
-    ;; open helm buffer inside current window, not occupy whole other window
-    (csetq helm-split-window-in-side-p t)
-    ;; move to end or beginning of source when reaching top or bottom of source.
-    (csetq helm-move-to-line-cycle-in-source t)
-    ;; scroll 8 lines other window using M-<next>/M-<prior>
-    (csetq helm-scroll-amount 8)
-
-    ;; define browser
-    (setq helm-browse-url-chromium-program "x-www-browser")
-    (csetq helm-google-suggest-default-browser-function 'helm-browse-url-chromium)
-    (csetq helm-home-url "http://www.google.de")
-    (csetq helm-autoresize-mode t)
-
-    ;; ignore Emacs save files
-    (add-to-list 'helm-boring-file-regexp-list "\\.#")
-
-    ;; see (customize-group "helm-files-faces")
-    (set-face-attribute 'helm-ff-directory        nil :foreground "red" :background 'unspecified)
-    (set-face-attribute 'helm-ff-dotted-directory nil :foreground "red" :background 'unspecified)
-    (set-face-attribute 'helm-ff-executable       nil :foreground 'unspecified :background 'unspecified)
-    (set-face-attribute 'helm-ff-file             nil :foreground 'unspecified :background 'unspecified :inherit 'unspecified)
-    (set-face-attribute 'helm-ff-invalid-symlink  nil :foreground 'unspecified :background 'unspecified)
-    ;;(set-face-attribute 'helm-ff-prefix         nil :foreground 'unspecified :background 'unspecified)
-    (set-face-attribute 'helm-ff-symlink          nil :foreground 'unspecified :background 'unspecified)
-    (set-face-attribute 'helm-history-deleted     nil :foreground 'unspecified :background 'unspecified)
-    (set-face-attribute 'helm-history-remote      nil :foreground 'unspecified :background 'unspecified)
-
-    ;; this is kind of a goto, you can visit all marks
-    (bind-key "g"   'helm-all-mark-rings helm-command-map)))
 ;;;_ * Packages
 ;;;_ ** circe (IRC client)
 ;; see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Configuration
@@ -1559,6 +1478,86 @@ If the CDR is nil, then the buffer is only buried."
 		  (("To" "From") . "review@openstack.org")))
   ;; (setq bbdb-allow-duplicates t)
 )
+;;;_ ** helm
+;; Very good intro: http://tuhdo.github.io/helm-intro.html
+(defun my-helm-imenu ()
+  "This is just like helm-imenu, but it will maximize the buffer"
+  (interactive)
+  (let ((helm-full-frame t))
+    (helm-imenu)))
+(use-package helm
+  :ensure helm
+  :diminish helm-mode
+  :bind (
+	 ("C-h a"   . helm-apropos)
+	 ("C-x C-f" . helm-find-files)
+	 ("M-s o"   . helm-occur)
+	 ("M-s i"   . my-helm-imenu)
+	 ("M-s m"   . my-helm-imenu)
+	 ("M-x"     . helm-M-x)
+	 ("M-y"     . helm-show-kill-ring)
+         ("C-x C-b"   . helm-mini)
+	 )
+  :init
+  (progn
+    (require 'helm-config)
+    (helm-mode t)
+    )
+  :config
+  (progn
+    ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+    ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+    ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+    ;; (from http://tuhdo.github.io/helm-intro.html)
+    (bind-key "C-c h" 'helm-command-prefix)
+    (global-unset-key (kbd "C-x c"))
+
+    (when (executable-find "curl")
+      (setq helm-net-prefer-curl t))
+
+    ;; allow "find man at point" for C-c h m (helm-man-woman)
+    (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+
+    (csetq helm-imenu-delimiter " ")
+    (csetq helm-candidate-number-limit 100)
+    (csetq helm-quick-update t)
+    (setq helm-M-x-requires-pattern nil)
+
+    (csetq helm-ff-skip-boring-files t)
+    ;; search for library in `require' and `declare-function' sexp.
+    (csetq helm-ff-search-library-in-sexp t)
+    (csetq helm-ff-file-name-history-use-recentf t)
+    (csetq helm-ff-newfile-prompt-p nil)
+
+    ;; open helm buffer inside current window, not occupy whole other window
+    (csetq helm-split-window-in-side-p t)
+    ;; move to end or beginning of source when reaching top or bottom of source.
+    (csetq helm-move-to-line-cycle-in-source t)
+    ;; scroll 8 lines other window using M-<next>/M-<prior>
+    (csetq helm-scroll-amount 8)
+
+    ;; define browser
+    (setq helm-browse-url-chromium-program "x-www-browser")
+    (csetq helm-google-suggest-default-browser-function 'helm-browse-url-chromium)
+    (csetq helm-home-url "http://www.google.de")
+    (csetq helm-autoresize-mode t)
+
+    ;; ignore Emacs save files
+    (add-to-list 'helm-boring-file-regexp-list "\\.#")
+
+    ;; see (customize-group "helm-files-faces")
+    (set-face-attribute 'helm-ff-directory        nil :foreground "red" :background 'unspecified)
+    (set-face-attribute 'helm-ff-dotted-directory nil :foreground "red" :background 'unspecified)
+    (set-face-attribute 'helm-ff-executable       nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-ff-file             nil :foreground 'unspecified :background 'unspecified :inherit 'unspecified)
+    (set-face-attribute 'helm-ff-invalid-symlink  nil :foreground 'unspecified :background 'unspecified)
+    ;;(set-face-attribute 'helm-ff-prefix         nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-ff-symlink          nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-history-deleted     nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-history-remote      nil :foreground 'unspecified :background 'unspecified)
+
+    ;; this is kind of a goto, you can visit all marks
+    (bind-key "g"   'helm-all-mark-rings helm-command-map)))
 ;;;_ ** helm-descbinds
 (use-package helm-descbinds
   :commands helm-descbinds
