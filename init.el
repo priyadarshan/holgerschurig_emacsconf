@@ -1556,12 +1556,10 @@ If the CDR is nil, then the buffer is only buried."
   ;; Original                    "%U%R%z%I%(%[%4L: %-23,23f%]%) %s\n"
   (setq gnus-summary-line-format "%U%R %11,11&user-date; %-22,22n %B%-80,80S\n")
   (setq gnus-user-date-format-alist '(
-				      ((gnus-seconds-today)           . "     %H:%M")
-				      ;; ((+ 86400 (gnus-seconds-today)) . "gestern, %H:%M")
-				      (604800                         . " %a %H:%M")
-				      ;; ((gnus-seconds-month)           . "%a %d")
-				      ;; ((gnus-seconds-year)            . "%b %d")
-				      (t                              . "%Y-%m-%d")
+				      ((gnus-seconds-today)           . "%H:%M")
+				      ((+ 86400 (gnus-seconds-today)) . "gest %H:%M")
+				      ((gnus-seconds-year)            . "%d.%m %H:%M")
+				      (t                              . "%d.%m. %Y")
 				      ))
 
   ;; Generate the mail headers before you edit your message.
