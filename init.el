@@ -1,7 +1,3 @@
-;; -*- eval: (allout-mode t) -*-
-;; Hide/show subtries with "C-c C-c C-s" or "C-c C-c h"
-
-
 ;;;_ * Optional debug
 ;; (toggle-debug-on-error)
 ;;;_ * Load paths
@@ -37,21 +33,21 @@
   `(funcall (or (get ',variable 'custom-set)
 		'set-default)
 	    ',variable ,value))
-;;;_  . Window Decorations
+;;;_ ** Window Decorations
 (csetq tool-bar-mode nil)
 ;(csetq menu-bar-mode nil)
 (csetq scroll-bar-mode nil)
 (eval-after-load "startup" '(fset 'display-startup-echo-area-message 'ignore))
 (csetq inhibit-startup-screen t)
-;;;_  . Window manager
+;;;_ ** Window manager
 ;; Avoid Emacs hanging for a while after changing default font
 (modify-frame-parameters nil '((wait-for-wm . nil)))
-;;;_  . Theme
+;;;_ ** Theme
 (require 'afternoon-theme)
 ;; put something like this into ~/.Xresources
 ;; Emacs.geometry: 120x55
 ;; Emacs.Font:     Terminus 11
-;;;_  . Blend fringe
+;;;_ ** Blend fringe
 ;; http://emacs.stackexchange.com/a/5343/115
 (defun my-blend-fringe ()
   (interactive)
@@ -62,7 +58,7 @@
                       :background (if (string= (face-background 'default) "unspecified-bg")
 									  "#282828" (face-background 'default))))
 (my-blend-fringe)
-;;;_  . Entering/exiting Emacs
+;;;_ ** Entering/exiting Emacs
 ; Do without annoying startup msg.
 (csetq inhibit-startup-message t)
 ; This inhibits the initial startup echo area message.
@@ -77,37 +73,37 @@
 (csetq custom-file (concat emacs-d "custom.el"))
 ; Delete previous identical history entries
 (csetq history-delete-duplicates t)
-;;;_  . Emacs internals
+;;;_ ** Emacs internals
 (csetq gc-cons-threshold (* 10 1024 1024))
 (csetq message-log-max 10000)
 ;; Use new byte codes from Emacs 24.4
 (setq byte-compile--use-old-handlers nil)
 (csetq ad-redefinition-action 'accept)
-;;;_  . allow some commands
+;;;_ ** allow some commands
 (put 'erase-buffer 'disabled nil)
-;;;_  . Default browser
+;;;_ ** Default browser
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "x-www-browser")
-;;;_  . Simpler yes or no prompt
+;;;_ ** Simpler yes or no prompt
 ;  Get rid of yes-or-no questions - y or n is enough
 (fset 'yes-or-no-p 'y-or-n-p)
-;;;_  . Private data
+;;;_ ** Private data
 (csetq user-full-name "Holger Schurig")
 (csetq user-mail-address "holgerschurig@gmail.com")
 (load (concat emacs-d "private.el") 'noerror 'nomessage)
-;;;_  . Load customization file
+;;;_ ** Load customization file
 (if (file-exists-p custom-file) (load-file custom-file))
-;;;_  . Mouse
+;;;_ ** Mouse
 ;; Paste at text-cursor, not at mouse-cursor:
 (csetq mouse-yank-at-point t)
-;;;_  . Localisation
+;;;_ ** Localisation
 ;; A sentence doesn't end with two spaces:
 (csetq sentence-end-double-space nil)
-;;;_  . Customization buffer
+;;;_ ** Customization buffer
 ;; keep lisp names in the custom buffers, don't capitalize
 (csetq custom-unlispify-tag-names nil)
 ;;;_ * Package infrastructure
-;;;_  . package
+;;;_ ** package
 ;; ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
 ;; Move the cookie file out into the =tmp/= directory.
 (csetq url-configuration-directory (concat emacs-d "tmp/"))
@@ -163,7 +159,7 @@ The list is displayed in a buffer named `*Packages*'."
 		   (if (= (length upgrades) 1) "" "s")
 		   (substitute-command-keys "\\[package-menu-mark-upgrades]")
 		   (if (= (length upgrades) 1) "it" "them"))))))
-;;;_  . use-package
+;;;_ ** use-package
 ;; See http://github.com/jwiegley/use-package/
 ;; or http://www.lunaryorn.com/2015/01/06/my-emacs-configuration-with-use-package.html
 ;;
@@ -215,12 +211,12 @@ The list is displayed in a buffer named `*Packages*'."
 (require 'diminish)
 (require 'bind-key)
 ;;;_ * Editing
-;;;_  . Transpose
+;;;_ ** Transpose
 ;; http://endlessparentheses.com/transposing-keybinds-in-emacs.html
 
 (bind-key "\C-t" #'transpose-lines)
 (bind-key "\C-t" #'transpose-chars  ctl-x-map)
-;;;_  . Undo
+;;;_ ** Undo
 ;; This lets you use C-z or C-x u (undo-tree-visualize) to visually walk
 ;; through the changes you've made, undo back to a certain point (or
 ;; redo), and go down different branches.
@@ -235,7 +231,7 @@ The list is displayed in a buffer named `*Packages*'."
     (setq undo-tree-visualizer-timestamps t)
     (setq undo-tree-visualizer-diff t)))
 ;;;_ * Display
-;;;_  . Font locking
+;;;_ ** Font locking
 ;; Highlight each of TODO FIXME XXX DISABLED \todo :disabled
 (defface my--todo-face
   '((t :foreground "red"
@@ -260,14 +256,14 @@ The list is displayed in a buffer named `*Packages*'."
 	 ("^\\(;;;?_\\) " 1 'my--elisp-section-face t)
 	 ("^\\(;;;;;;;;+\\)" 1 'my--elisp-section-face t)
 	 ))
-;;;_  . Line truncation
+;;;_ ** Line truncation
 ;; don't display continuation lines
 (setq-default truncate-lines t)
 ;; Do `M-x toggle-truncate-lines` to toggle truncation mode.
 ;; `truncate-partial-width-windows' has to be nil for `toggle-truncate-lines'
 ;; to work even in split windows
 (csetq truncate-partial-width-windows nil)
-;;;_  . Show trailing whitespace
+;;;_ ** Show trailing whitespace
 (defun my--show-trailing-whitespace ()
   (interactive)
   (csetq show-trailing-whitespace t))
@@ -276,10 +272,10 @@ The list is displayed in a buffer named `*Packages*'."
   (message "hide trailing whitespace")
   (csetq show-trailing-whitespace nil))
 (add-hook 'prog-mode-hook 'my--show-trailing-whitespace)
-;;;_  . Buffers without toolbar, extra frame etc
+;;;_ ** Buffers without toolbar, extra frame etc
 (add-to-list 'special-display-buffer-names "*Backtrace*")
 (add-to-list 'special-display-frame-alist '(tool-bar-lines . 0))
-;;;_  . Misc settings for text vs. windowing systems
+;;;_ ** Misc settings for text vs. windowing systems
 (if window-system
     ;; X11, Windows, etc
     (progn
@@ -292,16 +288,16 @@ The list is displayed in a buffer named `*Packages*'."
   (progn
     ;; No "very" visible cursor
     (csetq visible-cursor nil)))
-;;;_  . No audible bell
+;;;_ ** No audible bell
 (csetq visible-bell t)
-;;;_  . Let emacs react faster to keystrokes
+;;;_ ** Let emacs react faster to keystrokes
 (csetq echo-keystrokes 0.1)
 (csetq idle-update-delay 0.35)
-;;;_  . Mode line setup
+;;;_ ** Mode line setup
 ;; Show line and column numbers in the mode-line
 (line-number-mode 1)
 (column-number-mode 1)
-;;;_  . Smart mode line
+;;;_ ** Smart mode line
 ;; https://github.com/Malabarba/smart-mode-line
 (use-package smart-mode-line
   :config
@@ -375,7 +371,7 @@ length is the number of COMMANDS) and then runs `seq-times'th
 command from COMMANDS."
   (declare (indent 2))
   `(eval (nth (seq-times ,name ,(length commands) ,body) ',commands)))
-;;;_  . Home / End
+;;;_ ** Home / End
 (defvar my--previous-position)
 
 (defun my-home ()
@@ -414,9 +410,9 @@ command from COMMANDS."
     (goto-char my--previous-position)))
 (bind-key "C-e" 'my-end)
 (bind-key "<end>" 'my-end)
-;;;_  . Recenter
+;;;_ ** Recenter
 (csetq recenter-positions '(middle 4 -4))
-;;;_  . Nicer goto-line
+;;;_ ** Nicer goto-line
 ;; Doesn't modify minibuffer-history, but use it's own little history
 ;; list.
 (defvar my-goto-line-history '())
@@ -478,7 +474,7 @@ rather than line counts."
       (forward-line (1- line)))))
 (bind-key "M-g g"   'my-goto-line)
 (bind-key "M-g M-g" 'my-goto-line)
-;;;_  . expand-region
+;;;_ ** expand-region
 ;; Home page: https://github.com/magnars/expand-region.el
 ;;
 ;; C-+ Expand region increases the selected region by semantic units.
@@ -489,12 +485,12 @@ rather than line counts."
   :bind ("C-+" . er/expand-region)
   :config
   (csetq expand-region-reset-fast-key    "<ESC><ESC>"))
-;;;_  . bookmark
+;;;_ ** bookmark
 (use-package bookmark
   :config
   (csetq bookmark-default-file (concat emacs-d "tmp/bookmarks.el"))
   )
-;;;_  . avy (alternative to ace-jump-mode)
+;;;_ ** avy (alternative to ace-jump-mode)
 (use-package avy
   :bind ("C-#" . avy-goto-char-timer)
   :config (progn
@@ -503,19 +499,19 @@ rather than line counts."
 	    (csetq avy-style 'at-full)
 	    (csetq avy-all-windows nil)
 	    (csetq avy-highlight-first t)))
-;;;_  . smartscan
+;;;_ ** smartscan
 ;; This makes =M-n= and =M-p= look for the symbol at point. This is
 ;; very un-intrusive, no pop-up, no nothing,
 (use-package smartscan
   :config
   (global-smartscan-mode t)
   )
-;;;_  . Mouse scrolling
+;;;_ ** Mouse scrolling
 ;; Smooth scrolling (default is 5).
 (setq mouse-wheel-scroll-amount '(2 ((shift) . 1) ((control) . nil))
       mouse-wheel-progressive-speed nil)
 ;;;_ * Yank and Delete
-;;;_  . Delete word or yank
+;;;_ ** Delete word or yank
 ;; The following may be of interest to people who (a) are happy with
 ;; "C-w" and friends for killing and yanking, (b) use
 ;; "transient-mark-mode", (c) also like the traditional Unix tty
@@ -530,13 +526,13 @@ rather than line counts."
   (interactive
    (if mark-active (list (region-beginning) (region-end))
      (list (save-excursion (backward-word 1) (point)) (point)))))
-;;;_  . Selection deletion
+;;;_ ** Selection deletion
 ;; Use delete-selection mode:
 (delete-selection-mode t)
-;;;_  . Deletion in readonly buffer
+;;;_ ** Deletion in readonly buffer
 ;; Be silent when killing text from read only buffer:
 (csetq kill-read-only-ok t)
-;;;_  . Join lines at killing
+;;;_ ** Join lines at killing
 ;; If at end of line, join with following; otherwise kill line.
 ;; Deletes whitespace at join.
 (defun kill-and-join-forward (&optional arg)
@@ -547,7 +543,7 @@ Deletes whitespace at join."
       (delete-indentation t)
     (kill-line arg)))
 (bind-key "C-k" 'kill-and-join-forward)
-;;;_  . Dynamic char deletion
+;;;_ ** Dynamic char deletion
 ;; The following is from Boojum's post in
 ;; [[http://www.reddit.com/r/emacs/comments/b1r8a/remacs_tell_us_about_the_obscure_but_useful/]].
 ;;
@@ -584,7 +580,7 @@ otherwise delete."
 (bind-key "<deletechar>" 'delete-char-dynamic)
 (bind-key "<delete>" 'delete-char-dynamic)
 (bind-key "C-d" 'delete-char-dynamic)
-;;;_  . X11 clipboard
+;;;_ ** X11 clipboard
 (when (display-graphic-p)
   (csetq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 ;;;_ * Completion
@@ -596,7 +592,7 @@ otherwise delete."
 (csetq tab-always-indent 'complete)
 (csetq completions-format 'vertical)
 ;;;_ * Windows handling
-;;;_  . delete-window
+;;;_ ** delete-window
 ;; If only one window in frame, `delete-frame'.
 ;; From http://www.emacswiki.org/emacs/frame-cmds.el
 (defadvice delete-window (around delete-window (&optional window) activate)
@@ -607,7 +603,7 @@ otherwise delete."
     (if (one-window-p t)
 	(delete-frame)
       ad-do-it (selected-window))))
-;;;_  . new kill-buffer-and-window
+;;;_ ** new kill-buffer-and-window
 ;; Replacement for interactive `kill-buffer'. We cannot redefine
 ;; `kill-buffer', because other elisp code relies on it's exact
 ;; behavior.
@@ -625,10 +621,10 @@ there are several windows open."
     (delete-window))
   (kill-buffer buffer))
 (bind-key "C-x k" 'my--kill-buffer-and-window)
-;;;_  . Window sizing
+;;;_ ** Window sizing
 (bind-key "<M-down>" 'enlarge-window)
 (bind-key "<M-up>" 'shrink-window)
-;;;_  . Window zooming (F5)
+;;;_ ** Window zooming (F5)
 ;; If there is only one window displayed, act like C-x 2. If there are
 ;; two windows displayed, act like C-x 1
 (defun my-zoom-next-buffer2 ()
@@ -666,12 +662,12 @@ are two windows displayed, act like C-x1:"
 	(other-window -1))
     (delete-other-windows)))
 (bind-key "<f5>" 'my-explode-window)
-;;;_  . Winner mode
+;;;_ ** Winner mode
 (use-package winner
   :init
   (winner-mode))
 ;;;_ * Buffers
-;;;_  . Insert buffer
+;;;_ ** Insert buffer
 ;; |-------+---------------|
 ;; | C-x i | insert file   |
 ;; |-------+---------------|
@@ -679,7 +675,7 @@ are two windows displayed, act like C-x1:"
 ;; |-------+---------------|
 ;; Insert buffer at current position
 (bind-key "C-x I" 'insert-buffer)
-;;;_  . Protect buffers
+;;;_ ** Protect buffers
 ;; https://raw.githubusercontent.com/lewang/le_emacs_libs/master/keep-buffers.el
 (eval-when-compile (require 'cl))
 (define-minor-mode keep-buffers-mode
@@ -718,14 +714,14 @@ If the CDR is nil, then the buffer is only buried."
           nil)
       t)))
 (keep-buffers-mode 1)
-;;;_  . Easier kill buffers with processes
+;;;_ ** Easier kill buffers with processes
 ;; Don't asks you if you want to kill a buffer with a live process
 ;; attached to it:
 ;; http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/
 (setq kill-buffer-query-functions
       (remq 'process-kill-buffer-query-function
 	     kill-buffer-query-functions))
-;;;_  . Cycle buffers with iflipb
+;;;_ ** Cycle buffers with iflipb
 ;; http://www.emacswiki.org/emacs/iflipb
 (use-package iflipb
   :commands (iflipb-next-buffer iflipb-previous-buffer)
@@ -761,13 +757,13 @@ If the CDR is nil, then the buffer is only buried."
     (not (and (or (eq last-command 'my-iflipb-next-buffer)
 		  (eq last-command 'my-iflipb-previous-buffer))
 	      my-iflipb-ing-internal))))
-;;;_  . ace-jump-buffer
+;;;_ ** ace-jump-buffer
 (use-package ace-jump-buffer
   :disabled t
   :bind ("C-c C-j" . ace-jump-buffer)
   )
 ;;;_ * File opening/saving
-;;;_  . Basic settings
+;;;_ ** Basic settings
 ;; Never show GTK file open dialog
 (csetq use-file-dialog nil)
 ;; don't add newlines to end of buffer when scrolling, but show them
@@ -785,7 +781,7 @@ If the CDR is nil, then the buffer is only buried."
 (csetq auto-save-list-file-prefix (concat emacs-d "tmp/auto-save-list/saves-"))
 ;; Kill means kill, not asking. Was:
 (setq kill-buffer-query-functions nil)
-;;;_  . Automatically load .Xresources after changes
+;;;_ ** Automatically load .Xresources after changes
 ;; Sample ~/.Xresources:
 ;;
 ;; Emacs.geometry: 120x55
@@ -797,19 +793,19 @@ If the CDR is nil, then the buffer is only buried."
       (start-process "xrdb" nil "xrdb" "-merge" (buffer-file-name))
       (message (format "Merged %s into X resource database" file)))))
 (add-hook 'after-save-hook 'merge-x-resources)
-;;;_  . Autorevert
+;;;_ ** Autorevert
 (global-auto-revert-mode 1)
 ;; Don't ask when running revert-buffer when reverting files in this
 ;; list of regular expressions:
 (csetq revert-without-query '(""))
-;;;_  . Decompress compressed files
+;;;_ ** Decompress compressed files
 (auto-compression-mode t)
-;;;_  . Quickly save (F2)
+;;;_ ** Quickly save (F2)
 (bind-key "<f2>" 'save-buffer)
-;;;_  . Unique buffer names
+;;;_ ** Unique buffer names
 (use-package uniquify
   :config (csetq uniquify-buffer-name-style 'forward))
-;;;_  . recentf
+;;;_ ** recentf
 (csetq recentf-save-file (concat emacs-d "tmp/recentf.el"))
 (csetq recentf-exclude '("^/tmp/"
 			 "/.newsrc"
@@ -834,7 +830,7 @@ If the CDR is nil, then the buffer is only buried."
 ;; for example).
 (define-key minibuffer-local-completion-map " " nil)
 (define-key minibuffer-local-must-match-map " " nil)
-;;;_  . save mini-buffer history
+;;;_ ** save mini-buffer history
 (use-package savehist
   :init
    (setq savehist-file (concat emacs-d "tmp/history.el")
@@ -842,11 +838,11 @@ If the CDR is nil, then the buffer is only buried."
   :config
   (savehist-mode 1))
 ;;;_ * Searching
-;;;_  . isearch (incremental search)
+;;;_ ** isearch (incremental search)
 ;; Scrolling while searching
 (csetq isearch-allow-scroll t)
 (bind-key "C-y" 'isearch-yank-kill isearch-mode-map)
-;;;_  . Command; my-grep
+;;;_ ** Command; my-grep
 ;; Prompts you for an expression, defaulting to the symbol that your
 ;; cursor is on, and greps for that in the current directory and all
 ;; subdirectories:
@@ -859,13 +855,13 @@ If the CDR is nil, then the buffer is only buried."
       (grep (concat "egrep -s -i -n -r " needle " *")))))
 (bind-key "M-s g" 'my-grep)
 ;;;_ * Help
-;;;_  . Go to back to previous help buffer
+;;;_ ** Go to back to previous help buffer
 ;; Make 'b' (back) go to the previous position in emacs help.
 ;; [[http://www.emacswiki.org/cgi-bin/wiki/EmacsNiftyTricks]]
 (add-hook 'help-mode-hook
 	  '(lambda ()
 	     (bind-key "b" 'help-go-back help-mode-map)))
-;;;_  . F1 key searches in help or opens man page
+;;;_ ** F1 key searches in help or opens man page
 (defun my-help ()
   "If function given tries to `describe-function' otherwise uses
 `manual-entry' to display manpage of a `current-word'."
@@ -878,9 +874,9 @@ If the CDR is nil, then the buffer is only buried."
 	    (describe-function fn)
 	  (man (current-word)))))))
 (bind-key "<f1>" 'my-help)
-;;;_  . Apropos
+;;;_ ** Apropos
 (bind-key "C-h a" 'apropos)
-;;;_  . Guide key
+;;;_ ** Guide key
 ;; It's hard to remember keyboard shortcuts. The guide-key package
 ;; pops up help after a short delay.
 (use-package guide-key
@@ -892,22 +888,22 @@ If the CDR is nil, then the buffer is only buried."
   (csetq guide-key/recursive-key-sequence-flag t)
   (guide-key-mode 1))
 ;;;_ * Miscelleanous
-;;;_  . Swap RET and C-j
+;;;_ ** Swap RET and C-j
 (bind-key "RET" 'newline-and-indent)
 (bind-key "C-j" 'newline)
-;;;_  . dos2unix
+;;;_ ** dos2unix
 (defun dos2unix()
   "convert dos (^M) end of line to unix end of line"
   (interactive)
   (goto-char(point-min))
   (while (search-forward "\r" nil t) (replace-match "")))
-;;;_  . 822date
+;;;_ ** 822date
 ;; Inserts something like "Fri,  1 Dec 2006 15:41:36 +0100"
 (defun 822date ()
   "Insert date at point format the RFC822 way."
   (interactive)
   (insert (format-time-string "%a, %e %b %Y %H:%M:%S %z")))
-;;;_  . smtpmail
+;;;_ ** smtpmail
 ;; http://emacs.stackexchange.com/questions/6105/how-to-set-proper-smtp-gmail-settings-in-emacs-in-order-to-be-able-to-work-with
 ;; http://superuser.com/questions/476714/how-to-configure-emacs-smtp-for-using-a-secure-server-gmail
 (use-package smtpmail
@@ -917,7 +913,7 @@ If the CDR is nil, then the buffer is only buried."
 	smtpmail-stream-type 'starttls
 	smtpmail-smtp-service 587
 	smtpmail-debug-info t))
-;;;_  . sendmail
+;;;_ ** sendmail
 ;; This is used by GNUS and also by Mutt
 
 ;; http://www.emacswiki.org/emacs/MuttInEmacs
@@ -952,7 +948,7 @@ If the CDR is nil, then the buffer is only buried."
   (bind-key "C-c C-c" 'my-mail-done mail-mode-map)
   (bind-key "C-x k" 'my-mail-quit mail-mode-map)
   )
-;;;_  . message
+;;;_ ** message
 (use-package message
   :defer t
   :config
@@ -966,11 +962,11 @@ If the CDR is nil, then the buffer is only buried."
   ;;:mode (("/mutt" . message-mode))
 )
 ;;;_ * Org-Mode
-;;;_  . org
+;;;_ ** org
 (use-package org
   :bind (("C-c l" . org-store-link)
 	 ("C-c o" . org-open-at-point-global))
-  :commands (org-open-file)
+  :commands (org-open-file orgstruct++-mode)
   :init
   ;; allow Shift-Cursor to mark stuff
   (csetq org-replace-disputed-keys t)
@@ -1091,7 +1087,7 @@ If the CDR is nil, then the buffer is only buried."
     (org-open-file (org-html-export-to-html)))
   (bind-key "<f7>" 'my-org-export-to-html-and-open org-mode-map)
 )
-;;;_  . org-agenda
+;;;_ ** org-agenda
 ;; http://www.suenkler.info/docs/emacs-orgmode/
 (use-package org-agenda
   :bind (("C-c a" . org-agenda)
@@ -1147,7 +1143,7 @@ If the CDR is nil, then the buffer is only buried."
   ;; Keine Links, maximal bis Level 4 herunter:
   ;; (setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 4))
   )
-;;;_  . org-capture
+;;;_ ** org-capture
 (use-package org-capture
   :bind ("C-c r" . my-org-capture-todo)
   ;; ("<f9> <f8>" . (lambda () (interactive) (org-capture nil "r")))
@@ -1163,7 +1159,7 @@ If the CDR is nil, then the buffer is only buried."
 	   (file+headline org-default-notes-file "Infos"))
 	   ))
   )
-;;;_  . org-clock
+;;;_ ** org-clock
 (use-package org-clock
   :bind ("C-c j" . org-clock-goto) ;; jump to current task from anywhere
   :config
@@ -1191,7 +1187,7 @@ If the CDR is nil, then the buffer is only buried."
   ;; Disable auto clock resolution
   (setq org-clock-auto-clock-resolution nil)
   )
-;;;_  . org-list
+;;;_ ** org-list
 (use-package org-list
   :defer t
   :functions (org-item-re)
@@ -1206,7 +1202,7 @@ If the CDR is nil, then the buffer is only buried."
 	(save-excursion (and (looking-at (org-item-re)) (looking-back "^[ \t]*")))))
   (setq org-use-speed-commands 'my/org-use-speed-commands-for-headings-and-lists)
 )
-;;;_  . org-src
+;;;_ ** org-src
 (use-package org-src
   :defer t
   :config
@@ -1223,7 +1219,7 @@ If the CDR is nil, then the buffer is only buried."
   ;; method I have in when doing a commit in magit.
   (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map)
 )
-;;;_  . ox
+;;;_ ** ox
 (use-package ox
   :defer t
   :config
@@ -1238,7 +1234,7 @@ If the CDR is nil, then the buffer is only buried."
   (csetq org-export-with-toc nil)
   ;; #+OPTIONS ^:{}
   (csetq org-export-with-sub-superscripts nil))
-;;;_  . ox-html
+;;;_ ** ox-html
 (use-package ox-html
   :defer t
   :commands org-html-export-to-html
@@ -1250,7 +1246,7 @@ If the CDR is nil, then the buffer is only buried."
   (csetq org-html-table-default-attributes '(:border "2" :cellspacing "0" :cellpadding "6"))
   (csetq org-html-postamble t))
 ;;;_ * Base Packages (often used by other packages)
-;;;_  . helm
+;;;_ ** helm
 ;; Very good intro: http://tuhdo.github.io/helm-intro.html
 (defun my-helm-imenu ()
   "This is just like helm-imenu, but it will maximize the buffer"
@@ -1331,24 +1327,7 @@ If the CDR is nil, then the buffer is only buried."
     ;; this is kind of a goto, you can visit all marks
     (bind-key "g"   'helm-all-mark-rings helm-command-map)))
 ;;;_ * Packages
-;;;_  . allout
-(use-package allout
-  :diminish allout-mode
-  :commands allout-mode
-  :config
-  (csetq allout-command-prefix (kbd "C-c C-c"))
-  ;; honor allout-layout in file-local variables
-  (csetq allout-auto-activation t)
-  ;; (csetq allout-default-layout '()
-  (add-to-list 'allout-prefixed-keybindings '("[(control ?h)]" allout-hide-current-subtree))
-  (add-to-list 'allout-prefixed-keybindings '("[?s]" allout-show-current-subtree))
-  (add-to-list 'allout-prefixed-keybindings '("[?S]" allout-show-all))
-  (add-to-list 'allout-prefixed-keybindings '("[?H]" allout-hide-bodies))
-  (add-to-list 'allout-prefixed-keybindings '("[?b]" allout-hide-bodies))
-  ;; (bind-key "C-c s" 'allout-show-current-subtree allout-mode-map-value) ; also on C-c C-c C-s
-  (allout-compose-and-institute-keymap)
-  )
-;;;_  . circe (IRC client)
+;;;_ ** circe (IRC client)
 ;; see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Configuration
 (use-package circe
   :commands circe
@@ -1383,7 +1362,7 @@ If the CDR is nil, then the buffer is only buried."
   "Connect to IRC"
   (interactive)
   (circe "Freenode"))
-;;;_  . dired
+;;;_ ** dired
 (use-package dired
     :commands dired
 	:bind ("C-x C-d" . dired) ;; used to be list-directory, quite useless
@@ -1392,7 +1371,7 @@ If the CDR is nil, then the buffer is only buried."
           "-laGh1v --group-directories-first"))
 (use-package dired-x
     :commands dired-jump)
-;;;_  . gnus
+;;;_ ** gnus
 ;; https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnus-guide-en.org
 ;; http://www.emacswiki.org/emacs/GnusGmail
 ;; http://www.xsteve.at/prg/gnus/
@@ -1577,13 +1556,13 @@ If the CDR is nil, then the buffer is only buried."
 		  (("To" "From") . "review@openstack.org")))
   ;; (setq bbdb-allow-duplicates t)
 )
-;;;_  . helm-descbinds
+;;;_ ** helm-descbinds
 (use-package helm-descbinds
   :commands helm-descbinds
   :bind (("C-h b" . helm-descbinds)
 	 ("C-h w" . helm-descbinds)) ;; used to be where-is
   )
-;;;_  . helm-swoop
+;;;_ ** helm-swoop
 ;; https://github.com/ShingoFukuyama/helm-swoop
 (use-package helm-swoop
   :commands (helm-swoop helm-swoop-back-to-last-point)
@@ -1602,7 +1581,7 @@ If the CDR is nil, then the buffer is only buried."
   (bind-key "C-s" 'helm-next-line     helm-swoop-map)
   (bind-key "C-r" 'helm-previous-line helm-multi-swoop-map)
   (bind-key "C-s" 'helm-next-line     helm-multi-swoop-map))
-;;;_  . flyspell and helm-flyspell
+;;;_ ** flyspell and helm-flyspell
 (use-package flyspell
  :diminish flyspell-mode
  :commands (flyspell-mode flyspell-prog-mode)
@@ -1627,7 +1606,7 @@ If the CDR is nil, then the buffer is only buried."
   (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
   )
 ;;;_ * Programming
-;;;_  . Tab handling
+;;;_ ** Tab handling
 (use-package tabify
   :commands (tabify untabify)
   :config
@@ -1637,20 +1616,20 @@ If the CDR is nil, then the buffer is only buried."
 ;; Deleting past a tab normally changes tab into spaces. Don't do that,
 ;; kill the tab instead.
 (csetq backward-delete-char-untabify-method nil)
-;;;_  . Disable vc backends
+;;;_ ** Disable vc backends
 ;; We only use git, not other version controls:
 (setq vc-handled-backends nil)
-;;;_  . Let parenthesis behave
+;;;_ ** Let parenthesis behave
 (show-paren-mode 1)
 (setq show-paren-delay 0
       blink-matching-parent nil)
-;;;_  . qmake project files
+;;;_ ** qmake project files
 ;; Don't open Qt's *.pro files as IDLWAVE files.
 ;; TODO: look for a real qmake-mode
 (add-to-list 'auto-mode-alist '("\\.pro$" . fundamental-mode))
-;;;_  . Commenting
+;;;_ ** Commenting
 (bind-key "C-c c" 'comment-dwim)
-;;;_  . Compilation
+;;;_ ** Compilation
 ;; set initial compile-command to nothing, so that F7 will prompt for one
 (csetq compile-command nil)
 
@@ -1808,14 +1787,13 @@ If the CDR is nil, then the buffer is only buried."
     (csetq compilation-ask-about-save nil)
     (csetq compilation-scroll-output t))
 
-
-;;; *** Error navigation
+;;;_ *** Error navigation
 (bind-key "<f8>" 'next-error)
 (bind-key "S-<f8>" 'previous-error)
-;;;_  . Automatically safe files with shebang executable
+;;;_ ** Automatically safe files with shebang executable
 (add-hook 'after-save-hook
 	  'executable-make-buffer-file-executable-if-script-p)
-;;;_  . Mode: C, C++
+;;;_ ** Mode: C, C++
 (defvar c-syntactic-element)
 (eval-when-compile (require 'cc-mode))
 ;; Open *.h files normally in c++ mode
@@ -1888,7 +1866,7 @@ newline to the correct position"
 	abbrev-mode nil
 	))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
-;;;_  . Mode: Ediff
+;;;_ ** Mode: Ediff
 ;; http://oremacs.com/2015/01/17/setting-up-ediff/
 (use-package ediff
   :config
@@ -1901,7 +1879,7 @@ newline to the correct position"
     (bind-key "k" 'ediff-previous-difference ediff-mode-map))
   (add-hook 'ediff-mode-hook 'my--ediff-hook)
   (add-hook 'ediff-after-quit-hook-internal 'winner-undo))
-;;;_  . Mode: ELisp
+;;;_ ** Mode: ELisp
 (defun my--elisp-setup ()
   ;; Setup imenu TODO
   (add-to-list 'imenu-generic-expression '(""  "^;;;_ \\(.*\\)" 1) t)
@@ -1914,11 +1892,11 @@ newline to the correct position"
     (auto-compile-mode 1))
   )
 (add-hook 'emacs-lisp-mode-hook 'my--elisp-setup)
-;;;_  . Mode: Markdown
+;;;_ ** Mode: Markdown
 (use-package markdown-mode
   :mode (("\\.md\\'"       . markdown-mode)
 	 ("\\.markdown\\'" . markdown-mode)))
-;;;_  . Mode: Python
+;;;_ ** Mode: Python
 (eval-when-compile (require 'python))
 (defun my-python-setup ()
   (interactive)
@@ -1929,10 +1907,10 @@ newline to the correct position"
 	;; from http://emacs.stackexchange.com/questions/3322/python-auto-indent-problem
 	electric-indent-chars (delq ?: electric-indent-chars)))
 (add-hook 'python-mode-hook 'my-python-setup)
-;;;_  . Mode: Rust
+;;;_ ** Mode: Rust
 (use-package rust-mode
   :mode (("\\.rs\\'" . rust-mode)))
-;;;_  . Mode: Shell
+;;;_ ** Mode: Shell
 (defun my-shell-tab-setup ()
   (interactive)
   (csetq indent-tabs-mode t)
@@ -1941,7 +1919,7 @@ newline to the correct position"
   (bind-key "C-i" 'self-insert-command text-mode-map))
 (add-hook 'shell-mode-hook 'my-shell-tab-setup)
 (add-hook 'sh-mode-hook    'my-shell-tab-setup)
-;;;_  . Mode: web-mode
+;;;_ ** Mode: web-mode
 ;; Home page: http://web-mode.org/
 (eval-when-compile (require 'web-mode))
 (defun my-web-mode-hook ()
@@ -1968,7 +1946,7 @@ newline to the correct position"
   :config
   (setq web-mode-enable-block-partial-invalidation t
 	web-mode-engines-alist '(("ctemplate" . "\\.html$"))))
-;;;_  . column-marker
+;;;_ ** column-marker
 (defun my--column-marker-at-80 ()
   (interactive)
   (column-marker-2 80))
@@ -1977,7 +1955,7 @@ newline to the correct position"
   :init
   (add-hook 'c-mode-hook 'my--column-marker-at-80)
   )
-;;;_  . Package: magit
+;;;_ ** Package: magit
 ;; Must be set before magit is loaded. It will remove the new key
 ;; bindings that use pop-up buffers.
 (setq magit-rigid-key-bindings t)
@@ -2004,7 +1982,7 @@ newline to the correct position"
      )
   :bind ("C-c m" . magit-status)
   :commands (magit-get-top-dir))
-;;;_  . Package: magit-timemachine
+;;;_ ** Package: magit-timemachine
 (use-package git-timemachine
   :commands git-timemachine
   )
@@ -2021,5 +1999,6 @@ newline to the correct position"
   (server-start))
 ;;;_ * Local file variables
 ;; Local Variables:
-;;   allout-layout: 0
+;; orgstruct-heading-prefix-regexp: ";;;_ "
+;; eval: (orgstruct++-mode)
 ;; End:
