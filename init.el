@@ -1002,6 +1002,9 @@ If the CDR is nil, then the buffer is only buried."
   ;; My main file
   (csetq org-default-notes-file (expand-file-name "todo.org" emacs-d))
 
+  ;; Handle deletion inside elipsis
+  (setq org-catch-invisible-edits 'error)
+
   ;; don't fold for now
   (setq org-startup-folded nil)
 
