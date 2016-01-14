@@ -903,6 +903,7 @@ If the CDR is nil, then the buffer is only buried."
   "Insert date at point format the RFC822 way."
   (interactive)
   (insert (format-time-string "%a, %e %b %Y %H:%M:%S %z")))
+;;;_ * Mail & News
 ;;;_ ** smtpmail
 ;; http://emacs.stackexchange.com/questions/6105/how-to-set-proper-smtp-gmail-settings-in-emacs-in-order-to-be-able-to-work-with
 ;; http://superuser.com/questions/476714/how-to-configure-emacs-smtp-for-using-a-secure-server-gmail
@@ -961,8 +962,343 @@ If the CDR is nil, then the buffer is only buried."
   :commands message-mode
   ;;:mode (("/mutt" . message-mode))
 )
-;;;_ * Org-Mode
+;;;_ ** gnus
+;; https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnus-guide-en.org
+;; http://www.emacswiki.org/emacs/GnusGmail
+;; http://www.xsteve.at/prg/gnus/
+;; https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
+(use-package gnus
+  :bind ("C-c n" . gnus)
+  :config
+
+  ;;http://www.xsteve.at/prg/gnus/
+  (setq gnus-select-method '(nntp "news.gmane.org"))
+
+  ;; Local offlineimap repository
+  (add-to-list 'gnus-secondary-select-methods
+	       '(nnmaildir "" (directory "~/Maildir/")))
+
+  ;; Unconditionally read the dribble file
+  (setq gnus-always-read-dribble-file t)
+
+  ;; If you prefer to see only the top level message. If a message has
+  ;; several replies or is part of a thread, only show the first
+  ;; message. 'gnus-thread-ignore-subject' will ignore the subject and
+  ;; look at 'In-Reply-To:' and 'References:' headers.
+  ;; (setq gnus-thread-hide-subtree t)
+
+  ;; don't substitute my e-mail with some "-> RECEIVER" magic
+  (setq gnus-ignored-from-addresses nil)
+
+  ;; Sort by date:
+  (setq gnus-thread-sort-functions
+  		'((not gnus-thread-sort-by-date)
+  		  (not gnus-thread-sort-by-number)))
+
+
+  ;;  %U  "Read" status of this article.
+  ;;  %R  "A" if this article has been replied to, " "
+  ;;  %d  Date of the article (string) in DD-MMM format
+  ;;  %L  Number of lines in the article (integer)
+  ;;  %n  Name of poster
+  ;;  %B  A complex trn-style thread tree (string), see gnus-sum-thread-*
+  ;;  %S  Subject (string)
+  ;; Some others:
+  ;;  %z  Article zcore (character), try %i
+  ;;  %I  Indentation based on thread level
+  ;;  %f  Contents of the From: or To: headers (string)
+  ;;  %s  Subject if it is at the root of a thread, and "" otherwise
+  ;;  %O  Download mark (character).
+  ;; Original                    "%U%R%z%I%(%[%4L: %-23,23f%]%) %s\n"
+  (setq gnus-summary-line-format "%U%R %11,11&user-date; %-22,22n %B%-80,80S\n")
+  (setq gnus-user-date-format-alist '(
+				      ((gnus-seconds-today)           . "%H:%M")
+				      ((+ 86400 (gnus-seconds-today)) . "gest %H:%M")
+				      ((gnus-seconds-year)            . "%d.%m %H:%M")
+				      (t                              . "%d.%m. %Y")
+				      ))
+
+  ;; Generate the mail headers before you edit your message.
+  (setq message-generate-headers-first t)
+
+  ;; The message buffer will be killed after sending a message.
+  (setq message-kill-buffer-on-exit t)
+
+  (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+
+  ;; Store gnus specific files to ~/gnus, maybe also set nnml-directory
+  (setq gnus-directory (concat emacs-d "News/")
+  	message-directory (concat emacs-d "Mail/")
+  	gnus-article-save-directory (concat emacs-d "News/saved/")
+  	gnus-kill-files-directory (concat emacs-d "News/scores/")
+  	gnus-cache-directory (concat emacs-d "News/cache/"))
+
+  ;; Added some keybindings to the gnus summary mode
+  (define-key gnus-summary-mode-map [(meta up)] '(lambda() (interactive) (scroll-other-window -1)))
+  (define-key gnus-summary-mode-map [(meta down)] '(lambda() (interactive) (scroll-other-window 1)))
+  (define-key gnus-summary-mode-map [(control down)] 'gnus-summary-next-thread)
+  (define-key gnus-summary-mode-map [(control up)] 'gnus-summary-prev-thread)
+
+  ;; Window setup
+  ;; (setq gnus-widen-article-window t)
+
+  ;; re-use one article buffer for every group
+  (setq gnus-single-article-buffer t)
+
+  ;; And this switches the cursor into this other window when we select an article
+  (defun my--after-select-article (&rest args)
+    (let ((window (get-buffer-window (get-buffer "*Article*"))))
+      (when window
+	(select-window window))))
+  (advice-add 'gnus-summary-select-article :after 'my--after-select-article)
+
+  (defun my--delete-window ()
+	(interactive)
+	(if (one-window-p)
+		(bury-buffer)
+	  (delete-window)))
+  (bind-key "q"      'my--delete-window   gnus-article-mode-map)
+  (bind-key "<home>" 'beginning-of-buffer gnus-article-mode-map)
+  (bind-key "<end>"  'end-of-buffer       gnus-article-mode-map)
+
+  ;; stop the annoying "move to colon" function
+  (defun gnus-summary-position-point ()
+    )
+
+  ;; About message expiry
+  ;; gnus-auto-expirable-marks
+  ;; gnus-auto-expirable-newsgroups
+)
+;;;_ *** gnus-sum
+(use-package gnus-sum
+  :defer t
+  :commands (gnus-summary-last-subject gnus-summary-goto-subject)
+  )
+;;;_ *** gnus-art
+(use-package gnus-art
+  :defer t
+  :config
+
+  ;; Test code, position cursor inside and run C-C-x to evaluate:
+  ;;
+  ;; (let ((filename "[PATCH 03/05] foo"))
+  ;;   (when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
+  ;;     (message "%s -> %04d" filename (string-to-number (match-string 1 filename)))
+  ;;     ;; (message "%s" filename)
+  ;;     )
+  ;;   ))
+
+  ;; save news article body as patch, via gnus-summary-save-article-body-file "O b"
+  (defun gnus-read-save-file-name (prompt &optional filename
+					  function group headers variable
+					  dir-var)
+    (let ((patchnum))
+      (setq filename (gnus-summary-article-subject))
+      (when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
+    	(setq patchnum (string-to-number (match-string 1 filename)))
+    	(message "%s" patchnum))
+      ;; (when string-match "\\[PATCH.+?\\]" filename)
+	  (message "FILENAME %s" filename)
+      (setq filename (replace-regexp-in-string "\\[PATCH.*\\]" "" filename))
+      (setq filename (replace-regexp-in-string "\[^a-zA-Z0-9]" "-" filename))
+      (setq filename (replace-regexp-in-string "\\-+" "-" filename))
+      (setq filename (replace-regexp-in-string "^-" "" filename))
+      (setq filename (replace-regexp-in-string "-$" "" filename))
+      (when patchnum
+		(setq filename (concat (format "%04d" patchnum) "-" filename)))
+      (setq filename (concat "/tmp/" filename ".patch"))
+      (when (file-exists-p filename)
+		(delete-file filename))
+	  filename))
+  )
+;;;_ *** mm-decode
+(use-package mm-decode
+  :config
+  ;; Hide HTML mail
+  (setq mm-discouraged-alternatives '("text/html" "text/richtext")
+  	mm-automatic-display (-difference mm-automatic-display '("text/html" "text/enriched" "text/richtext")))
+  )
+;;;_ *** bbdb
+(use-package bbdb
+  :ensure t
+  :defer t
+  :commands (bbdb bbdb-insinuate-gnus bbdb-insinuate-message bbdb-define-all-aliases)
+  :bind ("C-c b" . bbdb)
+  :config
+  (bbdb-initialize 'gnus 'message)
+
+  (setq bbdb-file (concat emacs-d "db.bbdb"))
+  (setq bbdb-update-records-p 'create)
+  ;; (setq bbdb-mua-pop-up nil)
+  (setq bbdb-silent t)
+  (setq bbdb-user-mail-address-re "\\<holgerschurig@gmail.com\\>")
+  (setq bbdb-add-name t)
+  (setq bbdb-add-aka t)
+  (setq bbdb-add-mails t)
+  (setq bbdb-new-mails-primary t)
+  (setq bbdb-complete-mail-allow-cycling t)
+  (setq bbdd-phone-style nil)
+  (setq bbdb-ignore-message-alist
+		'(("From" . "mailer-daemon")
+		  ("From" . "bugs.launchpad.net")
+		  ("From" . "postmaster.twitter.com")
+		  ("From" . "plus.google.com")
+		  ("From" . "notify@twitter.com")
+		  (("To" "From") . "review@openstack.org")))
+  ;; (setq bbdb-allow-duplicates t)
+)
+;;;_ * Other packages
+;;;_ ** circe (IRC client)
+;; see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Configuration
+(use-package circe
+  :commands circe
+  :config
+  (csetq circe-default-part-message "Fire on mainboard error")
+  (csetq circe-quit-part-message "Fire on mainboard error")
+  (csetq circe-reduce-lurker-spam t)
+  ;; (circe-set-display-handler "JOIN" (lambda (&rest ignored) nil))
+  ;; (circe-set-display-handler "QUIT" (lambda (&rest ignored) nil))
+  ;; (csetq circe-use-cycle-completion t)
+  (csetq circe-format-say "{nick}: {body}")
+  (csetq circe-server-killed-confirmation 'ask-and-kill-all)
+  ;; Network settings
+  (csetq circe-default-ip-family 'ipv4)
+  (csetq circe-default-nick "schurig")
+  (csetq circe-default-user "schurig")
+  (csetq circe-server-auto-join-default-type 'after-auth) ; XXX try after-nick
+  (csetq circe-network-options `(("Freenode"
+				  :host "kornbluth.freenode.net"
+				  :port (6667 . 6697)
+				  :channels ("#emacs" "#emacs-circe")
+				  :nickserv-password ,freenode-password)
+				 ))
+  ;; Misc
+  ;; (setq circe-format-server-topic "*** Topic change by {userhost}: {topic-diff}")
+  (use-package lui-autopaste
+    :config
+    (add-hook 'circe-channel-mode-hook 'enable-lui-autopaste))
+  )
+
+(defun irc ()
+  "Connect to IRC"
+  (interactive)
+  (circe "Freenode"))
+;;;_ ** dired
+(use-package dired
+    :commands dired
+	:bind ("C-x C-d" . dired) ;; used to be list-directory, quite useless
+    :init
+    (setq dired-listing-switches
+          "-laGh1v --group-directories-first"))
+(use-package dired-x
+    :commands dired-jump)
+;;;_ ** helm
+;; Very good intro: http://tuhdo.github.io/helm-intro.html
+(defun my-helm-imenu ()
+  "This is just like helm-imenu, but it will maximize the buffer"
+  (interactive)
+  (let ((helm-full-frame t))
+    (helm-imenu)))
+(use-package helm
+  :ensure helm
+  :diminish helm-mode
+  :bind (
+	 ("C-h a"   . helm-apropos)
+	 ("C-x C-f" . helm-find-files)
+	 ("M-s o"   . helm-occur)
+	 ("M-s i"   . my-helm-imenu)
+	 ("M-s m"   . my-helm-imenu)
+	 ("M-x"     . helm-M-x)
+	 ("M-y"     . helm-show-kill-ring)
+         ("C-x C-b"   . helm-mini)
+	 )
+  :init
+  (progn
+    (require 'helm-config)
+    (helm-mode t)
+    )
+  :config
+  (progn
+    ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+    ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+    ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+    ;; (from http://tuhdo.github.io/helm-intro.html)
+    (bind-key "C-c h" 'helm-command-prefix)
+    (global-unset-key (kbd "C-x c"))
+
+    (when (executable-find "curl")
+      (setq helm-net-prefer-curl t))
+
+    ;; allow "find man at point" for C-c h m (helm-man-woman)
+    (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+
+    (csetq helm-imenu-delimiter " ")
+    (csetq helm-candidate-number-limit 100)
+    (csetq helm-quick-update t)
+    (setq helm-M-x-requires-pattern nil)
+
+    (csetq helm-ff-skip-boring-files t)
+    ;; search for library in `require' and `declare-function' sexp.
+    (csetq helm-ff-search-library-in-sexp t)
+    (csetq helm-ff-file-name-history-use-recentf t)
+    (csetq helm-ff-newfile-prompt-p nil)
+
+    ;; open helm buffer inside current window, not occupy whole other window
+    (csetq helm-split-window-in-side-p t)
+    ;; move to end or beginning of source when reaching top or bottom of source.
+    (csetq helm-move-to-line-cycle-in-source t)
+    ;; scroll 8 lines other window using M-<next>/M-<prior>
+    (csetq helm-scroll-amount 8)
+
+    ;; define browser
+    (setq helm-browse-url-chromium-program "x-www-browser")
+    (csetq helm-google-suggest-default-browser-function 'helm-browse-url-chromium)
+    (csetq helm-home-url "http://www.google.de")
+    (csetq helm-autoresize-mode t)
+
+    ;; ignore Emacs save files
+    (add-to-list 'helm-boring-file-regexp-list "\\.#")
+
+    ;; see (customize-group "helm-files-faces")
+    (set-face-attribute 'helm-ff-directory        nil :foreground "red" :background 'unspecified)
+    (set-face-attribute 'helm-ff-dotted-directory nil :foreground "red" :background 'unspecified)
+    (set-face-attribute 'helm-ff-executable       nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-ff-file             nil :foreground 'unspecified :background 'unspecified :inherit 'unspecified)
+    (set-face-attribute 'helm-ff-invalid-symlink  nil :foreground 'unspecified :background 'unspecified)
+    ;;(set-face-attribute 'helm-ff-prefix         nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-ff-symlink          nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-history-deleted     nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-history-remote      nil :foreground 'unspecified :background 'unspecified)
+
+    ;; this is kind of a goto, you can visit all marks
+    (bind-key "g"   'helm-all-mark-rings helm-command-map)))
+;;;_ *** helm-descbinds
+(use-package helm-descbinds
+  :commands helm-descbinds
+  :bind (("C-h b" . helm-descbinds)
+	 ("C-h w" . helm-descbinds)) ;; used to be where-is
+  )
+;;;_ *** helm-swoop
+;; https://github.com/ShingoFukuyama/helm-swoop
+(use-package helm-swoop
+  :commands (helm-swoop helm-swoop-back-to-last-point)
+  :bind (("M-s s"  . helm-swoop)
+	 ("M-s M-s" . helm-swoop)
+	 ("M-s S"   . helm-swoop-back-to-last-point))
+  :config
+  (csetq helm-swoop-split-direction 'split-window-sensibly)
+  ;; Switch to edit mode with C-c C-e, and exit edit mode with C-c C-c
+  (bind-key "C-c C-c" 'helm-swoop--edit-complete helm-swoop-edit-map)
+  ;; When doing isearch, hand the word over to helm-swoop
+  (bind-key "M-s s"   'helm-swoop-from-isearch isearch-mode-map)
+  (bind-key "M-s M-s" 'helm-swoop-from-isearch isearch-mode-map)
+  ;; Move up and down like isearch
+  (bind-key "C-r" 'helm-previous-line helm-swoop-map)
+  (bind-key "C-s" 'helm-next-line     helm-swoop-map)
+  (bind-key "C-r" 'helm-previous-line helm-multi-swoop-map)
+  (bind-key "C-s" 'helm-next-line     helm-multi-swoop-map))
 ;;;_ ** org
+;;;_ *** org
 (use-package org
   :bind (("C-c l" . org-store-link)
 	 ("C-c o" . org-open-at-point-global))
@@ -1090,7 +1426,7 @@ If the CDR is nil, then the buffer is only buried."
     (org-open-file (org-html-export-to-html)))
   (bind-key "<f7>" 'my-org-export-to-html-and-open org-mode-map)
 )
-;;;_ ** org-agenda
+;;;_ *** org-agenda
 ;; http://www.suenkler.info/docs/emacs-orgmode/
 (use-package org-agenda
   :bind (("C-c a" . org-agenda)
@@ -1146,7 +1482,7 @@ If the CDR is nil, then the buffer is only buried."
   ;; Keine Links, maximal bis Level 4 herunter:
   ;; (setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 4))
   )
-;;;_ ** org-capture
+;;;_ *** org-capture
 (use-package org-capture
   :bind ("C-c r" . my-org-capture-todo)
   ;; ("<f9> <f8>" . (lambda () (interactive) (org-capture nil "r")))
@@ -1162,7 +1498,7 @@ If the CDR is nil, then the buffer is only buried."
 	   (file+headline org-default-notes-file "Infos"))
 	   ))
   )
-;;;_ ** org-clock
+;;;_ *** org-clock
 (use-package org-clock
   :bind ("C-c j" . org-clock-goto) ;; jump to current task from anywhere
   :config
@@ -1190,7 +1526,7 @@ If the CDR is nil, then the buffer is only buried."
   ;; Disable auto clock resolution
   (setq org-clock-auto-clock-resolution nil)
   )
-;;;_ ** org-list
+;;;_ *** org-list
 (use-package org-list
   :defer t
   :functions (org-item-re)
@@ -1205,7 +1541,7 @@ If the CDR is nil, then the buffer is only buried."
 	(save-excursion (and (looking-at (org-item-re)) (looking-back "^[ \t]*")))))
   (setq org-use-speed-commands 'my/org-use-speed-commands-for-headings-and-lists)
 )
-;;;_ ** org-src
+;;;_ *** org-src
 (use-package org-src
   :defer t
   :config
@@ -1222,7 +1558,7 @@ If the CDR is nil, then the buffer is only buried."
   ;; method I have in when doing a commit in magit.
   (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map)
 )
-;;;_ ** ox
+;;;_ *** ox
 (use-package ox
   :defer t
   :config
@@ -1237,7 +1573,7 @@ If the CDR is nil, then the buffer is only buried."
   (csetq org-export-with-toc nil)
   ;; #+OPTIONS ^:{}
   (csetq org-export-with-sub-superscripts nil))
-;;;_ ** ox-html
+;;;_ *** ox-html
 (use-package ox-html
   :defer t
   :commands org-html-export-to-html
@@ -1248,342 +1584,7 @@ If the CDR is nil, then the buffer is only buried."
   (csetq org-html-style-default "<style type=\"text/css\">\n <!--/*--><![CDATA[/*><!--*/\n  body { text-align: center; font-family: \"Aria\", sans-serif; }\n  #content { margin: 0 auto; width: 860px; text-align: left; }\n  #text-table-of-contents > ul > li { margin-top: 1em; }\n  .title  { text-align: center; }\n  .todo   { font-family: monospace; color: red; }\n  .done   { color: green; }\n  .tag    { background-color: #eee; font-family: monospace;\n            padding: 2px; font-size: 80%; font-weight: normal; }\n  .timestamp { color: #bebebe; }\n  .timestamp-kwd { color: #5f9ea0; }\n  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }\n  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }\n  .center { margin-left: auto; margin-right: auto; text-align: center; }\n  .underline { text-decoration: underline; }\n  #postamble p, #preamble p { font-size: 90%; margin: .2em; }\n  p.verse { margin-left: 3%; }\n  pre {\n    border: 1px solid #ccc;\n    box-shadow: 3px 3px 3px #eee;\n    padding: 8pt;\n    font-family: monospace;\n    overflow: auto;\n    margin: 1em 0;\n  }\n  pre.src {\n    position: relative;\n    overflow: visible;\n    padding-top: 8pt;\n  }\n  pre.src:before {\n    display: none;\n    position: absolute;\n    background-color: white;\n    top: -10px;\n    right: 10px;\n    padding: 3px;\n    border: 1px solid black;\n  }\n  pre.src:hover:before { display: inline;}\n  pre.src-sh:before    { content: 'sh'; }\n  pre.src-bash:before  { content: 'sh'; }\n  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }\n  pre.src-R:before     { content: 'R'; }\n  pre.src-perl:before  { content: 'Perl'; }\n  pre.src-java:before  { content: 'Java'; }\n  pre.src-sql:before   { content: 'SQL'; }\n\n  table { border-collapse:collapse; }\n  caption.t-above { caption-side: top; }\n  caption.t-bottom { caption-side: bottom; }\n  td, th { vertical-align:top;  }\n  th.right  { text-align: center;  }\n  th.left   { text-align: center;   }\n  th.center { text-align: center; }\n  td.right  { text-align: right;  }\n  td.left   { text-align: left;   }\n  td.center { text-align: center; }\n  dt { font-weight: bold; }\n  .footpara:nth-child(2) { display: inline; }\n  .footpara { display: block; }\n  .footdef  { margin-bottom: 1em; }\n  .figure { padding: 1em; }\n  .figure p { text-align: center; }\n  .inlinetask {\n    padding: 10px;\n    border: 2px solid gray;\n    margin: 10px;\n    background: #ffffcc;\n  }\n  #org-div-home-and-up\n   { text-align: right; font-size: 70%; white-space: nowrap; }\n  textarea { overflow-x: auto; }\n  .linenr { font-size: smaller }\n  .code-highlighted { background-color: #ffff00; }\n  .org-info-js_info-navigation { border-style: none; }\n  #org-info-js_console-label\n    { font-size: 10px; font-weight: bold; white-space: nowrap; }\n  .org-info-js_search-highlight\n    { background-color: #ffff00; color: #000000; font-weight: bold; }\n  .ulClassNameOrID > li {}\n  /*]]>*/-->\n</style>")
   (csetq org-html-table-default-attributes '(:border "2" :cellspacing "0" :cellpadding "6"))
   (csetq org-html-postamble t))
-;;;_ * Packages
-;;;_ ** circe (IRC client)
-;; see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Configuration
-(use-package circe
-  :commands circe
-  :config
-  (csetq circe-default-part-message "Fire on mainboard error")
-  (csetq circe-quit-part-message "Fire on mainboard error")
-  (csetq circe-reduce-lurker-spam t)
-  ;; (circe-set-display-handler "JOIN" (lambda (&rest ignored) nil))
-  ;; (circe-set-display-handler "QUIT" (lambda (&rest ignored) nil))
-  ;; (csetq circe-use-cycle-completion t)
-  (csetq circe-format-say "{nick}: {body}")
-  (csetq circe-server-killed-confirmation 'ask-and-kill-all)
-  ;; Network settings
-  (csetq circe-default-ip-family 'ipv4)
-  (csetq circe-default-nick "schurig")
-  (csetq circe-default-user "schurig")
-  (csetq circe-server-auto-join-default-type 'after-auth) ; XXX try after-nick
-  (csetq circe-network-options `(("Freenode"
-				  :host "kornbluth.freenode.net"
-				  :port (6667 . 6697)
-				  :channels ("#emacs" "#emacs-circe")
-				  :nickserv-password ,freenode-password)
-				 ))
-  ;; Misc
-  ;; (setq circe-format-server-topic "*** Topic change by {userhost}: {topic-diff}")
-  (use-package lui-autopaste
-    :config
-    (add-hook 'circe-channel-mode-hook 'enable-lui-autopaste))
-  )
-
-(defun irc ()
-  "Connect to IRC"
-  (interactive)
-  (circe "Freenode"))
-;;;_ ** dired
-(use-package dired
-    :commands dired
-	:bind ("C-x C-d" . dired) ;; used to be list-directory, quite useless
-    :init
-    (setq dired-listing-switches
-          "-laGh1v --group-directories-first"))
-(use-package dired-x
-    :commands dired-jump)
-;;;_ ** gnus
-;; https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnus-guide-en.org
-;; http://www.emacswiki.org/emacs/GnusGmail
-;; http://www.xsteve.at/prg/gnus/
-;; https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
-(use-package gnus
-  :bind ("C-c n" . gnus)
-  :config
-
-  ;;http://www.xsteve.at/prg/gnus/
-  (setq gnus-select-method '(nntp "news.gmane.org"))
-
-  ;; Local offlineimap repository
-  (add-to-list 'gnus-secondary-select-methods
-	       '(nnmaildir "" (directory "~/Maildir/")))
-
-  ;; Unconditionally read the dribble file
-  (setq gnus-always-read-dribble-file t)
-
-  ;; If you prefer to see only the top level message. If a message has
-  ;; several replies or is part of a thread, only show the first
-  ;; message. 'gnus-thread-ignore-subject' will ignore the subject and
-  ;; look at 'In-Reply-To:' and 'References:' headers.
-  ;; (setq gnus-thread-hide-subtree t)
-
-  ;; don't substitute my e-mail with some "-> RECEIVER" magic
-  (setq gnus-ignored-from-addresses nil)
-
-  ;; Sort by date:
-  (setq gnus-thread-sort-functions
-  		'((not gnus-thread-sort-by-date)
-  		  (not gnus-thread-sort-by-number)))
-
-
-  ;;  %U  "Read" status of this article.
-  ;;  %R  "A" if this article has been replied to, " "
-  ;;  %d  Date of the article (string) in DD-MMM format
-  ;;  %L  Number of lines in the article (integer)
-  ;;  %n  Name of poster
-  ;;  %B  A complex trn-style thread tree (string), see gnus-sum-thread-*
-  ;;  %S  Subject (string)
-  ;; Some others:
-  ;;  %z  Article zcore (character), try %i
-  ;;  %I  Indentation based on thread level
-  ;;  %f  Contents of the From: or To: headers (string)
-  ;;  %s  Subject if it is at the root of a thread, and "" otherwise
-  ;;  %O  Download mark (character).
-  ;; Original                    "%U%R%z%I%(%[%4L: %-23,23f%]%) %s\n"
-  (setq gnus-summary-line-format "%U%R %11,11&user-date; %-22,22n %B%-80,80S\n")
-  (setq gnus-user-date-format-alist '(
-				      ((gnus-seconds-today)           . "%H:%M")
-				      ((+ 86400 (gnus-seconds-today)) . "gest %H:%M")
-				      ((gnus-seconds-year)            . "%d.%m %H:%M")
-				      (t                              . "%d.%m. %Y")
-				      ))
-
-  ;; Generate the mail headers before you edit your message.
-  (setq message-generate-headers-first t)
-
-  ;; The message buffer will be killed after sending a message.
-  (setq message-kill-buffer-on-exit t)
-
-  (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
-
-  ;; Store gnus specific files to ~/gnus, maybe also set nnml-directory
-  (setq gnus-directory (concat emacs-d "News/")
-  	message-directory (concat emacs-d "Mail/")
-  	gnus-article-save-directory (concat emacs-d "News/saved/")
-  	gnus-kill-files-directory (concat emacs-d "News/scores/")
-  	gnus-cache-directory (concat emacs-d "News/cache/"))
-
-  ;; Added some keybindings to the gnus summary mode
-  (define-key gnus-summary-mode-map [(meta up)] '(lambda() (interactive) (scroll-other-window -1)))
-  (define-key gnus-summary-mode-map [(meta down)] '(lambda() (interactive) (scroll-other-window 1)))
-  (define-key gnus-summary-mode-map [(control down)] 'gnus-summary-next-thread)
-  (define-key gnus-summary-mode-map [(control up)] 'gnus-summary-prev-thread)
-
-  ;; Window setup
-  ;; (setq gnus-widen-article-window t)
-
-  ;; re-use one article buffer for every group
-  (setq gnus-single-article-buffer t)
-
-  ;; And this switches the cursor into this other window when we select an article
-  (defun my--after-select-article (&rest args)
-    (let ((window (get-buffer-window (get-buffer "*Article*"))))
-      (when window
-	(select-window window))))
-  (advice-add 'gnus-summary-select-article :after 'my--after-select-article)
-
-  (defun my--delete-window ()
-	(interactive)
-	(if (one-window-p)
-		(bury-buffer)
-	  (delete-window)))
-  (bind-key "q"      'my--delete-window   gnus-article-mode-map)
-  (bind-key "<home>" 'beginning-of-buffer gnus-article-mode-map)
-  (bind-key "<end>"  'end-of-buffer       gnus-article-mode-map)
-
-  ;; stop the annoying "move to colon" function
-  (defun gnus-summary-position-point ()
-    )
-
-  ;; About message expiry
-  ;; gnus-auto-expirable-marks
-  ;; gnus-auto-expirable-newsgroups
-)
-
-(use-package gnus-sum
-  :defer t
-  :commands (gnus-summary-last-subject gnus-summary-goto-subject)
-  )
-
-(use-package gnus-art
-  :defer t
-  :config
-
-  ;; Test code, position cursor inside and run C-C-x to evaluate:
-  ;;
-  ;; (let ((filename "[PATCH 03/05] foo"))
-  ;;   (when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
-  ;;     (message "%s -> %04d" filename (string-to-number (match-string 1 filename)))
-  ;;     ;; (message "%s" filename)
-  ;;     )
-  ;;   ))
-
-  ;; save news article body as patch, via gnus-summary-save-article-body-file "O b"
-  (defun gnus-read-save-file-name (prompt &optional filename
-					  function group headers variable
-					  dir-var)
-    (let ((patchnum))
-      (setq filename (gnus-summary-article-subject))
-      (when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
-    	(setq patchnum (string-to-number (match-string 1 filename)))
-    	(message "%s" patchnum))
-      ;; (when string-match "\\[PATCH.+?\\]" filename)
-	  (message "FILENAME %s" filename)
-      (setq filename (replace-regexp-in-string "\\[PATCH.*\\]" "" filename))
-      (setq filename (replace-regexp-in-string "\[^a-zA-Z0-9]" "-" filename))
-      (setq filename (replace-regexp-in-string "\\-+" "-" filename))
-      (setq filename (replace-regexp-in-string "^-" "" filename))
-      (setq filename (replace-regexp-in-string "-$" "" filename))
-      (when patchnum
-		(setq filename (concat (format "%04d" patchnum) "-" filename)))
-      (setq filename (concat "/tmp/" filename ".patch"))
-      (when (file-exists-p filename)
-		(delete-file filename))
-	  filename))
-  )
-
-(use-package mm-decode
-  :config
-  ;; Hide HTML mail
-  (setq mm-discouraged-alternatives '("text/html" "text/richtext")
-  	mm-automatic-display (-difference mm-automatic-display '("text/html" "text/enriched" "text/richtext")))
-  )
-
-(use-package bbdb
-  :ensure t
-  :defer t
-  :commands (bbdb bbdb-insinuate-gnus bbdb-insinuate-message bbdb-define-all-aliases)
-  :bind ("C-c b" . bbdb)
-  :config
-  (bbdb-initialize 'gnus 'message)
-
-  (setq bbdb-file (concat emacs-d "db.bbdb"))
-  (setq bbdb-update-records-p 'create)
-  ;; (setq bbdb-mua-pop-up nil)
-  (setq bbdb-silent t)
-  (setq bbdb-user-mail-address-re "\\<holgerschurig@gmail.com\\>")
-  (setq bbdb-add-name t)
-  (setq bbdb-add-aka t)
-  (setq bbdb-add-mails t)
-  (setq bbdb-new-mails-primary t)
-  (setq bbdb-complete-mail-allow-cycling t)
-  (setq bbdd-phone-style nil)
-  (setq bbdb-ignore-message-alist
-		'(("From" . "mailer-daemon")
-		  ("From" . "bugs.launchpad.net")
-		  ("From" . "postmaster.twitter.com")
-		  ("From" . "plus.google.com")
-		  ("From" . "notify@twitter.com")
-		  (("To" "From") . "review@openstack.org")))
-  ;; (setq bbdb-allow-duplicates t)
-)
-;;;_ ** helm
-;; Very good intro: http://tuhdo.github.io/helm-intro.html
-(defun my-helm-imenu ()
-  "This is just like helm-imenu, but it will maximize the buffer"
-  (interactive)
-  (let ((helm-full-frame t))
-    (helm-imenu)))
-(use-package helm
-  :ensure helm
-  :diminish helm-mode
-  :bind (
-	 ("C-h a"   . helm-apropos)
-	 ("C-x C-f" . helm-find-files)
-	 ("M-s o"   . helm-occur)
-	 ("M-s i"   . my-helm-imenu)
-	 ("M-s m"   . my-helm-imenu)
-	 ("M-x"     . helm-M-x)
-	 ("M-y"     . helm-show-kill-ring)
-         ("C-x C-b"   . helm-mini)
-	 )
-  :init
-  (progn
-    (require 'helm-config)
-    (helm-mode t)
-    )
-  :config
-  (progn
-    ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
-    ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
-    ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-    ;; (from http://tuhdo.github.io/helm-intro.html)
-    (bind-key "C-c h" 'helm-command-prefix)
-    (global-unset-key (kbd "C-x c"))
-
-    (when (executable-find "curl")
-      (setq helm-net-prefer-curl t))
-
-    ;; allow "find man at point" for C-c h m (helm-man-woman)
-    (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
-
-    (csetq helm-imenu-delimiter " ")
-    (csetq helm-candidate-number-limit 100)
-    (csetq helm-quick-update t)
-    (setq helm-M-x-requires-pattern nil)
-
-    (csetq helm-ff-skip-boring-files t)
-    ;; search for library in `require' and `declare-function' sexp.
-    (csetq helm-ff-search-library-in-sexp t)
-    (csetq helm-ff-file-name-history-use-recentf t)
-    (csetq helm-ff-newfile-prompt-p nil)
-
-    ;; open helm buffer inside current window, not occupy whole other window
-    (csetq helm-split-window-in-side-p t)
-    ;; move to end or beginning of source when reaching top or bottom of source.
-    (csetq helm-move-to-line-cycle-in-source t)
-    ;; scroll 8 lines other window using M-<next>/M-<prior>
-    (csetq helm-scroll-amount 8)
-
-    ;; define browser
-    (setq helm-browse-url-chromium-program "x-www-browser")
-    (csetq helm-google-suggest-default-browser-function 'helm-browse-url-chromium)
-    (csetq helm-home-url "http://www.google.de")
-    (csetq helm-autoresize-mode t)
-
-    ;; ignore Emacs save files
-    (add-to-list 'helm-boring-file-regexp-list "\\.#")
-
-    ;; see (customize-group "helm-files-faces")
-    (set-face-attribute 'helm-ff-directory        nil :foreground "red" :background 'unspecified)
-    (set-face-attribute 'helm-ff-dotted-directory nil :foreground "red" :background 'unspecified)
-    (set-face-attribute 'helm-ff-executable       nil :foreground 'unspecified :background 'unspecified)
-    (set-face-attribute 'helm-ff-file             nil :foreground 'unspecified :background 'unspecified :inherit 'unspecified)
-    (set-face-attribute 'helm-ff-invalid-symlink  nil :foreground 'unspecified :background 'unspecified)
-    ;;(set-face-attribute 'helm-ff-prefix         nil :foreground 'unspecified :background 'unspecified)
-    (set-face-attribute 'helm-ff-symlink          nil :foreground 'unspecified :background 'unspecified)
-    (set-face-attribute 'helm-history-deleted     nil :foreground 'unspecified :background 'unspecified)
-    (set-face-attribute 'helm-history-remote      nil :foreground 'unspecified :background 'unspecified)
-
-    ;; this is kind of a goto, you can visit all marks
-    (bind-key "g"   'helm-all-mark-rings helm-command-map)))
-;;;_ ** helm-descbinds
-(use-package helm-descbinds
-  :commands helm-descbinds
-  :bind (("C-h b" . helm-descbinds)
-	 ("C-h w" . helm-descbinds)) ;; used to be where-is
-  )
-;;;_ ** helm-swoop
-;; https://github.com/ShingoFukuyama/helm-swoop
-(use-package helm-swoop
-  :commands (helm-swoop helm-swoop-back-to-last-point)
-  :bind (("M-s s"  . helm-swoop)
-	 ("M-s M-s" . helm-swoop)
-	 ("M-s S"   . helm-swoop-back-to-last-point))
-  :config
-  (csetq helm-swoop-split-direction 'split-window-sensibly)
-  ;; Switch to edit mode with C-c C-e, and exit edit mode with C-c C-c
-  (bind-key "C-c C-c" 'helm-swoop--edit-complete helm-swoop-edit-map)
-  ;; When doing isearch, hand the word over to helm-swoop
-  (bind-key "M-s s"   'helm-swoop-from-isearch isearch-mode-map)
-  (bind-key "M-s M-s" 'helm-swoop-from-isearch isearch-mode-map)
-  ;; Move up and down like isearch
-  (bind-key "C-r" 'helm-previous-line helm-swoop-map)
-  (bind-key "C-s" 'helm-next-line     helm-swoop-map)
-  (bind-key "C-r" 'helm-previous-line helm-multi-swoop-map)
-  (bind-key "C-s" 'helm-next-line     helm-multi-swoop-map))
-;;;_ ** flyspell and helm-flyspell
+;;;_ ** flyspell
 (use-package flyspell
  :diminish flyspell-mode
  :commands (flyspell-mode flyspell-prog-mode)
@@ -1600,7 +1601,7 @@ If the CDR is nil, then the buffer is only buried."
 (add-hook 'org-mode-hook 'flyspell-mode)
 (add-hook 'latex-mode-hook 'flyspell-mode)
 (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-
+;;;_ *** helm-flyslepp
 ;; https://github.com/pronobis/helm-flyspell
 (use-package helm-flyspell
   :commands helm-flyspell-correct
