@@ -664,8 +664,9 @@ are two windows displayed, act like C-x1:"
 (bind-key "<f5>" 'my-explode-window)
 ;;;_ ** Winner mode
 (use-package winner
+  :defer 10
   :init
-  (winner-mode))
+  (winner-mode 1))
 ;;;_ * Buffers
 ;;;_ ** Insert buffer
 ;; |-------+---------------|
