@@ -1794,7 +1794,7 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_ *** Error navigation
 (bind-key "<f8>" 'next-error)
 (bind-key "S-<f8>" 'previous-error)
-;;;_ ** Automatically safe files with shebang executable
+;;;_ ** Automatically make files with shebang executable
 (add-hook 'after-save-hook
 	  'executable-make-buffer-file-executable-if-script-p)
 ;;;_ ** Mode: C, C++
@@ -1958,6 +1958,20 @@ newline to the correct position"
   :commands (column-marker-1 column-marker-2)
   :init
   (add-hook 'c-mode-hook 'my--column-marker-at-80)
+  )
+;;;_ ** Package: eshell
+;; https://www.masteringemacs.org/article/complete-guide-mastering-eshell
+(use-package eshell
+  :defer t
+  :bind ("C-c e" . eshell)
+  :config
+  ;; If I ever want my own eshell/foo commands overwrite real commands ...
+  (setq eshell-prefer-lisp-functions t)
+
+  ;; check if this is ok for my usage
+  ;; eshell-visual-commands
+
+  (add-hook 'eshell-mode-hook 'my--hide-trailing-whitespace)
   )
 ;;;_ ** Package: magit
 ;; Must be set before magit is loaded. It will remove the new key
