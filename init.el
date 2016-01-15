@@ -956,7 +956,7 @@ If the CDR is nil, then the buffer is only buried."
   :config
   ;; When composing a mail, start the auto-fill-mode.
   (add-hook 'message-mode-hook 'turn-on-auto-fill)
-  (add-hook 'message-setup-hook 'bbdb-define-all-aliases)
+  ;; (add-hook 'message-setup-hook 'bbdb-define-all-aliases)
   (add-hook 'gnus-startup-hook 'bbdb-insinuate-message)
   ;;(require 'starttls)
   ;;(require 'smtpmail)
@@ -1123,7 +1123,7 @@ If the CDR is nil, then the buffer is only buried."
 (use-package bbdb
   :ensure t
   :defer t
-  :commands (bbdb bbdb-insinuate-gnus bbdb-insinuate-message bbdb-define-all-aliases)
+  :commands (bbdb bbdb-insinuate-gnus bbdb-insinuate-message)
   :bind ("C-c b" . bbdb)
   :config
   (bbdb-initialize 'gnus 'message)
