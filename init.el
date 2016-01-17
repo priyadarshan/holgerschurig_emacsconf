@@ -722,10 +722,17 @@ If the CDR is nil, then the buffer is only buried."
 (setq kill-buffer-query-functions
       (remq 'process-kill-buffer-query-function
 	     kill-buffer-query-functions))
-;;;_ ** Cycle buffers with iflipb
+;;;_ ** Cycle buffers
+;;;_ ** simple toggle
+(defun my-switch-to-buffer ()
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
+(bind-key "<f6>" 'my-switch-to-buffer)
+;;;_ *** iflipb
 ;; http://www.emacswiki.org/emacs/iflipb
 (use-package iflipb
   :commands (iflipb-next-buffer iflipb-previous-buffer)
+  :bind ("S-<f6>" . my-iflipb-previous-buffer)
   :config
   (csetq iflipb-wrap-around t)
 
@@ -743,7 +750,6 @@ If the CDR is nil, then the buffer is only buried."
 	(cancel-timer my-iflipb-auto-off-timer-canceler-internal))
     (run-with-idle-timer my-iflipb-auto-off-timeout-sec 0 'my-iflipb-auto-off)
     (setq my-iflipb-ing-internal t))
-  (bind-key "<f6>" 'my-iflipb-next-buffer)
   (defun my-iflipb-previous-buffer ()
     (interactive)
     (iflipb-previous-buffer)
@@ -751,7 +757,6 @@ If the CDR is nil, then the buffer is only buried."
 	(cancel-timer my-iflipb-auto-off-timer-canceler-internal))
     (run-with-idle-timer my-iflipb-auto-off-timeout-sec 0 'my-iflipb-auto-off)
     (setq my-iflipb-ing-internal t))
-  (bind-key "S-<f6>" 'my-iflipb-previous-buffer)
   (defun iflipb-first-iflipb-buffer-switch-command ()
     "Determines whether this is the first invocation of
   iflipb-next-buffer or iflipb-previous-buffer this round."
