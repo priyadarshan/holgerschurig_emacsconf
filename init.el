@@ -912,6 +912,158 @@ If the CDR is nil, then the buffer is only buried."
   "Insert date at point format the RFC822 way."
   (interactive)
   (insert (format-time-string "%a, %e %b %Y %H:%M:%S %z")))
+;;;_ * Other packages
+;;;_ ** circe (IRC client)
+;; see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Configuration
+(use-package circe
+  :commands circe
+  :config
+  (csetq circe-default-part-message "Fire on mainboard error")
+  (csetq circe-quit-part-message "Fire on mainboard error")
+  (csetq circe-reduce-lurker-spam t)
+  ;; (circe-set-display-handler "JOIN" (lambda (&rest ignored) nil))
+  ;; (circe-set-display-handler "QUIT" (lambda (&rest ignored) nil))
+  ;; (csetq circe-use-cycle-completion t)
+  (csetq circe-format-say "{nick}: {body}")
+  (csetq circe-server-killed-confirmation 'ask-and-kill-all)
+  ;; Network settings
+  (csetq circe-default-ip-family 'ipv4)
+  (csetq circe-default-nick "schurig")
+  (csetq circe-default-user "schurig")
+  (csetq circe-server-auto-join-default-type 'after-auth) ; XXX try after-nick
+  (csetq circe-network-options `(("Freenode"
+				  :host "kornbluth.freenode.net"
+				  :port (6667 . 6697)
+				  :channels ("#emacs" "#emacs-circe")
+				  :nickserv-password ,freenode-password)
+				 ))
+  ;; Misc
+  ;; (setq circe-format-server-topic "*** Topic change by {userhost}: {topic-diff}")
+  (use-package lui-autopaste
+    :config
+    (add-hook 'circe-channel-mode-hook 'enable-lui-autopaste))
+  )
+
+(defun irc ()
+  "Connect to IRC"
+  (interactive)
+  (circe "Freenode"))
+;;;_ ** dired
+(use-package dired
+    :commands dired
+	:bind ("C-x C-d" . dired) ;; used to be list-directory, quite useless
+    :init
+    (setq dired-listing-switches
+          "-laGh1v --group-directories-first"))
+(use-package dired-x
+    :commands dired-jump)
+;;;_ ** helm
+;; Very good intro: http://tuhdo.github.io/helm-intro.html
+(defun my-helm-imenu ()
+  "This is just like helm-imenu, but it will maximize the buffer"
+  (interactive)
+  (let ((helm-full-frame t))
+    (helm-imenu)))
+(use-package helm
+  :ensure helm
+  :diminish helm-mode
+  :bind (
+	 ("C-h a"   . helm-apropos)
+	 ("C-x C-f" . helm-find-files)
+	 ("M-s o"   . helm-occur)
+	 ("M-s i"   . my-helm-imenu)
+	 ("M-s m"   . my-helm-imenu)
+	 ("M-x"     . helm-M-x)
+	 ("M-y"     . helm-show-kill-ring)
+         ("C-x C-b"   . helm-mini)
+	 )
+  :init
+  (progn
+    (require 'helm-config)
+    (helm-mode t)
+    )
+  :config
+  (progn
+    ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+    ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+    ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+    ;; (from http://tuhdo.github.io/helm-intro.html)
+    (bind-key "C-c h" 'helm-command-prefix)
+    (global-unset-key (kbd "C-x c"))
+
+    (when (executable-find "curl")
+      (setq helm-net-prefer-curl t))
+
+    ;; allow "find man at point" for C-c h m (helm-man-woman)
+    (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+
+    (csetq helm-imenu-delimiter " ")
+    (csetq helm-candidate-number-limit 100)
+    (csetq helm-quick-update t)
+    (setq helm-M-x-requires-pattern nil)
+
+    (csetq helm-ff-skip-boring-files t)
+    ;; search for library in `require' and `declare-function' sexp.
+    (csetq helm-ff-search-library-in-sexp t)
+    (csetq helm-ff-file-name-history-use-recentf t)
+    (csetq helm-ff-newfile-prompt-p nil)
+
+    ;; open helm buffer inside current window, not occupy whole other window
+    (csetq helm-split-window-in-side-p t)
+    ;; move to end or beginning of source when reaching top or bottom of source.
+    (csetq helm-move-to-line-cycle-in-source t)
+    ;; scroll 8 lines other window using M-<next>/M-<prior>
+    (csetq helm-scroll-amount 8)
+
+    ;; define browser
+    (setq helm-browse-url-chromium-program "x-www-browser")
+    (csetq helm-google-suggest-default-browser-function 'helm-browse-url-chromium)
+    (csetq helm-home-url "http://www.google.de")
+    (csetq helm-autoresize-mode t)
+
+    ;; ignore Emacs save files
+    (add-to-list 'helm-boring-file-regexp-list "\\.#")
+
+    ;; see (customize-group "helm-files-faces")
+    (set-face-attribute 'helm-ff-directory        nil :foreground "red" :background 'unspecified)
+    (set-face-attribute 'helm-ff-dotted-directory nil :foreground "red" :background 'unspecified)
+    (set-face-attribute 'helm-ff-executable       nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-ff-file             nil :foreground 'unspecified :background 'unspecified :inherit 'unspecified)
+    (set-face-attribute 'helm-ff-invalid-symlink  nil :foreground 'unspecified :background 'unspecified)
+    ;;(set-face-attribute 'helm-ff-prefix         nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-ff-symlink          nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-history-deleted     nil :foreground 'unspecified :background 'unspecified)
+    (set-face-attribute 'helm-history-remote      nil :foreground 'unspecified :background 'unspecified)
+
+    ;; this is kind of a goto, you can visit all marks
+    (bind-key "g"   'helm-all-mark-rings helm-command-map)))
+;;;_ *** helm-descbinds
+(use-package helm-descbinds
+  :ensure t
+  :commands helm-descbinds
+  :bind (("C-h b" . helm-descbinds)
+	 ("C-h w" . helm-descbinds)) ;; used to be where-is
+  )
+;;;_ *** helm-swoop
+;; https://github.com/ShingoFukuyama/helm-swoop
+(use-package helm-swoop
+  :ensure t
+  :commands (helm-swoop helm-swoop-back-to-last-point)
+  :bind (("M-s s"  . helm-swoop)
+	 ("M-s M-s" . helm-swoop)
+	 ("M-s S"   . helm-swoop-back-to-last-point))
+  :config
+  (csetq helm-swoop-split-direction 'split-window-sensibly)
+  ;; Switch to edit mode with C-c C-e, and exit edit mode with C-c C-c
+  (bind-key "C-c C-c" 'helm-swoop--edit-complete helm-swoop-edit-map)
+  ;; When doing isearch, hand the word over to helm-swoop
+  (bind-key "M-s s"   'helm-swoop-from-isearch isearch-mode-map)
+  (bind-key "M-s M-s" 'helm-swoop-from-isearch isearch-mode-map)
+  ;; Move up and down like isearch
+  (bind-key "C-r" 'helm-previous-line helm-swoop-map)
+  (bind-key "C-s" 'helm-next-line     helm-swoop-map)
+  (bind-key "C-r" 'helm-previous-line helm-multi-swoop-map)
+  (bind-key "C-s" 'helm-next-line     helm-multi-swoop-map))
 ;;;_ * Mail & News
 ;;;_ ** smtpmail
 ;; http://emacs.stackexchange.com/questions/6105/how-to-set-proper-smtp-gmail-settings-in-emacs-in-order-to-be-able-to-work-with
@@ -1079,12 +1231,12 @@ If the CDR is nil, then the buffer is only buried."
   (bind-key "<home>" 'beginning-of-buffer gnus-article-mode-map)
   (bind-key "<end>"  'end-of-buffer       gnus-article-mode-map)
 )
-;;;_ *** gnus-sum
+;;;_ ** gnus-sum
 (use-package gnus-sum
   :defer t
   :commands (gnus-summary-last-subject gnus-summary-goto-subject)
   )
-;;;_ *** gnus-art
+;;;_ ** gnus-art
 (use-package gnus-art
   :defer t
   :config
@@ -1121,7 +1273,7 @@ If the CDR is nil, then the buffer is only buried."
 		(delete-file filename))
 	  filename))
   )
-;;;_ *** mm-decode
+;;;_ ** mm-decode
 (use-package mm-decode
   :config
   ;; Hide HTML mail
@@ -1130,7 +1282,7 @@ If the CDR is nil, then the buffer is only buried."
   	mm-automatic-display (-difference mm-automatic-display '("text/html" "text/enriched" "text/richtext"))
 	)
   )
-;;;_ *** bbdb
+;;;_ ** bbdb
 (use-package bbdb
   :ensure t
   :defer t
@@ -1159,158 +1311,6 @@ If the CDR is nil, then the buffer is only buried."
 		  (("To" "From") . "review@openstack.org")))
   ;; (setq bbdb-allow-duplicates t)
 )
-;;;_ * Other packages
-;;;_ ** circe (IRC client)
-;; see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Configuration
-(use-package circe
-  :commands circe
-  :config
-  (csetq circe-default-part-message "Fire on mainboard error")
-  (csetq circe-quit-part-message "Fire on mainboard error")
-  (csetq circe-reduce-lurker-spam t)
-  ;; (circe-set-display-handler "JOIN" (lambda (&rest ignored) nil))
-  ;; (circe-set-display-handler "QUIT" (lambda (&rest ignored) nil))
-  ;; (csetq circe-use-cycle-completion t)
-  (csetq circe-format-say "{nick}: {body}")
-  (csetq circe-server-killed-confirmation 'ask-and-kill-all)
-  ;; Network settings
-  (csetq circe-default-ip-family 'ipv4)
-  (csetq circe-default-nick "schurig")
-  (csetq circe-default-user "schurig")
-  (csetq circe-server-auto-join-default-type 'after-auth) ; XXX try after-nick
-  (csetq circe-network-options `(("Freenode"
-				  :host "kornbluth.freenode.net"
-				  :port (6667 . 6697)
-				  :channels ("#emacs" "#emacs-circe")
-				  :nickserv-password ,freenode-password)
-				 ))
-  ;; Misc
-  ;; (setq circe-format-server-topic "*** Topic change by {userhost}: {topic-diff}")
-  (use-package lui-autopaste
-    :config
-    (add-hook 'circe-channel-mode-hook 'enable-lui-autopaste))
-  )
-
-(defun irc ()
-  "Connect to IRC"
-  (interactive)
-  (circe "Freenode"))
-;;;_ ** dired
-(use-package dired
-    :commands dired
-	:bind ("C-x C-d" . dired) ;; used to be list-directory, quite useless
-    :init
-    (setq dired-listing-switches
-          "-laGh1v --group-directories-first"))
-(use-package dired-x
-    :commands dired-jump)
-;;;_ ** helm
-;; Very good intro: http://tuhdo.github.io/helm-intro.html
-(defun my-helm-imenu ()
-  "This is just like helm-imenu, but it will maximize the buffer"
-  (interactive)
-  (let ((helm-full-frame t))
-    (helm-imenu)))
-(use-package helm
-  :ensure helm
-  :diminish helm-mode
-  :bind (
-	 ("C-h a"   . helm-apropos)
-	 ("C-x C-f" . helm-find-files)
-	 ("M-s o"   . helm-occur)
-	 ("M-s i"   . my-helm-imenu)
-	 ("M-s m"   . my-helm-imenu)
-	 ("M-x"     . helm-M-x)
-	 ("M-y"     . helm-show-kill-ring)
-         ("C-x C-b"   . helm-mini)
-	 )
-  :init
-  (progn
-    (require 'helm-config)
-    (helm-mode t)
-    )
-  :config
-  (progn
-    ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
-    ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
-    ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-    ;; (from http://tuhdo.github.io/helm-intro.html)
-    (bind-key "C-c h" 'helm-command-prefix)
-    (global-unset-key (kbd "C-x c"))
-
-    (when (executable-find "curl")
-      (setq helm-net-prefer-curl t))
-
-    ;; allow "find man at point" for C-c h m (helm-man-woman)
-    (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
-
-    (csetq helm-imenu-delimiter " ")
-    (csetq helm-candidate-number-limit 100)
-    (csetq helm-quick-update t)
-    (setq helm-M-x-requires-pattern nil)
-
-    (csetq helm-ff-skip-boring-files t)
-    ;; search for library in `require' and `declare-function' sexp.
-    (csetq helm-ff-search-library-in-sexp t)
-    (csetq helm-ff-file-name-history-use-recentf t)
-    (csetq helm-ff-newfile-prompt-p nil)
-
-    ;; open helm buffer inside current window, not occupy whole other window
-    (csetq helm-split-window-in-side-p t)
-    ;; move to end or beginning of source when reaching top or bottom of source.
-    (csetq helm-move-to-line-cycle-in-source t)
-    ;; scroll 8 lines other window using M-<next>/M-<prior>
-    (csetq helm-scroll-amount 8)
-
-    ;; define browser
-    (setq helm-browse-url-chromium-program "x-www-browser")
-    (csetq helm-google-suggest-default-browser-function 'helm-browse-url-chromium)
-    (csetq helm-home-url "http://www.google.de")
-    (csetq helm-autoresize-mode t)
-
-    ;; ignore Emacs save files
-    (add-to-list 'helm-boring-file-regexp-list "\\.#")
-
-    ;; see (customize-group "helm-files-faces")
-    (set-face-attribute 'helm-ff-directory        nil :foreground "red" :background 'unspecified)
-    (set-face-attribute 'helm-ff-dotted-directory nil :foreground "red" :background 'unspecified)
-    (set-face-attribute 'helm-ff-executable       nil :foreground 'unspecified :background 'unspecified)
-    (set-face-attribute 'helm-ff-file             nil :foreground 'unspecified :background 'unspecified :inherit 'unspecified)
-    (set-face-attribute 'helm-ff-invalid-symlink  nil :foreground 'unspecified :background 'unspecified)
-    ;;(set-face-attribute 'helm-ff-prefix         nil :foreground 'unspecified :background 'unspecified)
-    (set-face-attribute 'helm-ff-symlink          nil :foreground 'unspecified :background 'unspecified)
-    (set-face-attribute 'helm-history-deleted     nil :foreground 'unspecified :background 'unspecified)
-    (set-face-attribute 'helm-history-remote      nil :foreground 'unspecified :background 'unspecified)
-
-    ;; this is kind of a goto, you can visit all marks
-    (bind-key "g"   'helm-all-mark-rings helm-command-map)))
-;;;_ *** helm-descbinds
-(use-package helm-descbinds
-  :ensure t
-  :commands helm-descbinds
-  :bind (("C-h b" . helm-descbinds)
-	 ("C-h w" . helm-descbinds)) ;; used to be where-is
-  )
-;;;_ *** helm-swoop
-;; https://github.com/ShingoFukuyama/helm-swoop
-(use-package helm-swoop
-  :ensure t
-  :commands (helm-swoop helm-swoop-back-to-last-point)
-  :bind (("M-s s"  . helm-swoop)
-	 ("M-s M-s" . helm-swoop)
-	 ("M-s S"   . helm-swoop-back-to-last-point))
-  :config
-  (csetq helm-swoop-split-direction 'split-window-sensibly)
-  ;; Switch to edit mode with C-c C-e, and exit edit mode with C-c C-c
-  (bind-key "C-c C-c" 'helm-swoop--edit-complete helm-swoop-edit-map)
-  ;; When doing isearch, hand the word over to helm-swoop
-  (bind-key "M-s s"   'helm-swoop-from-isearch isearch-mode-map)
-  (bind-key "M-s M-s" 'helm-swoop-from-isearch isearch-mode-map)
-  ;; Move up and down like isearch
-  (bind-key "C-r" 'helm-previous-line helm-swoop-map)
-  (bind-key "C-s" 'helm-next-line     helm-swoop-map)
-  (bind-key "C-r" 'helm-previous-line helm-multi-swoop-map)
-  (bind-key "C-s" 'helm-next-line     helm-multi-swoop-map))
 ;;;_ ** org
 ;;;_ *** org
 (use-package org
