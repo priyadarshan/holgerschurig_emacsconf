@@ -1287,6 +1287,8 @@ _R_  reply & quote       | _c_  catchup
 _r_  reply personal      | _C_  catchup thread
 _W_  wide reply & quote  | _u_  unmark
 _w_  wide reply          |
+
+_p_  save as patch
 "
     ;; ("n" gnus-summary-insert-new-articles "Refresh / N")
     ("f" gnus-summary-mail-forward :exit t)
@@ -1301,6 +1303,8 @@ _w_  wide reply          |
     ("c" gnus-summary-catchup-and-exit)
     ("C" gnus-summary-kill-thread)
     ("u" gnus-summary-clear-mark-forward)
+
+    ("p" gnus-summary-save-article-body-file)
 
     ("q" nil "quit"))
   ;; y is not used by default
@@ -1353,6 +1357,7 @@ _r_  reply personal      | _c_  catchup
 _W_  wide reply & quote  | _C_  catchup thread
 _w_  wide reply          | _u_  unmark
                        | _o_  save attachment at point
+_p_  save as patch
 "
     ;; ("n" gnus-summary-insert-new-articles "Refresh / N")
     ("f" gnus-summary-mail-forward :exit t)
@@ -1367,6 +1372,8 @@ _w_  wide reply          | _u_  unmark
     ("C" gnus-summary-kill-thread)
     ("u" gnus-summary-clear-mark-forward)
     ("o" gnus-mime-save-part)
+
+    ("p" gnus-summary-save-article-body-file)
 
     ("q" nil "quit"))
   ;; y is not used by default
