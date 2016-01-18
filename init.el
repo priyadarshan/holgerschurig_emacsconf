@@ -16,10 +16,6 @@
         (delete ".." (directory-files emacs-git))))
 
 (add-to-list 'load-path (expand-file-name "elisp/" emacs-d))
-
-(require 'auto-compile)
-(auto-compile-on-load-mode 1)
-(auto-compile-on-save-mode 1)
 ;;;_ * Customize
 ;; http://lists.gnu.org/archive/html/emacs-devel/2015-04/msg01261.html
 ;; http://oremacs.com/2015/01/17/setting-up-ediff/
@@ -1960,6 +1956,13 @@ newline to the correct position"
   :commands (column-marker-1 column-marker-2)
   :init
   (add-hook 'c-mode-hook 'my--column-marker-at-80)
+  )
+;;;_ ** Package: auto-compile
+(use-package auto-compile
+  :ensure t
+  :config
+  (auto-compile-on-load-mode 1)
+  (auto-compile-on-save-mode 1)
   )
 ;;;_ ** Package: eshell
 ;; https://www.masteringemacs.org/article/complete-guide-mastering-eshell
