@@ -1294,6 +1294,7 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_ *** helm-swoop
 ;; https://github.com/ShingoFukuyama/helm-swoop
 (use-package helm-swoop
+  :ensure t
   :commands (helm-swoop helm-swoop-back-to-last-point)
   :bind (("M-s s"  . helm-swoop)
 	 ("M-s M-s" . helm-swoop)
