@@ -482,6 +482,7 @@ rather than line counts."
 ;; You can then either continue to press C-+ to expand even further, or
 ;; use + and - after the first expand to expand further / shrink again.
 (use-package expand-region
+  :ensure t
   :bind ("C-+" . er/expand-region)
   :config
   (csetq expand-region-reset-fast-key    "<ESC><ESC>"))
