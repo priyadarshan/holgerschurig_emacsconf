@@ -1969,6 +1969,7 @@ newline to the correct position"
   (interactive)
   (column-marker-2 80))
 (use-package column-marker
+  :ensure t
   :commands (column-marker-1 column-marker-2)
   :init
   (add-hook 'c-mode-hook 'my--column-marker-at-80)
