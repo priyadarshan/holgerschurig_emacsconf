@@ -1933,29 +1933,28 @@ newline to the correct position"
 (add-hook 'sh-mode-hook    'my-shell-tab-setup)
 ;;;_ ** Mode: web-mode
 ;; Home page: http://web-mode.org/
-(eval-when-compile (require 'web-mode))
-(defun my-web-mode-hook ()
-  ;; (whitespace-turn-off)
-  ;; (rainbow-turn-off)
-  ;; (visual-line-mode)
-  ;; (local-set-key (kbd "RET") 'newline-and-indent)
-  (setq web-mode-markup-indent-offset 2
-	web-mode-css-indent-offset 2
-	web-mode-code-indent-offset 2
-	web-mode-indent-style 2
-	web-mode-style-padding 1
-	web-mode-script-padding 1
-	web-mode-block-padding 0))
 (use-package web-mode
+  :ensure t
   :commands web-mode
   :mode (("\\.html\\'" . web-mode)
 	 ("\\.css\\'" . web-mode)
 	 ("\\.json\\'" . web-mode)
 	 ("\\.js\\'" . web-mode)
 	 )
-  :init
-  (add-hook 'web-mode-hook 'my-web-mode-hook)
   :config
+  (defun my-web-mode-hook ()
+    ;; (whitespace-turn-off)
+    ;; (rainbow-turn-off)
+    ;; (visual-line-mode)
+    ;; (local-set-key (kbd "RET") 'newline-and-indent)
+    (setq web-mode-markup-indent-offset 2
+	  web-mode-css-indent-offset 2
+	  web-mode-code-indent-offset 2
+	  web-mode-indent-style 2
+	  web-mode-style-padding 1
+	  web-mode-script-padding 1
+	  web-mode-block-padding 0))
+  (add-hook 'web-mode-hook 'my-web-mode-hook)
   (setq web-mode-enable-block-partial-invalidation t
 	web-mode-engines-alist '(("ctemplate" . "\\.html$"))))
 ;;;_ ** Package: column-marker
