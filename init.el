@@ -206,10 +206,7 @@ The list is displayed in a buffer named `*Packages*'."
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-(eval-when-compile
-  (require 'use-package))
-(require 'diminish)
-(require 'bind-key)
+(require 'use-package)
 ;;;_ * Editing
 ;;;_ ** Transpose
 ;; http://endlessparentheses.com/transposing-keybinds-in-emacs.html
