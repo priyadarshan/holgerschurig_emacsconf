@@ -1114,8 +1114,10 @@ If the CDR is nil, then the buffer is only buried."
 (use-package mm-decode
   :config
   ;; Hide HTML mail
+  (require 'dash) ;; for -difference
   (setq mm-discouraged-alternatives '("text/html" "text/richtext")
-  	mm-automatic-display (-difference mm-automatic-display '("text/html" "text/enriched" "text/richtext")))
+  	mm-automatic-display (-difference mm-automatic-display '("text/html" "text/enriched" "text/richtext"))
+	)
   )
 ;;;_ *** bbdb
 (use-package bbdb
