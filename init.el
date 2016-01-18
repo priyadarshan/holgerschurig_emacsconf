@@ -295,6 +295,10 @@ The list is displayed in a buffer named `*Packages*'."
 ;;;_ ** Smart mode line
 ;; https://github.com/Malabarba/smart-mode-line
 (use-package smart-mode-line
+  :ensure t
+  :init
+  (use-package smart-mode-line-powerline-theme
+    :ensure t)
   :config
   (csetq sml/line-number-format    "%4l")
   (csetq sml/name-width 40) ; buffer name width in the mode-line
