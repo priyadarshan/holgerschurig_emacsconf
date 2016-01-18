@@ -1037,6 +1037,11 @@ If the CDR is nil, then the buffer is only buried."
 
     ;; this is kind of a goto, you can visit all marks
     (bind-key "g"   'helm-all-mark-rings helm-command-map)))
+;;;_ ** hydra
+(use-package hydra
+  :defer t
+  :commands (defhydra hydra-default-pre)
+  )
 ;;;_ *** helm-descbinds
 (use-package helm-descbinds
   :ensure t
@@ -1231,10 +1236,75 @@ If the CDR is nil, then the buffer is only buried."
   (bind-key "<home>" 'beginning-of-buffer gnus-article-mode-map)
   (bind-key "<end>"  'end-of-buffer       gnus-article-mode-map)
 )
+;;;_ ** gnus-group
+(use-package gnus-group
+  :defer t
+  :config
+  (defhydra hydra-gnus-group (:color pink :hint nil)
+    "
+^Local^                        | ^Server^
+-----------------------------+-------------------------------------
+_l_  list all groups           | _L_  list active groups on IMAP server
+_c_  catch up all (mark read)  | _s_  search on server
+_g_  get new news              | _S_  enter server mode
+-----------------------------+-------------------------------------
+_m_  mail new post
+"
+       ("l" gnus-group-list-all-groups)
+       ("c" gnus-group-catchup-current)
+       ("g" gnus-group-get-new-news)
+
+       ("L" gnus-group-list-active :exit t)
+       ("s" gnus-group-make-nnir-group :exit t)
+       ("S" gnus-group-enter-server-mode :exit t)
+
+       ("m" gnus-group-new-mail :exit t)
+       ("q" nil "quit" :color blue)
+       ;; ("r" gnus-group-list-active "REMOTE groups A A")
+       ;; ("l" gnus-group-list-all-groups "LOCAL groups L")
+       ;; ("c" gnus-topic-catchup-articles "Read all c")
+       ;; ("G" gnus-group-make-nnir-group "Search server G G")
+       ;; ("g" gnus-group-get-new-news "Refresh g")
+       ;; ("s" gnus-group-enter-server-mode "Servers")
+       ;; ("m" gnus-group-new-mail "Compose m OR C-x m")
+       ;; ("#" gnus-topic-mark-topic "mark #")
+       ;; ("q" nil "cancel")
+       )
+     ;; y is not used by default
+     (bind-key "y" #'hydra-gnus-group/body gnus-group-mode-map ))
 ;;;_ ** gnus-sum
 (use-package gnus-sum
   :defer t
   :commands (gnus-summary-last-subject gnus-summary-goto-subject)
+  :config
+  (defhydra hydra-gnus-summary (:color pink :hint nil)
+    "
+^Posting^                  ^Handling^
+-----------------------+------------------
+_f_  forward             | _!_  tick & keep
+_e_  resend & edit       | _p_  untick
+_R_  reply & quote       | _c_  catchup
+_r_  reply personal      | _C_  catchup thread
+_W_  wide reply & quote  | _u_  unmark
+_w_  wide reply          |
+"
+    ;; ("n" gnus-summary-insert-new-articles "Refresh / N")
+    ("f" gnus-summary-mail-forward :exit t)
+    ("e" gnus-summary-resend-message-edit :exit t)
+    ("R" gnus-summary-reply-with-original :exit t)
+    ("r" gnus-summary-reply :exit t)
+    ("W" gnus-summary-wide-reply-with-original :exit t)
+    ("w" gnus-summary-wide-reply :exit t)
+
+    ("!" gnus-summary-tick-article-forward)
+    ("p" gnus-summary-put-mark-as-read)
+    ("c" gnus-summary-catchup-and-exit)
+    ("C" gnus-summary-kill-thread)
+    ("u" gnus-summary-clear-mark-forward)
+
+    ("q" nil "quit"))
+  ;; y is not used by default
+  (bind-key "y" #'hydra-gnus-summary/body gnus-summary-mode-map)
   )
 ;;;_ ** gnus-art
 (use-package gnus-art
@@ -1272,6 +1342,37 @@ If the CDR is nil, then the buffer is only buried."
       (when (file-exists-p filename)
 		(delete-file filename))
 	  filename))
+
+    (defhydra hydra-gnus-article (:color pink :hint nil)
+    "
+^Posting^                  ^Handling^
+-----------------------+---------------------------
+_f_  forward             | _!_  tick & keep
+_R_  reply & quote       | _p_  untick
+_r_  reply personal      | _c_  catchup
+_W_  wide reply & quote  | _C_  catchup thread
+_w_  wide reply          | _u_  unmark
+                       | _o_  save attachment at point
+"
+    ;; ("n" gnus-summary-insert-new-articles "Refresh / N")
+    ("f" gnus-summary-mail-forward :exit t)
+    ("R" gnus-article-reply-with-original :exit t)
+    ("r" gnus-article-reply :exit t)
+    ("W" gnus-article-wide-reply-with-original :exit t)
+    ("w" gnus-article-wide-reply :exit t)
+
+    ("!" gnus-summary-tick-article-forward)
+    ("p" gnus-summary-put-mark-as-read)
+    ("c" gnus-summary-catchup-and-exit)
+    ("C" gnus-summary-kill-thread)
+    ("u" gnus-summary-clear-mark-forward)
+    ("o" gnus-mime-save-part)
+
+    ("q" nil "quit"))
+  ;; y is not used by default
+  (bind-key "y" #'hydra-gnus-article/body gnus-article-mode-map)
+  )
+
   )
 ;;;_ ** mm-decode
 (use-package mm-decode
