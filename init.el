@@ -16,104 +16,22 @@
         (delete ".." (directory-files emacs-git))))
 
 (add-to-list 'load-path (expand-file-name "elisp/" emacs-d))
-;;;_ * Customize
-;; http://lists.gnu.org/archive/html/emacs-devel/2015-04/msg01261.html
-;; http://oremacs.com/2015/01/17/setting-up-ediff/
-;;
-;; This macro I've put together myself after searching though the code
-;; base and not finding something similar; custom-set-variables comes
-;; close to what I want, or maybe custom-initialize-changed. Basically
-;; all I want is a setq that is aware of the custom-set property of a
-;; variable. If you know such a macro, please let me know.
-(defmacro csetq (variable value)
-  `(funcall (or (get ',variable 'custom-set)
-		'set-default)
-	    ',variable ,value))
-;;;_ ** Window Decorations
-(csetq tool-bar-mode nil)
-;(csetq menu-bar-mode nil)
-(csetq scroll-bar-mode nil)
-(eval-after-load "startup" '(fset 'display-startup-echo-area-message 'ignore))
-(csetq inhibit-startup-screen t)
-;;;_ ** Window manager
-;; Avoid Emacs hanging for a while after changing default font
-(modify-frame-parameters nil '((wait-for-wm . nil)))
-;;;_ ** Theme
-(require 'afternoon-theme)
-;; put something like this into ~/.Xresources
-;; Emacs.geometry: 120x55
-;; Emacs.Font:     Terminus 11
-;;;_ ** Blend fringe
-;; http://emacs.stackexchange.com/a/5343/115
-(defun my-blend-fringe ()
-  (interactive)
-  "Set the fringe foreground and background color to that of the theme."
-  (set-face-attribute 'fringe nil
-                      :foreground (if (string= (face-foreground 'default) "unspecified-fg")
-                                      "#f7f7f7" (face-foreground 'default))
-                      :background (if (string= (face-background 'default) "unspecified-bg")
-									  "#282828" (face-background 'default))))
-(my-blend-fringe)
-;;;_ ** Entering/exiting Emacs
-; Do without annoying startup msg.
-(csetq inhibit-startup-message t)
-; This inhibits the initial startup echo area message.
-(eval '(csetq inhibit-startup-echo-area-message "schurig"))
-; Empty scratch message
-(csetq initial-scratch-message nil)
-; Include current buffer name in the title bar
-(csetq frame-title-format '(buffer-file-name "%f" ("%b")))
-; TODO Set up default editing mode.
-; (csetq major-mode 'indented-text-mode)
-; Custom file, part one
-(csetq custom-file (concat emacs-d "custom.el"))
-; Delete previous identical history entries
-(csetq history-delete-duplicates t)
-;;;_ ** Emacs internals
-(csetq gc-cons-threshold (* 10 1024 1024))
-(csetq message-log-max 10000)
-;; Use new byte codes from Emacs 24.4
-(setq byte-compile--use-old-handlers nil)
-(csetq ad-redefinition-action 'accept)
-;;;_ ** allow some commands
-(put 'erase-buffer 'disabled nil)
-;;;_ ** Default browser
-(setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "x-www-browser")
-;;;_ ** Simpler yes or no prompt
-;  Get rid of yes-or-no questions - y or n is enough
-(fset 'yes-or-no-p 'y-or-n-p)
-;;;_ ** Private data
-(csetq user-full-name "Holger Schurig")
-(csetq user-mail-address "holgerschurig@gmail.com")
-(load (concat emacs-d "private.el") 'noerror 'nomessage)
-;;;_ ** Load customization file
-(if (file-exists-p custom-file) (load-file custom-file))
-;;;_ ** Mouse
-;; Paste at text-cursor, not at mouse-cursor:
-(csetq mouse-yank-at-point t)
-;;;_ ** Localisation
-;; A sentence doesn't end with two spaces:
-(csetq sentence-end-double-space nil)
-;;;_ ** Customization buffer
-;; keep lisp names in the custom buffers, don't capitalize
-(csetq custom-unlispify-tag-names nil)
 ;;;_ * Package infrastructure
 ;;;_ ** package
 ;; ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
 ;; Move the cookie file out into the =tmp/= directory.
-(csetq url-configuration-directory (concat emacs-d "tmp/"))
+(setq url-configuration-directory (concat emacs-d "tmp/"))
 (require 'package)
-(csetq package-enable-at-startup nil)
-(csetq package-archives
-	   '(("melpa-stable" . "http://stable.melpa.org/packages/")
-		 ("melpa"        . "http://melpa.org/packages/")
-		 ("gnu"          . "http://elpa.gnu.org/packages/")
-		 ;; for org-plus-contrib
-		 ;; ("org"          . "http://orgmode.org/elpa/")
-		 ))
+(setq package-enable-at-startup nil
+      package-archives
+      '(("melpa-stable" . "http://stable.melpa.org/packages/")
+	("melpa"        . "http://melpa.org/packages/")
+	("gnu"          . "http://elpa.gnu.org/packages/")
+	;; for org-plus-contrib
+	;; ("org"          . "http://orgmode.org/elpa/")
+	))
 
-;; This is my over version. The original version doesn't read
+;; This is my own version. The original version doesn't read
 ;; all archives when called with no-fetch.
 (defun list-packages (&optional no-fetch)
   "Display a list of packages.
@@ -203,6 +121,88 @@ The list is displayed in a buffer named `*Packages*'."
   (package-refresh-contents)
   (package-install 'use-package))
 (require 'use-package)
+;;;_ * Customize
+;; http://lists.gnu.org/archive/html/emacs-devel/2015-04/msg01261.html
+;; http://oremacs.com/2015/01/17/setting-up-ediff/
+;;
+;; This macro I've put together myself after searching though the code
+;; base and not finding something similar; custom-set-variables comes
+;; close to what I want, or maybe custom-initialize-changed. Basically
+;; all I want is a setq that is aware of the custom-set property of a
+;; variable. If you know such a macro, please let me know.
+(defmacro csetq (variable value)
+  `(funcall (or (get ',variable 'custom-set)
+		'set-default)
+	    ',variable ,value))
+;;;_ ** Window Decorations
+(csetq tool-bar-mode nil)
+;(csetq menu-bar-mode nil)
+(csetq scroll-bar-mode nil)
+(eval-after-load "startup" '(fset 'display-startup-echo-area-message 'ignore))
+(csetq inhibit-startup-screen t)
+;;;_ ** Window manager
+;; Avoid Emacs hanging for a while after changing default font
+(modify-frame-parameters nil '((wait-for-wm . nil)))
+;;;_ ** Theme
+(require 'afternoon-theme)
+;; put something like this into ~/.Xresources
+;; Emacs.geometry: 120x55
+;; Emacs.Font:     Terminus 11
+;;;_ ** Blend fringe
+;; http://emacs.stackexchange.com/a/5343/115
+(defun my-blend-fringe ()
+  (interactive)
+  "Set the fringe foreground and background color to that of the theme."
+  (set-face-attribute 'fringe nil
+                      :foreground (if (string= (face-foreground 'default) "unspecified-fg")
+                                      "#f7f7f7" (face-foreground 'default))
+                      :background (if (string= (face-background 'default) "unspecified-bg")
+									  "#282828" (face-background 'default))))
+(my-blend-fringe)
+;;;_ ** Entering/exiting Emacs
+; Do without annoying startup msg.
+(csetq inhibit-startup-message t)
+; This inhibits the initial startup echo area message.
+(eval '(csetq inhibit-startup-echo-area-message "schurig"))
+; Empty scratch message
+(csetq initial-scratch-message nil)
+; Include current buffer name in the title bar
+(csetq frame-title-format '(buffer-file-name "%f" ("%b")))
+; TODO Set up default editing mode.
+; (csetq major-mode 'indented-text-mode)
+; Custom file, part one
+(csetq custom-file (concat emacs-d "custom.el"))
+; Delete previous identical history entries
+(csetq history-delete-duplicates t)
+;;;_ ** Emacs internals
+(csetq gc-cons-threshold (* 10 1024 1024))
+(csetq message-log-max 10000)
+;; Use new byte codes from Emacs 24.4
+(setq byte-compile--use-old-handlers nil)
+(csetq ad-redefinition-action 'accept)
+;;;_ ** allow some commands
+(put 'erase-buffer 'disabled nil)
+;;;_ ** Default browser
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "x-www-browser")
+;;;_ ** Simpler yes or no prompt
+;  Get rid of yes-or-no questions - y or n is enough
+(fset 'yes-or-no-p 'y-or-n-p)
+;;;_ ** Private data
+(csetq user-full-name "Holger Schurig")
+(csetq user-mail-address "holgerschurig@gmail.com")
+(load (concat emacs-d "private.el") 'noerror 'nomessage)
+;;;_ ** Load customization file
+(if (file-exists-p custom-file) (load-file custom-file))
+;;;_ ** Mouse
+;; Paste at text-cursor, not at mouse-cursor:
+(csetq mouse-yank-at-point t)
+;;;_ ** Localisation
+;; A sentence doesn't end with two spaces:
+(csetq sentence-end-double-space nil)
+;;;_ ** Customization buffer
+;; keep lisp names in the custom buffers, don't capitalize
+(csetq custom-unlispify-tag-names nil)
 ;;;_ * Editing
 ;;;_ ** Transpose
 ;; http://endlessparentheses.com/transposing-keybinds-in-emacs.html
