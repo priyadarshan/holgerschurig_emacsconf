@@ -760,7 +760,7 @@ If the CDR is nil, then the buffer is only buried."
     (not (and (or (eq last-command 'my-iflipb-next-buffer)
 		  (eq last-command 'my-iflipb-previous-buffer))
 	      my-iflipb-ing-internal))))
-;;;_ ** ace-jump-buffer
+;;;_ ** ace-jump-buffer DISABLED
 (use-package ace-jump-buffer
   :disabled t
   :bind ("C-c C-j" . ace-jump-buffer)
