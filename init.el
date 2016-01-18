@@ -493,6 +493,7 @@ rather than line counts."
   )
 ;;;_ ** avy (alternative to ace-jump-mode)
 (use-package avy
+  :ensure t
   :bind ("C-#" . avy-goto-char-timer)
   :config (progn
 	    (csetq avy-keys (append (number-sequence ?a ?z)
