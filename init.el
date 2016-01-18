@@ -1898,9 +1898,10 @@ newline to the correct position"
   (eldoc-mode t)
   ;; "-" is almost always part of a function- or variable-name
   (modify-syntax-entry ?- "w")
-  ;; Compile Emacs Lisp source files after the visiting buffers are saved.
-  (unless (string= (buffer-name) "*scratch*")
-    (auto-compile-mode 1))
+;; TODO
+;; Compile Emacs Lisp source files after the visiting buffers are saved.
+;; (unless (string= (buffer-name) "*scratch*")
+;;    (auto-compile-mode 1))
   )
 (add-hook 'emacs-lisp-mode-hook 'my--elisp-setup)
 ;;;_ ** Mode: Markdown
