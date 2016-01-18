@@ -951,7 +951,7 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_ ** dired
 (use-package dired
     :commands dired
-	:bind ("C-x C-d" . dired) ;; used to be list-directory, quite useless
+    :bind ("C-x C-d" . dired) ;; used to be list-directory, quite useless
     :init
     (setq dired-listing-switches
           "-laGh1v --group-directories-first"))
