@@ -1952,7 +1952,7 @@ newline to the correct position"
   :config
   (setq web-mode-enable-block-partial-invalidation t
 	web-mode-engines-alist '(("ctemplate" . "\\.html$"))))
-;;;_ ** column-marker
+;;;_ ** Package: column-marker
 (defun my--column-marker-at-80 ()
   (interactive)
   (column-marker-2 80))
