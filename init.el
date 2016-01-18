@@ -1286,6 +1286,7 @@ If the CDR is nil, then the buffer is only buried."
     (bind-key "g"   'helm-all-mark-rings helm-command-map)))
 ;;;_ *** helm-descbinds
 (use-package helm-descbinds
+  :ensure t
   :commands helm-descbinds
   :bind (("C-h b" . helm-descbinds)
 	 ("C-h w" . helm-descbinds)) ;; used to be where-is
