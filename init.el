@@ -966,6 +966,13 @@ If the CDR is nil, then the buffer is only buried."
   (add-hook 'message-mode-hook 'turn-on-auto-fill)
   ;; (add-hook 'message-setup-hook 'bbdb-define-all-aliases)
   (add-hook 'gnus-startup-hook 'bbdb-insinuate-message)
+
+  ;; Generate the mail headers before you edit your message.
+  (setq message-generate-headers-first t)
+
+  ;; The message buffer will be killed after sending a message.
+  (setq message-kill-buffer-on-exit t)
+
   ;;(require 'starttls)
   ;;(require 'smtpmail)
   :commands message-mode
@@ -980,6 +987,20 @@ If the CDR is nil, then the buffer is only buried."
   :bind ("C-c n" . gnus)
   :config
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; GNUS general
+  ;; Unconditionally read the dribble file
+  (setq gnus-always-read-dribble-file t)
+
+  ;; Store gnus specific files to ~/gnus, maybe also set nnml-directory
+  (setq gnus-directory (concat emacs-d "News/")
+  	message-directory (concat emacs-d "Mail/")
+  	gnus-article-save-directory (concat emacs-d "News/saved/")
+  	gnus-kill-files-directory (concat emacs-d "News/scores/")
+  	gnus-cache-directory (concat emacs-d "News/cache/"))
+
+  (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; GNUS sources
   ;;http://www.xsteve.at/prg/gnus/
   (setq gnus-select-method '(nntp "news.gmane.org"))
 
@@ -987,17 +1008,18 @@ If the CDR is nil, then the buffer is only buried."
   (add-to-list 'gnus-secondary-select-methods
 	       '(nnmaildir "" (directory "~/Maildir/")))
 
-  ;; Unconditionally read the dribble file
-  (setq gnus-always-read-dribble-file t)
+  ;; don't substitute my e-mail with some "-> RECEIVER" magic
+  (setq gnus-ignored-from-addresses nil)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; GNUS summary
+  ;; don't refrain to show a big amount of messages
+  (setq gnus-large-newsgroup nil)
 
   ;; If you prefer to see only the top level message. If a message has
   ;; several replies or is part of a thread, only show the first
   ;; message. 'gnus-thread-ignore-subject' will ignore the subject and
   ;; look at 'In-Reply-To:' and 'References:' headers.
   ;; (setq gnus-thread-hide-subtree t)
-
-  ;; don't substitute my e-mail with some "-> RECEIVER" magic
-  (setq gnus-ignored-from-addresses nil)
 
   ;; Sort by date:
   (setq gnus-thread-sort-functions
@@ -1027,30 +1049,17 @@ If the CDR is nil, then the buffer is only buried."
 				      (t                              . "%d.%m. %Y")
 				      ))
 
-  ;; Generate the mail headers before you edit your message.
-  (setq message-generate-headers-first t)
-
-  ;; The message buffer will be killed after sending a message.
-  (setq message-kill-buffer-on-exit t)
-
-  (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
-
-  ;; Store gnus specific files to ~/gnus, maybe also set nnml-directory
-  (setq gnus-directory (concat emacs-d "News/")
-  	message-directory (concat emacs-d "Mail/")
-  	gnus-article-save-directory (concat emacs-d "News/saved/")
-  	gnus-kill-files-directory (concat emacs-d "News/scores/")
-  	gnus-cache-directory (concat emacs-d "News/cache/"))
-
   ;; Added some keybindings to the gnus summary mode
   (define-key gnus-summary-mode-map [(meta up)] '(lambda() (interactive) (scroll-other-window -1)))
   (define-key gnus-summary-mode-map [(meta down)] '(lambda() (interactive) (scroll-other-window 1)))
   (define-key gnus-summary-mode-map [(control down)] 'gnus-summary-next-thread)
   (define-key gnus-summary-mode-map [(control up)] 'gnus-summary-prev-thread)
 
-  ;; Window setup
-  ;; (setq gnus-widen-article-window t)
+  ;; stop the annoying "move to colon" function
+  (defun gnus-summary-position-point ()
+    )
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; GNUS articles
   ;; re-use one article buffer for every group
   (setq gnus-single-article-buffer t)
 
@@ -1069,14 +1078,6 @@ If the CDR is nil, then the buffer is only buried."
   (bind-key "q"      'my--delete-window   gnus-article-mode-map)
   (bind-key "<home>" 'beginning-of-buffer gnus-article-mode-map)
   (bind-key "<end>"  'end-of-buffer       gnus-article-mode-map)
-
-  ;; stop the annoying "move to colon" function
-  (defun gnus-summary-position-point ()
-    )
-
-  ;; About message expiry
-  ;; gnus-auto-expirable-marks
-  ;; gnus-auto-expirable-newsgroups
 )
 ;;;_ *** gnus-sum
 (use-package gnus-sum
