@@ -26,11 +26,10 @@
 (require 'package)
 (setq package-enable-at-startup nil
       package-archives
-      '(("melpa-stable" . "http://stable.melpa.org/packages/")
-	("melpa"        . "http://melpa.org/packages/")
-	("gnu"          . "http://elpa.gnu.org/packages/")
-	;; for org-plus-contrib
-	;; ("org"          . "http://orgmode.org/elpa/")
+      '(("melpa"           . "http://melpa.org/packages/")
+        ;; ("melpa-stable" . "http://stable.melpa.org/packages/")
+	;; ("gnu"          . "http://elpa.gnu.org/packages/")
+	;; ("org"          . "http://orgmode.org/elpa/") ;; for org-plus-contrib
 	))
 
 ;; This is my own version. The original version doesn't read
