@@ -146,7 +146,8 @@ The list is displayed in a buffer named `*Packages*'."
 ;; Avoid Emacs hanging for a while after changing default font
 (modify-frame-parameters nil '((wait-for-wm . nil)))
 ;;;_ ** Theme
-(require 'afternoon-theme)
+(use-package afternoon-theme
+  :ensure t)
 ;; put something like this into ~/.Xresources
 ;; Emacs.geometry: 120x55
 ;; Emacs.Font:     Terminus 11
