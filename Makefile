@@ -1,11 +1,8 @@
 EMACS ?= emacs
 PWD := $(shell pwd)
 
-all:: packages update
+all:: update
 
-.PHONY:: packages
-packages:
-	$(EMACS) -batch -l packages.el
 
 .PHONY:: update
 update:
