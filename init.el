@@ -20,7 +20,9 @@
 ;;;_ ** package
 ;; ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
 ;; Move the cookie file out into the =tmp/= directory.
-(setq url-configuration-directory (concat emacs-d "tmp/"))
+(let ((dir (concat emacs-d "tmp/")))
+  (ignore-errors (make-directory dir))
+  (setq url-configuration-directory dir))
 (require 'package)
 (setq package-enable-at-startup nil
       package-archives
