@@ -733,6 +733,7 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_ *** iflipb
 ;; http://www.emacswiki.org/emacs/iflipb
 (use-package iflipb
+  :ensure t
   :commands (iflipb-next-buffer iflipb-previous-buffer)
   :bind ("S-<f6>" . my-iflipb-previous-buffer)
   :config
