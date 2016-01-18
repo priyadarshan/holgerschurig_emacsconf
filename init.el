@@ -889,6 +889,7 @@ If the CDR is nil, then the buffer is only buried."
 ;; It's hard to remember keyboard shortcuts. The guide-key package
 ;; pops up help after a short delay.
 (use-package guide-key
+  :ensure t
   :defer 2
   :diminish guide-key-mode
   :config
