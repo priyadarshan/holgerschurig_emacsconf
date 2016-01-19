@@ -1081,8 +1081,6 @@ If the CDR is nil, then the buffer is only buried."
 	smtpmail-smtp-service 587
 	smtpmail-debug-info t))
 ;;;_ ** sendmail
-;; This is used by GNUS and also by Mutt
-
 ;; http://www.emacswiki.org/emacs/MuttInEmacs
 ;; http://dev.mutt.org/trac/wiki/MuttFaq/Editor
 (defun my-mail-quit ()
