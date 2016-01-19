@@ -1313,6 +1313,7 @@ _p_  save as patch
 ;;;_ ** gnus-art
 (use-package gnus-art
   :defer t
+  :commands (gnus-article-wide-reply gnus-article-reply)
   :config
 
   ;; Test code, position cursor inside and run C-C-x to evaluate:
