@@ -975,7 +975,7 @@ If the CDR is nil, then the buffer is only buried."
 	 ("M-s m"   . my-helm-imenu)
 	 ("M-x"     . helm-M-x)
 	 ("M-y"     . helm-show-kill-ring)
-         ("C-x C-b"   . helm-mini)
+         ("C-x C-b" . helm-mini)
 	 )
   :init
   (progn
