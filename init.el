@@ -1306,6 +1306,15 @@ _p_  save as patch
     ("q" nil "quit"))
   ;; y is not used by default
   (bind-key "y" #'hydra-gnus-summary/body gnus-summary-mode-map)
+
+  ;; (almost) swap "q" and "Q"
+  (defun my--gnus-summary-exit-no-update ()
+    "This is identical to gnus-summary-exit-no-update, but it doesn't ask
+for yes-or-no."
+    (interactive)
+    (gnus-summary-exit-no-update t))
+  (bind-key "q" #'my--gnus-summary-exit-no-update gnus-summary-mode-map)
+  (bind-key "Q" #'gnus-summary-exit gnus-summary-mode-map)
   )
 ;;;_ ** gnus-art
 (use-package gnus-art
