@@ -1166,8 +1166,10 @@ If the CDR is nil, then the buffer is only buried."
   (setq gnus-ignored-from-addresses nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; GNUS summary
-  ;; don't refrain to show a big amount of messages
-  (setq gnus-large-newsgroup nil)
+  (setq ;; don't refrain to show a big amount of messages
+        gnus-large-newsgroup 10000
+	;; make threads full
+	gnus-fetch-old-headers t)
 
   ;; If you prefer to see only the top level message. If a message has
   ;; several replies or is part of a thread, only show the first
