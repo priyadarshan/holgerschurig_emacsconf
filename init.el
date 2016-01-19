@@ -1379,8 +1379,6 @@ _p_  save as patch
   ;; y is not used by default
   (bind-key "y" #'hydra-gnus-article/body gnus-article-mode-map)
   )
-
-  )
 ;;;_ ** mm-decode
 (use-package mm-decode
   :config
