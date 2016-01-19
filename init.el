@@ -1120,7 +1120,6 @@ If the CDR is nil, then the buffer is only buried."
   ;; When composing a mail, start the auto-fill-mode.
   (add-hook 'message-mode-hook 'turn-on-auto-fill)
   ;; (add-hook 'message-setup-hook 'bbdb-define-all-aliases)
-  (add-hook 'gnus-startup-hook 'bbdb-insinuate-message)
 
   ;; Generate the mail headers before you edit your message.
   (setq message-generate-headers-first t)
