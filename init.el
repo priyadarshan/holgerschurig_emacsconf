@@ -955,6 +955,7 @@ If the CDR is nil, then the buffer is only buried."
     :init
     (setq dired-listing-switches
           "-laGh1v --group-directories-first"))
+;;;_ ** dired-x
 (use-package dired-x
     :commands dired-jump)
 ;;;_ ** helm
