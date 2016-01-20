@@ -1037,11 +1037,6 @@ If the CDR is nil, then the buffer is only buried."
 
     ;; this is kind of a goto, you can visit all marks
     (bind-key "g"   'helm-all-mark-rings helm-command-map)))
-;;;_ ** hydra
-(use-package hydra
-  :defer t
-  :commands (defhydra hydra-default-pre)
-  )
 ;;;_ *** helm-descbinds
 (use-package helm-descbinds
   :ensure t
@@ -1069,6 +1064,11 @@ If the CDR is nil, then the buffer is only buried."
   (bind-key "C-s" 'helm-next-line     helm-swoop-map)
   (bind-key "C-r" 'helm-previous-line helm-multi-swoop-map)
   (bind-key "C-s" 'helm-next-line     helm-multi-swoop-map))
+;;;_ ** hydra
+(use-package hydra
+  :defer t
+  :commands (defhydra hydra-default-pre)
+  )
 ;;;_ * Mail & News
 ;;;_ ** smtpmail
 ;; http://emacs.stackexchange.com/questions/6105/how-to-set-proper-smtp-gmail-settings-in-emacs-in-order-to-be-able-to-work-with
