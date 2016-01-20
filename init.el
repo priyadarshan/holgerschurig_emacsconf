@@ -958,6 +958,142 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_ ** dired-x
 (use-package dired-x
     :commands dired-jump)
+;;;_ ** erc (irc client)
+;; Try this instead of circe because it's built in
+(use-package erc
+  :defer t
+  :commands (erc)
+  :defines (erc-modules)
+  :init
+  (setq erc-modules
+		'(
+		  ;; autoaway         ;; Set away status automatically
+		  autojoin            ;; Join channels automatically
+		  ;; button           ;; Buttonize URLs, nicknames, and other text
+		  ;; capab-identify   ;; Mark unidentified users on servers supporting CAPAB
+		  completion          ;; Complete nicknames and commands (programmable)
+		  ;; dcc              ;; Provide Direct Client-to-Client support
+		  fill                ;; Wrap long lines
+		  ;; identd           ;; Launch an identd server on port 8113
+		  irccontrols         ;; Highlight or remove IRC control characters
+		  ;; keep-place       ;; Leave point above un-viewed text
+		  list                ;; List channels in a separate buffer
+		  ;; log              ;; Save buffers in logs
+		  match               ;; Highlight pals, fools, and other keywords
+		  menu                ;; Display a menu in ERC buffers
+		  move-to-prompt      ;; Move to the prompt when typing text
+		  netsplit            ;; Detect netsplits
+		  networks            ;; Provide data about IRC networks
+		  noncommands         ;; Don't display non-IRC commands after evaluation
+		  ;; notify           ;; Notify when the online status of certain users changes
+		  ;; notifications    ;; Send notifications on PRIVMSG or nickname mentions
+		  ;; page             ;; Process CTCP PAGE requests from IRC
+		  readonly            ;; Make displayed lines read-only
+		  ;; replace          ;; Replace text in messages
+		  ;; ring             ;; Enable an input history
+		  scrolltobottom      ;; Scroll to the bottom of the buffer
+		  ;; services         ;; Identify to Nickserv (IRC Services) automatically
+		  ;; smiley           ;; Convert smileys to pretty icons
+		  ;; sound            ;; Play sounds when you receive CTCP SOUND requests
+		  stamp               ;; Add timestamps to messages
+		  spelling            ;; Check spelling
+		  ;; track            ;; Track channel activity in the mode-line
+		  ;; truncate         ;; Truncate buffers to a certain size
+		  unmorse             ;; Translate morse code in messages
+		  ;; xdcc             ;; Act as an XDCC file-server
+		  ))
+  :config
+
+;;;;;;;; connection
+  (add-hook 'erc-mode-hook 'my--hide-trailing-whitespace)
+
+;;;;;;;; buffers
+  ;; Truncate buffers so they don't hog core.
+  (setq erc-max-buffer-size 20000)
+  (add-hook 'erc-insert-post-hook 'erc-truncate-buffer)
+
+;;;;;;;; optical
+  ;; %l  estimated lag
+  ;; %m  channel modes
+  ;; %n  current nick
+  ;; %o  topic
+  ;; %t  target (channel, nick, server:port)
+  (setq erc-header-line-format "%t: %o") ; %n on %t (%m,%l) %o
+
+  ;; (setq erc-join-buffer 'bury)
+
+  ;; Some messages are just uninteresting ...
+  (setq erc-hide-list '("JOIN" "PART" "QUIT"))
+
+  (setq erc-prompt (lambda ()
+                   (if erc-network
+                       (concat (symbol-name erc-network) ">")
+                     (concat (car erc-default-recipients) ">"))))
+
+;;;;;;;; Navigation
+  ;; (defun erc-button-url-previous ()
+  ;; "Go to the previous URL button in this buffer."
+  ;; (interactive)
+  ;; (let* ((point (point))
+  ;;        (found (catch 'found
+  ;;                 (while (setq point (previous-single-property-change point 'erc-callback))
+  ;;                   (when (eq (get-text-property point 'erc-callback) 'browse-url)
+  ;;                     (throw 'found point))))))
+  ;;   (if found
+  ;;       (goto-char found)
+  ;;     (error "No previous URL button."))))
+  ;; (bind-key [backtab] 'erc-button-url-previous erc-mode-map)
+
+  ;; fix scroll to bottom
+  (add-hook 'erc-mode-hook
+			(defun my--erc-fix-scrolling-bug ()
+			  "See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=11697"
+			  (set (make-local-variable 'scroll-conservatively) 1000)))
+)
+
+(defun irc ()
+  "Connect to IRC"
+  (interactive)
+  (erc :full-name "schurig" :password freenode-password)
+)
+;;;_ *** erc-join
+(use-package erc-join
+  :defer t
+  :config
+  ;; join after a successful identification
+  (setq erc-autojoin-timing 'ident)
+  )
+;;;_ *** erc-backend
+(use-package erc-backend
+  :defer t
+  :config
+  (setq erc-server-reconnect-timeout 10)
+  )
+;;;_ *** erc-goodies
+(use-package erc-goodies
+  :defer t
+  :config
+  (setq erc-interpret-mirc-color t)
+)
+;;;_ *** erc-match
+(use-package erc-match
+  :config
+  (setq erc-keywords '("schurig"))
+  )
+;;;_ *** erc-spelling
+(use-package erc-spelling
+  :defer t
+  :config
+  ;; Example of how to turn on german spelling for some channels:
+  ;; (setq erc-spelling-dictionaries '(("#foo" "german-new8")))
+  )
+;;;_ *** erc-track
+(use-package erc-track
+  :defer t
+  :config
+  ;; don't ask for tracking
+  (setq erc-track-enable-keybindings t)
+)
 ;;;_ ** helm
 ;; Very good intro: http://tuhdo.github.io/helm-intro.html
 (defun my-helm-imenu ()
