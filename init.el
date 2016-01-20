@@ -944,10 +944,10 @@ If the CDR is nil, then the buffer is only buried."
     (add-hook 'circe-channel-mode-hook 'enable-lui-autopaste))
   )
 
-(defun irc ()
-  "Connect to IRC"
-  (interactive)
-  (circe "Freenode"))
+;; (defun irc ()
+;;   "Connect to IRC"
+;;   (interactive)
+;;   (circe "Freenode"))
 ;;;_ ** dired
 (use-package dired
     :commands dired
