@@ -1625,7 +1625,8 @@ _p_  save as patch
   ;; adjust level
   (setq org-yank-adjusted-subtrees t)
 
-  (add-hook 'org-mode-hook 'visual-line-mode)
+  (add-hook 'org-mode-hook #'visual-line-mode)
+  (add-hook 'org-mode-hook #'toggle-word-wrap)
 
   ;; make enter open the link
   (setq org-return-follows-link t)
