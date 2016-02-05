@@ -1204,8 +1204,14 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_ ** hydra
 (use-package hydra
   :defer t
-  :commands (defhydra hydra-default-pre)
+  :commands (defhydra
+	      hydra-default-pre
+	      hydra-keyboard-quit
+	      hydra-set-transient-map)
   )
+(use-package lv
+  :defer t
+  :commands (lv-message))
 ;;;_ * Mail & News
 ;;;_ ** smtpmail
 ;; http://emacs.stackexchange.com/questions/6105/how-to-set-proper-smtp-gmail-settings-in-emacs-in-order-to-be-able-to-work-with
@@ -1372,9 +1378,23 @@ If the CDR is nil, then the buffer is only buried."
   (bind-key "<home>" 'beginning-of-buffer gnus-article-mode-map)
   (bind-key "<end>"  'end-of-buffer       gnus-article-mode-map)
 )
+;;;_ ** gnus-art
+(use-package gnus-art
+  :defer t
+  :commands (gnus-article-reply-with-original
+	     gnus-article-wide-reply-with-original
+	     gnus-mime-save-part)
+)
 ;;;_ ** gnus-group
 (use-package gnus-group
   :defer t
+  :commands (gnus-group-catchup-current
+	     gnus-group-enter-server-mode
+	     gnus-group-get-new-news
+	     gnus-group-list-active
+	     gnus-group-list-all-groups
+	     gnus-group-make-nnir-group
+	     gnus-group-new-mail)
   :config
   (defhydra hydra-gnus-group (:color pink :hint nil)
     "
@@ -1411,7 +1431,22 @@ _m_  mail new post
 ;;;_ ** gnus-sum
 (use-package gnus-sum
   :defer t
-  :commands (gnus-summary-last-subject gnus-summary-goto-subject)
+  :commands (gnus-summary-catchup-and-exit
+	     gnus-summary-clear-mark-forward
+	     gnus-summary-exit
+	     gnus-summary-exit-no-update
+	     gnus-summary-goto-subject
+	     gnus-summary-kill-thread
+	     gnus-summary-last-subject
+	     gnus-summary-mail-forward
+	     gnus-summary-put-mark-as-read
+	     gnus-summary-reply
+	     gnus-summary-reply-with-original
+	     gnus-summary-resend-message-edit
+	     gnus-summary-save-article-body-file
+	     gnus-summary-tick-article-forward
+	     gnus-summary-wide-reply
+	     gnus-summary-wide-reply-with-original)
   :config
   (defhydra hydra-gnus-summary (:color pink :hint nil)
     "
