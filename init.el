@@ -1863,11 +1863,18 @@ _p_  save as patch
  ;; Flyspell hijacked C-., which I want to use for tags
  (define-key flyspell-mode-map [(control ?\.)] nil)
  )
-(add-hook 'prog-mode-hook 'flyspell-prog-mode)
-(add-hook 'text-mode-hook 'flyspell-mode)
-(add-hook 'org-mode-hook 'flyspell-mode)
-(add-hook 'latex-mode-hook 'flyspell-mode)
-(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+
+;; Flyspell is in elisp mode. And this in turn loads flyspell directly
+;; after launching emacs, which is a bit unfortunate.
+(defun my-flyspell-prog-mode ()
+  (interactive)
+  (unless (string= (buffer-name) "*scratch*")
+    (flyspell-prog-mode)))
+(add-hook 'prog-mode-hook  #'my-flyspell-prog-mode)
+(add-hook 'text-mode-hook  #'flyspell-mode)
+(add-hook 'org-mode-hook   #'flyspell-mode)
+(add-hook 'latex-mode-hook #'flyspell-mode)
+(add-hook 'LaTeX-mode-hook #'flyspell-mode)
 ;;;_ *** helm-flyslepp
 ;; https://github.com/pronobis/helm-flyspell
 (use-package helm-flyspell
