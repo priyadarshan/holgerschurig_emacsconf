@@ -1656,7 +1656,7 @@ _p_  save as patch
 	  ))
 
   (setq org-todo-keyword-faces
-      '(("TODO"      . (:foreground "#b70101" :weight bold))
+      '(("TODO"      . (:foreground "red" :weight bold))
         ("STARTED"   . (:foreground "#b70101" :weight bold))
         ("DONE"      . (:foreground "forestgreen" :weight bold))
         ("WAIT"      . (:foreground "orange" :weight bold))
