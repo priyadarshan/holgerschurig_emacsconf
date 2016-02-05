@@ -1691,7 +1691,7 @@ _p_  save as patch
   (defun my-org-export-to-html-and-open ()
     (interactive)
     (org-open-file (org-html-export-to-html)))
-  (bind-key "<f7>" 'my-org-export-to-html-and-open org-mode-map)
+  (bind-key "<M-f7>" 'my-org-export-to-html-and-open org-mode-map)
 )
 ;;;_ *** org-agenda
 ;; http://www.suenkler.info/docs/emacs-orgmode/
