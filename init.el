@@ -963,7 +963,7 @@ If the CDR is nil, then the buffer is only buried."
 (use-package erc
   :defer t
   :commands (erc)
-  :defines (erc-modules)
+  :defines (erc-modules erc-max-buffer-size)
   :init
   (setq erc-modules
 		'(
