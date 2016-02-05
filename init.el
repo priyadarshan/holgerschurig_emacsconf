@@ -1649,8 +1649,10 @@ _p_  save as patch
   ;; "x/y"  use x when entering state, y when leaving state
   ;; the first letter can be used with C-c C-t
   (setq org-todo-keywords
-	'((sequence "TODO(t)" "STARTED(s!)" "|" "DONE(x!)")
-	  (sequence "WAIT(w@/!)" "DELEGATED(d@/!)" "|" "CANCELED(c@)")
+	;; '((sequence "TODO(t)" "STARTED(s!)" "|" "DONE(x!)")
+	;;   (sequence "WAIT(w@/!)" "DELEGATED(d@/!)" "|" "CANCELED(c@)")
+	'((sequence "TODO(t)" "STARTED(s)" "|" "DONE(x)")
+	  (sequence "WAIT(w)" "DELEGATED(d)" "|" "CANCELED(c)")
 	  ))
 
   (setq org-todo-keyword-faces
