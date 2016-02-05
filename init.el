@@ -2292,6 +2292,31 @@ newline to the correct position"
 
   (add-hook 'eshell-mode-hook 'my--hide-trailing-whitespace)
   )
+;;;_ ** Package: helm-gtags
+;; http://tuhdo.github.io/c-ide.html
+(use-package helm-gtags
+  :ensure t
+  :config
+  (setq helm-gtags-ignore-case t
+	helm-gtags-auto-update t
+	helm-gtags-use-input-at-cursor t
+	helm-gtags-pulse-at-cursor t
+	helm-gtags-prefix-key "\C-cg"
+	helm-gtags-suggested-key-mapping t)
+  (add-hook 'dired-mode-hook 'helm-gtags-mode)
+  (add-hook 'eshell-mode-hook 'helm-gtags-mode)
+  (add-hook 'c-mode-hook 'helm-gtags-mode)
+  (add-hook 'c++-mode-hook 'helm-gtags-mode)
+  (add-hook 'asm-mode-hook 'helm-gtags-mode)
+
+  (bind-key "C-c g a" 'helm-gtags-tags-in-this-function helm-gtags-mode-map)
+  (bind-key "C-c g r" 'helm-gtags-find-rtag helm-gtags-mode-map)
+  (bind-key "C-j" 'helm-gtags-select helm-gtags-mode-map)
+  (bind-key "M-." 'helm-gtags-dwim helm-gtags-mode-map)
+  (bind-key "M-," 'helm-gtags-pop-stack helm-gtags-mode-map)
+  (bind-key "C-c <" 'helm-gtags-previous-history helm-gtags-mode-map)
+  (bind-key "C-c >" 'helm-gtags-next-history helm-gtags-mode-map)
+)
 ;;;_ ** Package: magit
 ;; Must be set before magit is loaded. It will remove the new key
 ;; bindings that use pop-up buffers.
