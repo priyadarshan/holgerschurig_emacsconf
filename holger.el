@@ -122,25 +122,12 @@ The list is displayed in a buffer named `*Packages*'."
   (package-refresh-contents)
   (package-install 'use-package))
 (require 'use-package)
-;;;_ * Customize
-;; http://lists.gnu.org/archive/html/emacs-devel/2015-04/msg01261.html
-;; http://oremacs.com/2015/01/17/setting-up-ediff/
-;;
-;; This macro I've put together myself after searching though the code
-;; base and not finding something similar; custom-set-variables comes
-;; close to what I want, or maybe custom-initialize-changed. Basically
-;; all I want is a setq that is aware of the custom-set property of a
-;; variable. If you know such a macro, please let me know.
-(defmacro csetq (variable value)
-  `(funcall (or (get ',variable 'custom-set)
-		'set-default)
-	    ',variable ,value))
 ;;;_ ** Window Decorations
-(csetq tool-bar-mode nil)
-;(csetq menu-bar-mode nil)
-(csetq scroll-bar-mode nil)
+(setq tool-bar-mode nil)
+;(setq menu-bar-mode nil)
+(setq scroll-bar-mode nil)
 (eval-after-load "startup" '(fset 'display-startup-echo-area-message 'ignore))
-(csetq inhibit-startup-screen t)
+(setq inhibit-startup-screen t)
 ;;;_ ** Window manager
 ;; Avoid Emacs hanging for a while after changing default font
 (modify-frame-parameters nil '((wait-for-wm . nil)))
@@ -163,25 +150,25 @@ The list is displayed in a buffer named `*Packages*'."
 (my-blend-fringe)
 ;;;_ ** Entering/exiting Emacs
 ; Do without annoying startup msg.
-(csetq inhibit-startup-message t)
+(setq inhibit-startup-message t)
 ; This inhibits the initial startup echo area message.
-(eval '(csetq inhibit-startup-echo-area-message "schurig"))
+(eval '(setq inhibit-startup-echo-area-message "schurig"))
 ; Empty scratch message
-(csetq initial-scratch-message nil)
+(setq initial-scratch-message nil)
 ; Include current buffer name in the title bar
-(csetq frame-title-format '(buffer-file-name "%f" ("%b")))
+(setq frame-title-format '(buffer-file-name "%f" ("%b")))
 ; TODO Set up default editing mode.
-; (csetq major-mode 'indented-text-mode)
+; (setq major-mode 'indented-text-mode)
 ; Custom file, part one
-(csetq custom-file (concat emacs-d "custom.el"))
+(setq custom-file (concat emacs-d "custom.el"))
 ; Delete previous identical history entries
-(csetq history-delete-duplicates t)
+(setq history-delete-duplicates t)
 ;;;_ ** Emacs internals
-(csetq gc-cons-threshold (* 10 1024 1024))
-(csetq message-log-max 10000)
+(setq gc-cons-threshold (* 10 1024 1024))
+(setq message-log-max 10000)
 ;; Use new byte codes from Emacs 24.4
 (setq byte-compile--use-old-handlers nil)
-(csetq ad-redefinition-action 'accept)
+(setq ad-redefinition-action 'accept)
 ;;;_ ** allow some commands
 (put 'erase-buffer 'disabled nil)
 ;;;_ ** Default browser
@@ -191,20 +178,20 @@ The list is displayed in a buffer named `*Packages*'."
 ;  Get rid of yes-or-no questions - y or n is enough
 (fset 'yes-or-no-p 'y-or-n-p)
 ;;;_ ** Private data
-(csetq user-full-name "Holger Schurig")
-(csetq user-mail-address "holgerschurig@gmail.com")
+(setq user-full-name "Holger Schurig")
+(setq user-mail-address "holgerschurig@gmail.com")
 (load (concat emacs-d "private.el") 'noerror 'nomessage)
 ;;;_ ** Load customization file
 (if (file-exists-p custom-file) (load-file custom-file))
 ;;;_ ** Mouse
 ;; Paste at text-cursor, not at mouse-cursor:
-(csetq mouse-yank-at-point t)
+(setq mouse-yank-at-point t)
 ;;;_ ** Localisation
 ;; A sentence doesn't end with two spaces:
-(csetq sentence-end-double-space nil)
+(setq sentence-end-double-space nil)
 ;;;_ ** Customization buffer
 ;; keep lisp names in the custom buffers, don't capitalize
-(csetq custom-unlispify-tag-names nil)
+(setq custom-unlispify-tag-names nil)
 ;;;_ * Editing
 ;;;_ ** Transpose
 ;; http://endlessparentheses.com/transposing-keybinds-in-emacs.html
@@ -257,15 +244,15 @@ The list is displayed in a buffer named `*Packages*'."
 ;; Do `M-x toggle-truncate-lines` to toggle truncation mode.
 ;; `truncate-partial-width-windows' has to be nil for `toggle-truncate-lines'
 ;; to work even in split windows
-(csetq truncate-partial-width-windows nil)
+(setq truncate-partial-width-windows nil)
 ;;;_ ** Show trailing whitespace
 (defun my--show-trailing-whitespace ()
   (interactive)
-  (csetq show-trailing-whitespace t))
+  (setq show-trailing-whitespace t))
 (defun my--hide-trailing-whitespace ()
   (interactive)
   (message "hide trailing whitespace")
-  (csetq show-trailing-whitespace nil))
+  (setq show-trailing-whitespace nil))
 (add-hook 'prog-mode-hook 'my--show-trailing-whitespace)
 ;;;_ ** Buffers without toolbar, extra frame etc
 (add-to-list 'special-display-buffer-names "*Backtrace*")
@@ -282,12 +269,12 @@ The list is displayed in a buffer named `*Packages*'."
   ;; Text mode
   (progn
     ;; No "very" visible cursor
-    (csetq visible-cursor nil)))
+    (setq visible-cursor nil)))
 ;;;_ ** No audible bell
-(csetq visible-bell t)
+(setq visible-bell t)
 ;;;_ ** Let emacs react faster to keystrokes
-(csetq echo-keystrokes 0.1)
-(csetq idle-update-delay 0.35)
+(setq echo-keystrokes 0.1)
+(setq idle-update-delay 0.35)
 ;;;_ ** Mode line setup
 ;; Show line and column numbers in the mode-line
 (line-number-mode 1)
@@ -300,18 +287,18 @@ The list is displayed in a buffer named `*Packages*'."
   (use-package smart-mode-line-powerline-theme
     :ensure t)
   :config
-  (csetq sml/line-number-format    "%4l")
-  (csetq sml/name-width 40) ; buffer name width in the mode-line
-  (csetq sml/mode-width 'full) ; minor mode lighters area width
-  (csetq sml/shorten-modes nil)
-  (csetq sml/no-confirm-load-theme t)
-  (csetq sml/replacer-regexp-list '())
+  (setq sml/line-number-format    "%4l")
+  (setq sml/name-width 40) ; buffer name width in the mode-line
+  (setq sml/mode-width 'full) ; minor mode lighters area width
+  (setq sml/shorten-modes nil)
+  (setq sml/no-confirm-load-theme t)
+  (setq sml/replacer-regexp-list '())
   (if (display-graphic-p)
       (progn
 	(require 'smart-mode-line-powerline-theme)
-	(csetq sml/theme 'powerline)
+	(setq sml/theme 'powerline)
 	)
-    (csetq sml/theme 'light))
+    (setq sml/theme 'light))
   (sml/setup)
   (when (display-graphic-p)
     (set-face-attribute 'sml/prefix nil :foreground "white")
@@ -410,7 +397,7 @@ command from COMMANDS."
 (bind-key "C-e" 'my-end)
 (bind-key "<end>" 'my-end)
 ;;;_ ** Recenter
-(csetq recenter-positions '(middle 4 -4))
+(setq recenter-positions '(middle 4 -4))
 ;;;_ ** Nicer goto-line
 ;; Doesn't modify minibuffer-history, but use it's own little history
 ;; list.
@@ -484,22 +471,22 @@ rather than line counts."
   :ensure t
   :bind ("C-+" . er/expand-region)
   :config
-  (csetq expand-region-reset-fast-key    "<ESC><ESC>"))
+  (setq expand-region-reset-fast-key    "<ESC><ESC>"))
 ;;;_ ** bookmark
 (use-package bookmark
   :config
-  (csetq bookmark-default-file (concat emacs-d "tmp/bookmarks.el"))
+  (setq bookmark-default-file (concat emacs-d "tmp/bookmarks.el"))
   )
 ;;;_ ** avy (alternative to ace-jump-mode)
 (use-package avy
   :ensure t
   :bind ("C-#" . avy-goto-char-timer)
   :config (progn
-	    (csetq avy-keys (append (number-sequence ?a ?z)
+	    (setq avy-keys (append (number-sequence ?a ?z)
 				    (number-sequence ?0 ?9)))
-	    (csetq avy-style 'at-full)
-	    (csetq avy-all-windows nil)
-	    (csetq avy-highlight-first t)))
+	    (setq avy-style 'at-full)
+	    (setq avy-all-windows nil)
+	    (setq avy-highlight-first t)))
 ;;;_ ** smartscan
 ;; This makes =M-n= and =M-p= look for the symbol at point. This is
 ;; very un-intrusive, no pop-up, no nothing,
@@ -532,7 +519,7 @@ rather than line counts."
 (delete-selection-mode t)
 ;;;_ ** Deletion in readonly buffer
 ;; Be silent when killing text from read only buffer:
-(csetq kill-read-only-ok t)
+(setq kill-read-only-ok t)
 ;;;_ ** Join lines at killing
 ;; If at end of line, join with following; otherwise kill line.
 ;; Deletes whitespace at join.
@@ -583,15 +570,15 @@ otherwise delete."
 (bind-key "C-d" 'delete-char-dynamic)
 ;;;_ ** X11 clipboard
 (when (display-graphic-p)
-  (csetq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
+  (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 ;;;_ * Completion
 ;; ignore case when reading a file name completion
-(csetq read-file-name-completion-ignore-case t)
+(setq read-file-name-completion-ignore-case t)
 ;; do not consider case significant in completion (GNU Emacs default)
 (setq completion-ignore-case t)
 ;; lets TAB do completion as well
-(csetq tab-always-indent 'complete)
-(csetq completions-format 'vertical)
+(setq tab-always-indent 'complete)
+(setq completions-format 'vertical)
 ;;;_ * Windows handling
 ;;;_ ** delete-window
 ;; If only one window in frame, `delete-frame'.
@@ -736,7 +723,7 @@ If the CDR is nil, then the buffer is only buried."
   :commands (iflipb-next-buffer iflipb-previous-buffer)
   :bind ("S-<f6>" . my-iflipb-previous-buffer)
   :config
-  (csetq iflipb-wrap-around t)
+  (setq iflipb-wrap-around t)
 
   (setq my-iflipb-auto-off-timeout-sec 4.5)
   (setq my-iflipb-auto-off-timer-canceler-internal nil)
@@ -773,20 +760,20 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_ * File opening/saving
 ;;;_ ** Basic settings
 ;; Never show GTK file open dialog
-(csetq use-file-dialog nil)
+(setq use-file-dialog nil)
 ;; don't add newlines to end of buffer when scrolling, but show them
-(csetq next-line-add-newlines nil)
+(setq next-line-add-newlines nil)
 ;; Preserve hard links to the file you´re editing (this is
 ;; especially important if you edit system files)
-(csetq backup-by-copying-when-linked t)
+(setq backup-by-copying-when-linked t)
 ;; Just never create backup files at all
 ;;make-backup-files nil
-(csetq backup-directory-alist (list (cons "." (concat emacs-d "tmp/bak/"))))
+(setq backup-directory-alist (list (cons "." (concat emacs-d "tmp/bak/"))))
 ;; Make sure your text files end in a newline
-(csetq require-final-newline t)
+(setq require-final-newline t)
 ;; Disable auto-save (#init.el# file-names)
-(csetq auto-save-default nil)
-(csetq auto-save-list-file-prefix (concat emacs-d "tmp/auto-save-list/saves-"))
+(setq auto-save-default nil)
+(setq auto-save-list-file-prefix (concat emacs-d "tmp/auto-save-list/saves-"))
 ;; Kill means kill, not asking. Was:
 (setq kill-buffer-query-functions nil)
 ;;;_ ** Automatically load .Xresources after changes
@@ -805,35 +792,35 @@ If the CDR is nil, then the buffer is only buried."
 (global-auto-revert-mode 1)
 ;; Don't ask when running revert-buffer when reverting files in this
 ;; list of regular expressions:
-(csetq revert-without-query '(""))
+(setq revert-without-query '(""))
 ;;;_ ** Decompress compressed files
 (auto-compression-mode t)
 ;;;_ ** Quickly save (F2)
 (bind-key "<f2>" 'save-buffer)
 ;;;_ ** Unique buffer names
 (use-package uniquify
-  :config (csetq uniquify-buffer-name-style 'forward))
+  :config (setq uniquify-buffer-name-style 'forward))
 ;;;_ ** recentf
-(csetq recentf-save-file (concat emacs-d "tmp/recentf.el"))
-(csetq recentf-exclude '("^/tmp/"
+(setq recentf-save-file (concat emacs-d "tmp/recentf.el"))
+(setq recentf-exclude '("^/tmp/"
 			 "/.newsrc"
 			 "bbdb$"
 			 "svn-commit.tmp$"
 			 ".png$"
 			 "COMMIT_EDITMSG" "COMMIT_EDITMSG" "TAG_EDITMSG"))
-(csetq recentf-max-saved-items 1000)
-(csetq recentf-auto-cleanup 300)
-(csetq recentf-max-menu-items 20)
+(setq recentf-max-saved-items 1000)
+(setq recentf-auto-cleanup 300)
+(setq recentf-max-menu-items 20)
 
 (recentf-mode 1)
 ;;;_ * Minibuffer
 ;; Don't insert current directory into minubuffer
-(csetq insert-default-directory nil)
+(setq insert-default-directory nil)
 ;; Minibuffer window expands vertically as necessary to hold the text
 ;; that you put in the minibuffer
-(csetq resize-mini-windows t) ;; was grow-only
+(setq resize-mini-windows t) ;; was grow-only
 ;; Read quoted chars with radix 16
-(csetq read-quoted-char-radix 16)
+(setq read-quoted-char-radix 16)
 ;; Allow to type space chars in minibuffer input (for `timeclock-in',
 ;; for example).
 (define-key minibuffer-local-completion-map " " nil)
@@ -848,7 +835,7 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_ * Searching
 ;;;_ ** isearch (incremental search)
 ;; Scrolling while searching
-(csetq isearch-allow-scroll t)
+(setq isearch-allow-scroll t)
 (bind-key "C-y" 'isearch-yank-kill isearch-mode-map)
 ;;;_ ** Command; my-grep
 ;; Prompts you for an expression, defaulting to the symbol that your
@@ -892,9 +879,9 @@ If the CDR is nil, then the buffer is only buried."
   :defer 2
   :diminish guide-key-mode
   :config
-  (csetq guide-key/guide-key-sequence
+  (setq guide-key/guide-key-sequence
 	'("C-c" "C-h" "C-x" "M-g" "M-s"))
-  (csetq guide-key/recursive-key-sequence-flag t)
+  (setq guide-key/recursive-key-sequence-flag t)
   (guide-key-mode 1))
 ;;;_ * Miscelleanous
 ;;;_ ** Swap RET and C-j
@@ -918,20 +905,20 @@ If the CDR is nil, then the buffer is only buried."
 (use-package circe
   :commands circe
   :config
-  (csetq circe-default-part-message "Fire on mainboard error")
-  (csetq circe-quit-part-message "Fire on mainboard error")
-  (csetq circe-reduce-lurker-spam t)
+  (setq circe-default-part-message "Fire on mainboard error")
+  (setq circe-quit-part-message "Fire on mainboard error")
+  (setq circe-reduce-lurker-spam t)
   ;; (circe-set-display-handler "JOIN" (lambda (&rest ignored) nil))
   ;; (circe-set-display-handler "QUIT" (lambda (&rest ignored) nil))
-  ;; (csetq circe-use-cycle-completion t)
-  (csetq circe-format-say "{nick}: {body}")
-  (csetq circe-server-killed-confirmation 'ask-and-kill-all)
+  ;; (setq circe-use-cycle-completion t)
+  (setq circe-format-say "{nick}: {body}")
+  (setq circe-server-killed-confirmation 'ask-and-kill-all)
   ;; Network settings
-  (csetq circe-default-ip-family 'ipv4)
-  (csetq circe-default-nick "schurig")
-  (csetq circe-default-user "schurig")
-  (csetq circe-server-auto-join-default-type 'after-auth) ; XXX try after-nick
-  (csetq circe-network-options `(("Freenode"
+  (setq circe-default-ip-family 'ipv4)
+  (setq circe-default-nick "schurig")
+  (setq circe-default-user "schurig")
+  (setq circe-server-auto-join-default-type 'after-auth) ; XXX try after-nick
+  (setq circe-network-options `(("Freenode"
 				  :host "kornbluth.freenode.net"
 				  :port (6667 . 6697)
 				  :channels ("#emacs" "#emacs-circe")
@@ -1134,29 +1121,29 @@ If the CDR is nil, then the buffer is only buried."
     ;; allow "find man at point" for C-c h m (helm-man-woman)
     (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
-    (csetq helm-imenu-delimiter " ")
-    (csetq helm-candidate-number-limit 100)
-    (csetq helm-quick-update t)
+    (setq helm-imenu-delimiter " ")
+    (setq helm-candidate-number-limit 100)
+    (setq helm-quick-update t)
     (setq helm-M-x-requires-pattern nil)
 
-    (csetq helm-ff-skip-boring-files t)
+    (setq helm-ff-skip-boring-files t)
     ;; search for library in `require' and `declare-function' sexp.
-    (csetq helm-ff-search-library-in-sexp t)
-    (csetq helm-ff-file-name-history-use-recentf t)
-    (csetq helm-ff-newfile-prompt-p nil)
+    (setq helm-ff-search-library-in-sexp t)
+    (setq helm-ff-file-name-history-use-recentf t)
+    (setq helm-ff-newfile-prompt-p nil)
 
     ;; open helm buffer inside current window, not occupy whole other window
-    (csetq helm-split-window-in-side-p t)
+    (setq helm-split-window-in-side-p t)
     ;; move to end or beginning of source when reaching top or bottom of source.
-    (csetq helm-move-to-line-cycle-in-source t)
+    (setq helm-move-to-line-cycle-in-source t)
     ;; scroll 8 lines other window using M-<next>/M-<prior>
-    (csetq helm-scroll-amount 8)
+    (setq helm-scroll-amount 8)
 
     ;; define browser
     (setq helm-browse-url-chromium-program "x-www-browser")
-    (csetq helm-google-suggest-default-browser-function 'helm-browse-url-chromium)
-    (csetq helm-home-url "http://www.google.de")
-    (csetq helm-autoresize-mode t)
+    (setq helm-google-suggest-default-browser-function 'helm-browse-url-chromium)
+    (setq helm-home-url "http://www.google.de")
+    (setq helm-autoresize-mode t)
 
     ;; ignore Emacs save files
     (add-to-list 'helm-boring-file-regexp-list "\\.#")
@@ -1190,7 +1177,7 @@ If the CDR is nil, then the buffer is only buried."
 	 ("M-s M-s" . helm-swoop)
 	 ("M-s S"   . helm-swoop-back-to-last-point))
   :config
-  (csetq helm-swoop-split-direction 'split-window-sensibly)
+  (setq helm-swoop-split-direction 'split-window-sensibly)
   ;; Switch to edit mode with C-c C-e, and exit edit mode with C-c C-c
   (bind-key "C-c C-c" 'helm-swoop--edit-complete helm-swoop-edit-map)
   ;; When doing isearch, hand the word over to helm-swoop
@@ -1606,7 +1593,7 @@ _p_  save as patch
   :commands (org-open-file orgstruct++-mode)
   :init
   ;; allow Shift-Cursor to mark stuff
-  (csetq org-replace-disputed-keys t)
+  (setq org-replace-disputed-keys t)
 
   ;; modules to load together with org-mode
   (setq org-modules '(
@@ -1637,7 +1624,7 @@ _p_  save as patch
 
   :config
   ;; My main file
-  (csetq org-default-notes-file (expand-file-name "todo.org" emacs-d))
+  (setq org-default-notes-file (expand-file-name "todo.org" emacs-d))
 
   ;; Handle deletion inside elipsis
   (setq org-catch-invisible-edits 'error)
@@ -1646,9 +1633,9 @@ _p_  save as patch
   (setq org-startup-folded nil)
 
   ;; Time stamp format
-  (csetq org-display-custom-times t)
-  (csetq org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
-  (csetq org-time-stamp-custom-formats '("<%Y-%m-%d>"))
+  (setq org-display-custom-times t)
+  (setq org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
+  (setq org-time-stamp-custom-formats '("<%Y-%m-%d>"))
 
   ;; :bind cannot bind into a different map
   (bind-key "C-TAB"   'org-cycle org-mode-map)
@@ -1852,11 +1839,11 @@ _p_  save as patch
   ;; Open source editor in current window
   (setq org-src-window-setup 'current-window)
   ;; inside src block use the colors like the major mode of the src type
-  (csetq org-src-fontify-natively t)
+  (setq org-src-fontify-natively t)
   ;; inside a src block let tab act like it was in major mode of the src type
-  (csetq org-src-tab-acts-natively t)
+  (setq org-src-tab-acts-natively t)
   ;; don't add two indentation spaces into src blocks
-  (csetq org-src-preserve-indentation t)
+  (setq org-src-preserve-indentation t)
 
   ;; normally I'd need C-c ' to exit, but this enables the same exit
   ;; method I have in when doing a commit in magit.
@@ -1868,35 +1855,35 @@ _p_  save as patch
   :config
   ;; The following make some +OPTIONS permanent:
   ;; #+OPTIONS ':t
-  (csetq org-export-with-smart-quotes t)
+  (setq org-export-with-smart-quotes t)
   ;; #+OPTIONS num:nil
-  (csetq org-export-with-section-numbers nil)
+  (setq org-export-with-section-numbers nil)
   ;; #+OPTIONS stat:t
-  ;; (csetq org-export-with-statistics-cookies nil)
+  ;; (setq org-export-with-statistics-cookies nil)
   ;; #+OPTIONS toc:nil, use "#+TOC: headlines 2" or similar if you need a headline
-  (csetq org-export-with-toc nil)
+  (setq org-export-with-toc nil)
   ;; #+OPTIONS ^:{}
-  (csetq org-export-with-sub-superscripts nil))
+  (setq org-export-with-sub-superscripts nil))
 ;;;_ *** ox-html
 (use-package ox-html
   :defer t
   :commands org-html-export-to-html
   :config
-  (csetq org-html-postamble-format '(("en" "<p class=\"author\">Author: %a</p><p class=\"creator\">Created with %c</p>")))
-  (csetq org-html-validation-link nil)
-  (csetq org-html-postamble nil)
-  (csetq org-html-style-default "<style type=\"text/css\">\n <!--/*--><![CDATA[/*><!--*/\n  body { text-align: center; font-family: \"Aria\", sans-serif; }\n  #content { margin: 0 auto; width: 860px; text-align: left; }\n  #text-table-of-contents > ul > li { margin-top: 1em; }\n  .title  { text-align: center; }\n  .todo   { font-family: monospace; color: red; }\n  .done   { color: green; }\n  .tag    { background-color: #eee; font-family: monospace;\n            padding: 2px; font-size: 80%; font-weight: normal; }\n  .timestamp { color: #bebebe; }\n  .timestamp-kwd { color: #5f9ea0; }\n  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }\n  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }\n  .center { margin-left: auto; margin-right: auto; text-align: center; }\n  .underline { text-decoration: underline; }\n  #postamble p, #preamble p { font-size: 90%; margin: .2em; }\n  p.verse { margin-left: 3%; }\n  pre {\n    border: 1px solid #ccc;\n    box-shadow: 3px 3px 3px #eee;\n    padding: 8pt;\n    font-family: monospace;\n    overflow: auto;\n    margin: 1em 0;\n  }\n  pre.src {\n    position: relative;\n    overflow: visible;\n    padding-top: 8pt;\n  }\n  pre.src:before {\n    display: none;\n    position: absolute;\n    background-color: white;\n    top: -10px;\n    right: 10px;\n    padding: 3px;\n    border: 1px solid black;\n  }\n  pre.src:hover:before { display: inline;}\n  pre.src-sh:before    { content: 'sh'; }\n  pre.src-bash:before  { content: 'sh'; }\n  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }\n  pre.src-R:before     { content: 'R'; }\n  pre.src-perl:before  { content: 'Perl'; }\n  pre.src-java:before  { content: 'Java'; }\n  pre.src-sql:before   { content: 'SQL'; }\n\n  table { border-collapse:collapse; }\n  caption.t-above { caption-side: top; }\n  caption.t-bottom { caption-side: bottom; }\n  td, th { vertical-align:top;  }\n  th.right  { text-align: center;  }\n  th.left   { text-align: center;   }\n  th.center { text-align: center; }\n  td.right  { text-align: right;  }\n  td.left   { text-align: left;   }\n  td.center { text-align: center; }\n  dt { font-weight: bold; }\n  .footpara:nth-child(2) { display: inline; }\n  .footpara { display: block; }\n  .footdef  { margin-bottom: 1em; }\n  .figure { padding: 1em; }\n  .figure p { text-align: center; }\n  .inlinetask {\n    padding: 10px;\n    border: 2px solid gray;\n    margin: 10px;\n    background: #ffffcc;\n  }\n  #org-div-home-and-up\n   { text-align: right; font-size: 70%; white-space: nowrap; }\n  textarea { overflow-x: auto; }\n  .linenr { font-size: smaller }\n  .code-highlighted { background-color: #ffff00; }\n  .org-info-js_info-navigation { border-style: none; }\n  #org-info-js_console-label\n    { font-size: 10px; font-weight: bold; white-space: nowrap; }\n  .org-info-js_search-highlight\n    { background-color: #ffff00; color: #000000; font-weight: bold; }\n  .ulClassNameOrID > li {}\n  /*]]>*/-->\n</style>")
-  (csetq org-html-table-default-attributes '(:border "2" :cellspacing "0" :cellpadding "6"))
-  (csetq org-html-postamble t))
+  (setq org-html-postamble-format '(("en" "<p class=\"author\">Author: %a</p><p class=\"creator\">Created with %c</p>")))
+  (setq org-html-validation-link nil)
+  (setq org-html-postamble nil)
+  (setq org-html-style-default "<style type=\"text/css\">\n <!--/*--><![CDATA[/*><!--*/\n  body { text-align: center; font-family: \"Aria\", sans-serif; }\n  #content { margin: 0 auto; width: 860px; text-align: left; }\n  #text-table-of-contents > ul > li { margin-top: 1em; }\n  .title  { text-align: center; }\n  .todo   { font-family: monospace; color: red; }\n  .done   { color: green; }\n  .tag    { background-color: #eee; font-family: monospace;\n            padding: 2px; font-size: 80%; font-weight: normal; }\n  .timestamp { color: #bebebe; }\n  .timestamp-kwd { color: #5f9ea0; }\n  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }\n  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }\n  .center { margin-left: auto; margin-right: auto; text-align: center; }\n  .underline { text-decoration: underline; }\n  #postamble p, #preamble p { font-size: 90%; margin: .2em; }\n  p.verse { margin-left: 3%; }\n  pre {\n    border: 1px solid #ccc;\n    box-shadow: 3px 3px 3px #eee;\n    padding: 8pt;\n    font-family: monospace;\n    overflow: auto;\n    margin: 1em 0;\n  }\n  pre.src {\n    position: relative;\n    overflow: visible;\n    padding-top: 8pt;\n  }\n  pre.src:before {\n    display: none;\n    position: absolute;\n    background-color: white;\n    top: -10px;\n    right: 10px;\n    padding: 3px;\n    border: 1px solid black;\n  }\n  pre.src:hover:before { display: inline;}\n  pre.src-sh:before    { content: 'sh'; }\n  pre.src-bash:before  { content: 'sh'; }\n  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }\n  pre.src-R:before     { content: 'R'; }\n  pre.src-perl:before  { content: 'Perl'; }\n  pre.src-java:before  { content: 'Java'; }\n  pre.src-sql:before   { content: 'SQL'; }\n\n  table { border-collapse:collapse; }\n  caption.t-above { caption-side: top; }\n  caption.t-bottom { caption-side: bottom; }\n  td, th { vertical-align:top;  }\n  th.right  { text-align: center;  }\n  th.left   { text-align: center;   }\n  th.center { text-align: center; }\n  td.right  { text-align: right;  }\n  td.left   { text-align: left;   }\n  td.center { text-align: center; }\n  dt { font-weight: bold; }\n  .footpara:nth-child(2) { display: inline; }\n  .footpara { display: block; }\n  .footdef  { margin-bottom: 1em; }\n  .figure { padding: 1em; }\n  .figure p { text-align: center; }\n  .inlinetask {\n    padding: 10px;\n    border: 2px solid gray;\n    margin: 10px;\n    background: #ffffcc;\n  }\n  #org-div-home-and-up\n   { text-align: right; font-size: 70%; white-space: nowrap; }\n  textarea { overflow-x: auto; }\n  .linenr { font-size: smaller }\n  .code-highlighted { background-color: #ffff00; }\n  .org-info-js_info-navigation { border-style: none; }\n  #org-info-js_console-label\n    { font-size: 10px; font-weight: bold; white-space: nowrap; }\n  .org-info-js_search-highlight\n    { background-color: #ffff00; color: #000000; font-weight: bold; }\n  .ulClassNameOrID > li {}\n  /*]]>*/-->\n</style>")
+  (setq org-html-table-default-attributes '(:border "2" :cellspacing "0" :cellpadding "6"))
+  (setq org-html-postamble t))
 ;;;_ ** flyspell
 (use-package flyspell
  :diminish flyspell-mode
  :commands (flyspell-mode flyspell-prog-mode)
  :config
  (add-to-list 'flyspell-dictionaries-that-consider-dash-as-word-delimiter "german-new8")
- (csetq flyspell-issue-welcome-flag nil)
+ (setq flyspell-issue-welcome-flag nil)
  ;; M-Tab is owned by the window manager, correct with C-M-i
- (csetq flyspell-use-meta-tab nil)
+ (setq flyspell-use-meta-tab nil)
  ;; Flyspell hijacked C-., which I want to use for tags
  (define-key flyspell-mode-map [(control ?\.)] nil)
  )
@@ -1929,7 +1916,7 @@ _p_  save as patch
 
 ;; Deleting past a tab normally changes tab into spaces. Don't do that,
 ;; kill the tab instead.
-(csetq backward-delete-char-untabify-method nil)
+(setq backward-delete-char-untabify-method nil)
 ;;;_ ** Disable vc backends
 ;; We only use git, not other version controls:
 (setq vc-handled-backends nil)
@@ -1945,7 +1932,7 @@ _p_  save as patch
 (bind-key "C-c c" 'comment-dwim)
 ;;;_ ** Compilation
 ;; set initial compile-command to nothing, so that F7 will prompt for one
-(csetq compile-command nil)
+(setq compile-command nil)
 
 
 (defvar compile-commands nil
@@ -2098,8 +2085,8 @@ _p_  save as patch
     :diminish compilation-in-progress
     :config
     (setq compilation-finish-functions 'compile-autoclose)
-    (csetq compilation-ask-about-save nil)
-    (csetq compilation-scroll-output t))
+    (setq compilation-ask-about-save nil)
+    (setq compilation-scroll-output t))
 
 ;;;_ *** Error navigation
 (bind-key "<f8>" 'next-error)
@@ -2184,9 +2171,9 @@ newline to the correct position"
 ;; http://oremacs.com/2015/01/17/setting-up-ediff/
 (use-package ediff
   :config
-  (csetq ediff-window-setup-function 'ediff-setup-windows-plain)
-  (csetq ediff-split-window-function 'split-window-horizontally)
-  (csetq ediff-diff-options "-w")
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  (setq ediff-split-window-function 'split-window-horizontally)
+  (setq ediff-diff-options "-w")
   (defun my--ediff-hook ()
     (ediff-setup-keymap)
     (bind-key "j" 'ediff-next-difference ediff-mode-map)
@@ -2229,9 +2216,9 @@ newline to the correct position"
 ;;;_ ** Mode: Shell
 (defun my-shell-tab-setup ()
   (interactive)
-  (csetq indent-tabs-mode t)
-  (csetq tab-width 4)
-  (csetq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84))
+  (setq indent-tabs-mode t)
+  (setq tab-width 4)
+  (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84))
   (bind-key "C-i" 'self-insert-command text-mode-map))
 (add-hook 'shell-mode-hook 'my-shell-tab-setup)
 (add-hook 'sh-mode-hook    'my-shell-tab-setup)
@@ -2329,16 +2316,16 @@ newline to the correct position"
   :config
   (progn
     ;; Save modified buffers without asking
-    (csetq magit-save-some-buffers 'dontask)
+    (setq magit-save-some-buffers 'dontask)
     ;; (setq magit-commit-all-when-nothing-staged nil)
-    (csetq magit-stage-all-confirm nil)
-    (csetq magit-unstage-all-confirm nil)
+    (setq magit-stage-all-confirm nil)
+    (setq magit-unstage-all-confirm nil)
     ;; switch the current window to magit-status (was pop-to-buffer)
-    (csetq magit-status-buffer-switch-function 'switch-to-buffer)
-    ;; (csetq magit-refresh-file-buffer-hook '(revert-buffer))
-    (csetq magit-use-overlays nil)
-    (csetq magit-item-highlight-face nil)
-    (csetq magit-completing-read-function 'completing-read)
+    (setq magit-status-buffer-switch-function 'switch-to-buffer)
+    ;; (setq magit-refresh-file-buffer-hook '(revert-buffer))
+    (setq magit-use-overlays nil)
+    (setq magit-item-highlight-face nil)
+    (setq magit-completing-read-function 'completing-read)
     ;; (set-face-foreground 'magit-diff-add "green4")
     ;; (set-face-foreground 'magit-diff-del "red3")
      )
