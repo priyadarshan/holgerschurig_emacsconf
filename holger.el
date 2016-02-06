@@ -1,26 +1,22 @@
 ;;;_ * Optional debug
 ;; (toggle-debug-on-error)
 ;;;_ * Load paths
-(defvar emacs-d (file-name-directory
-		 (file-chase-links load-file-name))
-  "My emacs dotfiles directory, ~/.emacs.d on Linux")
-
 (package-initialize)
 
 ;; Please don't load outdated byte code
 (setq load-prefer-newer t)
 
-(let ((emacs-git (expand-file-name "git/" emacs-d)))
+(let ((emacs-git (expand-file-name "git/" user-emacs-directory)))
   (mapc (lambda (x)
           (add-to-list 'load-path (expand-file-name x emacs-git)))
         (delete ".." (directory-files emacs-git))))
 
-(add-to-list 'load-path (expand-file-name "elisp/" emacs-d))
+(add-to-list 'load-path (expand-file-name "elisp/" user-emacs-directory))
 ;;;_ * Package infrastructure
 ;;;_ ** package
 ;; ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
 ;; Move the cookie file out into the =tmp/= directory.
-(let ((dir (concat emacs-d "tmp/")))
+(let ((dir (concat user-emacs-directory "tmp/")))
   (ignore-errors (make-directory dir))
   (setq url-configuration-directory dir))
 (require 'package)
@@ -160,7 +156,7 @@ The list is displayed in a buffer named `*Packages*'."
 ; TODO Set up default editing mode.
 ; (setq major-mode 'indented-text-mode)
 ; Custom file, part one
-(setq custom-file (concat emacs-d "custom.el"))
+(setq custom-file (concat user-emacs-directory "custom.el"))
 ; Delete previous identical history entries
 (setq history-delete-duplicates t)
 ;;;_ ** Emacs internals
@@ -180,7 +176,7 @@ The list is displayed in a buffer named `*Packages*'."
 ;;;_ ** Private data
 (setq user-full-name "Holger Schurig")
 (setq user-mail-address "holgerschurig@gmail.com")
-(load (concat emacs-d "private.el") 'noerror 'nomessage)
+(load (concat user-emacs-directory "private.el") 'noerror 'nomessage)
 ;;;_ ** Load customization file
 (if (file-exists-p custom-file) (load-file custom-file))
 ;;;_ ** Mouse
@@ -475,7 +471,7 @@ rather than line counts."
 ;;;_ ** bookmark
 (use-package bookmark
   :config
-  (setq bookmark-default-file (concat emacs-d "tmp/bookmarks.el"))
+  (setq bookmark-default-file (concat user-emacs-directory "tmp/bookmarks.el"))
   )
 ;;;_ ** avy (alternative to ace-jump-mode)
 (use-package avy
@@ -768,12 +764,12 @@ If the CDR is nil, then the buffer is only buried."
 (setq backup-by-copying-when-linked t)
 ;; Just never create backup files at all
 ;;make-backup-files nil
-(setq backup-directory-alist (list (cons "." (concat emacs-d "tmp/bak/"))))
+(setq backup-directory-alist (list (cons "." (concat user-emacs-directory "tmp/bak/"))))
 ;; Make sure your text files end in a newline
 (setq require-final-newline t)
 ;; Disable auto-save (#init.el# file-names)
 (setq auto-save-default nil)
-(setq auto-save-list-file-prefix (concat emacs-d "tmp/auto-save-list/saves-"))
+(setq auto-save-list-file-prefix (concat user-emacs-directory "tmp/auto-save-list/saves-"))
 ;; Kill means kill, not asking. Was:
 (setq kill-buffer-query-functions nil)
 ;;;_ ** Automatically load .Xresources after changes
@@ -801,7 +797,7 @@ If the CDR is nil, then the buffer is only buried."
 (use-package uniquify
   :config (setq uniquify-buffer-name-style 'forward))
 ;;;_ ** recentf
-(setq recentf-save-file (concat emacs-d "tmp/recentf.el"))
+(setq recentf-save-file (concat user-emacs-directory "tmp/recentf.el"))
 (setq recentf-exclude '("^/tmp/"
 			 "/.newsrc"
 			 "bbdb$"
@@ -828,7 +824,7 @@ If the CDR is nil, then the buffer is only buried."
 ;;;_ ** save mini-buffer history
 (use-package savehist
   :init
-   (setq savehist-file (concat emacs-d "tmp/history.el")
+   (setq savehist-file (concat user-emacs-directory "tmp/history.el")
       history-length 1000)
   :config
   (savehist-mode 1))
@@ -1276,11 +1272,11 @@ If the CDR is nil, then the buffer is only buried."
   (setq gnus-always-read-dribble-file t)
 
   ;; Store gnus specific files to ~/gnus, maybe also set nnml-directory
-  (setq gnus-directory (concat emacs-d "News/")
-  	message-directory (concat emacs-d "Mail/")
-  	gnus-article-save-directory (concat emacs-d "News/saved/")
-  	gnus-kill-files-directory (concat emacs-d "News/scores/")
-  	gnus-cache-directory (concat emacs-d "News/cache/"))
+  (setq gnus-directory (concat user-emacs-directory "News/")
+  	message-directory (concat user-emacs-directory "Mail/")
+  	gnus-article-save-directory (concat user-emacs-directory "News/saved/")
+  	gnus-kill-files-directory (concat user-emacs-directory "News/scores/")
+  	gnus-cache-directory (concat user-emacs-directory "News/cache/"))
 
   (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
 
@@ -1565,7 +1561,7 @@ _p_  save as patch
   :config
   (bbdb-initialize 'gnus 'message)
 
-  (setq bbdb-file (concat emacs-d "db.bbdb"))
+  (setq bbdb-file (concat user-emacs-directory "db.bbdb"))
   (setq bbdb-update-records-p 'create)
   ;; (setq bbdb-mua-pop-up nil)
   (setq bbdb-silent t)
@@ -1624,7 +1620,7 @@ _p_  save as patch
 
   :config
   ;; My main file
-  (setq org-default-notes-file (expand-file-name "todo.org" emacs-d))
+  (setq org-default-notes-file (expand-file-name "todo.org" user-emacs-directory))
 
   ;; Handle deletion inside elipsis
   (setq org-catch-invisible-edits 'error)
