@@ -1,17 +1,5 @@
 ;;;_ * Optional debug
 ;; (toggle-debug-on-error)
-;;;_ * Load paths
-(package-initialize)
-
-;; Please don't load outdated byte code
-(setq load-prefer-newer t)
-
-(let ((emacs-git (expand-file-name "git/" user-emacs-directory)))
-  (mapc (lambda (x)
-          (add-to-list 'load-path (expand-file-name x emacs-git)))
-        (delete ".." (directory-files emacs-git))))
-
-(add-to-list 'load-path (expand-file-name "elisp/" user-emacs-directory))
 ;;;_ * Package infrastructure
 ;;;_ ** package
 ;; ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
