@@ -11,8 +11,9 @@
 ;;(add-to-list 'load-path "/usr/local/share/emacs/site-lisp")
 ;; Load the rest of the packages
 (package-initialize nil)
-
 (setq package-enable-at-startup nil)
 
-;;(org-babel-load-file (concat user-emacs-directory "Holger.org") t)
-(load-file (concat user-emacs-directory "holger.el"))
+(setq inhibit-startup-screen t)
+
+;;(load-file (concat user-emacs-directory "holger.el"))
+(org-babel-load-file (concat user-emacs-directory "holger.org") t)
