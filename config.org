@@ -464,7 +464,7 @@ Delete identical history entries
 #+BEGIN_SRC emacs-lisp
 (setq history-delete-duplicates t)
 #+END_SRC
-*** Save mini-buffer history
+** Save mini-buffer history
 #+BEGIN_SRC emacs-lisp
 (use-package savehist
   :init
