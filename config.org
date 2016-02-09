@@ -1646,11 +1646,6 @@ Try this instead of circe because it's built in
 Very good intro: http://tuhdo.github.io/helm-intro.html
 
 #+BEGIN_SRC emacs-lisp
-(defun my-helm-imenu ()
-  "This is just like helm-imenu, but it will maximize the buffer"
-  (interactive)
-  (let ((helm-full-frame t))
-    (helm-imenu)))
 (use-package helm
   :ensure helm
   :diminish helm-mode
@@ -1658,8 +1653,6 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 	 ("C-h a"   . helm-apropos)
 	 ("C-x C-f" . helm-find-files)
 	 ("M-s o"   . helm-occur)
-	 ("M-s i"   . my-helm-imenu)
-	 ("M-s m"   . my-helm-imenu)
 	 ("M-x"     . helm-M-x)
 	 ("M-y"     . helm-show-kill-ring)
          ("C-x C-b" . helm-mini)
@@ -1730,6 +1723,18 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   :defer t
   :config
   (setq helm-imenu-delimiter " ")
+)
+(use-package helm-semantic
+  :commands (my-semantic-or-helm-imenu)
+  :bind (("M-s i"   . my-helm-semantic-or-imenu)
+	 ("M-s m"   . my-helm-semantic-or-imenu))
+  :config
+  (defun my-helm-semantic-or-imenu ()
+    "This is just like helm-semantic-or-imenu, but it will
+maximize the buffer"
+    (interactive)
+    (let ((helm-full-frame t))
+      (helm-semantic-or-imenu nil)))
 )
 (use-package helm-source
   :defer t
