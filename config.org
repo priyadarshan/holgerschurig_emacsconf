@@ -69,11 +69,19 @@ Use the following if there is some nasty bug that you cannot find with
 #+END_SRC
 
 * Personal information
-
+** Names, e-mail address
 #+BEGIN_SRC emacs-lisp
 (setq user-full-name "Holger Schurig")
 (setq user-mail-address "holgerschurig@gmail.com")
+#+END_SRC
+
+Passwords that shouldn't end up in my public git tree. Also not that I
+make =freenode-password= known via =:defines=, so that the
+byte-compiler won't bark at me.
+
+#+BEGIN_SRC emacs-lisp
 (use-package private
+  :defer t
   :defines (freenode-password)
 )
 #+END_SRC
