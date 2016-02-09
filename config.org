@@ -451,7 +451,9 @@ The following can visualize white space quite neatly:
 )
 #+END_SRC
 
-** Mouse avoidance
+** TODO Mouse avoidance
+Unfortunately this doesn't work well in =customize-group=.
+
 #+BEGIN_SRC emacs-lisp
 (use-package avoid
   :config
