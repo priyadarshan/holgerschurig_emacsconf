@@ -15,6 +15,6 @@
 
 (setq inhibit-startup-screen t)
 
-(load-file (concat user-emacs-directory "holger.el"))
+(load-file (concat user-emacs-directory "config.el"))
 ;;(require 'cl)
-;;(org-babel-load-file (concat user-emacs-directory "holger.org"))
+;;(org-babel-load-file (concat user-emacs-directory "config.org"))

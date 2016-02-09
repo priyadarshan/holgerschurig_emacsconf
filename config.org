@@ -94,15 +94,15 @@ directory, if it doesn't yet exist.
 ** tangle on save
 #+BEGIN_SRC emacs-lisp
 (defun my--collect-elisp-source-bodies ()
-  (when (string= "holger.org" (buffer-name))
+  (when (string= "config.org" (buffer-name))
     (let* ((body-list ())
-	   (output-file "holger.el")
+	   (output-file "config.el")
 	   (org-babel-default-header-args (org-babel-merge-params org-babel-default-header-args 
 								  (list (cons :tangle output-file)))))
       (message "Writing %s ..." output-file)
       (save-restriction
 	(save-excursion
-	  (org-babel-map-src-blocks "holger.org"
+	  (org-babel-map-src-blocks "config.org"
 	    (let* ((info (org-babel-get-src-block-info 'light))
 		   (tfile (cdr (assq :tangle (nth 2 info))))
 		   )
@@ -112,7 +112,7 @@ directory, if it doesn't yet exist.
 		)
 	      )))
 	(with-temp-file output-file
-	  (insert ";; Don't edit this file, edit 'holger.org' instead ...\n\n")
+	  (insert ";; Don't edit this file, edit config.org' instead ...\n\n")
 	  (insert (apply 'concat (reverse body-list))))
 	(message "Wrote %s ..." output-file)
 	))
