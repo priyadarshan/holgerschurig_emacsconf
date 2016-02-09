@@ -91,6 +91,34 @@ directory, if it doesn't yet exist.
 )
 #+END_SRC
 
+** tangle on save
+#+BEGIN_SRC emacs-lisp
+(defun my--collect-elisp-source-bodies ()
+  (when (string= "holger.org" (buffer-name))
+    (let* ((body-list ())
+	   (output-file "holger.el")
+	   (org-babel-default-header-args (org-babel-merge-params org-babel-default-header-args 
+								  (list (cons :tangle output-file)))))
+      (message "Writing %s ..." output-file)
+      (save-restriction
+	(save-excursion
+	  (org-babel-map-src-blocks "holger.org"
+	    (let* ((info (org-babel-get-src-block-info 'light))
+		   (tfile (cdr (assq :tangle (nth 2 info))))
+		   )
+	      (unless (or (string= "no" tfile)
+			  (not (string= "emacs-lisp" lang)))
+		(add-to-list 'body-list body)
+		)
+	      )))
+	(with-temp-file output-file
+	  (insert ";; Don't edit this file, edit 'holger.org' instead ...\n\n")
+	  (insert (apply 'concat (reverse body-list))))
+	(message "Wrote %s ..." output-file)
+	))
+))
+(add-hook 'after-save-hook #'my--collect-elisp-source-bodies)
+#+END_SRC
 * The views
 ** GUI elements
 
