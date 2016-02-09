@@ -68,6 +68,16 @@ Use the following if there is some nasty bug that you cannot find with
 (toggle-debug-on-error)
 #+END_SRC
 
+* Personal information
+
+#+BEGIN_SRC emacs-lisp
+(setq user-full-name "Holger Schurig")
+(setq user-mail-address "holgerschurig@gmail.com")
+(use-package private
+  :defines (freenode-password)
+)
+#+END_SRC
+
 * Package infrastructure
 ** package
 Enable =packages.el= with MELPA:
@@ -253,7 +263,6 @@ FIXME
 FIXME: 
 
 See http://emacsredux.com/blog/2013/07/24/highlight-comment-annotations/
-
 
 #+BEGIN_SRC emacs-lisp
 (defface my--todo-face
@@ -444,16 +453,6 @@ Use new byte codes from Emacs 24.4
 #+BEGIN_SRC emacs-lisp
 ;  Get rid of yes-or-no questions - y or n is enough
 (fset 'yes-or-no-p 'y-or-n-p)
-#+END_SRC
-
-** Private data
-
-#+BEGIN_SRC emacs-lisp
-(setq user-full-name "Holger Schurig")
-(setq user-mail-address "holgerschurig@gmail.com")
-(use-package private
-  :defines (freenode-password)
-)
 #+END_SRC
 
 ** Customization
