@@ -444,6 +444,13 @@ The following can visualize white space quite neatly:
 )
 #+END_SRC
 
+** Mouse avaidance
+#+BEGIN_SRC emacs-lisp
+(use-package avoid
+  :config
+  (mouse-avoidance-mode 'jump)
+)
+#+END_SRC
 * Misc settings
 ** Emacs internals
 
@@ -1296,7 +1303,6 @@ for example).
 (define-key minibuffer-local-completion-map " " nil)
 (define-key minibuffer-local-must-match-map " " nil)
 #+END_SRC
-
 * Searching
 
 ** isearch (incremental search)
