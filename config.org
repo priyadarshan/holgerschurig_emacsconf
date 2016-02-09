@@ -417,6 +417,33 @@ https://github.com/Malabarba/smart-mode-line
     (set-face-attribute 'sml/modes nil :foreground "gray50"))
   )
 #+END_SRC
+** Whitespace
+The following can visualize white space quite neatly:
+#+BEGIN_SRC emacs-lisp
+(use-package whitespace
+  :defer t
+  :bind ("\C-cw" . global-whitespace-mode)
+  :config
+  (setq whitespace-style
+	'(face
+	  trailing
+	  tabs
+	  spaces
+	  lines
+	  lines-tail
+	  newline
+	  ;;empty
+	  space-before-tab
+	  indentation
+	  empty
+	  space-after-tab
+	  space-mark
+	  tab-mark
+	  ;;newline-mark
+	  ))
+)
+#+END_SRC
+
 * Misc settings
 ** Emacs internals
 
