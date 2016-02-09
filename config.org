@@ -993,6 +993,10 @@ are two windows displayed, act like C-x1:"
   :init
   (winner-mode 1))
 #+END_SRC
+** Other window
+#+BEGIN_SRC emacs-lisp
+(bind-key "M-o" #'other-window)
+#+END_SRC
 * Buffers
 
 ** Insert buffer
