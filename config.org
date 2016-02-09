@@ -1576,10 +1576,9 @@ Try this instead of circe because it's built in
 (defun irc ()
   "Connect to IRC"
   (interactive)
-  (erc :full-name "schurig" :password freenode-password)
+  (erc :nick "schurig" :full-name "schurig" :password freenode-password)
 )
 #+END_SRC
-
 *** erc-join
 
 #+BEGIN_SRC emacs-lisp
