@@ -85,7 +85,6 @@ byte-compiler won't bark at me.
   :defines (freenode-password)
 )
 #+END_SRC
-
 * Package infrastructure
 ** package
 Enable =packages.el= with MELPA:
@@ -521,7 +520,6 @@ http://endlessparentheses.com/transposing-keybinds-in-emacs.html
 (bind-key "\C-t" #'transpose-lines)
 (bind-key "\C-t" #'transpose-chars ctl-x-map)
 #+END_SRC
-
 ** Undo-Tree
 This lets you use =C-z= (undo-tree-visualize) to visually walk through
 the changes you've made, undo back to a certain point (or redo), and
@@ -770,7 +768,6 @@ Smooth scrolling (default is 5).
       mouse-wheel-progressive-speed nil)
 #+END_SRC
 * Yank and Delete
-
 ** Delete word or yank
 The following may be of interest to people who (a) are happy with
 "C-w" and friends for killing and yanking, (b) use
@@ -902,7 +899,6 @@ lets TAB do completion as well
 #+END_SRC
 
 * Windows handling
-
 ** delete-window
 If only one window in frame, `delete-frame'.
 From http://www.emacswiki.org/emacs/frame-cmds.el
@@ -917,7 +913,6 @@ From http://www.emacswiki.org/emacs/frame-cmds.el
 	(delete-frame)
       ad-do-it (selected-window))))
 #+END_SRC
-
 
 ** new kill-buffer-and-window
 Replacement for interactive `kill-buffer'. We cannot redefine
@@ -941,14 +936,12 @@ there are several windows open."
 (bind-key "C-x k" 'my--kill-buffer-and-window)
 #+END_SRC
 
-
 ** Window sizing
 
 #+BEGIN_SRC emacs-lisp
 (bind-key "<M-down>" 'enlarge-window)
 (bind-key "<M-up>" 'shrink-window)
 #+END_SRC
-
 
 ** Window zooming (F5)
 If there is only one window displayed, act like C-x 2. If there are
@@ -992,7 +985,6 @@ are two windows displayed, act like C-x1:"
 (bind-key "<f5>" 'my-explode-window)
 #+END_SRC
 
-
 ** Winner mode
 
 #+BEGIN_SRC emacs-lisp
@@ -1014,7 +1006,6 @@ Insert buffer at current position
 #+BEGIN_SRC emacs-lisp
 (bind-key "C-x I" 'insert-buffer)
 #+END_SRC
-
 
 ** Protect buffers
 https://raw.githubusercontent.com/lewang/le_emacs_libs/master/keep-buffers.el
@@ -1059,7 +1050,6 @@ If the CDR is nil, then the buffer is only buried."
 (keep-buffers-mode 1)
 #+END_SRC
 
-
 ** Easier kill buffers with processes
 Don't asks you if you want to kill a buffer with a live process
 attached to it:
@@ -1070,7 +1060,6 @@ http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/
       (remq 'process-kill-buffer-query-function
 	     kill-buffer-query-functions))
 #+END_SRC
-
 
 ** Cycle buffers
 
@@ -1083,8 +1072,7 @@ http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/
 (bind-key "<f6>" 'my-switch-to-buffer)
 #+END_SRC
 
-
-*** iflipb
+** iflipb
 http://www.emacswiki.org/emacs/iflipb
 
 #+BEGIN_SRC emacs-lisp
@@ -1124,7 +1112,6 @@ http://www.emacswiki.org/emacs/iflipb
 	      my-iflipb-ing-internal))))
 #+END_SRC
 
-
 ** ace-jump-buffer DISABLED
 
 #+BEGIN_SRC emacs-lisp
@@ -1134,7 +1121,6 @@ http://www.emacswiki.org/emacs/iflipb
   )
 #+END_SRC
 * File opening/saving
-
 ** Basic settings
 Never show GTK file open dialog
 
@@ -1181,7 +1167,6 @@ Kill means kill, not asking. Was:
 (setq kill-buffer-query-functions nil)
 #+END_SRC
 
-
 ** Automatically load .Xresources after changes
 Sample ~/.Xresources:
 
@@ -1198,9 +1183,8 @@ Emacs.Font:	terminus 11
 (add-hook 'after-save-hook 'merge-x-resources)
 #+END_SRC
 
-
 ** Autorevert
-
+   
 #+BEGIN_SRC emacs-lisp
 (global-auto-revert-mode 1)
 #+END_SRC
@@ -1212,13 +1196,11 @@ list of regular expressions:
 (setq revert-without-query '(""))
 #+END_SRC
 
-
 ** Decompress compressed files
 
 #+BEGIN_SRC emacs-lisp
 (auto-compression-mode t)
 #+END_SRC
-
 
 ** Quickly save (F2)
 
@@ -1226,14 +1208,12 @@ list of regular expressions:
 (bind-key "<f2>" 'save-buffer)
 #+END_SRC
 
-
 ** Unique buffer names
 
 #+BEGIN_SRC emacs-lisp
 (use-package uniquify
   :config (setq uniquify-buffer-name-style 'forward))
 #+END_SRC
-
 
 ** recentf
 
@@ -1281,7 +1261,6 @@ for example).
 (define-key minibuffer-local-must-match-map " " nil)
 #+END_SRC
 
-
 * Searching
 
 ** isearch (incremental search)
@@ -1291,7 +1270,6 @@ Scrolling while searching
 (setq isearch-allow-scroll t)
 (bind-key "C-y" 'isearch-yank-kill isearch-mode-map)
 #+END_SRC
-
 
 ** Command; my-grep
 Prompts you for an expression, defaulting to the symbol that your
@@ -1320,7 +1298,6 @@ Make 'b' (back) go to the previous position in emacs help.
 	     (bind-key "b" 'help-go-back help-mode-map)))
 #+END_SRC
 
-
 ** F1 key searches in help or opens man page
 
 #+BEGIN_SRC emacs-lisp
@@ -1338,13 +1315,11 @@ Make 'b' (back) go to the previous position in emacs help.
 (bind-key "<f1>" 'my-help)
 #+END_SRC
 
-
 ** Apropos
 
 #+BEGIN_SRC emacs-lisp
 (bind-key "C-h a" 'apropos)
 #+END_SRC
-
 
 ** Guide key
 It's hard to remember keyboard shortcuts. The guide-key package
@@ -1362,14 +1337,12 @@ pops up help after a short delay.
   (guide-key-mode 1))
 #+END_SRC
 * Miscelleanous
-
 ** Swap RET and C-j
 
 #+BEGIN_SRC emacs-lisp
 (bind-key "RET" 'newline-and-indent)
 (bind-key "C-j" 'newline)
 #+END_SRC
-
 
 ** dos2unix
 
@@ -1380,7 +1353,6 @@ pops up help after a short delay.
   (goto-char(point-min))
   (while (search-forward "\r" nil t) (replace-match "")))
 #+END_SRC
-
 
 ** 822date
 Inserts something like "Fri,  1 Dec 2006 15:41:36 +0100"
@@ -1445,14 +1417,12 @@ see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Con
           "-laGh1v --group-directories-first"))
 #+END_SRC
 
-
 ** dired-x
 
 #+BEGIN_SRC emacs-lisp
 (use-package dired-x
     :commands dired-jump)
 #+END_SRC
-
 
 ** erc (irc client)
 Try this instead of circe because it's built in
@@ -1572,7 +1542,6 @@ Try this instead of circe because it's built in
 )
 #+END_SRC
 
-
 *** erc-join
 
 #+BEGIN_SRC emacs-lisp
@@ -1584,7 +1553,6 @@ Try this instead of circe because it's built in
   )
 #+END_SRC
 
-
 *** erc-backend
 
 #+BEGIN_SRC emacs-lisp
@@ -1594,7 +1562,6 @@ Try this instead of circe because it's built in
   (setq erc-server-reconnect-timeout 10)
   )
 #+END_SRC
-
 
 *** erc-goodies
 
@@ -1606,7 +1573,6 @@ Try this instead of circe because it's built in
 )
 #+END_SRC
 
-
 *** erc-match
 
 #+BEGIN_SRC emacs-lisp
@@ -1615,7 +1581,6 @@ Try this instead of circe because it's built in
   (setq erc-keywords '("schurig"))
   )
 #+END_SRC
-
 
 *** erc-spelling
 
@@ -1628,7 +1593,6 @@ Try this instead of circe because it's built in
   )
 #+END_SRC
 
-
 *** erc-track
 
 #+BEGIN_SRC emacs-lisp
@@ -1639,7 +1603,6 @@ Try this instead of circe because it's built in
   (setq erc-track-enable-keybindings t)
 )
 #+END_SRC
-
 
 ** helm
 Very good intro: http://tuhdo.github.io/helm-intro.html
@@ -1781,7 +1744,6 @@ https://github.com/ShingoFukuyama/helm-swoop
   (bind-key "C-s" 'helm-next-line     helm-multi-swoop-map))
 #+END_SRC
 
-
 ** hydra
 
 #+BEGIN_SRC emacs-lisp
@@ -1812,7 +1774,6 @@ http://superuser.com/questions/476714/how-to-configure-emacs-smtp-for-using-a-se
 	smtpmail-smtp-service 587
 	smtpmail-debug-info t))
 #+END_SRC
-
 
 ** sendmail
 http://www.emacswiki.org/emacs/MuttInEmacs
@@ -1851,7 +1812,6 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
   )
 #+END_SRC
 
-
 ** message
 
 #+BEGIN_SRC emacs-lisp
@@ -1874,7 +1834,6 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
   ;;:mode (("/mutt" . message-mode))
 )
 #+END_SRC
-
 
 ** gnus
 https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnus-guide-en.org
@@ -2020,7 +1979,6 @@ https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
 )
 #+END_SRC
 
-
 *** gnus-group
 
 #+BEGIN_SRC emacs-lisp
@@ -2069,7 +2027,6 @@ _m_  mail new post
      ;; y is not used by default
      (bind-key "y" #'hydra-gnus-group/body gnus-group-mode-map ))
 #+END_SRC
-
 
 ** gnus-sum
 
@@ -2139,7 +2096,6 @@ for yes-or-no."
   (bind-key "Q" #'gnus-summary-exit gnus-summary-mode-map)
   )
 #+END_SRC
-
 
 ** gnus-art
 
@@ -2217,7 +2173,6 @@ _p_  save as patch
   )
 #+END_SRC
 
-
 ** mm-decode
 
 #+BEGIN_SRC emacs-lisp
@@ -2229,7 +2184,6 @@ _p_  save as patch
 	)
   )
 #+END_SRC
-
 
 ** CANCELED bbdb
 
@@ -2263,7 +2217,6 @@ _p_  save as patch
   ;; (setq bbdb-allow-duplicates t)
 )
 #+END_SRC
-
 
 ** org
 
@@ -2402,7 +2355,6 @@ _p_  save as patch
 )
 #+END_SRC
 
-
 *** org-agenda
 http://www.suenkler.info/docs/emacs-orgmode/
 
@@ -2463,7 +2415,6 @@ http://www.suenkler.info/docs/emacs-orgmode/
   )
 #+END_SRC
 
-
 *** org-capture
 
 #+BEGIN_SRC emacs-lisp
@@ -2483,7 +2434,6 @@ http://www.suenkler.info/docs/emacs-orgmode/
 	   ))
   )
 #+END_SRC
-
 
 *** org-clock
 
@@ -2517,7 +2467,6 @@ http://www.suenkler.info/docs/emacs-orgmode/
   )
 #+END_SRC
 
-
 *** org-list
 
 #+BEGIN_SRC emacs-lisp
@@ -2536,7 +2485,6 @@ http://www.suenkler.info/docs/emacs-orgmode/
   (setq org-use-speed-commands 'my/org-use-speed-commands-for-headings-and-lists)
 )
 #+END_SRC
-
 
 *** org-src
 
@@ -2559,7 +2507,6 @@ http://www.suenkler.info/docs/emacs-orgmode/
 )
 #+END_SRC
 
-
 *** ox
 
 #+BEGIN_SRC emacs-lisp
@@ -2579,7 +2526,6 @@ http://www.suenkler.info/docs/emacs-orgmode/
   (setq org-export-with-sub-superscripts nil))
 #+END_SRC
 
-
 *** ox-html
 
 #+BEGIN_SRC emacs-lisp
@@ -2594,7 +2540,6 @@ http://www.suenkler.info/docs/emacs-orgmode/
   (setq org-html-table-default-attributes '(:border "2" :cellspacing "0" :cellpadding "6"))
   (setq org-html-postamble t))
 #+END_SRC
-
 
 ** flyspell
 
@@ -2628,7 +2573,6 @@ after launching emacs, which is a bit unfortunate.
 (add-hook 'LaTeX-mode-hook #'flyspell-mode)
 #+END_SRC
 
-
 *** helm-flyslepp
 https://github.com/pronobis/helm-flyspell
 
@@ -2659,14 +2603,12 @@ kill the tab instead.
 (setq backward-delete-char-untabify-method nil)
 #+END_SRC
 
-
 ** Disable vc backends
 We only use git, not other version controls:
 
 #+BEGIN_SRC emacs-lisp
 (setq vc-handled-backends nil)
 #+END_SRC
-
 
 ** qmake project files
 Don't open Qt's *.pro files as IDLWAVE files.
@@ -2676,13 +2618,11 @@ TODO: look for a real qmake-mode
 (add-to-list 'auto-mode-alist '("\\.pro$" . fundamental-mode))
 #+END_SRC
 
-
 ** Commenting
 
 #+BEGIN_SRC emacs-lisp
 (bind-key "C-c c" 'comment-dwim)
 #+END_SRC
-
 
 ** Compilation
 set initial compile-command to nothing, so that F7 will prompt for one
@@ -2862,7 +2802,6 @@ http://wikemacs.org/wiki/How_to_write_helm_extensions
 
 #+END_SRC
 
-
 *** Error navigation
 
 #+BEGIN_SRC emacs-lisp
@@ -2870,14 +2809,12 @@ http://wikemacs.org/wiki/How_to_write_helm_extensions
 (bind-key "S-<f8>" 'previous-error)
 #+END_SRC
 
-
 ** Automatically make files with shebang executable
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'after-save-hook
 	  'executable-make-buffer-file-executable-if-script-p)
 #+END_SRC
-
 
 ** Mode: C, C++
 
@@ -2976,7 +2913,6 @@ Thinks that will apply to .C and .CPP files
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 #+END_SRC
 
-
 ** Mode: Ediff
 http://oremacs.com/2015/01/17/setting-up-ediff/
 
@@ -2995,7 +2931,6 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
   (add-hook 'ediff-after-quit-hook-internal 'winner-undo))
 #+END_SRC
 
-
 ** TODO Mode: ELisp
 
 #+BEGIN_SRC emacs-lisp
@@ -3013,7 +2948,6 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
 (add-hook 'emacs-lisp-mode-hook 'my--elisp-setup)
 #+END_SRC
 
-
 ** Mode: Markdown
 
 #+BEGIN_SRC emacs-lisp
@@ -3022,7 +2956,6 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
   :mode (("\\.md\\'"       . markdown-mode)
 	 ("\\.markdown\\'" . markdown-mode)))
 #+END_SRC
-
 
 ** Mode: Python
 
@@ -3039,14 +2972,12 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
 (add-hook 'python-mode-hook 'my-python-setup)
 #+END_SRC
 
-
 ** Mode: Rust
 
 #+BEGIN_SRC emacs-lisp
 (use-package rust-mode
   :mode (("\\.rs\\'" . rust-mode)))
 #+END_SRC
-
 
 ** Mode: Shell
 
@@ -3060,7 +2991,6 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
 (add-hook 'shell-mode-hook 'my-shell-tab-setup)
 (add-hook 'sh-mode-hook    'my-shell-tab-setup)
 #+END_SRC
-
 
 ** Mode: web-mode
 Home page: http://web-mode.org/
@@ -3091,7 +3021,6 @@ Home page: http://web-mode.org/
 )
 #+END_SRC
 
-
 ** Package: column-marker
 
 #+BEGIN_SRC emacs-lisp
@@ -3106,7 +3035,6 @@ Home page: http://web-mode.org/
   )
 #+END_SRC
 
-
 ** CANCELED Package: auto-compile
 
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -3117,7 +3045,6 @@ Home page: http://web-mode.org/
   (auto-compile-on-save-mode 1)
   )
 #+END_SRC
-
 
 ** Package: eshell
 https://www.masteringemacs.org/article/complete-guide-mastering-eshell
@@ -3136,7 +3063,6 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
   (add-hook 'eshell-mode-hook 'my--hide-trailing-whitespace)
   )
 #+END_SRC
-
 
 ** Package: helm-gtags
 http://tuhdo.github.io/c-ide.html
@@ -3166,7 +3092,6 @@ http://tuhdo.github.io/c-ide.html
   (bind-key "C-c >" 'helm-gtags-next-history helm-gtags-mode-map)
 )
 #+END_SRC
-
 
 ** Package: magit
 Must be set before magit is loaded. It will remove the new key
@@ -3199,7 +3124,6 @@ bindings that use pop-up buffers.
   :bind ("C-c m" . magit-status)
   :commands (magit-get-top-dir))
 #+END_SRC
-
 
 ** Package: magit-timemachine
 
