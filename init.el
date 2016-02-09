@@ -15,6 +15,11 @@
 
 (setq inhibit-startup-screen t)
 
-(load-file (concat user-emacs-directory "config.el"))
-;;(require 'cl)
-;;(org-babel-load-file (concat user-emacs-directory "config.org"))
+(let ((el-file (concat user-emacs-directory "config.el")))
+  (if (file-exists-p el-file)
+      (load-file (concat user-emacs-directory "config.el"))
+    (progn
+      (require 'cl)
+      (org-babel-load-file (concat user-emacs-directory "config.org"))
+      )))
+
