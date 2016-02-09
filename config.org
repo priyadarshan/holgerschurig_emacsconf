@@ -505,11 +505,11 @@ buffer with a live process attached to it.
 http://stackoverflow.com/questions/268088/how-to-remove-the-prompt-for-killing-emacsclient-buffers
 
 * Editing
-
-** Transpose
+** CANCELED Transpose
+   CLOSED: [2016-02-08 23:59]
 http://endlessparentheses.com/transposing-keybinds-in-emacs.html
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (bind-key "\C-t" #'transpose-lines)
 (bind-key "\C-t" #'transpose-chars ctl-x-map)
 #+END_SRC
