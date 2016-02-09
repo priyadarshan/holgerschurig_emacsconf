@@ -426,10 +426,18 @@ Use new byte codes from Emacs 24.4
 #+END_SRC
 
 ** History
-
+Delete identical history entries
 #+BEGIN_SRC emacs-lisp
-; Delete previous identical history entries
 (setq history-delete-duplicates t)
+#+END_SRC
+*** Save mini-buffer history
+#+BEGIN_SRC emacs-lisp
+(use-package savehist
+  :init
+   (setq savehist-file (concat user-emacs-directory "tmp/history.el")
+	 history-length 1000)
+  :config
+  (savehist-mode 1))
 #+END_SRC
 ** Enable some disabled commands
 
@@ -1266,16 +1274,6 @@ for example).
 #+END_SRC
 
 
-** save mini-buffer history
-
-#+BEGIN_SRC emacs-lisp
-(use-package savehist
-  :init
-   (setq savehist-file (concat user-emacs-directory "tmp/history.el")
-      history-length 1000)
-  :config
-  (savehist-mode 1))
-#+END_SRC
 * Searching
 
 ** isearch (incremental search)
