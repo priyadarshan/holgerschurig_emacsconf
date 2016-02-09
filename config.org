@@ -451,7 +451,7 @@ The following can visualize white space quite neatly:
 )
 #+END_SRC
 
-** Mouse avaidance
+** Mouse avoidance
 #+BEGIN_SRC emacs-lisp
 (use-package avoid
   :config
@@ -2307,7 +2307,7 @@ _p_  save as patch
 
 ** org
 
-*** org
+*** org itself
 
 #+BEGIN_SRC emacs-lisp
 (use-package org
@@ -2660,7 +2660,7 @@ after launching emacs, which is a bit unfortunate.
 (add-hook 'LaTeX-mode-hook #'flyspell-mode)
 #+END_SRC
 
-*** helm-flyslepp
+*** helm-flyspell
 https://github.com/pronobis/helm-flyspell
 
 #+BEGIN_SRC emacs-lisp
