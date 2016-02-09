@@ -529,14 +529,20 @@ A sentence doesn't end with two spaces:
 * Emacs server
 
 #+BEGIN_SRC emacs-lisp
-(require 'server)
-(add-hook 'server-switch-hook 'raise-frame)
 
+- always start the emacs-server, except when run in daemon mode
+
+- already Disable prompt asking you if you want to kill a buffer
+  with a live process attached to it.
+  http://stackoverflow.com/questions/268088/how-to-remove-the-prompt-for-killing-emacsclient-buffers
+
+(use-package server
+  :config
+  (unless (daemonp)
+    (server-mode 1))
+  (add-hook 'server-switch-hook 'raise-frame)
+)
 #+END_SRC
-
-Disable prompt asking you if you want to kill a
-buffer with a live process attached to it.
-http://stackoverflow.com/questions/268088/how-to-remove-the-prompt-for-killing-emacsclient-buffers
 
 * Editing
 ** CANCELED Transpose
