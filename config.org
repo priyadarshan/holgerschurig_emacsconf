@@ -64,7 +64,7 @@ I like using =(setq ...)= more than Customize because I can neatly organize my c
 Use the following if there is some nasty bug that you cannot find with
 =emacs --debug-init=:
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (toggle-debug-on-error)
 #+END_SRC
 * Package infrastructure
