@@ -2249,7 +2249,7 @@ _p_  save as patch
   (setq org-catch-invisible-edits 'error)
 
   ;; don't fold for now
-  (setq org-startup-folded nil)
+  (setq org-startup-folded 'content)
 
   ;; Time stamp format
   (setq org-display-custom-times t)
