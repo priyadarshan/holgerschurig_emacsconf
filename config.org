@@ -3219,3 +3219,11 @@ bindings that use pop-up buffers.
   :commands git-timemachine
   )
 #+END_SRC
+** Package: rainbow-mode
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-mode
+  :ensure t
+  :defer t
+  :commands (rainbow-mode)
+)
+#+END_SRC
