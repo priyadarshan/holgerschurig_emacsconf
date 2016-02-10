@@ -4,7 +4,6 @@
 /abbrev_defs
 /places
 /tmp/
-/elisp/org-mode/
 /elpa/
 /org/
 /GTAGS
@@ -13,7 +12,7 @@
 /GSYMS
 /Mail
 /News
-/git/mu
+/git/org-mode/
 /config.el
 /elisp/private.el
 /todo.org

@@ -17,13 +17,13 @@ update::
 
 
 # Checkout org
-all:: elisp/org-mode/.git/config
-elisp/org-mode/.git/config:
-	cd elisp; \
+all:: git/org-mode/.git/config
+git/org-mode/.git/config:
+	cd git; \
 	git clone git://orgmode.org/org-mode.git
 # Update org
 update::
-	cd elisp/org-mode; \
+	cd git/org-mode; \
 	git pull; \
 	git log --reverse -p ORIG_HEAD..HEAD | tee ../tmp/org-mode.log; \
 	test -s ../tmp/org-mode.log || rm -f ../tmp/org-mode.log
