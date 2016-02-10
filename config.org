@@ -476,6 +476,19 @@ Use new byte codes from Emacs 24.4
 (setq ad-redefinition-action 'accept)
 #+END_SRC
 
+** Fixup system-name
+Normally, I could use the =system-name= variable to get the current
+hostname, but it seems to return the value of =hostname -f=, e.g.
+"holger.schurig.local". Therefore, I find the hostname manually by
+calling =shell-command-to-string= and stripping some whitespace. This
+will probably /not/ work on windows.
+
+#+BEGIN_SRC emacs-lisp
+(setq system-name
+   (replace-regexp-in-string "\\`[ \t\n]*" ""
+      (replace-regexp-in-string "[ \t\n]*\\'" ""
+         (shell-command-to-string "hostname"))))
+#+END_SRC
 ** History
 Delete identical history entries
 #+BEGIN_SRC emacs-lisp
