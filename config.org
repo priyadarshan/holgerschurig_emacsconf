@@ -3461,7 +3461,7 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 #+BEGIN_SRC emacs-lisp
 (use-package eshell
   :defer t
-  :bind ("C-c e" . eshell)
+  :bind ("M-g e" . eshell)
   :config
   ;; If I ever want my own eshell/foo commands overwrite real commands ...
   (setq eshell-prefer-lisp-functions t)
@@ -3470,7 +3470,7 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
   ;; eshell-visual-commands
 
   (add-hook 'eshell-mode-hook 'my--hide-trailing-whitespace)
-  )
+)
 #+END_SRC
 
 ** Package: helm-gtags
