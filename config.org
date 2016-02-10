@@ -49,10 +49,9 @@ making sure to copy a complete set of parentheses) into your
 eval-buffer= to evaluate the code and see if you like the way that
 Emacs behaves. See [[https://www.gnu.org/software/emacs/manual/html_mono/eintr.html][An Introduction to Programming in Emacs Lisp]] for more details on Emacs Lisp. You can also find the manual by using =C-h i= (=info=) and choosing "Emacs Lisp Intro".
 
-I've installed a lot of packages. See the [[*Add%20package%20sources][package sources]] section to
-add the repositories to your configuration. When you see =use-package=
-and a package name you might like, you can use =M-x package-install=
-to install the package of that name. Note that use-package is itself
+I've installed a lot of packages. When you see =use-package= and a
+package name you might like, you can use =M-x package-install= to
+install the package of that name. Note that use-package is itself
 provided by a package, so you'll probably want to install that and
 =bind-key=.
 
