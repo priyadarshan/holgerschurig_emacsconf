@@ -2895,7 +2895,6 @@ http://www.suenkler.info/docs/emacs-orgmode/
 #+END_SRC
 
 *** ox-html
-
 #+BEGIN_SRC emacs-lisp
 (use-package ox-html
   :defer t
@@ -2908,7 +2907,14 @@ http://www.suenkler.info/docs/emacs-orgmode/
   (setq org-html-table-default-attributes '(:border "2" :cellspacing "0" :cellpadding "6"))
   (setq org-html-postamble t))
 #+END_SRC
-
+*** htmlize
+#+BEGIN_SRC emacs-lisp
+(use-package htmlize
+  :ensure t
+  :defer t
+  :defines (htmlize-version)
+)
+#+END_SRC
 ** flyspell
 
 #+BEGIN_SRC emacs-lisp
