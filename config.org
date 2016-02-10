@@ -1250,9 +1250,12 @@ Emacs.Font:	terminus 11
 #+END_SRC
 
 ** Autorevert
-   
+Revert all buffers, including dired buffers. And do it silently.
+
 #+BEGIN_SRC emacs-lisp
 (global-auto-revert-mode 1)
+(setq global-auto-revert-non-file-buffers t)
+(setq auto-revert-verbose nil)
 #+END_SRC
 
 Don't ask when running revert-buffer when reverting files in this
