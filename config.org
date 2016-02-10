@@ -394,36 +394,301 @@ Show line and column numbers in the mode-line
 (column-number-mode 1)
 #+END_SRC
 
-** CANCELED Smart mode line
-https://github.com/Malabarba/smart-mode-line
+** Power mode line
 
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package smart-mode-line
-  :ensure t
-  :init
-  (use-package smart-mode-line-powerline-theme
-    :ensure t)
-  :config
-  (setq sml/line-number-format    "%4l")
-  (setq sml/name-width 40) ; buffer name width in the mode-line
-  (setq sml/mode-width 'full) ; minor mode lighters area width
-  (setq sml/shorten-modes nil)
-  (setq sml/no-confirm-load-theme t)
-  (setq sml/replacer-regexp-list '())
-  (if (display-graphic-p)
-      (progn
-	(require 'smart-mode-line-powerline-theme)
-	(setq sml/theme 'powerline)
-	)
-    (setq sml/theme 'light))
-  (sml/setup)
-  (when (display-graphic-p)
-    (set-face-attribute 'sml/prefix nil :foreground "white")
-    (set-face-attribute 'sml/folder nil :foreground "white")
-    (set-face-attribute 'sml/filename nil :foreground "white")
-    (set-face-attribute 'sml/position-percentage nil :foreground "#660000")
-    (set-face-attribute 'sml/modes nil :foreground "gray50"))
-  )
+This was taken (mostly) from https://ogbe.net/emacsconfig.html.
+
+#+BEGIN_SRC emacs-lisp
+(when (display-graphic-p)
+  (use-package powerline
+    :ensure t
+    :config
+    (setq powerline-default-separator 'contour)
+    (setq powerline-height 20)
+
+    ;; first reset the faces that already exist
+    (set-face-attribute 'mode-line nil
+			:foreground (face-attribute 'default :foreground)
+			:family "Fira Sans"
+			:weight 'bold
+			:background (face-attribute 'fringe :background))
+    (set-face-attribute 'mode-line-inactive nil
+			:foreground (face-attribute 'font-lock-comment-face :foreground)
+			:background (face-attribute 'fringe :background)
+			:family "Fira Sans"
+			:weight 'bold
+			:box `(:line-width -2 :color ,(face-attribute 'fringe :background)))
+    (set-face-attribute 'powerline-active1 nil
+			:background "gray30")
+    (set-face-attribute 'powerline-inactive1 nil
+			:background (face-attribute 'default :background)
+			:box `(:line-width -2 :color ,(face-attribute 'fringe :background)))
+
+    ;; these next faces are for the status indicator
+    ;; read-only buffer
+    (make-face 'mode-line-read-only-face)
+    (make-face 'mode-line-read-only-inactive-face)
+    (set-face-attribute 'mode-line-read-only-face nil
+			:foreground (face-attribute 'default :foreground)
+			:inherit 'mode-line)
+    (set-face-attribute 'mode-line-read-only-inactive-face nil
+			:foreground (face-attribute 'default :foreground)
+			:inherit 'mode-line-inactive)
+
+    ;; modified buffer
+    (make-face 'mode-line-modified-face)
+    (make-face 'mode-line-modified-inactive-face)
+    (set-face-attribute 'mode-line-modified-face nil
+			:foreground (face-attribute 'default :background)
+			:background "#e5786d"
+			:inherit 'mode-line)
+    (set-face-attribute 'mode-line-modified-inactive-face nil
+			:foreground (face-attribute 'default :background)
+			:background "#e5786d"
+			:inherit 'mode-line-inactive)
+
+    ;; unmodified buffer
+    (make-face 'mode-line-unmodified-face)
+    (make-face 'mode-line-unmodified-inactive-face)
+    (set-face-attribute 'mode-line-unmodified-face nil
+			:foreground (face-attribute 'font-lock-comment-face :foreground)
+			:inherit 'mode-line)
+    (set-face-attribute 'mode-line-unmodified-inactive-face nil
+			:foreground (face-attribute 'font-lock-comment-face :foreground)
+			:inherit 'mode-line-inactive)
+
+    ;; the remote indicator
+    (make-face 'mode-line-remote-face)
+    (make-face 'mode-line-remote-inactive-face)
+    (set-face-attribute 'mode-line-remote-face nil
+			:foreground (face-attribute 'font-lock-comment-face :foreground)
+			:background (face-attribute 'default :background)
+			:inherit 'mode-line)
+    (set-face-attribute 'mode-line-remote-inactive-face nil
+			:foreground (face-attribute 'font-lock-comment-face :foreground)
+			:background (face-attribute 'default :background)
+			:inherit 'mode-line-inactive)
+
+    ;; the current file name
+    (make-face 'mode-line-filename-face)
+    (make-face 'mode-line-filename-inactive-face)
+    (set-face-attribute 'mode-line-filename-face nil
+			:foreground (face-attribute 'font-lock-type-face :foreground)
+			:background (face-attribute 'default :background)
+			:inherit 'mode-line)
+    (set-face-attribute 'mode-line-filename-inactive-face nil
+			:foreground (face-attribute 'font-lock-comment-face :foreground)
+			:background (face-attribute 'default :background)
+			:inherit 'mode-line-inactive)
+
+    ;; the major mode name
+    (make-face 'mode-line-major-mode-face)
+    (make-face 'mode-line-major-mode-inactive-face)
+    (set-face-attribute 'mode-line-major-mode-face nil
+			:foreground (face-attribute 'default :foreground)
+			:inherit 'powerline-active1)
+    (set-face-attribute 'mode-line-major-mode-inactive-face nil
+			:box `(:line-width -2 :color ,(face-attribute 'fringe :background))
+			:foreground (face-attribute 'font-lock-comment-face :foreground)
+			:inherit 'powerline-inactive1)
+
+    ;; the minor mode name
+    (make-face 'mode-line-minor-mode-face)
+    (make-face 'mode-line-minor-mode-inactive-face)
+    (set-face-attribute 'mode-line-minor-mode-face nil
+			:foreground (face-attribute 'font-lock-comment-face :foreground)
+			:inherit 'powerline-active1)
+    (set-face-attribute 'mode-line-minor-mode-inactive-face nil
+			:box `(:line-width -2 :color ,(face-attribute 'fringe :background))
+			:foreground (face-attribute 'powerline-inactive1 :background)
+			:inherit 'powerline-inactive1)
+
+    ;; the position face
+    (make-face 'mode-line-position-face)
+    (make-face 'mode-line-position-inactive-face)
+    (set-face-attribute 'mode-line-position-face nil
+			:background (face-attribute 'default :background)
+			:inherit 'mode-line)
+    (set-face-attribute 'mode-line-position-inactive-face nil
+			:foreground (face-attribute 'font-lock-comment-face :foreground)
+			:background (face-attribute 'default :background)
+			:inherit 'mode-line-inactive)
+
+    ;; the 80col warning face
+    (make-face 'mode-line-80col-face)
+    (make-face 'mode-line-80col-inactive-face)
+    (set-face-attribute 'mode-line-80col-face nil
+			:background "#e5786d"
+			:foreground (face-attribute 'default :background)
+			:inherit 'mode-line)
+    (set-face-attribute 'mode-line-80col-inactive-face nil
+			:foreground (face-attribute 'font-lock-comment-face :foreground)
+			:background (face-attribute 'default :background)
+			:inherit 'mode-line-inactive)
+
+    ;; the buffer percentage face
+    (make-face 'mode-line-percentage-face)
+    (make-face 'mode-line-percentage-inactive-face)
+    (set-face-attribute 'mode-line-percentage-face nil
+			:foreground (face-attribute 'font-lock-comment-face :foreground)
+			:inherit 'mode-line)
+    (set-face-attribute 'mode-line-percentage-inactive-face nil
+			:foreground (face-attribute 'font-lock-comment-face :foreground)
+			:inherit 'mode-line-inactive)
+
+    ;; the directory face
+    (make-face 'mode-line-shell-dir-face)
+    (make-face 'mode-line-shell-dir-inactive-face)
+    (set-face-attribute 'mode-line-shell-dir-face nil
+			:foreground (face-attribute 'font-lock-comment-face :foreground)
+			:inherit 'powerline-active1)
+    (set-face-attribute 'mode-line-shell-dir-inactive-face nil
+			:foreground (face-attribute 'font-lock-comment-face :foreground)
+			:inherit 'powerline-inactive1)
+
+    (defun shorten-directory (dir max-length)
+      "Show up to `max-length' characters of a directory name `dir'."
+      (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
+	    (output ""))
+	(when (and path (equal "" (car path)))
+	  (setq path (cdr path)))
+	(while (and path (< (length output) (- max-length 4)))
+	  (setq output (concat (car path) "/" output))
+	  (setq path (cdr path)))
+	(when path
+	  (setq output (concat ".../" output)))
+	output))
+
+    (defpowerline my--powerline-narrow
+      (let (real-point-min real-point-max)
+	(save-excursion
+	  (save-restriction
+	    (widen)
+	    (setq real-point-min (point-min) real-point-max (point-max))))
+	(when (or (/= real-point-min (point-min))
+		  (/= real-point-max (point-max)))
+	  (propertize (concat (char-to-string #x2691) " Narrow")
+		      'mouse-face 'mode-line-highlight
+		      'help-echo "mouse-1: Remove narrowing from the current buffer"
+		      'local-map (make-mode-line-mouse-map
+				  'mouse-1 'mode-line-widen)))))
+
+
+    (setq-default
+     mode-line-format
+     '("%e"
+       (:eval
+	(let* ((active (powerline-selected-window-active))
+
+	       ;; toggle faces between active and inactive
+	       (mode-line (if active 'mode-line 'mode-line-inactive))
+	       (face1 (if active 'powerline-active1 'powerline-inactive1))
+	       (face2 (if active 'powerline-active2 'powerline-inactive2))
+	       (read-only-face (if active 'mode-line-read-only-face 'mode-line-read-only-inactive-face))
+	       (modified-face (if active 'mode-line-modified-face 'mode-line-modified-inactive-face))
+	       (unmodified-face (if active 'mode-line-unmodified-face 'mode-line-unmodified-inactive-face))
+	       (position-face (if active 'mode-line-position-face 'mode-line-position-inactive-face))
+	       (80col-face (if active 'mode-line-80col-face 'mode-line-80col-inactive-face))
+	       (major-mode-face (if active 'mode-line-major-mode-face 'mode-line-major-mode-inactive-face))
+	       (minor-mode-face (if active 'mode-line-minor-mode-face 'mode-line-minor-mode-inactive-face))
+	       (filename-face (if active 'mode-line-filename-face 'mode-line-filename-inactive-face))
+	       (percentage-face (if active 'mode-line-percentage-face 'mode-line-percentage-inactive-face))
+	       (remote-face (if active 'mode-line-remote-face 'mode-line-remote-inactive-face))
+	       (shell-dir-face (if active 'mode-line-shell-dir-face 'mode-line-shell-dir-inactive-face))
+
+	       ;; get the separators
+	       (separator-left (intern (format "powerline-%s-%s"
+					       (powerline-current-separator)
+					       (car powerline-default-separator-dir))))
+	       (separator-right (intern (format "powerline-%s-%s"
+						(powerline-current-separator)
+						(cdr powerline-default-separator-dir))))
+
+	       ;; the right side
+	       (rhs (list
+		     ;;(my--powerline-vc minor-mode-face 'r)
+		     (funcall separator-right face1 position-face)
+		     (powerline-raw " " position-face)
+		     ;; Weird lowercase "L"
+		     ;; (powerline-raw (char-to-string #xe0a1) position-face)
+		     (powerline-raw " " position-face)
+		     (powerline-raw "%4l" position-face 'r)
+		     ;; display a warning if we go above 80 columns
+		     (if (>= (current-column) 80)
+			 (funcall separator-right position-face 80col-face)
+		       (powerline-raw (char-to-string #x2502) position-face))
+		     (if (>= (current-column) 80)
+			 (powerline-raw "%3c" 80col-face 'l)
+		       (powerline-raw "%3c" position-face 'l))
+		     (if (>= (current-column) 80)
+			 (powerline-raw " " 80col-face)
+		       (powerline-raw " " position-face))
+		     (if (>= (current-column) 80)
+			 (funcall separator-left 80col-face percentage-face)
+		       (funcall separator-left position-face percentage-face))
+		     (powerline-raw " " percentage-face)
+		     (powerline-raw "%6p" percentage-face 'r)))
+
+	       ;; the left side
+	       (lhs (list
+		     ;; this is the modified status indicator
+		     (cond (buffer-read-only
+			    (powerline-raw "  " read-only-face))
+			   ((buffer-modified-p)
+			    ;; do not light up when in an interactive buffer. Set
+			    ;; ML-INTERACTIVE? in hooks for interactive buffers.
+			    (if (not (bound-and-true-p ml-interactive?))
+				(powerline-raw "  " modified-face)
+			      (powerline-raw "  " unmodified-face)))
+			   ((not (buffer-modified-p))
+			    (powerline-raw "  " unmodified-face)))
+		     (cond (buffer-read-only
+			    (powerline-raw (concat (char-to-string #xe0a2) " ") read-only-face 'l))
+			   ((buffer-modified-p)
+			    (if (not (bound-and-true-p ml-interactive?))
+				(powerline-raw (concat (char-to-string #x2621) " ") modified-face 'l)
+			      (powerline-raw (concat (char-to-string #x259e) " ") unmodified-face 'l)))
+			   ((not (buffer-modified-p))
+			    (powerline-raw (concat (char-to-string #x26c1) " ") unmodified-face 'l)))
+		     (cond (buffer-read-only
+			    (funcall separator-right read-only-face filename-face))
+			   ((buffer-modified-p)
+			    (if (not (bound-and-true-p ml-interactive?))
+				(funcall separator-right modified-face filename-face)
+			      (funcall separator-right unmodified-face filename-face)))
+			   ((not (buffer-modified-p))
+			    (funcall separator-right unmodified-face filename-face)))
+		     ;; remote indicator
+		     (when (file-remote-p default-directory)
+		       (powerline-raw (concat " " (char-to-string #x211b)) remote-face))
+		     ;; filename and mode info
+		     (powerline-buffer-id filename-face 'l)
+		     (powerline-raw " " filename-face)
+		     (funcall separator-left filename-face major-mode-face)
+		     ;; do not need mode info when in ansi-term
+		     (unless (bound-and-true-p show-dir-in-mode-line?)
+		       (powerline-major-mode major-mode-face 'l))
+		     (unless (bound-and-true-p show-dir-in-mode-line?)
+		       (powerline-process major-mode-face 'l))
+		     ;; show a flag if in line mode in terminal
+		     (when (and (bound-and-true-p show-dir-in-mode-line?) (term-in-line-mode))
+		       (powerline-raw (concat (char-to-string #x2691) " Line") major-mode-face))
+		     (powerline-raw " " major-mode-face)
+		     ;; little trick to move the directory name to the mode line
+		     ;; when inside of emacs set SHOW-DIR-IN-MODE-LINE? to enable
+		     (if (bound-and-true-p show-dir-in-mode-line?)
+			 (when (not (file-remote-p default-directory))
+			   (powerline-raw (shorten-directory default-directory 45)
+					  shell-dir-face))
+		       (powerline-minor-modes minor-mode-face 'l))
+		     (unless (bound-and-true-p show-dir-in-mode-line?)
+		       (my--powerline-narrow major-mode-face 'l)))))
+
+	  ;; concatenate it all together
+	  (concat (powerline-render lhs)
+		  (powerline-fill face1 (powerline-width rhs))
+		  (powerline-render rhs))))))
+))
 #+END_SRC
 ** Whitespace
 The following can visualize white space quite neatly:
