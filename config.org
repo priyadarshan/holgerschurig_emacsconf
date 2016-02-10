@@ -3480,13 +3480,39 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
   :defer t
   :bind ("M-g e" . eshell)
   :config
+  (defun eshell/clear ()
+    "Deletes the contents of eshell buffer, except the last prompt"
+    (save-excursion
+      (goto-char eshell-last-output-end)
+      (let ((lines (count-lines 1 (point)))
+	    (inhibit-read-only t))
+	(beginning-of-line)
+	(let ((pos (point)))
+	  (if (bobp)
+	      (if (interactive-p)
+		  (error "Buffer too short to truncate"))
+	    (delete-region (point-min) (point)))))))
+
+  ;; We don't need no banner
+  (setq eshell-banner-message "")
+
   ;; If I ever want my own eshell/foo commands overwrite real commands ...
   (setq eshell-prefer-lisp-functions t)
 
   ;; check if this is ok for my usage
   ;; eshell-visual-commands
-
-  (add-hook 'eshell-mode-hook 'my--hide-trailing-whitespace)
+ 
+  (defun my--eshell-hook ()
+    (eshell-read-aliases-list)
+    (setq global-hl-line-mode nil)
+    (setq show-trailing-whitespace nil)
+    (add-to-list 'eshell-visual-commands "ssh")
+    (add-to-list 'eshell-visual-commands "htop")
+    (add-to-list 'eshell-visual-commands "ncmpcpp")
+    (add-to-list 'eshell-visual-commands "tail")
+    (setq-local ml-interactive? t) ;; for mode line
+    (eshell/addpath "~/bin"))
+  (add-hook 'eshell-mode-hook 'my--eshell-hook)
 )
 #+END_SRC
 
