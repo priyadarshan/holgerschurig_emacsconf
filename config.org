@@ -68,7 +68,7 @@ Use the following if there is some nasty bug that you cannot find with
 (toggle-debug-on-error)
 #+END_SRC
 * Package infrastructure
-** More load-path
+** add =git/*= to =load-path=
 #+BEGIN_SRC emacs-lisp
 (let ((emacs-git (expand-file-name "git/" user-emacs-directory)))
   (mapc (lambda (x)
@@ -84,7 +84,8 @@ Enable =packages.el= with MELPA:
       package-archives
       '(("melpa"           . "http://melpa.org/packages/")
         ;; ("melpa-stable" . "http://stable.melpa.org/packages/")
-	("gnu"          . "http://elpa.gnu.org/packages/")
+	("gnu"             . "http://elpa.gnu.org/packages/")
+	;; ("elpy"         . "http://jorgenschaefer.github.io/packages/")
 	;; ("org"          . "http://orgmode.org/elpa/") ;; for org-plus-contrib
 	))
 #+END_SRC
