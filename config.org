@@ -1509,21 +1509,19 @@ see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Con
   (circe "Freenode"))
 
 ** dired
-
 #+BEGIN_SRC emacs-lisp
 (use-package dired
-    :commands dired
-    :bind ("C-x C-d" . dired) ;; used to be list-directory, quite useless
-    :init
-    (setq dired-listing-switches
-          "-laGh1v --group-directories-first"))
+  :commands dired
+  :bind ("C-x C-d" . dired) ;; used to be list-directory, quite useless
+  :init
+  (setq dired-listing-switches "-laGh1v --group-directories-first"))
 #+END_SRC
 
 ** dired-x
-
 #+BEGIN_SRC emacs-lisp
 (use-package dired-x
-    :commands dired-jump)
+  :commands dired-jump
+)
 #+END_SRC
 
 ** erc (irc client)
