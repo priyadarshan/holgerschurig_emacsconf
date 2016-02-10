@@ -2720,6 +2720,27 @@ _p_  save as patch
     (interactive)
     (org-open-file (org-html-export-to-html)))
   (bind-key "<M-f7>" 'my-org-export-to-html-and-open org-mode-map)
+
+  ;; make "<l" to insert an emacs-lisp source block
+  ;; and use "<x" for the old latex export
+  (setq org-structure-template-alist
+	'(("s" "#+BEGIN_SRC ?\n\n#+END_SRC")
+	  ("e" "#+BEGIN_EXAMPLE\n?\n#+END_EXAMPLE")
+	  ("q" "#+BEGIN_QUOTE\n?\n#+END_QUOTE")
+	  ("v" "#+BEGIN_VERSE\n?\n#+END_VERSE")
+	  ("V" "#+BEGIN_VERBATIM\n?\n#+END_VERBATIM")
+	  ("c" "#+BEGIN_CENTER\n?\n#+END_CENTER")
+	  ("l" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC")
+	  ;; ("l" "#+BEGIN_EXPORT latex\n?\n#+END_EXPORT")
+	  ("x" "#+BEGIN_EXPORT latex\n?\n#+END_EXPORT")
+	  ("L" "#+LaTeX: ")
+	  ("h" "#+BEGIN_EXPORT html\n?\n#+END_EXPORT")
+	  ("H" "#+HTML: ")
+	  ("a" "#+BEGIN_EXPORT ascii\n?\n#+END_EXPORT")
+	  ("A" "#+ASCII: ")
+	  ("i" "#+INDEX: ?")
+	  ("I" "#+INCLUDE: %file ?")
+	  ))
 )
 #+END_SRC
 
