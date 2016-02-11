@@ -1204,6 +1204,18 @@ Paste at text-cursor, not at mouse-cursor:
 #+BEGIN_SRC emacs-lisp
 (setq mouse-yank-at-point t)
 #+END_SRC
+** Package avy-zap: delete up to a character
+This makes =M-z= ask via avy to which character text should be
+deleted. The character itself will stay. If you use =M-Z=, then this
+character will be gone, too.
+
+#+BEGIN_SRC emacs-lisp
+(use-package avy-zap
+  :ensure t
+  :bind (("M-z" . avy-zap-up-to-char-dwim)
+	 ("M-Z" . avy-zap-to-char-dwim))
+)
+#+END_SRC
 * Completion
 ignore case when reading a file name completion
 
