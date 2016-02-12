@@ -729,7 +729,6 @@ Unfortunately this doesn't work well in =customize-group=.
 ** Emacs internals
 
 #+BEGIN_SRC emacs-lisp
-(setq gc-cons-threshold (* 10 1024 1024))
 (setq message-log-max 10000)
 #+END_SRC
 

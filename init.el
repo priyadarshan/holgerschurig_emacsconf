@@ -11,11 +11,12 @@
 
 (setq inhibit-startup-screen t)
 
-(let ((el-file (concat user-emacs-directory "config.el")))
+(let ((el-file (concat user-emacs-directory "config.el"))
+      (gc-cons-threshold most-positive-fixnum))
   (if (file-exists-p el-file)
       (load-file (concat user-emacs-directory "config.el"))
     (progn
       (require 'cl)
       (org-babel-load-file (concat user-emacs-directory "config.org"))
       )))
-
+(setq gc-cons-threshold (* 8 1024 1024))
