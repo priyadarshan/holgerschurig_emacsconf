@@ -2946,6 +2946,104 @@ http://www.suenkler.info/docs/emacs-orgmode/
   (setq org-html-table-default-attributes '(:border "2" :cellspacing "0" :cellpadding "6"))
   (setq org-html-postamble t))
 #+END_SRC
+
+*** ox-publish
+#+BEGIN_SRC emacs-lisp
+(use-package ox-twbs
+  :defer t
+  :commands (org-twbs-publish-to-html)
+)
+(use-package ox-publish
+  :defer t
+  :if (string= "holger" system-name)
+  :bind (("C-c p" . my-publish))
+  :config
+  (setq org-publish-project-alist
+	'(("twbs"
+	   :base-directory "~/org/"
+	   :publishing-directory "~/org/twbs/"
+	   :base-extension "org"
+	   :recursive t
+	   :publishing-function org-twbs-publish-to-html
+
+	   ;; See http://orgmode.org/manual/Publishing-options.html#Publishing-options
+
+	   ;; Don't emit  "Created: 2016-02-12 Fri 09:28 Emacs 24.5.1 (Org mode 8.3.3)"
+	   :html-postamble nil
+
+	   ;; This is the Table of Contents on the right side, you can turn it off
+	   ;; per page with "#+OPTIONS: toc:nil"
+	   :with-toc t
+
+	   :html-use-infojs nil
+	   :html-validation-link ""
+	   :html-home/up-format ""
+	   :html-link-up ""
+	   :html-link-home ""
+	   ;; :html-checkbox-type 'html   ;; use CSS to format them
+	   :html-metadata-timestamp-format "%Y-%m-%d %H:%M"
+
+	   ;; General export settings
+	   :archived-trees nil
+	   :headline-levels 3
+	   :section-numbers nil
+	   :with-author nil ;; Only one author ever
+	   :with-date nil
+	   :with-latex nil
+	   :with-sub-superscript nil
+	   )
+
+	  ("html"
+	   :base-directory "~/org/"
+	   :publishing-directory "~/org/html/"
+	   :base-extension "org"
+	   :recursive t
+	   :publishing-function org-html-publish-to-html
+
+	   ;; see (org-html--build-head info)
+	   :html-head-include-default-style nil ;; org-html-head-include-default-style
+	   ;; :html-head                   ;; org-html-head
+	   ;; :html-head "<link rel=\"stylesheet\" href=\"../other/mystyle.css\" type=\"text/css\"/>"
+	   ;; :html-head-extra             ;; org-html-head-extra
+	   ;; :html-htmlized-css-url       ;; org-html-htmlized-css-url
+	   :html-head-include-scripts nil       ;; org-html-head-include-scripts
+
+	   ;; Don't emit  "Created: 2016-02-12 Fri 09:28 Emacs 24.5.1 (Org mode 8.3.3)"
+	   :html-postamble nil
+
+	   :with-toc nil
+
+	   :html-use-infojs nil
+	   :html-validation-link ""
+	   :html-home/up-format ""
+	   :html-link-up ""
+	   :html-link-home ""
+	   ;; :html-checkbox-type 'html   ;; use CSS to format them
+	   :html-metadata-timestamp-format "%Y-%m-%d %H:%M"
+
+	   ;; General export settings
+	   :archived-trees nil
+	   :headline-levels 3
+	   :section-numbers nil
+	   :with-author nil ;; Only one author ever
+	   :with-date nil
+	   :with-latex nil
+	   :with-sub-superscript nil
+	   )
+
+	  ("static"
+	   :base-directory "~/org/"
+	   :base-extension "jpg\\|gif\\|png\\|css\\|js"
+	   :recursive t
+	   :publishing-directory "~/org/out/"
+	   :publishing-function org-publish-attachment)
+
+	  ("site" :components ("twbs" "html"))))
+  (defun my-publish ()
+    (interactive)
+    (org-publish "site" t))
+)
+#+END_SRC
 *** htmlize
 #+BEGIN_SRC emacs-lisp
 (use-package htmlize
