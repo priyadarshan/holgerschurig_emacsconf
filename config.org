@@ -3653,6 +3653,13 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 )
 #+END_SRC
 
+** Package: helm-tags
+#+BEGIN_SRC emacs-lisp
+(use-package helm-tags
+  :defer t
+  :bind (("M-." . helm-etags-select))
+)
+#+END_SRC
 ** CANCELED Package: helm-gtags
 http://tuhdo.github.io/c-ide.html
 
