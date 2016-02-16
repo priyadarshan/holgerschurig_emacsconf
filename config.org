@@ -3653,10 +3653,10 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 )
 #+END_SRC
 
-** Package: helm-gtags
+** CANCELED Package: helm-gtags
 http://tuhdo.github.io/c-ide.html
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (use-package helm-gtags
   :ensure t
   :config
