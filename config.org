@@ -241,8 +241,9 @@ Avoid Emacs hanging for a while after changing default font:
 ** Theme
 
 #+BEGIN_SRC emacs-lisp
-(use-package afternoon-theme
-  :ensure t)
+(use-package kooten-theme
+  :ensure t
+)
 #+END_SRC
 
 You may also put something like this into =~/.Xresources= to define
