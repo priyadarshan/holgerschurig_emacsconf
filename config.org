@@ -198,10 +198,7 @@ make =freenode-password= known via =:defines=, so that the
 byte-compiler won't bark at me.
 
 #+BEGIN_SRC emacs-lisp
-(use-package private
-  :defer t
-  :defines (freenode-password)
-)
+(require 'private nil 'noerror)
 #+END_SRC
 * The views
 ** GUI elements
