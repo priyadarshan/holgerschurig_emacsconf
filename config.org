@@ -139,6 +139,7 @@ Basic syntax:
   (package-refresh-contents)
   (package-install 'use-package))
 (require 'use-package)
+(setq use-package-verbose t)
 #+END_SRC
 
 ** Packages and url.el and cookies
