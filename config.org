@@ -1986,7 +1986,6 @@ Try this instead of circe because it's built in
   (setq erc-track-enable-keybindings t)
 )
 #+END_SRC
-
 ** helm
 Very good intro: http://tuhdo.github.io/helm-intro.html
 
@@ -2155,6 +2154,7 @@ http://superuser.com/questions/476714/how-to-configure-emacs-smtp-for-using-a-se
 
 #+BEGIN_SRC emacs-lisp
 (use-package smtpmail
+  :defer t
   :config
   (setq smtpmail-default-smtp-server "smtp.gmail.com"
 	smtpmail-smtp-server "smtp.gmail.com"
@@ -2162,13 +2162,13 @@ http://superuser.com/questions/476714/how-to-configure-emacs-smtp-for-using-a-se
 	smtpmail-smtp-service 587
 	smtpmail-debug-info t))
 #+END_SRC
-
 ** sendmail
 http://www.emacswiki.org/emacs/MuttInEmacs
 http://dev.mutt.org/trac/wiki/MuttFaq/Editor
 
 #+BEGIN_SRC emacs-lisp
 (use-package sendmail
+  :defer t
   :commands (mail-mode mail-text)
   :defines (send-mail-function)
   :mode (("/tmp/mutt-*" . mail-mode))
@@ -2233,7 +2233,7 @@ https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
 (use-package gnus
   :bind ("C-c n" . gnus)
   :config
-
+  (require 'mm-decode)
 #+END_SRC
 
 *** general setup
@@ -2562,9 +2562,9 @@ _p_  save as patch
 #+END_SRC
 
 ** mm-decode
-
 #+BEGIN_SRC emacs-lisp
 (use-package mm-decode
+  :defer t
   :config
   ;; Hide HTML mail
   (setq mm-discouraged-alternatives '("text/html" "text/richtext")
