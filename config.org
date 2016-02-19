@@ -1647,14 +1647,7 @@ Make 'b' (back) go to the previous position in emacs help.
   "If function given tries to `describe-function' otherwise uses
 `manual-entry' to display manpage of a `current-word'."
   (interactive)
-  (let ((var (variable-at-point))
-	;; select the new help window so that I can easier scroll
-	;; quit with "q"
-	(help-window-select t)
-	;; resize the help window up to frame size
-	(temp-buffer-resize-mode t)
-	(temp-buffer-max-height (lambda (buffer) (frame-height)))
-	)
+  (let ((var (variable-at-point)))
     (if (symbolp var)
 	(describe-variable var)
       (let ((fn (function-called-at-point)))
