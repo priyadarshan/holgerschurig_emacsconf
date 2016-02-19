@@ -81,9 +81,9 @@ Enable =packages.el= with MELPA:
 (require 'package)
 (setq package-enable-at-startup nil
       package-archives
-      '(("melpa"           . "http://melpa.org/packages/")
+      '(("melpa"           . "https://melpa.org/packages/")
         ;; ("melpa-stable" . "http://stable.melpa.org/packages/")
-	("gnu"             . "http://elpa.gnu.org/packages/")
+	("gnu"             . "https://elpa.gnu.org/packages/")
 	;; ("elpy"         . "http://jorgenschaefer.github.io/packages/")
 	;; ("org"          . "http://orgmode.org/elpa/") ;; for org-plus-contrib
 	))
