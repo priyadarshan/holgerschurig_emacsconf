@@ -3470,6 +3470,11 @@ Home page: http://web-mode.org/
 #+END_SRC
 
 ** Package: ansi-term
+This term understands ansi escape sequences.
+
+On Debian, one should install the =ansi-term= debian package so that
+the terminal "eterm-color" is available.
+
 #+BEGIN_SRC emacs-lisp
 (use-package ansi-term
   :commands (ansi-term ansi-shell)
