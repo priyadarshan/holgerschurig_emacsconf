@@ -3474,10 +3474,12 @@ Home page: http://web-mode.org/
 (use-package ansi-term
   :commands (ansi-term ansi-shell)
   :bind ("M-g s" . ansi-shell)
-  :config
+  :init
   (defun ansi-shell ()
+    "Start ansi-term with bash"
     (interactive)
     (ansi-term "/bin/bash"))
+  :config
 
   ;; don't linger around when closing
   (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
