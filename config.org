@@ -3473,7 +3473,7 @@ Home page: http://web-mode.org/
 #+BEGIN_SRC emacs-lisp
 (use-package ansi-term
   :commands (ansi-term ansi-shell)
-  :bind ("M-g s" . ansi-shell)
+  :bind ("M-g a" . ansi-shell)
   :init
   (defun ansi-shell ()
     "Start ansi-term with bash"
