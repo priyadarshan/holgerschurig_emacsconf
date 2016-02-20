@@ -3002,29 +3002,50 @@ https://github.com/pronobis/helm-flyspell
   )
 #+END_SRC
 * Programming
-** Tab handling
-
+** Tabs and indentation
+*** Tab width 4
+#+BEGIN_SRC emacs-lisp
+(setq-default tab-width 4)
+#+END_SRC
+*** tabify only leading whitespace
 #+BEGIN_SRC emacs-lisp
 (use-package tabify
+  :defer t
   :commands (tabify untabify)
   :config
-  ;; Tabify only initial whitespace
+  ;; only initial whitespace
   (setq tabify-regexp "^\t* [ \t]+"))
-
 #+END_SRC
 
+*** Deleting past a tab
 Deleting past a tab normally changes tab into spaces. Don't do that,
 kill the tab instead.
 
 #+BEGIN_SRC emacs-lisp
 (setq backward-delete-char-untabify-method nil)
 #+END_SRC
-** RET is newline-and-indent
+*** RET is newline-and-indent
 And if we ever need it, =C-j= is now newline.
 
 #+BEGIN_SRC emacs-lisp
 (bind-key "RET" 'newline-and-indent)
 (bind-key "C-j" 'newline)
+#+END_SRC
+*** Clean wrong indentation
+Nice tip from tuhdo, see https://www.emacswiki.org/emacs/CleanAutoIndent
+#+BEGIN_SRC emacs-lisp
+(use-package clean-aindent-mode
+  :config
+  (add-hook 'prog-mode-hook #'clean-aindent-mode)
+)
+#+END_SRC
+*** Guess indent mode
+#+BEGIN_SRC emacs-lisp
+(use-package dtrt-indent
+  :ensure t
+  :config
+  (dtrt-indent-mode 1)
+)
 #+END_SRC
 ** Disable vc backends
 We only use git, not other version controls:
