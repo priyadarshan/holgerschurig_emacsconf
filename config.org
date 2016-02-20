@@ -3627,6 +3627,7 @@ http://tuhdo.github.io/c-ide.html
 #+BEGIN_SRC emacs-lisp
 (use-package helm-gtags
   :ensure t
+  :diminish helm-gtags-mode
   :config
   (setq helm-gtags-ignore-case t
 	helm-gtags-auto-update t
