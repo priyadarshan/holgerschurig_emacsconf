@@ -3079,6 +3079,7 @@ We only use git, not other version controls:
 (use-package smartparens
   :ensure t
   :defer t
+  :diminish smartparens-mode
   :commands (show-smartparens-global-mode smartparens-global-mode sp-with-modes sp-local-pair)
 )
 (defun my-smart-parens-setup ()
