@@ -1288,8 +1288,8 @@ there are several windows open."
 #+END_SRC
 
 ** Window zooming (F5)
-If there is only one window displayed, act like C-x 2. If there are
-two windows displayed, act like C-x 1
+If there is only one window displayed, act like =C-x 2=. If there are
+two windows displayed, act like =C-x 1=.
 
 #+BEGIN_SRC emacs-lisp
 (defun my-zoom-next-buffer2 ()
@@ -1327,6 +1327,20 @@ are two windows displayed, act like C-x1:"
 	(other-window -1))
     (delete-other-windows)))
 (bind-key "<f5>" 'my-explode-window)
+#+END_SRC
+** Windows toggle / Buffer switching (F6)
+If there is only one window displayed, swap it with previous buffer.
+If there are two windows displayed, act like =C-x o=.
+
+#+BEGIN_SRC emacs-lisp
+(defun my-switch-to-buffer ()
+  "If there is only one window displayed, swap it with previous buffer.
+If there are two windows displayed, act like =C-x o=."
+  (interactive)
+  (if (one-window-p t)
+      (switch-to-buffer (other-buffer (current-buffer) 1))
+    (other-window -1)))
+(bind-key "<f6>" 'my-switch-to-buffer)
 #+END_SRC
 
 ** Winner mode
@@ -1411,15 +1425,6 @@ http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/
 
 ** Cycle buffers
 
-** simple toggle
-
-#+BEGIN_SRC emacs-lisp
-(defun my-switch-to-buffer ()
-  (interactive)
-  (switch-to-buffer (other-buffer (current-buffer) 1)))
-(bind-key "<f6>" 'my-switch-to-buffer)
-#+END_SRC
-
 ** iflipb
 http://www.emacswiki.org/emacs/iflipb
 
@@ -1468,6 +1473,7 @@ http://www.emacswiki.org/emacs/iflipb
   :bind ("C-c C-j" . ace-jump-buffer)
   )
 #+END_SRC
+
 * File opening/saving
 ** Basic settings
 Never show GTK file open dialog
