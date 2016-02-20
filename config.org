@@ -1669,13 +1669,6 @@ pops up help after a short delay.
   (guide-key-mode 1))
 #+END_SRC
 * Miscelleanous
-** Swap RET and C-j
-
-#+BEGIN_SRC emacs-lisp
-(bind-key "RET" 'newline-and-indent)
-(bind-key "C-j" 'newline)
-#+END_SRC
-
 ** dos2unix
 
 #+BEGIN_SRC emacs-lisp
@@ -3026,7 +3019,13 @@ kill the tab instead.
 #+BEGIN_SRC emacs-lisp
 (setq backward-delete-char-untabify-method nil)
 #+END_SRC
+** RET is newline-and-indent
+And if we ever need it, =C-j= is now newline.
 
+#+BEGIN_SRC emacs-lisp
+(bind-key "RET" 'newline-and-indent)
+(bind-key "C-j" 'newline)
+#+END_SRC
 ** Disable vc backends
 We only use git, not other version controls:
 
