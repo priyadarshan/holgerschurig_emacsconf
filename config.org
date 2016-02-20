@@ -805,8 +805,8 @@ A sentence doesn't end with two spaces:
 #+BEGIN_SRC emacs-lisp
 (use-package server
   :config
-  (unless (or (daemonp) (server-running-p)
-      (server-mode 1)))
+  (unless (or (daemonp) (server-running-p))
+	(server-mode 1))
   (add-hook 'server-switch-hook 'raise-frame)
 )
 #+END_SRC
