@@ -81,9 +81,9 @@ Enable =packages.el= with MELPA:
 (require 'package)
 (setq package-enable-at-startup nil
       package-archives
-      '(("melpa"           . "https://melpa.org/packages/")
+      '(("gnu"             . "https://elpa.gnu.org/packages/")
+	("melpa"           . "https://melpa.org/packages/")
         ;; ("melpa-stable" . "http://stable.melpa.org/packages/")
-	("gnu"             . "https://elpa.gnu.org/packages/")
 	;; ("elpy"         . "http://jorgenschaefer.github.io/packages/")
 	;; ("org"          . "http://orgmode.org/elpa/") ;; for org-plus-contrib
 	))
@@ -821,7 +821,6 @@ A sentence doesn't end with two spaces:
 * Emacs server
 
 - always start the emacs-server, except when run in daemon mode
-
 - already Disable prompt asking you if you want to kill a buffer
   with a live process attached to it.
   http://stackoverflow.com/questions/268088/how-to-remove-the-prompt-for-killing-emacsclient-buffers
@@ -834,6 +833,15 @@ A sentence doesn't end with two spaces:
   (add-hook 'server-switch-hook 'raise-frame)
 )
 #+END_SRC
+
+A good way to start emacsclient is with this line in =/etc/bash.bashrc=:
+
+#+BEGIN_EXAMPLE
+alias e="emacsclient --no-wait --alternate-editor=\"\" --create-frame"
+#+END_EXAMPLE
+
+May may also set the environment variables =EDITOR= and/or =VISUAL=,
+but then you better omit the "=--no-wait=" option.
 
 * Editing
 ** CANCELED Transpose
