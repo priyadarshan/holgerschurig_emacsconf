@@ -692,12 +692,17 @@ The following can visualize white space quite neatly:
 #+END_SRC
 
 ** TODO Mouse avoidance
-Unfortunately this doesn't work well in =customize-group=.
+Unfortunately this doesn't work well in =customize-group=. We turn it
+therefore off in some hook. What's not working is turning it back
+on ...
 
 #+BEGIN_SRC emacs-lisp
 (use-package avoid
   :config
+  (defun my-turn-off-mouse-avoidance ()
+	(mouse-avoidance-mode 'none))
   (mouse-avoidance-mode 'jump)
+  (add-hook 'custom-mode-hook #'my-turn-off-mouse-avoidance)
 )
 #+END_SRC
 * Misc settings
