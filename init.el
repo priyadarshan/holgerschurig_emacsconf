@@ -18,6 +18,7 @@
 - not marked as =tangle: no=
 - doesn't have the TODO state =CANCELLED=
 - have a source-code of =emacs-lisp="
+  (require 'org)
   (let* ((body-list ())
 	 (output-file "config.el")
 	 (org-babel-default-header-args (org-babel-merge-params org-babel-default-header-args 
