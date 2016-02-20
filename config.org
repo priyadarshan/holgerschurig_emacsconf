@@ -2526,7 +2526,8 @@ _p_  save as patch
 #+BEGIN_SRC emacs-lisp
 (use-package org
   :bind (("C-c l" . org-store-link)
-	 ("C-c o" . org-open-at-point-global))
+	 ("C-c o" . org-open-at-point-global)
+	 ("C-M-x" . eval-defun))
   :commands (org-open-file orgstruct++-mode)
   :init
   ;; allow Shift-Cursor to mark stuff
