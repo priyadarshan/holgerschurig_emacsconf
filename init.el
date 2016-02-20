@@ -11,12 +11,51 @@
 
 (setq inhibit-startup-screen t)
 
+(defun my-tangle-config-org ()
+  "This function will write all source blocks from =config.org= into
+=config.el= that are ...
+
+- not marked as =tangle: no=
+- doesn't have the TODO state =CANCELLED=
+- have a source-code of =emacs-lisp="
+  (let* ((body-list ())
+	 (output-file "config.el")
+	 (org-babel-default-header-args (org-babel-merge-params org-babel-default-header-args 
+								  (list (cons :tangle output-file)))))
+    (message "Writing %s ..." output-file)
+    (save-restriction
+      (save-excursion
+	(org-babel-map-src-blocks "config.org"
+	  (let* ((info (org-babel-get-src-block-info 'light))
+		 (tfile (cdr (assq :tangle (nth 2 info))))
+		 (match))
+	    (save-excursion
+	      (catch 'exit
+		(org-back-to-heading t)
+		;; (when (org-in-commented-heading-p t)
+		;;   (org-toggle-comment)
+		;;   (setq commentp t))
+		(when (looking-at org-outline-regexp) (goto-char (1- (match-end 0))))
+		(when (looking-at (concat " +" org-todo-regexp "\\( +\\|[ \t]*$\\)"))
+
+		  ;; (or (looking-at (concat " +" org-todo-regexp "\\( +\\|[ \t]*$\\)"))
+		  ;;     (looking-at "\\(?: *\\|[ \t]*$\\)"))
+		  (setq match (match-string 1)))
+		))
+	    (unless (or (string= "no" tfile)
+			(string= "CANCELED" match)
+			(not (string= "emacs-lisp" lang)))
+	      (add-to-list 'body-list body)
+	      )
+	    )))
+      (with-temp-file output-file
+	(insert ";; Don't edit this file, edit config.org' instead ...\n\n")
+	(insert (apply 'concat (reverse body-list))))
+      (message "Wrote %s ..." output-file))))
+
 (let ((el-file (concat user-emacs-directory "config.el"))
       (gc-cons-threshold most-positive-fixnum))
-  (if (file-exists-p el-file)
-      (load-file (concat user-emacs-directory "config.el"))
-    (progn
-      (require 'cl)
-      (org-babel-load-file (concat user-emacs-directory "config.org"))
-      )))
+  (unless (file-exists-p el-file)
+    (my-tangle-config-org))
+  (load-file (concat user-emacs-directory "config.el")))
 (setq gc-cons-threshold (* 8 1024 1024))
