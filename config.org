@@ -142,12 +142,12 @@ Basic syntax:
 (setq use-package-verbose t)
 #+END_SRC
 
-** Packages and url.el and cookies
+** CANCELED Packages and url.el and cookies
 ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
 Move the cookie file out into the =tmp/= directory. And create this
 directory, if it doesn't yet exist.
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (use-package url
   :defer t
   :config
@@ -158,6 +158,13 @@ directory, if it doesn't yet exist.
 #+END_SRC
 
 ** tangle on save
+This function will write all source blocks from "=config.org=" into
+"=config.el=" that are ...
+
+- not marked as "=tangle: no="
+- doesn't have the TODO state "=CANCELLED="
+- have a source-code of "=emacs-lisp="
+
 #+BEGIN_SRC emacs-lisp
 (defun my--collect-elisp-source-bodies ()
   (when (string= "config.org" (buffer-name))
@@ -171,8 +178,23 @@ directory, if it doesn't yet exist.
 	  (org-babel-map-src-blocks "config.org"
 	    (let* ((info (org-babel-get-src-block-info 'light))
 		   (tfile (cdr (assq :tangle (nth 2 info))))
-		   )
+		   (match))
+	      (save-excursion
+		(catch 'exit
+		  (org-back-to-heading t)
+		  ;; (when (org-in-commented-heading-p t)
+		  ;;   (org-toggle-comment)
+		  ;;   (setq commentp t))
+		  (when (looking-at org-outline-regexp) (goto-char (1- (match-end 0))))
+		  (when (looking-at (concat " +" org-todo-regexp "\\( +\\|[ \t]*$\\)"))
+
+		  ;; (or (looking-at (concat " +" org-todo-regexp "\\( +\\|[ \t]*$\\)"))
+		  ;;     (looking-at "\\(?: *\\|[ \t]*$\\)"))
+		    (setq match (match-string 1)))
+		  ))
+	      (message "MATCH '%s'" match)
 	      (unless (or (string= "no" tfile)
+			  (string= "CANCELED" match)
 			  (not (string= "emacs-lisp" lang)))
 		(add-to-list 'body-list body)
 		)
@@ -184,7 +206,6 @@ directory, if it doesn't yet exist.
 	))
 ))
 (add-hook 'after-save-hook #'my--collect-elisp-source-bodies)
-
 #+END_SRC
 
 * Personal information
@@ -304,9 +325,8 @@ See http://emacsredux.com/blog/2013/07/24/highlight-comment-annotations/
 (add-hook 'find-file-hook 'my--hint-facify)
 #+END_SRC
 
-TODO Highlight special comment lines
-
-#+BEGIN_SRC emacs-lisp :tangle no
+** CANCELED Highlight special comment lines
+#+BEGIN_SRC emacs-lisp
 (defface my--elisp-section-face
   '((t :foreground "dark blue"
        :background "dark blue"))
@@ -845,10 +865,9 @@ but then you better omit the "=--no-wait=" option.
 
 * Editing
 ** CANCELED Transpose
-   CLOSED: [2016-02-08 23:59]
 http://endlessparentheses.com/transposing-keybinds-in-emacs.html
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (bind-key "\C-t" #'transpose-lines)
 (bind-key "\C-t" #'transpose-chars ctl-x-map)
 #+END_SRC
@@ -2512,7 +2531,7 @@ _p_  save as patch
 
 ** CANCELED bbdb
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (use-package bbdb
   :ensure t
   :defer t
@@ -3032,7 +3051,6 @@ https://github.com/pronobis/helm-flyspell
   )
 #+END_SRC
 * Programming
-
 ** Tab handling
 
 #+BEGIN_SRC emacs-lisp
@@ -3544,7 +3562,7 @@ the terminal "eterm-color" is available.
 
 ** CANCELED Package: auto-compile
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (use-package auto-compile
   :ensure t
   :config
@@ -3607,7 +3625,7 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 ** CANCELED Package: helm-gtags
 http://tuhdo.github.io/c-ide.html
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (use-package helm-gtags
   :ensure t
   :config
