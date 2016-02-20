@@ -2675,7 +2675,7 @@ http://www.suenkler.info/docs/emacs-orgmode/
 #+BEGIN_SRC emacs-lisp
 (use-package org-agenda
   :bind (("C-c a" . org-agenda)
-	 ("C-c w" . org-agenda-list)  ;; w like week
+		 ;;("C-c w" . org-agenda-list)  ;; w like week
 	 )
   :config
   (bind-key "i" 'org-agenda-clock-in org-agenda-mode-map)
@@ -3454,6 +3454,16 @@ Home page: http://web-mode.org/
 )
 #+END_SRC
 
+** Mode: whitespace
+Here we set =C-c w= and =C-c C-w= to whitespace-mode. Note that the
+former used to be subword-mode, but I rarely want to move by subwords.
+
+#+BEGIN_SRC emacs-lisp
+(use-package whitespace
+  :defer t
+  :bind ("C-c w" . whitespace-mode)
+)
+#+END_SRC
 ** Package: ansi-term
 This term understands ansi escape sequences.
 
