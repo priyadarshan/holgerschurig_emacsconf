@@ -178,7 +178,7 @@ byte-compiler won't bark at me.
 #+BEGIN_SRC emacs-lisp
 (require 'private nil 'noerror)
 #+END_SRC
-* The views
+* Visual elements
 ** GUI elements
 
 Disable toolbars and the scroll-bar
@@ -248,52 +248,51 @@ http://emacs.stackexchange.com/a/5343/115
   (setq show-paren-delay 0)
 )
 #+END_SRC
-** TODO Font locking
-Highlight each of TODO FIXME XXX DISABLED \todo :disabled
-FIXME
-FIXME: 
+** Font locking
+#+BEGIN_SRC emacs-lisp
+(use-package font-lock
+  :config
+  (setq jit-lock-stealth-time 2
+		jit-lock-contextually t  ;; was 'syntax-driven
+		jit-lock-stealth-nice 0.3
+		font-lock-maximum-decoration 2)
+  (setq-default font-lock-multiline t)
+)
+#+END_SRC
+** Highlight keywords
 
-See http://emacsredux.com/blog/2013/07/24/highlight-comment-annotations/
+See https://www.emacswiki.org/emacs/AddKeywords for the example and
+https://www.emacswiki.org/emacs-test/RegularExpression for regular
+expession description. Currently, I use:
+
+- \\< :: start of word
+- \\( :: start of group
+- \\) :: end of group
+- \\| :: or
+- \\? :: optional
+
+Add font locking for =FIXME=, =TODO=, =XXX= and =HINT= to all modes
+except diff-mode and org-mode.
 
 #+BEGIN_SRC emacs-lisp
-(defface my--todo-face
+(defface my-todo-face
   '((t :foreground "red"
        :weight bold))   
   "Font for showing TODO words."
   :group 'basic-faces)
 
-(defun my--hint-facify ()
+(defun my-add-font-lock-keywords ()
   (unless (or (eq 'diff-mode major-mode)
 	      (eq 'org-mode major-mode))
-    (font-lock-add-keywords nil 
-	'(
-	  ("\\<\\(FIXME:?\\)" 1 'my--todo-face)
-	  ("\\<\\(XXX:?\\)" 1 'my--todo-face)
-	  ("\\<\\(DISABLED:?\\)" 1 'my--todo-face)
-	  ("\\<\\(TODO:?\\)" 1 'my--todo-face)
-	  ;; ("\\<\\(\\\\todo\\)" 1 'my--todo-face)
-	  ("\\<\\(:disabled)" 1 'my--todo-face)
-	  )))
-   ;; (unless (or (eq 'diff-mode major-mode))
-   ;;   (font-lock-add-keywords nil '(
-   ;;       ("\\(\\<\\(\\(FIXME\\|TODO\\|XXX\\|DISABLED\\):?\\>\\)\\|\\\\todo\\|:disabled:?\\)" 1 'my--todo-face t)
-   ;;       )))
-)
-(add-hook 'find-file-hook 'my--hint-facify)
+	(font-lock-add-keywords nil
+							'(("\\<\\(\\(FIXME\\|TODO\\|XXX\\|HINT\\):?\\)" 1 'font-lock-warning-face prepend)))))
+(add-hook 'find-file-hook #'my-add-font-lock-keywords)
 #+END_SRC
 
-** CANCELED Highlight special comment lines
-#+BEGIN_SRC emacs-lisp
-(defface my--elisp-section-face
-  '((t :foreground "dark blue"
-       :background "dark blue"))
-  "Font for showing elisp sections."
-  :group 'basic-faces)
+Mark =\todo= in LaTeX mode:
 
-(font-lock-add-keywords 'emacs-lisp-mode '(
-	 ("^\\(;;;?_\\) " 1 'my--elisp-section-face t)
-	 ("^\\(;;;;;;;;+\\)" 1 'my--elisp-section-face t)
-	 ))
+#+BEGIN_SRC emacs-lisp :tangle no
+(font-lock-add-keywords 'latex-mode '(("\\(\\\\todo\\)" 1 'font-lock-warning-face prepend)))
 #+END_SRC
 
 ** Line truncation
