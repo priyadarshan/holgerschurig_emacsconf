@@ -3217,7 +3217,7 @@ set initial compile-command to nothing, so that F7 will prompt for one
     (setq compilation-scroll-output t))
 #+END_SRC
 
-*** Error navigation
+** Error navigation
 #+BEGIN_SRC emacs-lisp
 (bind-key "<f8>" 'next-error)
 (bind-key "S-<f8>" 'previous-error)
