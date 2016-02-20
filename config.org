@@ -3054,14 +3054,6 @@ We only use git, not other version controls:
 (setq vc-handled-backends nil)
 #+END_SRC
 
-** qmake project files
-Don't open Qt's *.pro files as IDLWAVE files.
-TODO: look for a real qmake-mode
-
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.pro$" . fundamental-mode))
-#+END_SRC
-
 ** Commenting
 
 #+BEGIN_SRC emacs-lisp
@@ -3230,7 +3222,6 @@ set initial compile-command to nothing, so that F7 will prompt for one
 (bind-key "<f8>" 'next-error)
 (bind-key "S-<f8>" 'previous-error)
 #+END_SRC
-
 ** Make files with shebang executable
 #+BEGIN_SRC emacs-lisp
 (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
@@ -3334,7 +3325,6 @@ Things that will apply to .C and .CPP files
 	))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 #+END_SRC
-
 ** Mode: Ediff
 http://oremacs.com/2015/01/17/setting-up-ediff/
 
@@ -3405,6 +3395,15 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
 	;; from http://emacs.stackexchange.com/questions/3322/python-auto-indent-problem
 	electric-indent-chars (delq ?: electric-indent-chars)))
 (add-hook 'python-mode-hook 'my-python-setup)
+#+END_SRC
+** Mode: Qt project files
+From  https://raw.githubusercontent.com/chriskonstad/emacs/master/elisp/qt-pro.el
+#+BEGIN_SRC emacs-lisp
+(use-package qt-pro
+  :defer t
+  :commands (qt-pro-mode)
+  :mode ("\\.pr[io]\\'" . qt-pro-mode)
+)
 #+END_SRC
 
 ** Mode: Rust
