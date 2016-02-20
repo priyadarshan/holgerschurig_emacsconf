@@ -3060,6 +3060,25 @@ We only use git, not other version controls:
 (bind-key "C-c c" 'comment-dwim)
 #+END_SRC
 
+** STARTED Smart parens
+#+BEGIN_SRC emacs-lisp
+(use-package smartparens
+  :ensure t
+  :defer t
+  :commands (show-smartparens-global-mode smartparens-global-mode sp-with-modes sp-local-pair)
+)
+(defun my-smart-parens-setup ()
+  (show-smartparens-global-mode +1)
+  (smartparens-global-mode 1)
+  
+  ;; when you press RET, the curly braces automatically
+  ;; add another newline
+  (sp-with-modes '(c-mode c++-mode)
+	(sp-local-pair "{" nil :post-handlers '(("||\n[i]"     "RET")))
+	(sp-local-pair "/*" "*/" :post-handlers '((" | "       "SPC")
+											  ("* ||\n[i]" "RET")))))
+(add-hook 'c-mode-common-hook 'my-smart-parens-setup)
+#+END_SRC
 ** Compilation
 set initial compile-command to nothing, so that F7 will prompt for one
 
