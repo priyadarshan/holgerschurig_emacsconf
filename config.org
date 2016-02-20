@@ -2646,8 +2646,6 @@ _p_  save as patch
         ("DELEGATED" . (:foreground "forestgreen" :weight bold))
         ("CANCELED"  . shadow)))
 
-  ;; stamp time when done
-  (setq org-log-done 'time)
   ;; use extra drawer
   (setq org-log-into-drawer t)
 
