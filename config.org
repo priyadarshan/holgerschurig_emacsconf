@@ -3564,6 +3564,9 @@ bindings that use pop-up buffers.
   )
 #+END_SRC
 ** Package: rainbow-mode
+Rainbow-mode turns color codes inside the editor into real colors.
+Nice for elisp faces or CSS files.
+
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-mode
   :ensure t
