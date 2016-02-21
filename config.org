@@ -3072,8 +3072,8 @@ We only use git, not other version controls:
   :commands (show-smartparens-global-mode smartparens-global-mode sp-with-modes sp-local-pair)
 )
 (defun my-smart-parens-setup ()
-  (show-smartparens-global-mode +1)
-  (smartparens-global-mode 1)
+  (show-smartparens-mode +1)
+  (smartparens-mode 1)
   
   ;; when you press RET, the curly braces automatically
   ;; add another newline
