@@ -142,21 +142,6 @@ Basic syntax:
 (setq use-package-verbose t)
 #+END_SRC
 
-** CANCELED Packages and url.el and cookies
-ELPA might use Emacs-W3 to get files, and this in turn sets cookies.
-Move the cookie file out into the =tmp/= directory. And create this
-directory, if it doesn't yet exist.
-
-#+BEGIN_SRC emacs-lisp
-(use-package url
-  :defer t
-  :config
-  (let ((dir (concat user-emacs-directory "tmp/")))
-    (ignore-errors (make-directory dir))
-    (setq url-configuration-directory dir))
-)
-#+END_SRC
-
 ** tangle on save
 #+BEGIN_SRC emacs-lisp
 (defun my--collect-elisp-source-bodies ()
