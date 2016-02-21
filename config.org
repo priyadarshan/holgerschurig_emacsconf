@@ -3163,10 +3163,60 @@ set initial compile-command to nothing, so that F7 will prompt for one
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
 #+END_SRC
-*** CANCELED c-syntactic-element?
+
+*** C initialization
+Somehow a the first visited file stays in "gnu" style when I set the c-default-style
+just in the common hook
+
 #+BEGIN_SRC emacs-lisp
-(defvar c-syntactic-element)
-(eval-when-compile (require 'cc-mode))
+(defun my-c-initialization-setup ()
+  ;; Default style
+  (c-add-style "linux-tabs-only"
+		   '("linux" (c-offsets-alist (arglist-cont-nonempty
+					   c-lineup-gcc-asm-reg
+					   c-lineup-arglist-tabs-only))))
+  (setq c-default-style '((java-mode . "javax")
+			  (awk-mode . "awk")
+			  (other . "linux"))))
+(add-hook 'c-initialization-hook 'my-c-initialization-setup)
+#+END_SRC
+
+*** c-mode-hook (for C files)
+Things that will only ever apply to .C files
+
+#+BEGIN_SRC emacs-lisp
+(defun my-c-mode-setup ()
+  (when (and buffer-file-name
+				 (string-match "linux" buffer-file-name))
+	(progn (c-set-style "linux-tabs-only")
+	   (setq tab-width 8
+		 c-basic-offset 8))))
+(add-hook 'c-mode-hook 'my-c-mode-setup)
+#+END_SRC
+
+*** c-mode-common-hook (for C and C++ files)
+Things that will apply to .C and .CPP files
+
+#+BEGIN_SRC emacs-lisp
+(defun my-c-mode-common-setup ()
+  (turn-off-auto-fill)
+
+  ;; This makes things like super_function_for_you a word
+  (modify-syntax-entry ?_ "w")
+  (setq fill-column 78
+	;; indent by 4 (almost) everywhere
+	tab-width 4
+	c-basic-offset 4
+
+	;; Let RET break and continue a comment
+	;; C doesn't start functions with a ( in the first column
+	open-paren-in-column-0-is-defun-start nil
+
+	;; Tell cc-mode not to check for old-style (K&R) function
+	;; declarations. This speeds up indenting a lot (I hear).
+	c-recognize-knr-p nil)
+  )
+(add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 #+END_SRC
 
 *** CANCELED from linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
@@ -3188,72 +3238,10 @@ newline to the correct position"
   (self-insert-command (prefix-numeric-value arg))
   (newline-and-indent))
 #+END_SRC
-
-*** CANCELED c initialization
-Somehow a the first visited file stays in "gnu" style when I set the c-default-style
-just in the common hook
-
+*** CANCELED c-syntactic-element?
 #+BEGIN_SRC emacs-lisp
-(defun my-c-initialization-setup ()
-  ;; Default style
-  (c-add-style "linux-tabs-only"
-		   '("linux" (c-offsets-alist (arglist-cont-nonempty
-					   c-lineup-gcc-asm-reg
-					   c-lineup-arglist-tabs-only))))
-  (setq c-default-style '((java-mode . "javax")
-			  (awk-mode . "awk")
-			  (other . "linux"))))
-(add-hook 'c-initialization-hook 'my-c-initialization-setup)
-#+END_SRC
-
-*** CANCELED c-mode-hook (for C files)
-Thinks that will only ever apply to .C files
-
-#+BEGIN_SRC emacs-lisp
-(defun my-c-mode-setup ()
-  (when (and buffer-file-name
-				 (string-match "linux" buffer-file-name))
-	(progn (c-set-style "linux-tabs-only")
-	   (setq tab-width 8
-		 c-basic-offset 8))))
-(add-hook 'c-mode-hook 'my-c-mode-setup)
-#+END_SRC
-
-*** CANCELED c-mode-common-hook (for C and C++ files)
-Things that will apply to .C and .CPP files
-
-#+BEGIN_SRC emacs-lisp
-(defun my-c-mode-common-setup ()
-  (bind-key "(" 'self-insert-command c-mode-map)
-  (bind-key ")" 'self-insert-command c-mode-map)
-  (bind-key "{" 'my-c-electric-brace-open c-mode-map)
-  (turn-off-auto-fill)
-  ;; Normally electric mode should be off
-  (electric-indent-local-mode -1)
-  ;; This makes things like super_function_for_you a word
-  (modify-syntax-entry ?_ "w")
-  (setq fill-column 78
-	;; indent by 4 (almost) everywhere
-	tab-width 4
-	c-basic-offset 4
-	;; Let RET break and continue a comment
-	;; C doesn't start functions with a ( in the first column
-	open-paren-in-column-0-is-defun-start nil
-	;; Insert TABs inside literals
-	c-tab-always-indent 1
-	;; Tell cc-mode not to check for old-style (K&R) function
-	;; declarations. This speeds up indenting a lot (I hear).
-	c-recognize-knr-p nil
-	;; Jump to errors, please
-	compilation-auto-jump-to-first-error t
-	;; Keep electric mode on for now
-	;; c-electric-flag nil
-	;; But if it's on, let a "#" go to the left, for #if/#else/#endif
-	c-electric-pound-behavior '(alignleft)
-	;; No abbrevs
-	abbrev-mode nil
-	))
-(add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
+(defvar c-syntactic-element)
+(eval-when-compile (require 'cc-mode))
 #+END_SRC
 ** Mode: Ediff
 http://oremacs.com/2015/01/17/setting-up-ediff/
