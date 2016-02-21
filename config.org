@@ -2970,7 +2970,7 @@ We only use git, not other version controls:
 (bind-key "C-c c" 'comment-dwim)
 #+END_SRC
 
-** STARTED Smart parens
+** Smart parens
 #+BEGIN_SRC emacs-lisp
 (use-package smartparens
   :ensure t
