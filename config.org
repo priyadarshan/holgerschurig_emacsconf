@@ -2946,6 +2946,38 @@ Nice tip from tuhdo, see https://www.emacswiki.org/emacs/CleanAutoIndent
   (setq dtrt-indent-verbosity 0)
 )
 #+END_SRC
+** Expansion
+*** yasnippet
+Now try yasnippet again now that it's faster.
+
+#+BEGIN_SRC emacs-lisp
+(use-package yasnippet
+  :if (not noninteractive)
+  :defer 3
+  :ensure t
+  :bind (("C-c C-s" . yas-insert-snippet)  ;; used in org-mode for org-schedule
+		 ("C-c s"   . yas-insert-snippet))
+  ;; :diminish yas-minor-mode
+
+  :config
+  (setq yas-indent-line nil)
+
+  ;; No dropdowns please. Oh, and this also turns on helm :-)
+  (setq yas-prompt-functions '(yas-completing-prompt))
+
+  ;; No need to be so verbose
+  (setq yas-verbosity 1)
+
+  ;; Wrap around region
+  (setq yas-wrap-around-region t)
+
+  ;; Set my own
+  ;; (setq yas-snippet-dirs '((concat user-emacs-directory "yasnippet")))
+
+  ;; Now turn it on
+  (yas-global-mode 1)
+)
+#+END_SRC
 ** Disable vc backends
 We only use git, not other version controls:
 
