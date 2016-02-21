@@ -1728,14 +1728,9 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   (setq helm-candidate-number-limit 100)
   (setq helm-quick-update t)
 
-  ;; always pop at bottom
-  ;; from https://github.com/hatschipuh/better-helm
-  (setq helm-split-window-in-side-p t)
-  (add-to-list 'display-buffer-alist
-	       '("\\`\\*helm.*\\*\\'"
-		 (display-buffer-in-side-window)
-		 (inhibit-same-window . t)
-		 (window-height . 0.4)))
+  ;; Put helm window on the right
+  (setq helm-split-window-default-side 'right)
+
   ;; move to end or beginning of source when reaching top or bottom of source.
   (setq helm-move-to-line-cycle-in-source t)
   ;; scroll 8 lines other window using M-<next>/M-<prior>
@@ -1826,7 +1821,7 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   )
 #+END_SRC
 
-**** autoloads
+*** helm autoloads
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-config
