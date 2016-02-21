@@ -665,7 +665,8 @@ Delete identical history entries
 
 #+BEGIN_SRC emacs-lisp
 (setq custom-file (concat user-emacs-directory "custom.el"))
-(if (file-exists-p custom-file) (load-file custom-file))
+(when (file-exists-p custom-file)
+  (load-file custom-file))
 #+END_SRC
 
 Keep lisp names in the custom buffers, don't capitalize:
@@ -684,13 +685,14 @@ A sentence doesn't end with two spaces:
 (setq sentence-end-double-space nil)
 #+END_SRC
 ** Dash
+Add =-difference= as a deferred load to silence the byte-compiler.
 #+BEGIN_SRC emacs-lisp
 (use-package dash
   :defer t
   :commands (-difference)
 )
 #+END_SRC
-* Emacs server
+** Emacs server
 
 - always start the emacs-server, except when run in daemon mode
 - already Disable prompt asking you if you want to kill a buffer
@@ -1094,7 +1096,7 @@ character will be gone, too.
 )
 #+END_SRC
 * Completion
-ignore case when reading a file name completion
+Ignore case when reading a file name completion
 
 #+BEGIN_SRC emacs-lisp
 (setq read-file-name-completion-ignore-case t)
@@ -1227,7 +1229,6 @@ If there are two windows displayed, act like =C-x o=."
 (bind-key "M-o" #'other-window)
 #+END_SRC
 * Buffers
-
 ** Insert buffer
 |-------+---------------|
 | C-x i | insert file   |
@@ -1489,7 +1490,6 @@ for example).
 (define-key minibuffer-local-must-match-map " " nil)
 #+END_SRC
 * Searching
-
 ** isearch (incremental search)
 Scrolling while searching
 
@@ -1514,7 +1514,6 @@ subdirectories:
 (bind-key "M-s g" 'my-grep)
 #+END_SRC
 * Help
-
 ** Go to back to previous help buffer
 Make 'b' (back) go to the previous position in emacs help.
 [[http://www.emacswiki.org/cgi-bin/wiki/EmacsNiftyTricks]]
@@ -1578,7 +1577,7 @@ pops up help after a short delay.
   (setq guide-key/recursive-key-sequence-flag t)
   (guide-key-mode 1))
 #+END_SRC
-* Miscelleanous
+* Miscelleanous functions
 ** dos2unix
 
 #+BEGIN_SRC emacs-lisp
@@ -1633,65 +1632,7 @@ minibuffer."
 	(-1 (message value))))))
 (bind-key "C-=" #'calc-eval-region)
 #+END_SRC
-* Other packages
-** circe (IRC client)
-see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Configuration
-
-#+BEGIN_SRC emacs-lisp
-(use-package circe
-  :defer t
-  :ensure t
-  :commands (circe)
-  :config
-  (setq circe-default-part-message "Fire on mainboard error")
-  (setq circe-quit-part-message "Fire on mainboard error")
-  (setq circe-reduce-lurker-spam t)
-  ;; (circe-set-display-handler "JOIN" (lambda (&rest ignored) nil))
-  ;; (circe-set-display-handler "QUIT" (lambda (&rest ignored) nil))
-  ;; (setq circe-use-cycle-completion t)
-  (setq circe-format-say "{nick}: {body}")
-  (setq circe-server-killed-confirmation 'ask-and-kill-all)
-  ;; Network settings
-  (setq circe-default-ip-family 'ipv4)
-  (setq circe-default-nick "schurig")
-  (setq circe-default-user "schurig")
-  (setq circe-server-auto-join-default-type 'after-auth) ; XXX try after-nick
-  (setq circe-network-options `(("Freenode"
-				  :host "kornbluth.freenode.net"
-				  :port (6667 . 6697)
-				  :channels ("#emacs" "#emacs-circe")
-				  :nickserv-password ,freenode-password)
-				 ))
-  ;; Misc
-  ;; (setq circe-format-server-topic "*** Topic change by {userhost}: {topic-diff}")
-  (use-package lui-autopaste
-	:config
-	(add-hook 'circe-channel-mode-hook 'enable-lui-autopaste)
-	)
-)
-
-(defun irc ()
-  "Connect to IRC"
-  (interactive)
-  (circe "Freenode"))
-#+END_SRC
-** dired
-#+BEGIN_SRC emacs-lisp
-(use-package dired
-  :commands dired
-  :bind ("C-x C-d" . dired) ;; used to be list-directory, quite useless
-  :init
-  (setq dired-listing-switches "-laGh1v --group-directories-first"))
-#+END_SRC
-
-** dired-x
-#+BEGIN_SRC emacs-lisp
-(use-package dired-x
-  :commands dired-jump
-)
-#+END_SRC
-
-** helm
+* helm
 Very good intro: http://tuhdo.github.io/helm-intro.html
 
 #+BEGIN_SRC emacs-lisp
@@ -1957,468 +1898,49 @@ https://github.com/ShingoFukuyama/helm-swoop
   :defer t
   :commands (lv-message))
 #+END_SRC
-* Mail & News
-
-** smtpmail
-http://emacs.stackexchange.com/questions/6105/how-to-set-proper-smtp-gmail-settings-in-emacs-in-order-to-be-able-to-work-with
-http://superuser.com/questions/476714/how-to-configure-emacs-smtp-for-using-a-secure-server-gmail
+** flyspell
 
 #+BEGIN_SRC emacs-lisp
-(use-package smtpmail
-  :defer t
-  :config
-  (setq smtpmail-default-smtp-server "smtp.gmail.com"
-	smtpmail-smtp-server "smtp.gmail.com"
-	smtpmail-stream-type 'starttls
-	smtpmail-smtp-service 587
-	smtpmail-debug-info t))
+(use-package flyspell
+ :diminish flyspell-mode
+ :commands (flyspell-mode flyspell-prog-mode)
+ :config
+ (add-to-list 'flyspell-dictionaries-that-consider-dash-as-word-delimiter "german-new8")
+ (setq flyspell-issue-welcome-flag nil)
+ ;; M-Tab is owned by the window manager, correct with C-M-i
+ (setq flyspell-use-meta-tab nil)
+ ;; Flyspell hijacked C-., which I want to use for tags
+ (define-key flyspell-mode-map [(control ?\.)] nil)
+ )
+
 #+END_SRC
-** sendmail
-http://www.emacswiki.org/emacs/MuttInEmacs
-http://dev.mutt.org/trac/wiki/MuttFaq/Editor
+
+Flyspell is in elisp mode. And this in turn loads flyspell directly
+after launching emacs, which is a bit unfortunate.
 
 #+BEGIN_SRC emacs-lisp
-(use-package sendmail
-  :defer t
-  :commands (mail-mode mail-text)
-  :defines (send-mail-function)
-  :mode (("/tmp/mutt-*" . mail-mode))
+(defun my-flyspell-prog-mode ()
+  (interactive)
+  (unless (string= (buffer-name) "*scratch*")
+	(flyspell-prog-mode)))
+(add-hook 'prog-mode-hook  #'my-flyspell-prog-mode)
+(add-hook 'text-mode-hook  #'flyspell-mode)
+(add-hook 'org-mode-hook   #'flyspell-mode)
+(add-hook 'latex-mode-hook #'flyspell-mode)
+(add-hook 'LaTeX-mode-hook #'flyspell-mode)
+#+END_SRC
+
+*** helm-flyspell
+https://github.com/pronobis/helm-flyspell
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-flyspell
+  :commands helm-flyspell-correct
   :config
-  (defun my-mail-quit ()
-	(interactive)
-	(not-modified)
-	(server-edit))
-  (defun my-mail-save ()
-	(interactive)
-	(save-buffer)
-	(server-edit))
-  (defun my-mail-mode-hook ()
-	(flush-lines "^\\(> \n\\)*> -- \n\\(\n?> .*\\)*") ; kill quoted sigs
-	;; (visual-line-mode t)
-	(auto-fill-mode)
-	(delete-trailing-whitespace)
-	(mail-text)
-	(fill-region (point) (point-max))
-	(not-modified)
-	(setq make-backup-files nil))
-
-  ;; Sending mail
-  (setq send-mail-function 'smtpmail-send-it)
-
-  (add-hook 'mail-mode-hook 'my-mail-mode-hook)
-  (bind-key "C-c C-c" 'my-mail-done mail-mode-map)
-  (bind-key "C-x k" 'my-mail-quit mail-mode-map)
+  (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
   )
 #+END_SRC
-
-** message
-
-#+BEGIN_SRC emacs-lisp
-(use-package message
-  :defer t
-  :config
-  ;; When composing a mail, start the auto-fill-mode.
-  (add-hook 'message-mode-hook 'turn-on-auto-fill)
-  ;; (add-hook 'message-setup-hook 'bbdb-define-all-aliases)
-
-  ;; Generate the mail headers before you edit your message.
-  (setq message-generate-headers-first t)
-
-  ;; The message buffer will be killed after sending a message.
-  (setq message-kill-buffer-on-exit t)
-
-  ;;(require 'starttls)
-  ;;(require 'smtpmail)
-  :commands message-mode
-  ;;:mode (("/mutt" . message-mode))
-)
-#+END_SRC
-
-** gnus
-https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnus-guide-en.org
-http://www.emacswiki.org/emacs/GnusGmail
-http://www.xsteve.at/prg/gnus/
-https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
-
-#+BEGIN_SRC emacs-lisp
-(use-package gnus
-  :bind ("C-c n" . gnus)
-  :config
-  (require 'mm-decode)
-#+END_SRC
-
-*** general setup
-
-#+BEGIN_SRC emacs-lisp
-  ;; Store gnus specific files to ~/gnus, maybe also set nnml-directory
-  (setq gnus-directory (concat user-emacs-directory "News/")
-	message-directory (concat user-emacs-directory "Mail/")
-	gnus-article-save-directory (concat user-emacs-directory "News/saved/")
-	gnus-kill-files-directory (concat user-emacs-directory "News/scores/")
-	gnus-cache-directory (concat user-emacs-directory "News/cache/"))
-
-  (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
-
-#+END_SRC
-
-*** News sources
-
-#+BEGIN_SRC emacs-lisp
-  ;;http://www.xsteve.at/prg/gnus/
-  (setq gnus-select-method '(nntp "news.gmane.org"))
-
-  ;; Local offlineimap repository
-  (add-to-list 'gnus-secondary-select-methods
-		   '(nnmaildir "" (directory "~/Maildir/")))
-
-#+END_SRC
-
-*** Summary list
-
-#+BEGIN_SRC emacs-lisp
-  ;; don't refrain to show a big amount of messages
-  (setq gnus-large-newsgroup 10000)
-  (setq gnus-summary-line-format "%U%R %11,11&user-date; %-22,22n %B%-80,80S\n")
-
-  ;; Added some keybindings to the gnus summary mode
-  (define-key gnus-summary-mode-map [(meta up)] '(lambda() (interactive) (scroll-other-window -1)))
-  (define-key gnus-summary-mode-map [(meta down)] '(lambda() (interactive) (scroll-other-window 1)))
-  (define-key gnus-summary-mode-map [(control down)] 'gnus-summary-next-thread)
-  (define-key gnus-summary-mode-map [(control up)] 'gnus-summary-prev-thread)
-
-  ;; stop the annoying "move to colon" function
-  (defun gnus-summary-position-point ()
-	)
-#+END_SRC
-
-*** GNUS articles
-
-#+BEGIN_SRC emacs-lisp
-  ;; And this switches the cursor into this other window when we select an article
-  (defun my--after-select-article (&rest args)
-	(let ((window (get-buffer-window (get-buffer "*Article*"))))
-	  (when window
-	(select-window window))))
-  (advice-add 'gnus-summary-select-article :after 'my--after-select-article)
-
-  (defun my--delete-window ()
-	(interactive)
-	(if (one-window-p)
-		(bury-buffer)
-	  (delete-window)))
-  (bind-key "q"      'my--delete-window   gnus-article-mode-map)
-  (bind-key "<home>" 'beginning-of-buffer gnus-article-mode-map)
-  (bind-key "<end>"  'end-of-buffer       gnus-article-mode-map)
-)
-#+END_SRC
-
-*** autostarts
-#+BEGIN_SRC emacs-lisp
-(use-package gnus-start
-  :defer t
-  :config
-  ;; Unconditionally read the dribble file
-  (setq gnus-always-read-dribble-file t)
-)
-(use-package gnus-sum
-  :defer t
-  :config
-  ;; re-use one article buffer for every group
-  (setq gnus-single-article-buffer t)
-
-  ;; don't substitute my e-mail with some "-> RECEIVER" magic
-  (setq gnus-ignored-from-addresses nil)
-
-  ;; make threads full
-  (setq gnus-fetch-old-headers t)
-
-  ;; If you prefer to see only the top level message. If a message has
-  ;; several replies or is part of a thread, only show the first
-  ;; message. 'gnus-thread-ignore-subject' will ignore the subject and
-  ;; look at 'In-Reply-To:' and 'References:' headers.
-  ;; (setq gnus-thread-hide-subtree t)
-
-  ;; Sort by date:
-  (setq gnus-thread-sort-functions
-		'((not gnus-thread-sort-by-date)
-		  (not gnus-thread-sort-by-number)))
-
-
-  ;;  %U  "Read" status of this article.
-  ;;  %R  "A" if this article has been replied to, " "
-  ;;  %d  Date of the article (string) in DD-MMM format
-  ;;  %L  Number of lines in the article (integer)
-  ;;  %n  Name of poster
-  ;;  %B  A complex trn-style thread tree (string), see gnus-sum-thread-*
-  ;;  %S  Subject (string)
-  ;; Some others:
-  ;;  %z  Article zcore (character), try %i
-  ;;  %I  Indentation based on thread level
-  ;;  %f  Contents of the From: or To: headers (string)
-  ;;  %s  Subject if it is at the root of a thread, and "" otherwise
-  ;;  %O  Download mark (character).
-  ;; Original                    "%U%R%z%I%(%[%4L: %-23,23f%]%) %s\n"
-  (setq gnus-user-date-format-alist '(
-					  ((gnus-seconds-today)           . "%H:%M")
-					  ((+ 86400 (gnus-seconds-today)) . "gest %H:%M")
-					  ((gnus-seconds-year)            . "%d.%m %H:%M")
-					  (t                              . "%d.%m. %Y")
-					  ))
-)
-#+END_SRC
-
-*** gnus-art
-
-#+BEGIN_SRC emacs-lisp
-(use-package gnus-art
-  :defer t
-  :commands (gnus-article-reply-with-original
-		 gnus-article-wide-reply-with-original
-		 gnus-mime-save-part)
-)
-#+END_SRC
-
-*** gnus-group
-
-#+BEGIN_SRC emacs-lisp
-(use-package gnus-group
-  :defer t
-  :commands (gnus-group-catchup-current
-		 gnus-group-enter-server-mode
-		 gnus-group-get-new-news
-		 gnus-group-list-active
-		 gnus-group-list-all-groups
-		 gnus-group-make-nnir-group
-		 gnus-group-new-mail
-		 hydra-gnus-group/body
-		 )
-  :config
-  (defhydra hydra-gnus-group (:color pink :hint nil)
-	"
-^Local^                        | ^Server^
------------------------------+-------------------------------------
-_l_  list all groups           | _L_  list active groups on IMAP server
-_c_  catch up all (mark read)  | _s_  search on server
-_g_  get new news              | _S_  enter server mode
------------------------------+-------------------------------------
-_m_  mail new post
-"
-	   ("l" gnus-group-list-all-groups)
-	   ("c" gnus-group-catchup-current)
-	   ("g" gnus-group-get-new-news)
-
-	   ("L" gnus-group-list-active :exit t)
-	   ("s" gnus-group-make-nnir-group :exit t)
-	   ("S" gnus-group-enter-server-mode :exit t)
-
-	   ("m" gnus-group-new-mail :exit t)
-	   ("q" nil "quit" :color blue)
-	   ;; ("r" gnus-group-list-active "REMOTE groups A A")
-	   ;; ("l" gnus-group-list-all-groups "LOCAL groups L")
-	   ;; ("c" gnus-topic-catchup-articles "Read all c")
-	   ;; ("G" gnus-group-make-nnir-group "Search server G G")
-	   ;; ("g" gnus-group-get-new-news "Refresh g")
-	   ;; ("s" gnus-group-enter-server-mode "Servers")
-	   ;; ("m" gnus-group-new-mail "Compose m OR C-x m")
-	   ;; ("#" gnus-topic-mark-topic "mark #")
-	   ;; ("q" nil "cancel")
-	   )
-	 ;; y is not used by default
-	 (bind-key "y" #'hydra-gnus-group/body gnus-group-mode-map ))
-#+END_SRC
-
-** gnus-sum
-
-#+BEGIN_SRC emacs-lisp
-(use-package gnus-sum
-  :defer t
-  :commands (gnus-summary-catchup-and-exit
-		 gnus-summary-clear-mark-forward
-		 gnus-summary-exit
-		 gnus-summary-exit-no-update
-		 gnus-summary-goto-subject
-		 gnus-summary-kill-thread
-		 gnus-summary-last-subject
-		 gnus-summary-mail-forward
-		 gnus-summary-put-mark-as-read
-		 gnus-summary-reply
-		 gnus-summary-reply-with-original
-		 gnus-summary-resend-message-edit
-		 gnus-summary-save-article-body-file
-		 gnus-summary-tick-article-forward
-		 gnus-summary-wide-reply
-		 gnus-summary-wide-reply-with-original
-		 my--gnus-summary-exit-no-update
-		 hydra-gnus-summary/body
-		 )
-  :config
-  (defhydra hydra-gnus-summary (:color pink :hint nil)
-	"
-^Posting^                  ^Handling^
------------------------+------------------
-_f_  forward             | _!_  tick & keep
-_e_  resend & edit       | _p_  untick
-_R_  reply & quote       | _c_  catchup
-_r_  reply personal      | _C_  catchup thread
-_W_  wide reply & quote  | _u_  unmark
-_w_  wide reply          |
-
-_p_  save as patch
-"
-	;; ("n" gnus-summary-insert-new-articles "Refresh / N")
-	("f" gnus-summary-mail-forward :exit t)
-	("e" gnus-summary-resend-message-edit :exit t)
-	("R" gnus-summary-reply-with-original :exit t)
-	("r" gnus-summary-reply :exit t)
-	("W" gnus-summary-wide-reply-with-original :exit t)
-	("w" gnus-summary-wide-reply :exit t)
-
-	("!" gnus-summary-tick-article-forward)
-	("p" gnus-summary-put-mark-as-read)
-	("c" gnus-summary-catchup-and-exit)
-	("C" gnus-summary-kill-thread)
-	("u" gnus-summary-clear-mark-forward)
-
-	("p" gnus-summary-save-article-body-file)
-
-	("q" nil "quit"))
-  ;; y is not used by default
-  (bind-key "y" #'hydra-gnus-summary/body gnus-summary-mode-map)
-
-  ;; (almost) swap "q" and "Q"
-  (defun my--gnus-summary-exit-no-update ()
-	"This is identical to gnus-summary-exit-no-update, but it doesn't ask
-for yes-or-no."
-	(interactive)
-	(gnus-summary-exit-no-update t))
-  (bind-key "q" #'my--gnus-summary-exit-no-update gnus-summary-mode-map)
-  (bind-key "Q" #'gnus-summary-exit gnus-summary-mode-map)
-  )
-#+END_SRC
-
-** gnus-art
-
-#+BEGIN_SRC emacs-lisp
-(use-package gnus-art
-  :defer t
-  :commands (gnus-article-wide-reply
-		 gnus-article-reply
-		 hydra-gnus-article/body)
-  :config
-
-  ;; Test code, position cursor inside and run C-C-x to evaluate:
-  ;;
-  ;; (let ((filename "[PATCH 03/05] foo"))
-  ;;   (when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
-  ;;     (message "%s -> %04d" filename (string-to-number (match-string 1 filename)))
-  ;;     ;; (message "%s" filename)
-  ;;     )
-  ;;   ))
-
-  ;; save news article body as patch, via gnus-summary-save-article-body-file "O b"
-  (defun gnus-read-save-file-name (prompt &optional filename
-					  function group headers variable
-					  dir-var)
-	(let ((patchnum))
-	  (setq filename (gnus-summary-article-subject))
-	  (when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
-		(setq patchnum (string-to-number (match-string 1 filename)))
-		(message "%s" patchnum))
-	  ;; (when string-match "\\[PATCH.+?\\]" filename)
-	  (message "FILENAME %s" filename)
-	  (setq filename (replace-regexp-in-string "\\[PATCH.*\\]" "" filename))
-	  (setq filename (replace-regexp-in-string "\[^a-zA-Z0-9]" "-" filename))
-	  (setq filename (replace-regexp-in-string "\\-+" "-" filename))
-	  (setq filename (replace-regexp-in-string "^-" "" filename))
-	  (setq filename (replace-regexp-in-string "-$" "" filename))
-	  (when patchnum
-		(setq filename (concat (format "%04d" patchnum) "-" filename)))
-	  (setq filename (concat "/tmp/" filename ".patch"))
-	  (when (file-exists-p filename)
-		(delete-file filename))
-	  filename))
-
-	(defhydra hydra-gnus-article (:color pink :hint nil)
-	"
-^Posting^                  ^Handling^
------------------------+---------------------------
-_f_  forward             | _!_  tick & keep
-_R_  reply & quote       | _p_  untick
-_r_  reply personal      | _c_  catchup
-_W_  wide reply & quote  | _C_  catchup thread
-_w_  wide reply          | _u_  unmark
-					   | _o_  save attachment at point
-_p_  save as patch
-"
-	;; ("n" gnus-summary-insert-new-articles "Refresh / N")
-	("f" gnus-summary-mail-forward :exit t)
-	("R" gnus-article-reply-with-original :exit t)
-	("r" gnus-article-reply :exit t)
-	("W" gnus-article-wide-reply-with-original :exit t)
-	("w" gnus-article-wide-reply :exit t)
-
-	("!" gnus-summary-tick-article-forward)
-	("p" gnus-summary-put-mark-as-read)
-	("c" gnus-summary-catchup-and-exit)
-	("C" gnus-summary-kill-thread)
-	("u" gnus-summary-clear-mark-forward)
-	("o" gnus-mime-save-part)
-
-	("p" gnus-summary-save-article-body-file)
-
-	("q" nil "quit"))
-  ;; y is not used by default
-  (bind-key "y" #'hydra-gnus-article/body gnus-article-mode-map)
-  )
-#+END_SRC
-
-** mm-decode
-#+BEGIN_SRC emacs-lisp
-(use-package mm-decode
-  :defer t
-  :config
-  ;; Hide HTML mail
-  (setq mm-discouraged-alternatives '("text/html" "text/richtext")
-	mm-automatic-display (-difference mm-automatic-display '("text/html" "text/enriched" "text/richtext"))
-	)
-  )
-#+END_SRC
-
-** CANCELED bbdb
-
-#+BEGIN_SRC emacs-lisp
-(use-package bbdb
-  :ensure t
-  :defer t
-  :commands (bbdb bbdb-insinuate-gnus bbdb-insinuate-message)
-  :bind ("C-c b" . bbdb)
-  :config
-  (bbdb-initialize 'gnus 'message)
-
-  (setq bbdb-file (concat user-emacs-directory "db.bbdb"))
-  (setq bbdb-update-records-p 'create)
-  ;; (setq bbdb-mua-pop-up nil)
-  (setq bbdb-silent t)
-  (setq bbdb-user-mail-address-re "\\<holgerschurig@gmail.com\\>")
-  (setq bbdb-add-name t)
-  (setq bbdb-add-aka t)
-  (setq bbdb-add-mails t)
-  (setq bbdb-new-mails-primary t)
-  (setq bbdb-complete-mail-allow-cycling t)
-  (setq bbdd-phone-style nil)
-  (setq bbdb-ignore-message-alist
-		'(("From" . "mailer-daemon")
-		  ("From" . "bugs.launchpad.net")
-		  ("From" . "postmaster.twitter.com")
-		  ("From" . "plus.google.com")
-		  ("From" . "notify@twitter.com")
-		  (("To" "From") . "review@openstack.org")))
-  ;; (setq bbdb-allow-duplicates t)
-)
-#+END_SRC
-
-** org
-
+* org-mode
 *** org itself
 
 #+BEGIN_SRC emacs-lisp
@@ -2863,47 +2385,519 @@ http://www.suenkler.info/docs/emacs-orgmode/
   :defines (htmlize-version)
 )
 #+END_SRC
-** flyspell
+* Single packages
+** circe (IRC client)
+see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Configuration
 
 #+BEGIN_SRC emacs-lisp
-(use-package flyspell
- :diminish flyspell-mode
- :commands (flyspell-mode flyspell-prog-mode)
- :config
- (add-to-list 'flyspell-dictionaries-that-consider-dash-as-word-delimiter "german-new8")
- (setq flyspell-issue-welcome-flag nil)
- ;; M-Tab is owned by the window manager, correct with C-M-i
- (setq flyspell-use-meta-tab nil)
- ;; Flyspell hijacked C-., which I want to use for tags
- (define-key flyspell-mode-map [(control ?\.)] nil)
- )
-
-#+END_SRC
-
-Flyspell is in elisp mode. And this in turn loads flyspell directly
-after launching emacs, which is a bit unfortunate.
-
-#+BEGIN_SRC emacs-lisp
-(defun my-flyspell-prog-mode ()
-  (interactive)
-  (unless (string= (buffer-name) "*scratch*")
-	(flyspell-prog-mode)))
-(add-hook 'prog-mode-hook  #'my-flyspell-prog-mode)
-(add-hook 'text-mode-hook  #'flyspell-mode)
-(add-hook 'org-mode-hook   #'flyspell-mode)
-(add-hook 'latex-mode-hook #'flyspell-mode)
-(add-hook 'LaTeX-mode-hook #'flyspell-mode)
-#+END_SRC
-
-*** helm-flyspell
-https://github.com/pronobis/helm-flyspell
-
-#+BEGIN_SRC emacs-lisp
-(use-package helm-flyspell
-  :commands helm-flyspell-correct
+(use-package circe
+  :defer t
+  :ensure t
+  :commands (circe)
   :config
-  (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
+  (setq circe-default-part-message "Fire on mainboard error")
+  (setq circe-quit-part-message "Fire on mainboard error")
+  (setq circe-reduce-lurker-spam t)
+  ;; (circe-set-display-handler "JOIN" (lambda (&rest ignored) nil))
+  ;; (circe-set-display-handler "QUIT" (lambda (&rest ignored) nil))
+  ;; (setq circe-use-cycle-completion t)
+  (setq circe-format-say "{nick}: {body}")
+  (setq circe-server-killed-confirmation 'ask-and-kill-all)
+  ;; Network settings
+  (setq circe-default-ip-family 'ipv4)
+  (setq circe-default-nick "schurig")
+  (setq circe-default-user "schurig")
+  (setq circe-server-auto-join-default-type 'after-auth) ; XXX try after-nick
+  (setq circe-network-options `(("Freenode"
+				  :host "kornbluth.freenode.net"
+				  :port (6667 . 6697)
+				  :channels ("#emacs" "#emacs-circe")
+				  :nickserv-password ,freenode-password)
+				 ))
+  ;; Misc
+  ;; (setq circe-format-server-topic "*** Topic change by {userhost}: {topic-diff}")
+  (use-package lui-autopaste
+	:config
+	(add-hook 'circe-channel-mode-hook 'enable-lui-autopaste)
+	)
+)
+
+(defun irc ()
+  "Connect to IRC"
+  (interactive)
+  (circe "Freenode"))
+#+END_SRC
+** dired
+#+BEGIN_SRC emacs-lisp
+(use-package dired
+  :commands dired
+  :bind ("C-x C-d" . dired) ;; used to be list-directory, quite useless
+  :init
+  (setq dired-listing-switches "-laGh1v --group-directories-first"))
+#+END_SRC
+
+** dired-x
+#+BEGIN_SRC emacs-lisp
+(use-package dired-x
+  :commands dired-jump
+)
+#+END_SRC
+* Mail & News
+** smtpmail
+http://emacs.stackexchange.com/questions/6105/how-to-set-proper-smtp-gmail-settings-in-emacs-in-order-to-be-able-to-work-with
+http://superuser.com/questions/476714/how-to-configure-emacs-smtp-for-using-a-secure-server-gmail
+
+#+BEGIN_SRC emacs-lisp
+(use-package smtpmail
+  :defer t
+  :config
+  (setq smtpmail-default-smtp-server "smtp.gmail.com"
+	smtpmail-smtp-server "smtp.gmail.com"
+	smtpmail-stream-type 'starttls
+	smtpmail-smtp-service 587
+	smtpmail-debug-info t))
+#+END_SRC
+** sendmail
+http://www.emacswiki.org/emacs/MuttInEmacs
+http://dev.mutt.org/trac/wiki/MuttFaq/Editor
+
+#+BEGIN_SRC emacs-lisp
+(use-package sendmail
+  :defer t
+  :commands (mail-mode mail-text)
+  :defines (send-mail-function)
+  :mode (("/tmp/mutt-*" . mail-mode))
+  :config
+  (defun my-mail-quit ()
+	(interactive)
+	(not-modified)
+	(server-edit))
+  (defun my-mail-save ()
+	(interactive)
+	(save-buffer)
+	(server-edit))
+  (defun my-mail-mode-hook ()
+	(flush-lines "^\\(> \n\\)*> -- \n\\(\n?> .*\\)*") ; kill quoted sigs
+	;; (visual-line-mode t)
+	(auto-fill-mode)
+	(delete-trailing-whitespace)
+	(mail-text)
+	(fill-region (point) (point-max))
+	(not-modified)
+	(setq make-backup-files nil))
+
+  ;; Sending mail
+  (setq send-mail-function 'smtpmail-send-it)
+
+  (add-hook 'mail-mode-hook 'my-mail-mode-hook)
+  (bind-key "C-c C-c" 'my-mail-done mail-mode-map)
+  (bind-key "C-x k" 'my-mail-quit mail-mode-map)
   )
+#+END_SRC
+
+** message
+
+#+BEGIN_SRC emacs-lisp
+(use-package message
+  :defer t
+  :config
+  ;; When composing a mail, start the auto-fill-mode.
+  (add-hook 'message-mode-hook 'turn-on-auto-fill)
+  ;; (add-hook 'message-setup-hook 'bbdb-define-all-aliases)
+
+  ;; Generate the mail headers before you edit your message.
+  (setq message-generate-headers-first t)
+
+  ;; The message buffer will be killed after sending a message.
+  (setq message-kill-buffer-on-exit t)
+
+  ;;(require 'starttls)
+  ;;(require 'smtpmail)
+  :commands message-mode
+  ;;:mode (("/mutt" . message-mode))
+)
+#+END_SRC
+
+** gnus
+https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnus-guide-en.org
+http://www.emacswiki.org/emacs/GnusGmail
+http://www.xsteve.at/prg/gnus/
+https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
+
+#+BEGIN_SRC emacs-lisp
+(use-package gnus
+  :bind ("C-c n" . gnus)
+  :config
+  (require 'mm-decode)
+#+END_SRC
+
+** general setup
+
+#+BEGIN_SRC emacs-lisp
+  ;; Store gnus specific files to ~/gnus, maybe also set nnml-directory
+  (setq gnus-directory (concat user-emacs-directory "News/")
+	message-directory (concat user-emacs-directory "Mail/")
+	gnus-article-save-directory (concat user-emacs-directory "News/saved/")
+	gnus-kill-files-directory (concat user-emacs-directory "News/scores/")
+	gnus-cache-directory (concat user-emacs-directory "News/cache/"))
+
+  (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+
+#+END_SRC
+
+** News sources
+
+#+BEGIN_SRC emacs-lisp
+  ;;http://www.xsteve.at/prg/gnus/
+  (setq gnus-select-method '(nntp "news.gmane.org"))
+
+  ;; Local offlineimap repository
+  (add-to-list 'gnus-secondary-select-methods
+		   '(nnmaildir "" (directory "~/Maildir/")))
+
+#+END_SRC
+
+** Summary list
+
+#+BEGIN_SRC emacs-lisp
+  ;; don't refrain to show a big amount of messages
+  (setq gnus-large-newsgroup 10000)
+  (setq gnus-summary-line-format "%U%R %11,11&user-date; %-22,22n %B%-80,80S\n")
+
+  ;; Added some keybindings to the gnus summary mode
+  (define-key gnus-summary-mode-map [(meta up)] '(lambda() (interactive) (scroll-other-window -1)))
+  (define-key gnus-summary-mode-map [(meta down)] '(lambda() (interactive) (scroll-other-window 1)))
+  (define-key gnus-summary-mode-map [(control down)] 'gnus-summary-next-thread)
+  (define-key gnus-summary-mode-map [(control up)] 'gnus-summary-prev-thread)
+
+  ;; stop the annoying "move to colon" function
+  (defun gnus-summary-position-point ()
+	)
+#+END_SRC
+
+** GNUS articles
+
+#+BEGIN_SRC emacs-lisp
+  ;; And this switches the cursor into this other window when we select an article
+  (defun my--after-select-article (&rest args)
+	(let ((window (get-buffer-window (get-buffer "*Article*"))))
+	  (when window
+	(select-window window))))
+  (advice-add 'gnus-summary-select-article :after 'my--after-select-article)
+
+  (defun my--delete-window ()
+	(interactive)
+	(if (one-window-p)
+		(bury-buffer)
+	  (delete-window)))
+  (bind-key "q"      'my--delete-window   gnus-article-mode-map)
+  (bind-key "<home>" 'beginning-of-buffer gnus-article-mode-map)
+  (bind-key "<end>"  'end-of-buffer       gnus-article-mode-map)
+)
+#+END_SRC
+
+** autostarts
+#+BEGIN_SRC emacs-lisp
+(use-package gnus-start
+  :defer t
+  :config
+  ;; Unconditionally read the dribble file
+  (setq gnus-always-read-dribble-file t)
+)
+(use-package gnus-sum
+  :defer t
+  :config
+  ;; re-use one article buffer for every group
+  (setq gnus-single-article-buffer t)
+
+  ;; don't substitute my e-mail with some "-> RECEIVER" magic
+  (setq gnus-ignored-from-addresses nil)
+
+  ;; make threads full
+  (setq gnus-fetch-old-headers t)
+
+  ;; If you prefer to see only the top level message. If a message has
+  ;; several replies or is part of a thread, only show the first
+  ;; message. 'gnus-thread-ignore-subject' will ignore the subject and
+  ;; look at 'In-Reply-To:' and 'References:' headers.
+  ;; (setq gnus-thread-hide-subtree t)
+
+  ;; Sort by date:
+  (setq gnus-thread-sort-functions
+		'((not gnus-thread-sort-by-date)
+		  (not gnus-thread-sort-by-number)))
+
+
+  ;;  %U  "Read" status of this article.
+  ;;  %R  "A" if this article has been replied to, " "
+  ;;  %d  Date of the article (string) in DD-MMM format
+  ;;  %L  Number of lines in the article (integer)
+  ;;  %n  Name of poster
+  ;;  %B  A complex trn-style thread tree (string), see gnus-sum-thread-*
+  ;;  %S  Subject (string)
+  ;; Some others:
+  ;;  %z  Article zcore (character), try %i
+  ;;  %I  Indentation based on thread level
+  ;;  %f  Contents of the From: or To: headers (string)
+  ;;  %s  Subject if it is at the root of a thread, and "" otherwise
+  ;;  %O  Download mark (character).
+  ;; Original                    "%U%R%z%I%(%[%4L: %-23,23f%]%) %s\n"
+  (setq gnus-user-date-format-alist '(
+					  ((gnus-seconds-today)           . "%H:%M")
+					  ((+ 86400 (gnus-seconds-today)) . "gest %H:%M")
+					  ((gnus-seconds-year)            . "%d.%m %H:%M")
+					  (t                              . "%d.%m. %Y")
+					  ))
+)
+#+END_SRC
+
+** gnus-art
+
+#+BEGIN_SRC emacs-lisp
+(use-package gnus-art
+  :defer t
+  :commands (gnus-article-reply-with-original
+		 gnus-article-wide-reply-with-original
+		 gnus-mime-save-part)
+)
+#+END_SRC
+
+** gnus-group
+
+#+BEGIN_SRC emacs-lisp
+(use-package gnus-group
+  :defer t
+  :commands (gnus-group-catchup-current
+		 gnus-group-enter-server-mode
+		 gnus-group-get-new-news
+		 gnus-group-list-active
+		 gnus-group-list-all-groups
+		 gnus-group-make-nnir-group
+		 gnus-group-new-mail
+		 hydra-gnus-group/body
+		 )
+  :config
+  (defhydra hydra-gnus-group (:color pink :hint nil)
+	"
+^Local^                        | ^Server^
+-----------------------------+-------------------------------------
+_l_  list all groups           | _L_  list active groups on IMAP server
+_c_  catch up all (mark read)  | _s_  search on server
+_g_  get new news              | _S_  enter server mode
+-----------------------------+-------------------------------------
+_m_  mail new post
+"
+	   ("l" gnus-group-list-all-groups)
+	   ("c" gnus-group-catchup-current)
+	   ("g" gnus-group-get-new-news)
+
+	   ("L" gnus-group-list-active :exit t)
+	   ("s" gnus-group-make-nnir-group :exit t)
+	   ("S" gnus-group-enter-server-mode :exit t)
+
+	   ("m" gnus-group-new-mail :exit t)
+	   ("q" nil "quit" :color blue)
+	   ;; ("r" gnus-group-list-active "REMOTE groups A A")
+	   ;; ("l" gnus-group-list-all-groups "LOCAL groups L")
+	   ;; ("c" gnus-topic-catchup-articles "Read all c")
+	   ;; ("G" gnus-group-make-nnir-group "Search server G G")
+	   ;; ("g" gnus-group-get-new-news "Refresh g")
+	   ;; ("s" gnus-group-enter-server-mode "Servers")
+	   ;; ("m" gnus-group-new-mail "Compose m OR C-x m")
+	   ;; ("#" gnus-topic-mark-topic "mark #")
+	   ;; ("q" nil "cancel")
+	   )
+	 ;; y is not used by default
+	 (bind-key "y" #'hydra-gnus-group/body gnus-group-mode-map ))
+#+END_SRC
+** gnus-sum
+
+#+BEGIN_SRC emacs-lisp
+(use-package gnus-sum
+  :defer t
+  :commands (gnus-summary-catchup-and-exit
+		 gnus-summary-clear-mark-forward
+		 gnus-summary-exit
+		 gnus-summary-exit-no-update
+		 gnus-summary-goto-subject
+		 gnus-summary-kill-thread
+		 gnus-summary-last-subject
+		 gnus-summary-mail-forward
+		 gnus-summary-put-mark-as-read
+		 gnus-summary-reply
+		 gnus-summary-reply-with-original
+		 gnus-summary-resend-message-edit
+		 gnus-summary-save-article-body-file
+		 gnus-summary-tick-article-forward
+		 gnus-summary-wide-reply
+		 gnus-summary-wide-reply-with-original
+		 my--gnus-summary-exit-no-update
+		 hydra-gnus-summary/body
+		 )
+  :config
+  (defhydra hydra-gnus-summary (:color pink :hint nil)
+	"
+^Posting^                  ^Handling^
+-----------------------+------------------
+_f_  forward             | _!_  tick & keep
+_e_  resend & edit       | _p_  untick
+_R_  reply & quote       | _c_  catchup
+_r_  reply personal      | _C_  catchup thread
+_W_  wide reply & quote  | _u_  unmark
+_w_  wide reply          |
+
+_p_  save as patch
+"
+	;; ("n" gnus-summary-insert-new-articles "Refresh / N")
+	("f" gnus-summary-mail-forward :exit t)
+	("e" gnus-summary-resend-message-edit :exit t)
+	("R" gnus-summary-reply-with-original :exit t)
+	("r" gnus-summary-reply :exit t)
+	("W" gnus-summary-wide-reply-with-original :exit t)
+	("w" gnus-summary-wide-reply :exit t)
+
+	("!" gnus-summary-tick-article-forward)
+	("p" gnus-summary-put-mark-as-read)
+	("c" gnus-summary-catchup-and-exit)
+	("C" gnus-summary-kill-thread)
+	("u" gnus-summary-clear-mark-forward)
+
+	("p" gnus-summary-save-article-body-file)
+
+	("q" nil "quit"))
+  ;; y is not used by default
+  (bind-key "y" #'hydra-gnus-summary/body gnus-summary-mode-map)
+
+  ;; (almost) swap "q" and "Q"
+  (defun my--gnus-summary-exit-no-update ()
+	"This is identical to gnus-summary-exit-no-update, but it doesn't ask
+for yes-or-no."
+	(interactive)
+	(gnus-summary-exit-no-update t))
+  (bind-key "q" #'my--gnus-summary-exit-no-update gnus-summary-mode-map)
+  (bind-key "Q" #'gnus-summary-exit gnus-summary-mode-map)
+  )
+#+END_SRC
+
+** gnus-art
+
+#+BEGIN_SRC emacs-lisp
+(use-package gnus-art
+  :defer t
+  :commands (gnus-article-wide-reply
+		 gnus-article-reply
+		 hydra-gnus-article/body)
+  :config
+
+  ;; Test code, position cursor inside and run C-C-x to evaluate:
+  ;;
+  ;; (let ((filename "[PATCH 03/05] foo"))
+  ;;   (when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
+  ;;     (message "%s -> %04d" filename (string-to-number (match-string 1 filename)))
+  ;;     ;; (message "%s" filename)
+  ;;     )
+  ;;   ))
+
+  ;; save news article body as patch, via gnus-summary-save-article-body-file "O b"
+  (defun gnus-read-save-file-name (prompt &optional filename
+					  function group headers variable
+					  dir-var)
+	(let ((patchnum))
+	  (setq filename (gnus-summary-article-subject))
+	  (when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
+		(setq patchnum (string-to-number (match-string 1 filename)))
+		(message "%s" patchnum))
+	  ;; (when string-match "\\[PATCH.+?\\]" filename)
+	  (message "FILENAME %s" filename)
+	  (setq filename (replace-regexp-in-string "\\[PATCH.*\\]" "" filename))
+	  (setq filename (replace-regexp-in-string "\[^a-zA-Z0-9]" "-" filename))
+	  (setq filename (replace-regexp-in-string "\\-+" "-" filename))
+	  (setq filename (replace-regexp-in-string "^-" "" filename))
+	  (setq filename (replace-regexp-in-string "-$" "" filename))
+	  (when patchnum
+		(setq filename (concat (format "%04d" patchnum) "-" filename)))
+	  (setq filename (concat "/tmp/" filename ".patch"))
+	  (when (file-exists-p filename)
+		(delete-file filename))
+	  filename))
+
+	(defhydra hydra-gnus-article (:color pink :hint nil)
+	"
+^Posting^                  ^Handling^
+-----------------------+---------------------------
+_f_  forward             | _!_  tick & keep
+_R_  reply & quote       | _p_  untick
+_r_  reply personal      | _c_  catchup
+_W_  wide reply & quote  | _C_  catchup thread
+_w_  wide reply          | _u_  unmark
+					   | _o_  save attachment at point
+_p_  save as patch
+"
+	;; ("n" gnus-summary-insert-new-articles "Refresh / N")
+	("f" gnus-summary-mail-forward :exit t)
+	("R" gnus-article-reply-with-original :exit t)
+	("r" gnus-article-reply :exit t)
+	("W" gnus-article-wide-reply-with-original :exit t)
+	("w" gnus-article-wide-reply :exit t)
+
+	("!" gnus-summary-tick-article-forward)
+	("p" gnus-summary-put-mark-as-read)
+	("c" gnus-summary-catchup-and-exit)
+	("C" gnus-summary-kill-thread)
+	("u" gnus-summary-clear-mark-forward)
+	("o" gnus-mime-save-part)
+
+	("p" gnus-summary-save-article-body-file)
+
+	("q" nil "quit"))
+  ;; y is not used by default
+  (bind-key "y" #'hydra-gnus-article/body gnus-article-mode-map)
+  )
+#+END_SRC
+
+** mm-decode
+#+BEGIN_SRC emacs-lisp
+(use-package mm-decode
+  :defer t
+  :config
+  ;; Hide HTML mail
+  (setq mm-discouraged-alternatives '("text/html" "text/richtext")
+	mm-automatic-display (-difference mm-automatic-display '("text/html" "text/enriched" "text/richtext"))
+	)
+  )
+#+END_SRC
+
+** CANCELED bbdb
+
+#+BEGIN_SRC emacs-lisp
+(use-package bbdb
+  :ensure t
+  :defer t
+  :commands (bbdb bbdb-insinuate-gnus bbdb-insinuate-message)
+  :bind ("C-c b" . bbdb)
+  :config
+  (bbdb-initialize 'gnus 'message)
+
+  (setq bbdb-file (concat user-emacs-directory "db.bbdb"))
+  (setq bbdb-update-records-p 'create)
+  ;; (setq bbdb-mua-pop-up nil)
+  (setq bbdb-silent t)
+  (setq bbdb-user-mail-address-re "\\<holgerschurig@gmail.com\\>")
+  (setq bbdb-add-name t)
+  (setq bbdb-add-aka t)
+  (setq bbdb-add-mails t)
+  (setq bbdb-new-mails-primary t)
+  (setq bbdb-complete-mail-allow-cycling t)
+  (setq bbdd-phone-style nil)
+  (setq bbdb-ignore-message-alist
+		'(("From" . "mailer-daemon")
+		  ("From" . "bugs.launchpad.net")
+		  ("From" . "postmaster.twitter.com")
+		  ("From" . "plus.google.com")
+		  ("From" . "notify@twitter.com")
+		  (("To" "From") . "review@openstack.org")))
+  ;; (setq bbdb-allow-duplicates t)
+)
 #+END_SRC
 * Programming
 ** Tabs and indentation
