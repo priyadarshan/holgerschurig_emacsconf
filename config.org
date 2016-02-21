@@ -519,7 +519,8 @@ And finally we build our mode line:
 										(powerline-raw "%b " name-face 'l)
 										(funcall separator-left name-face dir-face)
 
-										(when (not (file-remote-p default-directory))
+										(when (and (buffer-file-name)
+												   (not (file-remote-p default-directory)))
 										  (powerline-raw (shorten-directory default-directory 25)
 														 dir-face 'l))
 
