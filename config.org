@@ -34,11 +34,11 @@ To be precise, this is what's in the first part of my =~/.emacs.d/init.el= (what
 
 (let ((el-file (concat user-emacs-directory "config.el")))
   (if (file-exists-p el-file)
-      (load-file (concat user-emacs-directory "config.el"))
-    (progn
-      (require 'cl)
-      (org-babel-load-file (concat user-emacs-directory "config.org"))
-      )))
+	  (load-file (concat user-emacs-directory "config.el"))
+	(progn
+	  (require 'cl)
+	  (org-babel-load-file (concat user-emacs-directory "config.org"))
+	  )))
 
 #+END_SRC
 
@@ -71,8 +71,8 @@ Use the following if there is some nasty bug that you cannot find with
 #+BEGIN_SRC emacs-lisp
 (let ((emacs-git (expand-file-name "git/" user-emacs-directory)))
   (mapc (lambda (x)
-          (add-to-list 'load-path (expand-file-name x emacs-git)))
-        (delete ".." (directory-files emacs-git))))
+		  (add-to-list 'load-path (expand-file-name x emacs-git)))
+		(delete ".." (directory-files emacs-git))))
 #+END_SRC
 ** package
 Enable =packages.el= with MELPA:
@@ -80,10 +80,10 @@ Enable =packages.el= with MELPA:
 #+BEGIN_SRC emacs-lisp
 (require 'package)
 (setq package-enable-at-startup nil
-      package-archives
-      '(("gnu"             . "https://elpa.gnu.org/packages/")
+	  package-archives
+	  '(("gnu"             . "https://elpa.gnu.org/packages/")
 	("melpa"           . "https://melpa.org/packages/")
-        ;; ("melpa-stable" . "http://stable.melpa.org/packages/")
+		;; ("melpa-stable" . "http://stable.melpa.org/packages/")
 	;; ("elpy"         . "http://jorgenschaefer.github.io/packages/")
 	;; ("org"          . "http://orgmode.org/elpa/") ;; for org-plus-contrib
 	))
@@ -96,33 +96,33 @@ or http://www.lunaryorn.com/2015/01/06/my-emacs-configuration-with-use-package.h
 Basic syntax:
 
 (use-package package-name
-     [:keyword [option]]...)
+	 [:keyword [option]]...)
 
 :init          Code to run before PACKAGE-NAME has been loaded.
 :config        Code to run after PACKAGE-NAME has been loaded.  Note that if
-               loading is deferred for any reason, this code does not execute
-               until the lazy load has occurred.
+			   loading is deferred for any reason, this code does not execute
+			   until the lazy load has occurred.
 :preface       Code to be run before everything except `:disabled'; this can
-               be used to define functions for use in `:if', or that should be
-               seen by the byte-compiler.
+			   be used to define functions for use in `:if', or that should be
+			   seen by the byte-compiler.
 :mode          Form to be added to `auto-mode-alist'.
 :interpreter   Form to be added to `interpreter-mode-alist'.
 :commands      Define autoloads for commands that will be defined by the
-               package.  This is useful if the package is being lazily loaded,
-               and you wish to conditionally call functions in your `:init'
-               block that are defined in the package.
+			   package.  This is useful if the package is being lazily loaded,
+			   and you wish to conditionally call functions in your `:init'
+			   block that are defined in the package.
 :bind          Bind keys, and define autoloads for the bound commands.
 :bind*         Bind keys, and define autoloads for the bound commands,
-               *overriding all minor mode bindings*.
+			   *overriding all minor mode bindings*.
 :bind-keymap   Bind a key prefix to an auto-loaded keymap defined in the
-               package.  This is like `:bind', but for keymaps.
+			   package.  This is like `:bind', but for keymaps.
 :bind-keymap*  Like `:bind-keymap', but overrides all minor mode bindings
 :defer         Defer loading of a package -- this is implied when using
-               `:commands', `:bind', `:bind*', `:mode' or `:interpreter'.
-               This can be an integer, to force loading after N seconds of
-               idle time, if the package has not already been loaded.
+			   `:commands', `:bind', `:bind*', `:mode' or `:interpreter'.
+			   This can be an integer, to force loading after N seconds of
+			   idle time, if the package has not already been loaded.
 :after         Defer loading of a package until after any of the named
-               features are loaded.
+			   features are loaded.
 :demand        Prevent deferred loading in all cases.
 :if EXPR       Initialize and load only if EXPR evaluates to a non-nil value.
 :disabled      The package is ignored completely if this keyword is present.
@@ -146,7 +146,7 @@ Basic syntax:
 #+BEGIN_SRC emacs-lisp
 (defun my--collect-elisp-source-bodies ()
   (when (string= "config.org" (buffer-name))
-    (my-tangle-config-org)))
+	(my-tangle-config-org)))
 (add-hook 'after-save-hook #'my--collect-elisp-source-bodies)
 #+END_SRC
 
@@ -220,8 +220,8 @@ http://emacs.stackexchange.com/a/5343/115
 
 #+BEGIN_SRC emacs-lisp
 (set-face-attribute 'fringe nil
-                      :foreground (face-foreground 'default)
-                      :background (face-background 'default))
+					  :foreground (face-foreground 'default)
+					  :background (face-background 'default))
 #+END_SRC
 
 ** Let parenthesis behave
@@ -262,13 +262,13 @@ except diff-mode and org-mode.
 #+BEGIN_SRC emacs-lisp
 (defface my-todo-face
   '((t :foreground "red"
-       :weight bold))   
+	   :weight bold))   
   "Font for showing TODO words."
   :group 'basic-faces)
 
 (defun my-add-font-lock-keywords ()
   (unless (or (eq 'diff-mode major-mode)
-	      (eq 'org-mode major-mode))
+		  (eq 'org-mode major-mode))
 	(font-lock-add-keywords nil
 							'(("\\<\\(\\(FIXME\\|TODO\\|XXX\\|HINT\\):?\\)" 1 'font-lock-warning-face prepend)))))
 (add-hook 'find-file-hook #'my-add-font-lock-keywords)
@@ -319,17 +319,17 @@ to work even in split windows
 
 #+BEGIN_SRC emacs-lisp
 (if window-system
-    ;; X11, Windows, etc
-    (progn
-      ;; Windowing systems are fast enought
-      (column-number-mode t)
-      ;; Turn off blinking
-      (blink-cursor-mode -1)
-      )
+	;; X11, Windows, etc
+	(progn
+	  ;; Windowing systems are fast enought
+	  (column-number-mode t)
+	  ;; Turn off blinking
+	  (blink-cursor-mode -1)
+	  )
   ;; Text mode
   (progn
-    ;; No "very" visible cursor
-    (setq visible-cursor nil)))
+	;; No "very" visible cursor
+	(setq visible-cursor nil)))
 #+END_SRC
 
 ** No audible bell
@@ -478,10 +478,10 @@ And finally we build our mode line:
   (set-face-attribute 'powerline-inactive2 nil :background "blue4")
 
   (setq-default mode-line-format
-                '("%e"
-                  (:eval
-                   (let* ((active (powerline-selected-window-active))
-                          (mode-line (if active 'mode-line 'mode-line-inactive))
+				'("%e"
+				  (:eval
+				   (let* ((active (powerline-selected-window-active))
+						  (mode-line (if active 'mode-line 'mode-line-inactive))
 						  (indi-romod-face (if active 'my-pl-indi-romod-face1 'my-pl-indi-romod-face2))
 						  (indi-narrow-face (if active 'my-pl-indi-narrow-face1 'my-pl-indi-narrow-face2))
 						  (size-face (if active 'my-pl-size-face1 'my-pl-size-face2))
@@ -493,14 +493,14 @@ And finally we build our mode line:
 						  (minor-face (if active 'my-pl-minor-face1 'my-pl-minor-face2))
 						  (lincol-face (if active 'my-pl-lincol-face1 'my-pl-lincol-face2))
 
-                          (separator-left (intern (format "powerline-%s-%s"
+						  (separator-left (intern (format "powerline-%s-%s"
 														  (powerline-current-separator)
-                                                          (car powerline-default-separator-dir))))
-                          (separator-right (intern (format "powerline-%s-%s"
-                                                           (powerline-current-separator)
-                                                           (cdr powerline-default-separator-dir))))
+														  (car powerline-default-separator-dir))))
+						  (separator-right (intern (format "powerline-%s-%s"
+														   (powerline-current-separator)
+														   (cdr powerline-default-separator-dir))))
 
-                          (lhs (append (list ;; modified/readonly status
+						  (lhs (append (list ;; modified/readonly status
 										(powerline-raw "%*" indi-romod-face 'l)
 										(my-powerline-narrow indi-narrow-face 'l)
 										(powerline-raw " " indi-narrow-face)
@@ -543,20 +543,20 @@ And finally we build our mode line:
 												 (list (funcall separator-left major-face mode-line))))
 									 ))
 
-                          (rhs (list ;; (powerline-raw global-mode-string face2 'r)
-								     (funcall separator-right mode-line lincol-face)
+						  (rhs (list ;; (powerline-raw global-mode-string face2 'r)
+									 (funcall separator-right mode-line lincol-face)
 
 									 ;; line number, column number
 									 (powerline-raw "%l:%c " lincol-face 'l)
 
 									 ;; XPM containing the position
-                                     (when powerline-display-hud
-                                       (powerline-hud my-pl-face1 my-pl-face3))
+									 (when powerline-display-hud
+									   (powerline-hud my-pl-face1 my-pl-face3))
 									 ))
 							   )
-		     (concat (powerline-render lhs)
-			     (powerline-fill mode-line (powerline-width rhs))
-			     (powerline-render rhs))))))
+			 (concat (powerline-render lhs)
+				 (powerline-fill mode-line (powerline-width rhs))
+				 (powerline-render rhs))))))
 )
 #+END_SRC
 
@@ -625,8 +625,8 @@ will probably /not/ work on windows.
 #+BEGIN_SRC emacs-lisp
 (setq system-name
    (replace-regexp-in-string "\\`[ \t\n]*" ""
-      (replace-regexp-in-string "[ \t\n]*\\'" ""
-         (shell-command-to-string "hostname"))))
+	  (replace-regexp-in-string "[ \t\n]*\\'" ""
+		 (shell-command-to-string "hostname"))))
 #+END_SRC
 ** History
 Delete identical history entries
@@ -741,9 +741,9 @@ go down different branches.
   :bind ("C-z" . undo-tree-visualize)
   :config
   (progn
-    (global-undo-tree-mode)
-    (setq undo-tree-visualizer-timestamps t)
-    (setq undo-tree-visualizer-diff t)))
+	(global-undo-tree-mode)
+	(setq undo-tree-visualizer-timestamps t)
+	(setq undo-tree-visualizer-diff t)))
 #+END_SRC
 * Cursor movement
 First we define code that allows us to bind multiple functions to
@@ -771,18 +771,18 @@ sequence."
 				'(setq seq-times (1+ seq-times))))
 		  (t          `(let ((max ,max))
 				 (if (and (integerp max) (> max 0))
-				     (setq seq-times (% (1+ seq-times) max))
+					 (setq seq-times (% (1+ seq-times) max))
 				   (setq seq-times (1+ seq-times)))))))
 
   ;; Make macro
   (if (eq name 'last-command)
-      max
-    (cond ((null  name) (setq name 'this-command))
+	  max
+	(cond ((null  name) (setq name 'this-command))
 	  ((consp name) (setq name `(or ,name this-command))))
-    `(if (eq last-command ,name)
+	`(if (eq last-command ,name)
 	 ,max
-       ,@body
-       (setq seq-times 0))))
+	   ,@body
+	   (setq seq-times 0))))
 
 (defmacro seq-times-nth (name body &rest list)
   "Calls `seq-times' with arguments NAME, length and BODY
@@ -814,11 +814,11 @@ command from COMMANDS."
    - back to where it was"
   (interactive)
   (seq-times-do nil (setq my--previous-position (point))
-    (back-to-indentation)
-    (beginning-of-line)
-    (beginning-of-defun)
-    (goto-char (point-min))
-    (goto-char my--previous-position)))
+	(back-to-indentation)
+	(beginning-of-line)
+	(beginning-of-defun)
+	(goto-char (point-min))
+	(goto-char my--previous-position)))
 #+END_SRC
 
 (substitute-key-definition 'move-beginning-of-line 'my-home (current-global-map))
@@ -837,11 +837,11 @@ command from COMMANDS."
    - back to where it was"
   (interactive)
   (seq-times-do nil (setq my--previous-position (point))
-    (end-of-line)
-    (forward-paragraph)
-    (end-of-defun)
-    (goto-char (point-max))
-    (goto-char my--previous-position)))
+	(end-of-line)
+	(forward-paragraph)
+	(end-of-defun)
+	(goto-char (point-max))
+	(goto-char my--previous-position)))
 (bind-key "C-e" 'my-end)
 (bind-key "<end>" 'my-end)
 #+END_SRC
@@ -873,47 +873,47 @@ If at all possible, an even better solution is to use char counts
 rather than line counts."
   (interactive
    (if (and current-prefix-arg (not (consp current-prefix-arg)))
-       (list (prefix-numeric-value current-prefix-arg))
-     ;; Look for a default, a number in the buffer at point.
-     (let* ((default
-	      (save-excursion
+	   (list (prefix-numeric-value current-prefix-arg))
+	 ;; Look for a default, a number in the buffer at point.
+	 (let* ((default
+		  (save-excursion
 		(skip-chars-backward "0-9")
 		(if (looking-at "[0-9]")
-		    (buffer-substring-no-properties
-		     (point)
-		     (progn (skip-chars-forward "0-9")
-			    (point))))))
-	    ;; Decide if we're switching buffers.
-	    (buffer
-	     (if (consp current-prefix-arg)
+			(buffer-substring-no-properties
+			 (point)
+			 (progn (skip-chars-forward "0-9")
+				(point))))))
+		;; Decide if we're switching buffers.
+		(buffer
+		 (if (consp current-prefix-arg)
 		 (other-buffer (current-buffer) t)))
-	    (buffer-prompt
-	     (if buffer
+		(buffer-prompt
+		 (if buffer
 		 (concat " in " (buffer-name buffer))
-	       "")))
-       ;; Read the argument, offering that number (if any) as default.
-       (list (read-from-minibuffer (format (if default "Goto line%s (%s): "
-					     "Goto line%s: ")
+		   "")))
+	   ;; Read the argument, offering that number (if any) as default.
+	   (list (read-from-minibuffer (format (if default "Goto line%s (%s): "
+						 "Goto line%s: ")
 					   buffer-prompt
 					   default)
 				   nil nil t
 				   'my-goto-line-history
 				   default)
-	     buffer))))
+		 buffer))))
   ;; Switch to the desired buffer, one way or another.
   (if buffer
-      (let ((window (get-buffer-window buffer)))
+	  (let ((window (get-buffer-window buffer)))
 	(if window (select-window window)
 	  (switch-to-buffer-other-window buffer))))
   ;; Leave mark at previous position
   (or (region-active-p) (push-mark))
   ;; Move to the specified line number in that buffer.
   (save-restriction
-    (widen)
-    (goto-char (point-min))
-    (if (eq selective-display t)
+	(widen)
+	(goto-char (point-min))
+	(if (eq selective-display t)
 	(re-search-forward "[\n\C-m]" nil 'end (1- line))
-      (forward-line (1- line)))))
+	  (forward-line (1- line)))))
 (bind-key "M-g g"   'my-goto-line)
 (bind-key "M-g M-g" 'my-goto-line)
 #+END_SRC
@@ -950,11 +950,11 @@ use + and - after the first expand to expand further / shrink again.
   :ensure t
   :bind ("C-#" . avy-goto-char-timer)
   :config (progn
-	    (setq avy-keys (append (number-sequence ?a ?z)
-				    (number-sequence ?0 ?9)))
-	    (setq avy-style 'at-full)
-	    (setq avy-all-windows nil)
-	    (setq avy-highlight-first t)))
+		(setq avy-keys (append (number-sequence ?a ?z)
+					(number-sequence ?0 ?9)))
+		(setq avy-style 'at-full)
+		(setq avy-all-windows nil)
+		(setq avy-highlight-first t)))
 #+END_SRC
 
 ** smartscan
@@ -973,7 +973,7 @@ Smooth scrolling (default is 5).
 
 #+BEGIN_SRC emacs-lisp
 (setq mouse-wheel-scroll-amount '(2 ((shift) . 1) ((control) . nil))
-      mouse-wheel-progressive-speed nil)
+	  mouse-wheel-progressive-speed nil)
 #+END_SRC
 * Yank and Delete
 ** Delete word or yank
@@ -989,10 +989,10 @@ http://www.emacswiki.org/emacs/DefaultKillingAndYanking#toc2
 #+BEGIN_SRC emacs-lisp
 (defadvice kill-region (before unix-werase activate compile)
   "When called interactively with no active region, delete a single word
-    backwards instead."
+	backwards instead."
   (interactive
    (if mark-active (list (region-beginning) (region-end))
-     (list (save-excursion (backward-word 1) (point)) (point)))))
+	 (list (save-excursion (backward-word 1) (point)) (point)))))
 #+END_SRC
 
 ** Selection deletion
@@ -1019,8 +1019,8 @@ Deletes whitespace at join.
 Deletes whitespace at join."
   (interactive "P")
   (if (and (eolp) (not (bolp)))
-      (delete-indentation t)
-    (kill-line arg)))
+	  (delete-indentation t)
+	(kill-line arg)))
 (bind-key "C-k" 'kill-and-join-forward)
 #+END_SRC
 
@@ -1043,20 +1043,20 @@ becomes
 otherwise delete."
   (interactive "p")
   (if (or (not (eolp)) (bolp))
-      (delete-char arg)
-    (let ((start (point))
-          (in-comment (eq (get-text-property (point) 'face)
-                          'font-lock-comment-face)))
-      (forward-char)
-      (skip-chars-forward " \  ")
-      (if (and in-comment (looking-at comment-start-skip))
-          (goto-char (match-end 0)))
-      (delete-region start (point))
-      (when (and (not (eolp))
-                 (/= (char-before) ? )
-                 (/= (char-before) ?\  ))
-        (insert-char ?  1)
-        (backward-char)))))
+	  (delete-char arg)
+	(let ((start (point))
+		  (in-comment (eq (get-text-property (point) 'face)
+						  'font-lock-comment-face)))
+	  (forward-char)
+	  (skip-chars-forward " \  ")
+	  (if (and in-comment (looking-at comment-start-skip))
+		  (goto-char (match-end 0)))
+	  (delete-region start (point))
+	  (when (and (not (eolp))
+				 (/= (char-before) ? )
+				 (/= (char-before) ?\  ))
+		(insert-char ?  1)
+		(backward-char)))))
 #+END_SRC
 
 Make delete-selection-mode work with it
@@ -1095,7 +1095,7 @@ character will be gone, too.
 (use-package avy-zap
   :ensure t
   :bind (("M-z" . avy-zap-up-to-char-dwim)
-	 ("M-Z" . avy-zap-to-char-dwim))
+		 ("M-Z" . avy-zap-to-char-dwim))
 )
 #+END_SRC
 * Completion
@@ -1127,11 +1127,11 @@ From http://www.emacswiki.org/emacs/frame-cmds.el
 (defadvice delete-window (around delete-window (&optional window) activate)
   (interactive)
   (save-current-buffer
-    (setq window (or window (selected-window)))
-    (select-window window)
-    (if (one-window-p t)
+	(setq window (or window (selected-window)))
+	(select-window window)
+	(if (one-window-p t)
 	(delete-frame)
-      ad-do-it (selected-window))))
+	  ad-do-it (selected-window))))
 #+END_SRC
 
 ** new kill-buffer-and-window
@@ -1151,7 +1151,7 @@ there are several windows open."
   (interactive)
   (setq buffer (or buffer (current-buffer)))
   (unless (one-window-p)
-    (delete-window))
+	(delete-window))
   (kill-buffer buffer))
 (bind-key "C-x k" 'my--kill-buffer-and-window)
 #+END_SRC
@@ -1171,8 +1171,8 @@ two windows displayed, act like =C-x 1=.
 (defun my-zoom-next-buffer2 ()
   (let ((curbuf (current-buffer))
 	(firstbuf nil))
-    (dolist (buffer (buffer-list))
-      (with-current-buffer buffer
+	(dolist (buffer (buffer-list))
+	  (with-current-buffer buffer
 	;(princ (format "name %s, fn %s\n" (buffer-name) buffer-file-name))
 	(unless (or
 		 ;; Don't mention internal buffers.
@@ -1184,24 +1184,24 @@ two windows displayed, act like =C-x 1=.
 		 )
 	  ;(princ (format " nme %s, fn %s\n" (buffer-name) buffer-file-name))
 	  (unless firstbuf
-	    (setq firstbuf buffer))
-	    ;;(print buffer)
+		(setq firstbuf buffer))
+		;;(print buffer)
 	  )))
-    (when firstbuf
-      ;(princ (format "new buffer: %s.\n" firstbuf))
-      (bury-buffer)
-      (switch-to-buffer firstbuf))))
+	(when firstbuf
+	  ;(princ (format "new buffer: %s.\n" firstbuf))
+	  (bury-buffer)
+	  (switch-to-buffer firstbuf))))
 (defun my-explode-window ()
   "If there is only one window displayed, act like C-x2. If there
 are two windows displayed, act like C-x1:"
   (interactive)
   (if (one-window-p t)
-      (progn
+	  (progn
 	(split-window-vertically)
 	(other-window 1)
 	(my-zoom-next-buffer2)
 	(other-window -1))
-    (delete-other-windows)))
+	(delete-other-windows)))
 (bind-key "<f5>" 'my-explode-window)
 #+END_SRC
 ** Windows toggle / Buffer switching (F6)
@@ -1214,8 +1214,8 @@ If there are two windows displayed, act like =C-x o=.
 If there are two windows displayed, act like =C-x o=."
   (interactive)
   (if (one-window-p t)
-      (switch-to-buffer (other-buffer (current-buffer) 1))
-    (other-window -1)))
+	  (switch-to-buffer (other-buffer (current-buffer) 1))
+	(other-window -1)))
 (bind-key "<f6>" 'my-switch-to-buffer)
 #+END_SRC
 
@@ -1259,12 +1259,12 @@ Some may also be erased, which is undo-able."
   :lighter ""
   :version "1.4"
   (if keep-buffers-mode
-      ;; Setup the hook
-      (add-hook 'kill-buffer-query-functions 'keep-buffers-query)
-    (remove-hook 'kill-buffer-query-functions 'keep-buffers-query)))
+	  ;; Setup the hook
+	  (add-hook 'kill-buffer-query-functions 'keep-buffers-query)
+	(remove-hook 'kill-buffer-query-functions 'keep-buffers-query)))
 (defcustom keep-buffers-protected-alist
   '(("\\`\\*scratch\\*\\'" . erase)
-    ("\\`\\*Messages\\*\\'" . nil))
+	("\\`\\*Messages\\*\\'" . nil))
   "an alist '((\"regex1\" . 'erase) (\"regex2\" . nil))
 
 CAR of each cons cell is the buffer matching regexp.  If CDR is
@@ -1276,15 +1276,15 @@ If the CDR is nil, then the buffer is only buried."
 (defun keep-buffers-query ()
   "The query function that disable deletion of buffers we protect."
   (let ((crit (dolist (crit keep-buffers-protected-alist)
-                (when (string-match (car crit) (buffer-name))
-                  (return crit)))))
-    (if crit
-        (progn
-          (when (cdr crit)
-            (erase-buffer))
-          (bury-buffer)
-          nil)
-      t)))
+				(when (string-match (car crit) (buffer-name))
+				  (return crit)))))
+	(if crit
+		(progn
+		  (when (cdr crit)
+			(erase-buffer))
+		  (bury-buffer)
+		  nil)
+	  t)))
 (keep-buffers-mode 1)
 #+END_SRC
 
@@ -1295,8 +1295,8 @@ http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/
 
 #+BEGIN_SRC emacs-lisp
 (setq kill-buffer-query-functions
-      (remq 'process-kill-buffer-query-function
-	     kill-buffer-query-functions))
+	  (remq 'process-kill-buffer-query-function
+		 kill-buffer-query-functions))
 #+END_SRC
 
 ** Cycle buffers
@@ -1316,29 +1316,29 @@ http://www.emacswiki.org/emacs/iflipb
   (defvar my-iflipb-auto-off-timer-canceler-internal nil)
   (defvar my-iflipb-ing-internal nil)
   (defun my-iflipb-auto-off ()
-    (message nil)
-    (setq my-iflipb-auto-off-timer-canceler-internal nil
+	(message nil)
+	(setq my-iflipb-auto-off-timer-canceler-internal nil
 	  my-iflipb-ing-internal nil))
   (defun my-iflipb-next-buffer (arg)
-    (interactive "P")
-    (iflipb-next-buffer arg)
-    (if my-iflipb-auto-off-timer-canceler-internal
+	(interactive "P")
+	(iflipb-next-buffer arg)
+	(if my-iflipb-auto-off-timer-canceler-internal
 	(cancel-timer my-iflipb-auto-off-timer-canceler-internal))
-    (run-with-idle-timer my-iflipb-auto-off-timeout-sec 0 'my-iflipb-auto-off)
-    (setq my-iflipb-ing-internal t))
+	(run-with-idle-timer my-iflipb-auto-off-timeout-sec 0 'my-iflipb-auto-off)
+	(setq my-iflipb-ing-internal t))
   (defun my-iflipb-previous-buffer ()
-    (interactive)
-    (iflipb-previous-buffer)
-    (if my-iflipb-auto-off-timer-canceler-internal
+	(interactive)
+	(iflipb-previous-buffer)
+	(if my-iflipb-auto-off-timer-canceler-internal
 	(cancel-timer my-iflipb-auto-off-timer-canceler-internal))
-    (run-with-idle-timer my-iflipb-auto-off-timeout-sec 0 'my-iflipb-auto-off)
-    (setq my-iflipb-ing-internal t))
+	(run-with-idle-timer my-iflipb-auto-off-timeout-sec 0 'my-iflipb-auto-off)
+	(setq my-iflipb-ing-internal t))
   (defun iflipb-first-iflipb-buffer-switch-command ()
-    "Determines whether this is the first invocation of
+	"Determines whether this is the first invocation of
   iflipb-next-buffer or iflipb-previous-buffer this round."
-    (not (and (or (eq last-command 'my-iflipb-next-buffer)
+	(not (and (or (eq last-command 'my-iflipb-next-buffer)
 		  (eq last-command 'my-iflipb-previous-buffer))
-	      my-iflipb-ing-internal))))
+		  my-iflipb-ing-internal))))
 #+END_SRC
 
 ** ace-jump-buffer DISABLED
@@ -1406,10 +1406,10 @@ Emacs.Font:	terminus 11
 #+BEGIN_SRC emacs-lisp
 (defun merge-x-resources ()
   (let ((file (file-name-nondirectory (buffer-file-name))))
-    (when (or (string= file ".Xdefaults")
-	      (string= file ".Xresources"))
-      (start-process "xrdb" nil "xrdb" "-merge" (buffer-file-name))
-      (message (format "Merged %s into X resource database" file)))))
+	(when (or (string= file ".Xdefaults")
+		  (string= file ".Xresources"))
+	  (start-process "xrdb" nil "xrdb" "-merge" (buffer-file-name))
+	  (message (format "Merged %s into X resource database" file)))))
 (add-hook 'after-save-hook 'merge-x-resources)
 #+END_SRC
 
@@ -1513,9 +1513,9 @@ subdirectories:
   "grep the whole directory for something defaults to term at cursor position"
   (interactive)
   (let ((default (thing-at-point 'symbol)))
-    (let ((needle (or (read-string (concat "grep for '" default "': ")) default)))
-      (setq needle (if (equal needle "") default needle))
-      (grep (concat "egrep -s -i -n -r " needle " *")))))
+	(let ((needle (or (read-string (concat "grep for '" default "': ")) default)))
+	  (setq needle (if (equal needle "") default needle))
+	  (grep (concat "egrep -s -i -n -r " needle " *")))))
 (bind-key "M-s g" 'my-grep)
 #+END_SRC
 * Help
@@ -1527,7 +1527,7 @@ Make 'b' (back) go to the previous position in emacs help.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'help-mode-hook
 	  '(lambda ()
-	     (bind-key "b" 'help-go-back help-mode-map)))
+		 (bind-key "b" 'help-go-back help-mode-map)))
 #+END_SRC
 
 ** F1 key searches in help or opens man page
@@ -1535,7 +1535,7 @@ This is from https://www.emacswiki.org/emacs/DescribeThingAtPoint
 
 #+BEGIN_SRC emacs-lisp
 (defun my-help ()
-          "Show the documentation of the Elisp function and variable near point.
+		  "Show the documentation of the Elisp function and variable near point.
 	This checks in turn:
 	-- for a function name where point is
 	-- for a variable name where point is
@@ -1543,22 +1543,22 @@ This is from https://www.emacswiki.org/emacs/DescribeThingAtPoint
 	"
 	  (interactive)
 	  (let (sym)
-	    ;; sigh, function-at-point is too clever.  we want only the first half.
-	    (cond ((setq sym (ignore-errors
-                               (with-syntax-table emacs-lisp-mode-syntax-table
-                                 (save-excursion
-                                   (or (not (zerop (skip-syntax-backward "_w")))
-                                       (eq (char-syntax (char-after (point))) ?w)
-                                       (eq (char-syntax (char-after (point))) ?_)
-                                       (forward-sexp -1))
-                                   (skip-chars-forward "`'")
-        	                   (let ((obj (read (current-buffer))))
-                                     (and (symbolp obj) (fboundp obj) obj))))))
-                   (describe-function sym))
-                  ((setq sym (variable-at-point)) (describe-variable sym))
-                  ;; now let it operate fully -- i.e. also check the
-                  ;; surrounding sexp for a function call.
-                  ((setq sym (function-at-point)) (describe-function sym)))))
+		;; sigh, function-at-point is too clever.  we want only the first half.
+		(cond ((setq sym (ignore-errors
+							   (with-syntax-table emacs-lisp-mode-syntax-table
+								 (save-excursion
+								   (or (not (zerop (skip-syntax-backward "_w")))
+									   (eq (char-syntax (char-after (point))) ?w)
+									   (eq (char-syntax (char-after (point))) ?_)
+									   (forward-sexp -1))
+								   (skip-chars-forward "`'")
+							   (let ((obj (read (current-buffer))))
+									 (and (symbolp obj) (fboundp obj) obj))))))
+				   (describe-function sym))
+				  ((setq sym (variable-at-point)) (describe-variable sym))
+				  ;; now let it operate fully -- i.e. also check the
+				  ;; surrounding sexp for a function call.
+				  ((setq sym (function-at-point)) (describe-function sym)))))
 (bind-key "<f1>" 'my-help)
 #+END_SRC
 
@@ -1622,18 +1622,18 @@ negative prefix argument, just echo the result in the
 minibuffer."
   (interactive "p")
   (let (start end)
-    (if (use-region-p)
+	(if (use-region-p)
 	(setq start (region-beginning) end (region-end))
-      (progn
+	  (progn
 	(setq end (point))
 	(setq start (search-backward-regexp "\\s-\\|\n" 0 1))
 	(setq start (1+ (if start start 0)))
 	(goto-char end)))
-    (let ((value (calc-eval (buffer-substring-no-properties start end))))
-      (pcase arg
+	(let ((value (calc-eval (buffer-substring-no-properties start end))))
+	  (pcase arg
 	(1 (delete-region start end))
 	(4 (insert " = ")))
-      (pcase arg
+	  (pcase arg
 	((or 1 4) (insert value))
 	(-1 (message value))))))
 (bind-key "C-=" #'calc-eval-region)
@@ -1670,9 +1670,9 @@ see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Con
   ;; Misc
   ;; (setq circe-format-server-topic "*** Topic change by {userhost}: {topic-diff}")
   (use-package lui-autopaste
-    :config
-    (add-hook 'circe-channel-mode-hook 'enable-lui-autopaste)
-    )
+	:config
+	(add-hook 'circe-channel-mode-hook 'enable-lui-autopaste)
+	)
 )
 
 (defun irc ()
@@ -1709,7 +1709,7 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 	 ("M-s o"   . helm-occur)
 	 ("M-x"     . helm-M-x)
 	 ("M-y"     . helm-show-kill-ring)
-         ("C-x C-b" . helm-mini)
+		 ("C-x C-b" . helm-mini)
 	 )
   :init
   (require 'helm-config)
@@ -1750,38 +1750,38 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   ;; Hide modelines of other windows while helm is open
   ;; again from https://github.com/hatschipuh/better-helm
   (defvar my-helm-bottom-buffers nil
-    "List of bottom buffers before helm session.
-    Its element is a pair of `buffer-name' and `mode-line-format'.")
+	"List of bottom buffers before helm session.
+	Its element is a pair of `buffer-name' and `mode-line-format'.")
 
   (defun my-helm-bottom-buffers-init ()
-    (setq-local mode-line-format (default-value 'mode-line-format))
-    (setq my-helm-bottom-buffers
+	(setq-local mode-line-format (default-value 'mode-line-format))
+	(setq my-helm-bottom-buffers
 	  (cl-loop for w in (window-list)
 		   when (window-at-side-p w 'bottom)
 		   collect (with-current-buffer (window-buffer w)
-			     (cons (buffer-name) mode-line-format)))))
+				 (cons (buffer-name) mode-line-format)))))
 
 
   (defun my-helm-bottom-buffers-hide-mode-line ()
-    (setq-default cursor-in-non-selected-windows nil)
-    (mapc (lambda (elt)
-	    (with-current-buffer (car elt)
-	      (setq-local mode-line-format nil)))
+	(setq-default cursor-in-non-selected-windows nil)
+	(mapc (lambda (elt)
+		(with-current-buffer (car elt)
+		  (setq-local mode-line-format nil)))
 	  my-helm-bottom-buffers))
 
 
   (defun my-helm-bottom-buffers-show-mode-line ()
-    (setq-default cursor-in-non-selected-windows t)
-    (when my-helm-bottom-buffers
-      (mapc (lambda (elt)
-	      (with-current-buffer (car elt)
+	(setq-default cursor-in-non-selected-windows t)
+	(when my-helm-bottom-buffers
+	  (mapc (lambda (elt)
+		  (with-current-buffer (car elt)
 		(setq-local mode-line-format (cdr elt))))
-	    my-helm-bottom-buffers)
-      (setq my-helm-bottom-buffers nil)))
+		my-helm-bottom-buffers)
+	  (setq my-helm-bottom-buffers nil)))
 
   (defun my-helm-keyboard-quit-advice (orig-func &rest args)
-    (my-helm-bottom-buffers-show-mode-line)
-    (apply orig-func args))
+	(my-helm-bottom-buffers-show-mode-line)
+	(apply orig-func args))
 
 
   (add-hook 'helm-before-initialize-hook #'my-helm-bottom-buffers-init)
@@ -1794,14 +1794,14 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   ;; based on https://github.com/hatschipuh/better-helm
   (setq helm-display-header-line nil)
   (defun my-helm-toggle-header-line ()
-    (if (> (length helm-sources) 1)
+	(if (> (length helm-sources) 1)
 	(set-face-attribute 'helm-source-header
-			    nil
-			    :foreground (face-attribute 'helm-source-header :foreground)
-			    :background (face-attribute 'helm-source-header :background)
-			    :box (face-attribute 'helm-source-header :box)
-			    :height 1.0)
-      (set-face-attribute 'helm-source-header
+				nil
+				:foreground (face-attribute 'helm-source-header :foreground)
+				:background (face-attribute 'helm-source-header :background)
+				:box (face-attribute 'helm-source-header :box)
+				:height 1.0)
+	  (set-face-attribute 'helm-source-header
 			  nil
 			  :foreground (face-attribute 'helm-selection :background)
 			  :background (face-attribute 'helm-selection :background)
@@ -1811,8 +1811,8 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 
   ;; Hide minibuffer while helm is active
   (defun my-helm-hide-minibuffer-maybe ()
-    (when (with-helm-buffer helm-echo-input-in-header-line)
-      (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+	(when (with-helm-buffer helm-echo-input-in-header-line)
+	  (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
 	(overlay-put ov 'window (selected-window))
 	(overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
 				`(:background ,bg-color :foreground ,bg-color)))
@@ -1849,10 +1849,10 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   ;; Make return delete one character or the last path (if before a '/')
   ;; from https://github.com/hatschipuh/better-helm
   (defun my-dwim-helm-find-files-up-one-level-maybe ()
-    (interactive)
-    (if (looking-back "/" 1)
+	(interactive)
+	(if (looking-back "/" 1)
 	(call-interactively 'helm-find-files-up-one-level)
-      (delete-backward-char 1)))
+	  (delete-backward-char 1)))
   (bind-key "<backspace>" #'my-dwim-helm-find-files-up-one-level-maybe helm-read-file-map)
   (bind-key "<backspace>" #'my-dwim-helm-find-files-up-one-level-maybe helm-find-files-map)
   (bind-key "DEL" #'my-dwim-helm-find-files-up-one-level-maybe helm-read-file-map)
@@ -1863,8 +1863,8 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   (defun my-dwim-helm-find-files-navigate-forward (orig-fun &rest args)
   "Adjust how helm-execute-persistent actions behaves, depending on context"
   (if (file-directory-p (helm-get-selection))
-      (apply orig-fun args)
-    (helm-maybe-exit-minibuffer)))
+	  (apply orig-fun args)
+	(helm-maybe-exit-minibuffer)))
   (advice-add 'helm-execute-persistent-action :around #'my-dwim-helm-find-files-navigate-forward)
   (bind-key "<return>" 'helm-maybe-exit-minibuffer helm-map)
   (bind-key "RET" 'helm-maybe-exit-minibuffer helm-map)
@@ -1884,11 +1884,11 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 	 ("M-s m"   . my-helm-semantic-or-imenu))
   :config
   (defun my-helm-semantic-or-imenu ()
-    "This is just like helm-semantic-or-imenu, but it will
+	"This is just like helm-semantic-or-imenu, but it will
 maximize the buffer"
-    (interactive)
-    (let ((helm-full-frame t))
-      (helm-semantic-or-imenu nil)))
+	(interactive)
+	(let ((helm-full-frame t))
+	  (helm-semantic-or-imenu nil)))
 )
 (use-package helm-source
   :defer t
@@ -1898,7 +1898,7 @@ maximize the buffer"
   :defer t
   :config
   (when (executable-find "curl")
-    (setq helm-net-prefer-curl t))
+	(setq helm-net-prefer-curl t))
   (setq helm-browse-url-chromium-program "x-www-browser")
   (setq helm-google-suggest-default-browser-function 'helm-browse-url-chromium)
   (setq helm-home-url "http://www.google.de")
@@ -1942,8 +1942,8 @@ https://github.com/ShingoFukuyama/helm-swoop
   ;; always pop at bottom
   ;; from https://github.com/hatschipuh/better-helm
   (setq helm-swoop-split-with-multiple-windows nil
-        helm-swoop-split-direction 'split-window-vertically
-        helm-swoop-split-window-function 'helm-default-display-buffer)
+		helm-swoop-split-direction 'split-window-vertically
+		helm-swoop-split-window-function 'helm-default-display-buffer)
 )
 #+END_SRC
 
@@ -1954,9 +1954,9 @@ https://github.com/ShingoFukuyama/helm-swoop
   :defer t
   :ensure t
   :commands (defhydra
-	      hydra-default-pre
-	      hydra-keyboard-quit
-	      hydra-set-transient-map)
+		  hydra-default-pre
+		  hydra-keyboard-quit
+		  hydra-set-transient-map)
   )
 (use-package lv
   :defer t
@@ -1990,22 +1990,22 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
   :mode (("/tmp/mutt-*" . mail-mode))
   :config
   (defun my-mail-quit ()
-    (interactive)
-    (not-modified)
-    (server-edit))
+	(interactive)
+	(not-modified)
+	(server-edit))
   (defun my-mail-save ()
-    (interactive)
-    (save-buffer)
-    (server-edit))
+	(interactive)
+	(save-buffer)
+	(server-edit))
   (defun my-mail-mode-hook ()
-    (flush-lines "^\\(> \n\\)*> -- \n\\(\n?> .*\\)*") ; kill quoted sigs
-    ;; (visual-line-mode t)
-    (auto-fill-mode)
-    (delete-trailing-whitespace)
-    (mail-text)
-    (fill-region (point) (point-max))
-    (not-modified)
-    (setq make-backup-files nil))
+	(flush-lines "^\\(> \n\\)*> -- \n\\(\n?> .*\\)*") ; kill quoted sigs
+	;; (visual-line-mode t)
+	(auto-fill-mode)
+	(delete-trailing-whitespace)
+	(mail-text)
+	(fill-region (point) (point-max))
+	(not-modified)
+	(setq make-backup-files nil))
 
   ;; Sending mail
   (setq send-mail-function 'smtpmail-send-it)
@@ -2057,10 +2057,10 @@ https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
 #+BEGIN_SRC emacs-lisp
   ;; Store gnus specific files to ~/gnus, maybe also set nnml-directory
   (setq gnus-directory (concat user-emacs-directory "News/")
-  	message-directory (concat user-emacs-directory "Mail/")
-  	gnus-article-save-directory (concat user-emacs-directory "News/saved/")
-  	gnus-kill-files-directory (concat user-emacs-directory "News/scores/")
-  	gnus-cache-directory (concat user-emacs-directory "News/cache/"))
+	message-directory (concat user-emacs-directory "Mail/")
+	gnus-article-save-directory (concat user-emacs-directory "News/saved/")
+	gnus-kill-files-directory (concat user-emacs-directory "News/scores/")
+	gnus-cache-directory (concat user-emacs-directory "News/cache/"))
 
   (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
 
@@ -2074,7 +2074,7 @@ https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
 
   ;; Local offlineimap repository
   (add-to-list 'gnus-secondary-select-methods
-	       '(nnmaildir "" (directory "~/Maildir/")))
+		   '(nnmaildir "" (directory "~/Maildir/")))
 
 #+END_SRC
 
@@ -2093,7 +2093,7 @@ https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
 
   ;; stop the annoying "move to colon" function
   (defun gnus-summary-position-point ()
-    )
+	)
 #+END_SRC
 
 *** GNUS articles
@@ -2101,8 +2101,8 @@ https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
 #+BEGIN_SRC emacs-lisp
   ;; And this switches the cursor into this other window when we select an article
   (defun my--after-select-article (&rest args)
-    (let ((window (get-buffer-window (get-buffer "*Article*"))))
-      (when window
+	(let ((window (get-buffer-window (get-buffer "*Article*"))))
+	  (when window
 	(select-window window))))
   (advice-add 'gnus-summary-select-article :after 'my--after-select-article)
 
@@ -2145,8 +2145,8 @@ https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
 
   ;; Sort by date:
   (setq gnus-thread-sort-functions
-  		'((not gnus-thread-sort-by-date)
-  		  (not gnus-thread-sort-by-number)))
+		'((not gnus-thread-sort-by-date)
+		  (not gnus-thread-sort-by-number)))
 
 
   ;;  %U  "Read" status of this article.
@@ -2164,11 +2164,11 @@ https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
   ;;  %O  Download mark (character).
   ;; Original                    "%U%R%z%I%(%[%4L: %-23,23f%]%) %s\n"
   (setq gnus-user-date-format-alist '(
-				      ((gnus-seconds-today)           . "%H:%M")
-				      ((+ 86400 (gnus-seconds-today)) . "gest %H:%M")
-				      ((gnus-seconds-year)            . "%d.%m %H:%M")
-				      (t                              . "%d.%m. %Y")
-				      ))
+					  ((gnus-seconds-today)           . "%H:%M")
+					  ((+ 86400 (gnus-seconds-today)) . "gest %H:%M")
+					  ((gnus-seconds-year)            . "%d.%m %H:%M")
+					  (t                              . "%d.%m. %Y")
+					  ))
 )
 #+END_SRC
 
@@ -2178,8 +2178,8 @@ https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
 (use-package gnus-art
   :defer t
   :commands (gnus-article-reply-with-original
-	     gnus-article-wide-reply-with-original
-	     gnus-mime-save-part)
+		 gnus-article-wide-reply-with-original
+		 gnus-mime-save-part)
 )
 #+END_SRC
 
@@ -2189,17 +2189,17 @@ https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
 (use-package gnus-group
   :defer t
   :commands (gnus-group-catchup-current
-	     gnus-group-enter-server-mode
-	     gnus-group-get-new-news
-	     gnus-group-list-active
-	     gnus-group-list-all-groups
-	     gnus-group-make-nnir-group
-	     gnus-group-new-mail
-	     hydra-gnus-group/body
-	     )
+		 gnus-group-enter-server-mode
+		 gnus-group-get-new-news
+		 gnus-group-list-active
+		 gnus-group-list-all-groups
+		 gnus-group-make-nnir-group
+		 gnus-group-new-mail
+		 hydra-gnus-group/body
+		 )
   :config
   (defhydra hydra-gnus-group (:color pink :hint nil)
-    "
+	"
 ^Local^                        | ^Server^
 -----------------------------+-------------------------------------
 _l_  list all groups           | _L_  list active groups on IMAP server
@@ -2208,28 +2208,28 @@ _g_  get new news              | _S_  enter server mode
 -----------------------------+-------------------------------------
 _m_  mail new post
 "
-       ("l" gnus-group-list-all-groups)
-       ("c" gnus-group-catchup-current)
-       ("g" gnus-group-get-new-news)
+	   ("l" gnus-group-list-all-groups)
+	   ("c" gnus-group-catchup-current)
+	   ("g" gnus-group-get-new-news)
 
-       ("L" gnus-group-list-active :exit t)
-       ("s" gnus-group-make-nnir-group :exit t)
-       ("S" gnus-group-enter-server-mode :exit t)
+	   ("L" gnus-group-list-active :exit t)
+	   ("s" gnus-group-make-nnir-group :exit t)
+	   ("S" gnus-group-enter-server-mode :exit t)
 
-       ("m" gnus-group-new-mail :exit t)
-       ("q" nil "quit" :color blue)
-       ;; ("r" gnus-group-list-active "REMOTE groups A A")
-       ;; ("l" gnus-group-list-all-groups "LOCAL groups L")
-       ;; ("c" gnus-topic-catchup-articles "Read all c")
-       ;; ("G" gnus-group-make-nnir-group "Search server G G")
-       ;; ("g" gnus-group-get-new-news "Refresh g")
-       ;; ("s" gnus-group-enter-server-mode "Servers")
-       ;; ("m" gnus-group-new-mail "Compose m OR C-x m")
-       ;; ("#" gnus-topic-mark-topic "mark #")
-       ;; ("q" nil "cancel")
-       )
-     ;; y is not used by default
-     (bind-key "y" #'hydra-gnus-group/body gnus-group-mode-map ))
+	   ("m" gnus-group-new-mail :exit t)
+	   ("q" nil "quit" :color blue)
+	   ;; ("r" gnus-group-list-active "REMOTE groups A A")
+	   ;; ("l" gnus-group-list-all-groups "LOCAL groups L")
+	   ;; ("c" gnus-topic-catchup-articles "Read all c")
+	   ;; ("G" gnus-group-make-nnir-group "Search server G G")
+	   ;; ("g" gnus-group-get-new-news "Refresh g")
+	   ;; ("s" gnus-group-enter-server-mode "Servers")
+	   ;; ("m" gnus-group-new-mail "Compose m OR C-x m")
+	   ;; ("#" gnus-topic-mark-topic "mark #")
+	   ;; ("q" nil "cancel")
+	   )
+	 ;; y is not used by default
+	 (bind-key "y" #'hydra-gnus-group/body gnus-group-mode-map ))
 #+END_SRC
 
 ** gnus-sum
@@ -2238,27 +2238,27 @@ _m_  mail new post
 (use-package gnus-sum
   :defer t
   :commands (gnus-summary-catchup-and-exit
-	     gnus-summary-clear-mark-forward
-	     gnus-summary-exit
-	     gnus-summary-exit-no-update
-	     gnus-summary-goto-subject
-	     gnus-summary-kill-thread
-	     gnus-summary-last-subject
-	     gnus-summary-mail-forward
-	     gnus-summary-put-mark-as-read
-	     gnus-summary-reply
-	     gnus-summary-reply-with-original
-	     gnus-summary-resend-message-edit
-	     gnus-summary-save-article-body-file
-	     gnus-summary-tick-article-forward
-	     gnus-summary-wide-reply
-	     gnus-summary-wide-reply-with-original
-	     my--gnus-summary-exit-no-update
-	     hydra-gnus-summary/body
-	     )
+		 gnus-summary-clear-mark-forward
+		 gnus-summary-exit
+		 gnus-summary-exit-no-update
+		 gnus-summary-goto-subject
+		 gnus-summary-kill-thread
+		 gnus-summary-last-subject
+		 gnus-summary-mail-forward
+		 gnus-summary-put-mark-as-read
+		 gnus-summary-reply
+		 gnus-summary-reply-with-original
+		 gnus-summary-resend-message-edit
+		 gnus-summary-save-article-body-file
+		 gnus-summary-tick-article-forward
+		 gnus-summary-wide-reply
+		 gnus-summary-wide-reply-with-original
+		 my--gnus-summary-exit-no-update
+		 hydra-gnus-summary/body
+		 )
   :config
   (defhydra hydra-gnus-summary (:color pink :hint nil)
-    "
+	"
 ^Posting^                  ^Handling^
 -----------------------+------------------
 _f_  forward             | _!_  tick & keep
@@ -2270,32 +2270,32 @@ _w_  wide reply          |
 
 _p_  save as patch
 "
-    ;; ("n" gnus-summary-insert-new-articles "Refresh / N")
-    ("f" gnus-summary-mail-forward :exit t)
-    ("e" gnus-summary-resend-message-edit :exit t)
-    ("R" gnus-summary-reply-with-original :exit t)
-    ("r" gnus-summary-reply :exit t)
-    ("W" gnus-summary-wide-reply-with-original :exit t)
-    ("w" gnus-summary-wide-reply :exit t)
+	;; ("n" gnus-summary-insert-new-articles "Refresh / N")
+	("f" gnus-summary-mail-forward :exit t)
+	("e" gnus-summary-resend-message-edit :exit t)
+	("R" gnus-summary-reply-with-original :exit t)
+	("r" gnus-summary-reply :exit t)
+	("W" gnus-summary-wide-reply-with-original :exit t)
+	("w" gnus-summary-wide-reply :exit t)
 
-    ("!" gnus-summary-tick-article-forward)
-    ("p" gnus-summary-put-mark-as-read)
-    ("c" gnus-summary-catchup-and-exit)
-    ("C" gnus-summary-kill-thread)
-    ("u" gnus-summary-clear-mark-forward)
+	("!" gnus-summary-tick-article-forward)
+	("p" gnus-summary-put-mark-as-read)
+	("c" gnus-summary-catchup-and-exit)
+	("C" gnus-summary-kill-thread)
+	("u" gnus-summary-clear-mark-forward)
 
-    ("p" gnus-summary-save-article-body-file)
+	("p" gnus-summary-save-article-body-file)
 
-    ("q" nil "quit"))
+	("q" nil "quit"))
   ;; y is not used by default
   (bind-key "y" #'hydra-gnus-summary/body gnus-summary-mode-map)
 
   ;; (almost) swap "q" and "Q"
   (defun my--gnus-summary-exit-no-update ()
-    "This is identical to gnus-summary-exit-no-update, but it doesn't ask
+	"This is identical to gnus-summary-exit-no-update, but it doesn't ask
 for yes-or-no."
-    (interactive)
-    (gnus-summary-exit-no-update t))
+	(interactive)
+	(gnus-summary-exit-no-update t))
   (bind-key "q" #'my--gnus-summary-exit-no-update gnus-summary-mode-map)
   (bind-key "Q" #'gnus-summary-exit gnus-summary-mode-map)
   )
@@ -2307,8 +2307,8 @@ for yes-or-no."
 (use-package gnus-art
   :defer t
   :commands (gnus-article-wide-reply
-	     gnus-article-reply
-	     hydra-gnus-article/body)
+		 gnus-article-reply
+		 hydra-gnus-article/body)
   :config
 
   ;; Test code, position cursor inside and run C-C-x to evaluate:
@@ -2324,27 +2324,27 @@ for yes-or-no."
   (defun gnus-read-save-file-name (prompt &optional filename
 					  function group headers variable
 					  dir-var)
-    (let ((patchnum))
-      (setq filename (gnus-summary-article-subject))
-      (when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
-    	(setq patchnum (string-to-number (match-string 1 filename)))
-    	(message "%s" patchnum))
-      ;; (when string-match "\\[PATCH.+?\\]" filename)
+	(let ((patchnum))
+	  (setq filename (gnus-summary-article-subject))
+	  (when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
+		(setq patchnum (string-to-number (match-string 1 filename)))
+		(message "%s" patchnum))
+	  ;; (when string-match "\\[PATCH.+?\\]" filename)
 	  (message "FILENAME %s" filename)
-      (setq filename (replace-regexp-in-string "\\[PATCH.*\\]" "" filename))
-      (setq filename (replace-regexp-in-string "\[^a-zA-Z0-9]" "-" filename))
-      (setq filename (replace-regexp-in-string "\\-+" "-" filename))
-      (setq filename (replace-regexp-in-string "^-" "" filename))
-      (setq filename (replace-regexp-in-string "-$" "" filename))
-      (when patchnum
+	  (setq filename (replace-regexp-in-string "\\[PATCH.*\\]" "" filename))
+	  (setq filename (replace-regexp-in-string "\[^a-zA-Z0-9]" "-" filename))
+	  (setq filename (replace-regexp-in-string "\\-+" "-" filename))
+	  (setq filename (replace-regexp-in-string "^-" "" filename))
+	  (setq filename (replace-regexp-in-string "-$" "" filename))
+	  (when patchnum
 		(setq filename (concat (format "%04d" patchnum) "-" filename)))
-      (setq filename (concat "/tmp/" filename ".patch"))
-      (when (file-exists-p filename)
+	  (setq filename (concat "/tmp/" filename ".patch"))
+	  (when (file-exists-p filename)
 		(delete-file filename))
 	  filename))
 
-    (defhydra hydra-gnus-article (:color pink :hint nil)
-    "
+	(defhydra hydra-gnus-article (:color pink :hint nil)
+	"
 ^Posting^                  ^Handling^
 -----------------------+---------------------------
 _f_  forward             | _!_  tick & keep
@@ -2352,26 +2352,26 @@ _R_  reply & quote       | _p_  untick
 _r_  reply personal      | _c_  catchup
 _W_  wide reply & quote  | _C_  catchup thread
 _w_  wide reply          | _u_  unmark
-                       | _o_  save attachment at point
+					   | _o_  save attachment at point
 _p_  save as patch
 "
-    ;; ("n" gnus-summary-insert-new-articles "Refresh / N")
-    ("f" gnus-summary-mail-forward :exit t)
-    ("R" gnus-article-reply-with-original :exit t)
-    ("r" gnus-article-reply :exit t)
-    ("W" gnus-article-wide-reply-with-original :exit t)
-    ("w" gnus-article-wide-reply :exit t)
+	;; ("n" gnus-summary-insert-new-articles "Refresh / N")
+	("f" gnus-summary-mail-forward :exit t)
+	("R" gnus-article-reply-with-original :exit t)
+	("r" gnus-article-reply :exit t)
+	("W" gnus-article-wide-reply-with-original :exit t)
+	("w" gnus-article-wide-reply :exit t)
 
-    ("!" gnus-summary-tick-article-forward)
-    ("p" gnus-summary-put-mark-as-read)
-    ("c" gnus-summary-catchup-and-exit)
-    ("C" gnus-summary-kill-thread)
-    ("u" gnus-summary-clear-mark-forward)
-    ("o" gnus-mime-save-part)
+	("!" gnus-summary-tick-article-forward)
+	("p" gnus-summary-put-mark-as-read)
+	("c" gnus-summary-catchup-and-exit)
+	("C" gnus-summary-kill-thread)
+	("u" gnus-summary-clear-mark-forward)
+	("o" gnus-mime-save-part)
 
-    ("p" gnus-summary-save-article-body-file)
+	("p" gnus-summary-save-article-body-file)
 
-    ("q" nil "quit"))
+	("q" nil "quit"))
   ;; y is not used by default
   (bind-key "y" #'hydra-gnus-article/body gnus-article-mode-map)
   )
@@ -2384,7 +2384,7 @@ _p_  save as patch
   :config
   ;; Hide HTML mail
   (setq mm-discouraged-alternatives '("text/html" "text/richtext")
-  	mm-automatic-display (-difference mm-automatic-display '("text/html" "text/enriched" "text/richtext"))
+	mm-automatic-display (-difference mm-automatic-display '("text/html" "text/enriched" "text/richtext"))
 	)
   )
 #+END_SRC
@@ -2437,30 +2437,30 @@ _p_  save as patch
 
   ;; modules to load together with org-mode
   (setq org-modules '(
-                      ;; org-annotate-file
-                      ;; org-bbdb
-                      ;; org-bibtex
-                      ;; org-collector
-                      ;; org-docview
-                      ;; org-drill
-                      ;; org-eval
-                      ;; org-expiry
-                      ;; org-gnus
-                      ;; org-habit
-                      ;; org-info
-                      ;; org-interactive-query
-                      ;; org-irc
-                      ;; org-jsinfo
-                      ;; org-man
-                      ;; org-mhe
-                      ;; org-mouse
-                      ;; org-panel
-                      ;; org-protocol
-                      ;; org-rmail
-                      ;; org-screen
-                      ;; org-toc
-                      ;; org-w3m
-                      ))
+					  ;; org-annotate-file
+					  ;; org-bbdb
+					  ;; org-bibtex
+					  ;; org-collector
+					  ;; org-docview
+					  ;; org-drill
+					  ;; org-eval
+					  ;; org-expiry
+					  ;; org-gnus
+					  ;; org-habit
+					  ;; org-info
+					  ;; org-interactive-query
+					  ;; org-irc
+					  ;; org-jsinfo
+					  ;; org-man
+					  ;; org-mhe
+					  ;; org-mouse
+					  ;; org-panel
+					  ;; org-protocol
+					  ;; org-rmail
+					  ;; org-screen
+					  ;; org-toc
+					  ;; org-w3m
+					  ))
 
   :config
   ;; My main file
@@ -2518,12 +2518,12 @@ _p_  save as patch
 	  ))
 
   (setq org-todo-keyword-faces
-      '(("TODO"      . (:foreground "red" :weight bold))
-        ("STARTED"   . (:foreground "#b70101" :weight bold))
-        ("DONE"      . (:foreground "forestgreen" :weight bold))
-        ("WAIT"      . (:foreground "orange" :weight bold))
-        ("DELEGATED" . (:foreground "forestgreen" :weight bold))
-        ("CANCELED"  . shadow)))
+	  '(("TODO"      . (:foreground "red" :weight bold))
+		("STARTED"   . (:foreground "#b70101" :weight bold))
+		("DONE"      . (:foreground "forestgreen" :weight bold))
+		("WAIT"      . (:foreground "orange" :weight bold))
+		("DELEGATED" . (:foreground "forestgreen" :weight bold))
+		("CANCELED"  . shadow)))
 
   ;; use extra drawer
   (setq org-log-into-drawer t)
@@ -2551,8 +2551,8 @@ _p_  save as patch
 
   ;; export and open
   (defun my-org-export-to-html-and-open ()
-    (interactive)
-    (org-open-file (org-html-export-to-html)))
+	(interactive)
+	(org-open-file (org-html-export-to-html)))
   (bind-key "<M-f7>" 'my-org-export-to-html-and-open org-mode-map)
 
   ;; make "<l" to insert an emacs-lisp source block
@@ -2622,10 +2622,10 @@ http://www.suenkler.info/docs/emacs-orgmode/
   (setq org-agenda-custom-commands
 	'(("n" "Agenda and all TODO's"
 	   ((agenda "")
-	    (alltodo "")))
-  	  ;; ("f" "Agenda and flagged tasks"
-  	  ;;  ((tags "flagged")
-  	  ;;   (agenda "")))
+		(alltodo "")))
+	  ;; ("f" "Agenda and flagged tasks"
+	  ;;  ((tags "flagged")
+	  ;;   (agenda "")))
 	  ("s" "Tagged 'someday'" tags "someday" ((org-agenda-filter-preset '("+someday"))
 						  (org-agenda-todo-ignore-with-date nil)))
 	  ))
@@ -2646,8 +2646,8 @@ http://www.suenkler.info/docs/emacs-orgmode/
   ;; ("<f9> <f8>" . (lambda () (interactive) (org-capture nil "r")))
   :config
   (defun my-org-capture-todo ()
-    (interactive)
-    (org-capture nil "o"))
+	(interactive)
+	(org-capture nil "o"))
   (setq org-capture-templates
 	`(("o" "Open task" entry
 	   (file+headline org-default-notes-file "Unsortiert")
@@ -2702,8 +2702,8 @@ http://www.suenkler.info/docs/emacs-orgmode/
 
   ;; speed commands are fun, not only on the headers, but also on lists
   (defun my/org-use-speed-commands-for-headings-and-lists ()
-    "Activate speed commands on list items too."
-    (or (and (looking-at org-outline-regexp) (looking-back "^\**"))
+	"Activate speed commands on list items too."
+	(or (and (looking-at org-outline-regexp) (looking-back "^\**"))
 	(save-excursion (and (looking-at (org-item-re)) (looking-back "^[ \t]*")))))
   (setq org-use-speed-commands 'my/org-use-speed-commands-for-headings-and-lists)
 )
@@ -2856,8 +2856,8 @@ http://www.suenkler.info/docs/emacs-orgmode/
 
 	  ("site" :components ("twbs" "html"))))
   (defun my-publish ()
-    (interactive)
-    (org-publish "site" t))
+	(interactive)
+	(org-publish "site" t))
 )
 #+END_SRC
 *** htmlize
@@ -2892,7 +2892,7 @@ after launching emacs, which is a bit unfortunate.
 (defun my-flyspell-prog-mode ()
   (interactive)
   (unless (string= (buffer-name) "*scratch*")
-    (flyspell-prog-mode)))
+	(flyspell-prog-mode)))
 (add-hook 'prog-mode-hook  #'my-flyspell-prog-mode)
 (add-hook 'text-mode-hook  #'flyspell-mode)
 (add-hook 'org-mode-hook   #'flyspell-mode)
@@ -3004,7 +3004,7 @@ set initial compile-command to nothing, so that F7 will prompt for one
    Example:
 
    '((\"make\" .  \"1448748904\")
-     (\"make -C ~/test\" . \"1448748866\"))")
+	 (\"make -C ~/test\" . \"1448748866\"))")
 
 ;; automatically save our compile-commands
 (add-to-list 'savehist-minibuffer-history-variables 'compile-commands)
@@ -3025,7 +3025,7 @@ set initial compile-command to nothing, so that F7 will prompt for one
 
   ;; (message "adding command '%s'" cmd)
   (unless (assoc cmd compile-commands)
-    (add-to-list 'compile-commands (cons cmd (format-time-string "%s")))))
+	(add-to-list 'compile-commands (cons cmd (format-time-string "%s")))))
 
 
 (defun comp--get-compile-commands-from-buffers ()
@@ -3040,19 +3040,19 @@ set initial compile-command to nothing, so that F7 will prompt for one
 
   ;; (message "loading commands from buffers")
   (dolist (buffer (buffer-list))
-    (with-current-buffer buffer
-      (when (buffer-file-name)
+	(with-current-buffer buffer
+	  (when (buffer-file-name)
 	(save-excursion
 	  (goto-char (point-min))
 	  (while (re-search-forward "^.. @compile: \\(.*\\)$" nil t)
-	    (let ((s (match-string-no-properties 1)))
-	      ;; \s- whitespace character class
-	      (setq s (replace-regexp-in-string "\s-*\\*/$" "" s))
-	      (comp--add-command s)))
+		(let ((s (match-string-no-properties 1)))
+		  ;; \s- whitespace character class
+		  (setq s (replace-regexp-in-string "\s-*\\*/$" "" s))
+		  (comp--add-command s)))
 	  (goto-char (point-min))
 	  (while (re-search-forward "(setq compile-command \"\\(.*\\)\")" nil t)
-	    ;; (message "via setq '%s'" (match-string-no-properties 1))
-	    (comp--add-command (match-string-no-properties 1))))))))
+		;; (message "via setq '%s'" (match-string-no-properties 1))
+		(comp--add-command (match-string-no-properties 1))))))))
 
 
 (defun comp--delete-command (candidate)
@@ -3078,9 +3078,9 @@ set initial compile-command to nothing, so that F7 will prompt for one
 
   (interactive "P")
   (unless compile-commands
-    (setq arg 1))
+	(setq arg 1))
   (when arg
-    (comp--get-compile-commands-from-buffers))
+	(comp--get-compile-commands-from-buffers))
   (comp--sort-command-alist)
   ;; compile-commands is now something like:
   ;; '(("make -C foo" . 1) ("ccmake && make" . 2))
@@ -3097,14 +3097,14 @@ set initial compile-command to nothing, so that F7 will prompt for one
 		:mode-line ""
 		))
 	 (cmd (helm :sources '(src ent)
-		    :prompt "cmd: "
-		    :buffer "*compile-command*"
-		    )))
-    (when cmd
-      (message "command: %s" cmd)
-      (comp--add-command cmd)
-      (setq compile-command cmd)
-      )))
+			:prompt "cmd: "
+			:buffer "*compile-command*"
+			)))
+	(when cmd
+	  (message "command: %s" cmd)
+	  (comp--add-command cmd)
+	  (setq compile-command cmd)
+	  )))
 (bind-key "S-<f7>" 'comp--helm-compile-command)
 
 
@@ -3113,16 +3113,16 @@ set initial compile-command to nothing, so that F7 will prompt for one
   (delete-other-windows)
   (save-buffer)
   (unless compile-command
-    (comp--helm-compile-command nil))
+	(comp--helm-compile-command nil))
   (when compile-command
-    (message "compile command: %s" compile-command)
-    (let ((cmd (assoc compile-command compile-commands)))
-      (when cmd
+	(message "compile command: %s" compile-command)
+	(let ((cmd (assoc compile-command compile-commands)))
+	  (when cmd
 	(message "assoc: %s" (assoc compile-command compile-commands))
 	(setcdr cmd (format-time-string "%s"))
 	(message "assoc: %s" (assoc compile-command compile-commands))
 	)))
-    (compile compile-command))
+	(compile compile-command))
 (bind-key "<f7>" 'comp--compile)
 #+END_SRC
 
@@ -3139,11 +3139,11 @@ set initial compile-command to nothing, so that F7 will prompt for one
 	(t
 	 (message "Compilation exited abnormally: %s" string))))
 (use-package compile
-    :diminish compilation-in-progress
-    :config
-    (setq compilation-finish-functions 'compile-autoclose)
-    (setq compilation-ask-about-save nil)
-    (setq compilation-scroll-output t))
+	:diminish compilation-in-progress
+	:config
+	(setq compilation-finish-functions 'compile-autoclose)
+	(setq compilation-ask-about-save nil)
+	(setq compilation-scroll-output t))
 #+END_SRC
 
 ** Error navigation
@@ -3174,11 +3174,11 @@ set initial compile-command to nothing, so that F7 will prompt for one
 (defun c-lineup-arglist-tabs-only (ignored)
   "Line up argument lists by tabs, not spaces"
   (let* ((anchor (c-langelem-pos c-syntactic-element))
-         (column (c-langelem-2nd-pos c-syntactic-element))
-         (offset (- (1+ column) anchor))
-         (steps (floor offset c-basic-offset)))
-    (* (max steps 1)
-       c-basic-offset)))
+		 (column (c-langelem-2nd-pos c-syntactic-element))
+		 (offset (- (1+ column) anchor))
+		 (steps (floor offset c-basic-offset)))
+	(* (max steps 1)
+	   c-basic-offset)))
 
 (defun my-c-electric-brace-open (arg)
   "This just inserts the spaces, a newline, and indents into the
@@ -3196,7 +3196,7 @@ just in the common hook
 (defun my-c-initialization-setup ()
   ;; Default style
   (c-add-style "linux-tabs-only"
-	       '("linux" (c-offsets-alist (arglist-cont-nonempty
+		   '("linux" (c-offsets-alist (arglist-cont-nonempty
 					   c-lineup-gcc-asm-reg
 					   c-lineup-arglist-tabs-only))))
   (setq c-default-style '((java-mode . "javax")
@@ -3211,8 +3211,8 @@ Thinks that will only ever apply to .C files
 #+BEGIN_SRC emacs-lisp
 (defun my-c-mode-setup ()
   (when (and buffer-file-name
-                 (string-match "linux" buffer-file-name))
-    (progn (c-set-style "linux-tabs-only")
+				 (string-match "linux" buffer-file-name))
+	(progn (c-set-style "linux-tabs-only")
 	   (setq tab-width 8
 		 c-basic-offset 8))))
 (add-hook 'c-mode-hook 'my-c-mode-setup)
@@ -3265,9 +3265,9 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
   (setq ediff-split-window-function 'split-window-horizontally)
   (setq ediff-diff-options "-w")
   (defun my--ediff-hook ()
-    (ediff-setup-keymap)
-    (bind-key "j" 'ediff-next-difference ediff-mode-map)
-    (bind-key "k" 'ediff-previous-difference ediff-mode-map))
+	(ediff-setup-keymap)
+	(bind-key "j" 'ediff-next-difference ediff-mode-map)
+	(bind-key "k" 'ediff-previous-difference ediff-mode-map))
   (add-hook 'ediff-mode-hook 'my--ediff-hook)
   (add-hook 'ediff-after-quit-hook-internal 'winner-undo))
 #+END_SRC
@@ -3368,11 +3368,11 @@ Home page: http://web-mode.org/
 	 )
   :config
   (defun my-web-mode-hook ()
-    ;; (whitespace-turn-off)
-    ;; (rainbow-turn-off)
-    ;; (visual-line-mode)
-    ;; (local-set-key (kbd "RET") 'newline-and-indent)
-    (setq web-mode-markup-indent-offset 2
+	;; (whitespace-turn-off)
+	;; (rainbow-turn-off)
+	;; (visual-line-mode)
+	;; (local-set-key (kbd "RET") 'newline-and-indent)
+	(setq web-mode-markup-indent-offset 2
 	  web-mode-css-indent-offset 2
 	  web-mode-code-indent-offset 2
 	  web-mode-indent-style 2
@@ -3405,38 +3405,38 @@ the terminal "eterm-color" is available.
   :bind ("M-g a" . ansi-shell)
   :init
   (defun ansi-shell ()
-    "Start ansi-term with bash"
-    (interactive)
-    (ansi-term "/bin/bash"))
+	"Start ansi-term with bash"
+	(interactive)
+	(ansi-term "/bin/bash"))
   :config
 
   ;; don't linger around when closing
   (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
-    (if (memq (process-status proc) '(signal exit))
+	(if (memq (process-status proc) '(signal exit))
 	(let ((buffer (process-buffer proc)))
 	  ad-do-it
 	  (kill-buffer buffer))
-      ad-do-it))
+	  ad-do-it))
   (ad-activate 'term-sentinel)
 
   (defun term-toggle-mode ()
-    (interactive)
-    (if (term-in-line-mode)
+	(interactive)
+	(if (term-in-line-mode)
 	(term-char-mode)
-      (term-line-mode)))
+	  (term-line-mode)))
 
   (defun my-term-hook ()
-    (goto-address-mode)
-    ;; (bind-key "C-c C-j" #'term-toggle-mode term-mode-map)
-    ;; (bind-key "C-c C-k" #'term-toggle-mode term-mode-map)
-    (setq global-hl-line-mode nil)
-    (setq term-buffer-maximum-size 10000)
-    (setq-local ml-interactive? t) ;; for mode line
-    (setq-local show-dir-in-mode-line? t) ;; also mode linec'
-    (setq show-trailing-whitespace nil)
-    ;; disable company in favor of shell completion
-    ;;(company-mode -1)
-    )
+	(goto-address-mode)
+	;; (bind-key "C-c C-j" #'term-toggle-mode term-mode-map)
+	;; (bind-key "C-c C-k" #'term-toggle-mode term-mode-map)
+	(setq global-hl-line-mode nil)
+	(setq term-buffer-maximum-size 10000)
+	(setq-local ml-interactive? t) ;; for mode line
+	(setq-local show-dir-in-mode-line? t) ;; also mode linec'
+	(setq show-trailing-whitespace nil)
+	;; disable company in favor of shell completion
+	;;(company-mode -1)
+	)
   (add-hook 'term-mode-hook 'my-term-hook)
 )
 #+END_SRC
@@ -3448,8 +3448,8 @@ the terminal "eterm-color" is available.
   :commands (column-marker-1 column-marker-2)
   :init
   (defun my--column-marker-at-80 ()
-    (interactive)
-    (column-marker-2 80))
+	(interactive)
+	(column-marker-2 80))
   (add-hook 'c-mode-hook 'my--column-marker-at-80)
   )
 #+END_SRC
@@ -3474,17 +3474,17 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
   :bind ("M-g e" . eshell)
   :config
   (defun eshell/clear ()
-    "Deletes the contents of eshell buffer, except the last prompt"
-    (save-excursion
-      (goto-char eshell-last-output-end)
-      (let ((lines (count-lines 1 (point)))
-	    (inhibit-read-only t))
+	"Deletes the contents of eshell buffer, except the last prompt"
+	(save-excursion
+	  (goto-char eshell-last-output-end)
+	  (let ((lines (count-lines 1 (point)))
+		(inhibit-read-only t))
 	(beginning-of-line)
 	(let ((pos (point)))
 	  (if (bobp)
-	      (if (interactive-p)
+		  (if (interactive-p)
 		  (error "Buffer too short to truncate"))
-	    (delete-region (point-min) (point)))))))
+		(delete-region (point-min) (point)))))))
 
   ;; We don't need no banner
   (setq eshell-banner-message "")
@@ -3496,15 +3496,15 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
   ;; eshell-visual-commands
  
   (defun my--eshell-hook ()
-    (eshell-read-aliases-list)
-    (setq global-hl-line-mode nil)
-    (setq show-trailing-whitespace nil)
-    (add-to-list 'eshell-visual-commands "ssh")
-    (add-to-list 'eshell-visual-commands "htop")
-    (add-to-list 'eshell-visual-commands "ncmpcpp")
-    (add-to-list 'eshell-visual-commands "tail")
-    (setq-local ml-interactive? t) ;; for mode line
-    (eshell/addpath "~/bin"))
+	(eshell-read-aliases-list)
+	(setq global-hl-line-mode nil)
+	(setq show-trailing-whitespace nil)
+	(add-to-list 'eshell-visual-commands "ssh")
+	(add-to-list 'eshell-visual-commands "htop")
+	(add-to-list 'eshell-visual-commands "ncmpcpp")
+	(add-to-list 'eshell-visual-commands "tail")
+	(setq-local ml-interactive? t) ;; for mode line
+	(eshell/addpath "~/bin"))
   (add-hook 'eshell-mode-hook 'my--eshell-hook)
 )
 #+END_SRC
@@ -3560,20 +3560,20 @@ bindings that use pop-up buffers.
   (setq magit-rigid-key-bindings t)
   :config
   (progn
-    ;; Save modified buffers without asking
-    (setq magit-save-some-buffers 'dontask)
-    ;; (setq magit-commit-all-when-nothing-staged nil)
-    (setq magit-stage-all-confirm nil)
-    (setq magit-unstage-all-confirm nil)
-    ;; switch the current window to magit-status (was pop-to-buffer)
-    (setq magit-status-buffer-switch-function 'switch-to-buffer)
-    ;; (setq magit-refresh-file-buffer-hook '(revert-buffer))
-    (setq magit-use-overlays nil)
-    (setq magit-item-highlight-face nil)
-    (setq magit-completing-read-function 'completing-read)
-    ;; (set-face-foreground 'magit-diff-add "green4")
-    ;; (set-face-foreground 'magit-diff-del "red3")
-     )
+	;; Save modified buffers without asking
+	(setq magit-save-some-buffers 'dontask)
+	;; (setq magit-commit-all-when-nothing-staged nil)
+	(setq magit-stage-all-confirm nil)
+	(setq magit-unstage-all-confirm nil)
+	;; switch the current window to magit-status (was pop-to-buffer)
+	(setq magit-status-buffer-switch-function 'switch-to-buffer)
+	;; (setq magit-refresh-file-buffer-hook '(revert-buffer))
+	(setq magit-use-overlays nil)
+	(setq magit-item-highlight-face nil)
+	(setq magit-completing-read-function 'completing-read)
+	;; (set-face-foreground 'magit-diff-add "green4")
+	;; (set-face-foreground 'magit-diff-del "red3")
+	 )
   :bind ("C-c m" . magit-status)
   :commands (magit-get-top-dir))
 #+END_SRC
