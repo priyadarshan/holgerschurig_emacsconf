@@ -2954,6 +2954,7 @@ Nice tip from tuhdo, see https://www.emacswiki.org/emacs/CleanAutoIndent
   :ensure t
   :config
   (dtrt-indent-mode 1)
+  (setq dtrt-indent-verbosity 0)
 )
 #+END_SRC
 ** Disable vc backends
