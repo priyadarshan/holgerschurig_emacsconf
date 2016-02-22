@@ -2526,6 +2526,20 @@ http://www.emacswiki.org/emacs/GnusGmail
 http://www.xsteve.at/prg/gnus/
 https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
 
+Some often used commands:
+
+| Where           | Keys    | Function                             |
+|-----------------+---------+--------------------------------------|
+| Group           | g       | check for new mails                  |
+| Summary         | d       | mark article as read                 |
+| Summary         | C-M-K   | mark whole *thread* as read          |
+| Summary         | L s s p | *score* lower run based on a subject |
+| Summary         | q       | no-op                                |
+| Summary         | Q       | quit with saving article flags       |
+| Summary         | O b     | export as /tmp/*.patch               |
+| Summary+Article | h       | toggle between summary/article       |
+| Article         | q       | close article, back to summary       |
+  
 #+BEGIN_SRC emacs-lisp
 (use-package gnus
   :bind ("C-c n" . gnus)
