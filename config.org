@@ -2733,7 +2733,7 @@ _m_  mail new post
 		 gnus-summary-tick-article-forward
 		 gnus-summary-wide-reply
 		 gnus-summary-wide-reply-with-original
-		 my--gnus-summary-exit-no-update
+		 my--gnus-summary-exit-noop
 		 hydra-gnus-summary/body
 		 )
   :config
@@ -2771,12 +2771,11 @@ _p_  save as patch
   (bind-key "y" #'hydra-gnus-summary/body gnus-summary-mode-map)
 
   ;; (almost) swap "q" and "Q"
-  (defun my--gnus-summary-exit-no-update ()
-	"This is identical to gnus-summary-exit-no-update, but it doesn't ask
-for yes-or-no."
+  (defun my--gnus-summary-exit-noop ()
+	"This stops q from working, use Q instead."
 	(interactive)
-	(gnus-summary-exit-no-update t))
-  (bind-key "q" #'my--gnus-summary-exit-no-update gnus-summary-mode-map)
+	(message "Please use \"Q\" instead"))
+  (bind-key "q" #'my--gnus-summary-exit-noop gnus-summary-mode-map)
   (bind-key "Q" #'gnus-summary-exit gnus-summary-mode-map)
   )
 #+END_SRC
