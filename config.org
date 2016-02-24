@@ -198,6 +198,7 @@ Avoid Emacs hanging for a while after changing default font:
 
 #+BEGIN_SRC emacs-lisp
 (use-package kooten-theme
+  :if (display-graphic-p)
   :ensure t
 )
 #+END_SRC
@@ -383,9 +384,10 @@ Define new faces for elements on an active powerline:
 (defface my-pl-minor-face2 '((t (:inherit my-pl-face4))) nil)
 (defface my-pl-lincol-face1 '((t (:inherit my-pl-face1))) nil)
 (defface my-pl-lincol-face2 '((t (:inherit my-pl-face2))) nil)
-(set-face-attribute 'mode-line-highlight nil :foreground "white" :weight 'bold)
-(set-face-attribute 'my-pl-indi-romod-face1 nil :weight 'bold)
-(set-face-attribute 'my-pl-name-face1 nil :weight 'bold)
+(when (display-graphic-p)
+  (set-face-attribute 'mode-line-highlight nil :foreground "white" :weight 'bold)
+  (set-face-attribute 'my-pl-indi-romod-face1 nil :weight 'bold)
+  (set-face-attribute 'my-pl-name-face1 nil :weight 'bold))
 #+END_SRC
 
 *** Powerline functions
@@ -456,6 +458,7 @@ And finally we build our mode line:
 
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package powerline
+  :if (display-graphic-p)
   :ensure t
   :config
   (powerline-default-theme)
