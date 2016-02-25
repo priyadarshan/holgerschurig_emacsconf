@@ -409,27 +409,6 @@ in the mode-line isn't too long.
 	output))
 #+END_SRC
 
-This detects the current state of narrowing. It is a slight
-modification of the original function powerline-narrow from
-powerline.el: It displays a unicode flag as well.
-
-#+BEGIN_SRC emacs-lisp
-(defpowerline my-powerline-narrow
-  (let (real-point-min real-point-max)
-	(save-excursion
-	  (save-restriction
-		(widen)
-		(setq real-point-min (point-min)
-			  real-point-max (point-max))))
-	(when (or (/= real-point-min (point-min))
-			  (/= real-point-max (point-max)))
-	  (propertize (char-to-string #x2691)
-				  'mouse-face 'mode-line-highlight
-				  'help-echo "mouse-1: Remove narrowing from the current buffer"
-				  'local-map (make-mode-line-mouse-map
-							  'mouse-1 'mode-line-widen)))))
-#+END_SRC
-
 *** finally the mode line
 And finally we build our mode line:
 
@@ -474,6 +453,24 @@ And finally we build our mode line:
   ;; used for left/right border, indicator + empty space
   (set-face-attribute 'powerline-active2   nil :background "blue1")
   (set-face-attribute 'powerline-inactive2 nil :background "blue4")
+
+  ;; This detects the current state of narrowing. It is a slight
+  ;; modification of the original function powerline-narrow from
+  ;; powerline.el: It displays a unicode flag as well.
+  (defpowerline my-powerline-narrow
+	(let (real-point-min real-point-max)
+	  (save-excursion
+		(save-restriction
+		  (widen)
+		  (setq real-point-min (point-min)
+				real-point-max (point-max))))
+	  (when (or (/= real-point-min (point-min))
+				(/= real-point-max (point-max)))
+		(propertize (char-to-string #x2691)
+					'mouse-face 'mode-line-highlight
+					'help-echo "mouse-1: Remove narrowing from the current buffer"
+					'local-map (make-mode-line-mouse-map
+								'mouse-1 'mode-line-widen)))))
 
   (setq-default mode-line-format
 				'("%e"
