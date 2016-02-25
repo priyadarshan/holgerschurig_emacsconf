@@ -1668,9 +1668,9 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   (setq helm-quick-update t)
 
   ;; Open full helm frame
-  (setq helm-full-frame t)
-  ;; Put helm window on the right
-  ;; (setq helm-split-window-default-side 'right)
+  ;; (setq helm-full-frame t)
+  ;; Put helm window on somewhere else
+  (setq helm-split-window-default-side 'below)
 
   ;; move to end or beginning of source when reaching top or bottom of source.
   (setq helm-move-to-line-cycle-in-source t)
