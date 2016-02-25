@@ -146,6 +146,37 @@ Basic syntax:
 (setq use-package-verbose t)
 #+END_SRC
 
+** paradox
+https://github.com/Malabarba/paradox
+
+| Key   | Function                        |
+|-------+---------------------------------|
+| =v=   | visit homepage                  |
+| =l=   | list recent commits             |
+| =f r= | filter by regexp                |
+| =f u= | filter by upgradeable packages  |
+| =f k= | filter by keyword               |
+| =f s= | filter by user-starred packages |
+|-------+---------------------------------|
+
+#+BEGIN_SRC emacs-lisp
+(use-package paradox
+  :ensure t
+  :bind (("M-g p" . paradox-list-packages-no-fetch)
+		 ("M-g P" . paradox-list-packages))
+  :config
+  (defun paradox-list-packages-no-fetch ()
+	"Shows you the packages without actually fetching new ones."
+	(interactive)
+	(paradox-list-packages t))
+
+  ;; disable the github token generation
+  (setq paradox-github-token t)
+
+  (setq paradox-execute-asynchronously t
+		paradox-display-download-count t)
+)
+#+END_SRC
 ** tangle on save
 #+BEGIN_SRC emacs-lisp
 (defun my--collect-elisp-source-bodies ()
