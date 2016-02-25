@@ -2559,9 +2559,6 @@ Some often used commands:
 	gnus-article-save-directory (concat user-emacs-directory "News/saved/")
 	gnus-kill-files-directory (concat user-emacs-directory "News/scores/")
 	gnus-cache-directory (concat user-emacs-directory "News/cache/"))
-
-  (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
-
 #+END_SRC
 
 ** News sources
@@ -2886,6 +2883,11 @@ _p_  save as patch
 #+END_SRC
 
 ** CANCELED bbdb
+This used to be in the gnus setup section:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (use-package bbdb
