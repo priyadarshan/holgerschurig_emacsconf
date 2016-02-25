@@ -1762,7 +1762,7 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   )
 #+END_SRC
 
-*** helm autoloads
+** helm autoloads
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-config
@@ -1847,7 +1847,7 @@ maximize the buffer"
 )
 #+END_SRC
 
-*** helm-descbinds
+** helm-descbinds
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-descbinds
@@ -1858,7 +1858,7 @@ maximize the buffer"
   )
 #+END_SRC
 
-*** helm-swoop
+** helm-swoop
 https://github.com/ShingoFukuyama/helm-swoop
 
 #+BEGIN_SRC emacs-lisp
@@ -1902,48 +1902,6 @@ https://github.com/ShingoFukuyama/helm-swoop
 (use-package lv
   :defer t
   :commands (lv-message))
-#+END_SRC
-** flyspell
-
-#+BEGIN_SRC emacs-lisp
-(use-package flyspell
- :diminish flyspell-mode
- :commands (flyspell-mode flyspell-prog-mode)
- :config
- (add-to-list 'flyspell-dictionaries-that-consider-dash-as-word-delimiter "german-new8")
- (setq flyspell-issue-welcome-flag nil)
- ;; M-Tab is owned by the window manager, correct with C-M-i
- (setq flyspell-use-meta-tab nil)
- ;; Flyspell hijacked C-., which I want to use for tags
- (define-key flyspell-mode-map [(control ?\.)] nil)
- )
-
-#+END_SRC
-
-Flyspell is in elisp mode. And this in turn loads flyspell directly
-after launching emacs, which is a bit unfortunate.
-
-#+BEGIN_SRC emacs-lisp
-(defun my-flyspell-prog-mode ()
-  (interactive)
-  (unless (string= (buffer-name) "*scratch*")
-	(flyspell-prog-mode)))
-(add-hook 'prog-mode-hook  #'my-flyspell-prog-mode)
-(add-hook 'text-mode-hook  #'flyspell-mode)
-(add-hook 'org-mode-hook   #'flyspell-mode)
-(add-hook 'latex-mode-hook #'flyspell-mode)
-(add-hook 'LaTeX-mode-hook #'flyspell-mode)
-#+END_SRC
-
-*** helm-flyspell
-https://github.com/pronobis/helm-flyspell
-
-#+BEGIN_SRC emacs-lisp
-(use-package helm-flyspell
-  :commands helm-flyspell-correct
-  :config
-  (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
-  )
 #+END_SRC
 * org-mode
 *** org itself
@@ -2446,6 +2404,48 @@ see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Con
 (use-package dired-x
   :commands dired-jump
 )
+#+END_SRC
+** flyspell
+
+#+BEGIN_SRC emacs-lisp
+(use-package flyspell
+ :diminish flyspell-mode
+ :commands (flyspell-mode flyspell-prog-mode)
+ :config
+ (add-to-list 'flyspell-dictionaries-that-consider-dash-as-word-delimiter "german-new8")
+ (setq flyspell-issue-welcome-flag nil)
+ ;; M-Tab is owned by the window manager, correct with C-M-i
+ (setq flyspell-use-meta-tab nil)
+ ;; Flyspell hijacked C-., which I want to use for tags
+ (define-key flyspell-mode-map [(control ?\.)] nil)
+ )
+
+#+END_SRC
+
+Flyspell is in elisp mode. And this in turn loads flyspell directly
+after launching emacs, which is a bit unfortunate.
+
+#+BEGIN_SRC emacs-lisp
+(defun my-flyspell-prog-mode ()
+  (interactive)
+  (unless (string= (buffer-name) "*scratch*")
+	(flyspell-prog-mode)))
+(add-hook 'prog-mode-hook  #'my-flyspell-prog-mode)
+(add-hook 'text-mode-hook  #'flyspell-mode)
+(add-hook 'org-mode-hook   #'flyspell-mode)
+(add-hook 'latex-mode-hook #'flyspell-mode)
+(add-hook 'LaTeX-mode-hook #'flyspell-mode)
+#+END_SRC
+
+*** helm-flyspell
+https://github.com/pronobis/helm-flyspell
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-flyspell
+  :commands helm-flyspell-correct
+  :config
+  (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
+  )
 #+END_SRC
 * Mail & News
 ** smtpmail
