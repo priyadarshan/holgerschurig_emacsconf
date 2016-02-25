@@ -1,7 +1,6 @@
 #+TITLE: Holger Schurig's Emacs configuration
 
 * About this file
-
 Inspired by the [[http://eschulte.me/emacs24-starter-kit/#installation][Emacs Starter Kit]], I set up my configuration file
 using Org-babel. You could load it with =(org-babel-load-file
 "/path/to/file")=, changing the path appropriately, but you'll
@@ -44,13 +43,13 @@ making sure to copy a complete set of parentheses) into your
 eval-buffer= to evaluate the code and see if you like the way that
 Emacs behaves. See [[https://www.gnu.org/software/emacs/manual/html_mono/eintr.html][An Introduction to Programming in Emacs Lisp]] for more details on Emacs Lisp. You can also find the manual by using =C-h i= (=info=) and choosing "Emacs Lisp Intro".
 
-I've installed a lot of packages. When you see =use-package= and a
-package name you might like, you can use =M-x package-install= to
-install the package of that name. Note that use-package is itself
-provided by a package, so you'll probably want to install that and
-=bind-key=.
-
-If you're viewing the Org file, you can open source code blocks (those are the ones in begin_src) in a separate buffer by moving your point inside them and typing C-c ' (=org-edit-special=). This opens another buffer in =emacs-lisp-mode=, so you can use =M-x eval-buffer= to load the changes. If you want to explore how functions work, use =M-x edebug-defun= to set up debugging for that function, and then call it. You can learn more about edebug in the [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Edebug.html][Emacs Lisp]] manual.
+If you're viewing the Org file, you can open source code blocks (those
+are the ones in begin_src) in a separate buffer by moving your point
+inside them and typing C-c ' (=org-edit-special=). This opens another
+buffer in =emacs-lisp-mode=, so you can use =M-x eval-buffer= to load
+the changes. If you want to explore how functions work, use =M-x
+edebug-defun= to set up debugging for that function, and then call it.
+You can learn more about edebug in the [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Edebug.html][Emacs Lisp]] manual.
 
 I like using =(setq ...)= more than Customize because I can neatly organize my configuration that way.
 
