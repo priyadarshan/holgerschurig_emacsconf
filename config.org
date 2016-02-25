@@ -2550,8 +2550,7 @@ Some often used commands:
   (require 'mm-decode)
 #+END_SRC
 
-** general setup
-
+*** Paths
 #+BEGIN_SRC emacs-lisp
   ;; Store gnus specific files to ~/gnus, maybe also set nnml-directory
   (setq gnus-directory (concat user-emacs-directory "News/")
@@ -2561,7 +2560,7 @@ Some often used commands:
 	gnus-cache-directory (concat user-emacs-directory "News/cache/"))
 #+END_SRC
 
-** News sources
+*** News source GMANE
 
 #+BEGIN_SRC emacs-lisp
   ;;http://www.xsteve.at/prg/gnus/
@@ -2572,8 +2571,8 @@ Some often used commands:
 		   '(nnmaildir "" (directory "~/Maildir/")))
 
 #+END_SRC
+*** Summary list
 
-** Summary list
 
 #+BEGIN_SRC emacs-lisp
   ;; don't refrain to show a big amount of messages
@@ -2591,7 +2590,7 @@ Some often used commands:
 	)
 #+END_SRC
 
-** GNUS articles
+*** Article list
 
 #+BEGIN_SRC emacs-lisp
   ;; And this switches the cursor into this other window when we select an article
@@ -2612,7 +2611,7 @@ Some often used commands:
 )
 #+END_SRC
 
-** autostarts
+*** gnus-start
 #+BEGIN_SRC emacs-lisp
 (use-package gnus-start
   :defer t
@@ -2667,7 +2666,7 @@ Some often used commands:
 )
 #+END_SRC
 
-** gnus-art
+*** gnus-art
 
 #+BEGIN_SRC emacs-lisp
 (use-package gnus-art
@@ -2678,7 +2677,7 @@ Some often used commands:
 )
 #+END_SRC
 
-** gnus-group
+*** gnus-group
 
 #+BEGIN_SRC emacs-lisp
 (use-package gnus-group
@@ -2726,7 +2725,7 @@ _m_  mail new post
 	 ;; y is not used by default
 	 (bind-key "y" #'hydra-gnus-group/body gnus-group-mode-map ))
 #+END_SRC
-** gnus-sum
+*** gnus-sum
 
 #+BEGIN_SRC emacs-lisp
 (use-package gnus-sum
@@ -2794,7 +2793,7 @@ _p_  save as patch
   )
 #+END_SRC
 
-** gnus-art
+*** gnus-art
 
 #+BEGIN_SRC emacs-lisp
 (use-package gnus-art
@@ -2870,7 +2869,7 @@ _p_  save as patch
   )
 #+END_SRC
 
-** mm-decode
+*** mm-decode
 #+BEGIN_SRC emacs-lisp
 (use-package mm-decode
   :defer t
@@ -2882,7 +2881,7 @@ _p_  save as patch
   )
 #+END_SRC
 
-** CANCELED bbdb
+*** CANCELED bbdb
 This used to be in the gnus setup section:
 
 #+BEGIN_SRC emacs-lisp :tangle no
