@@ -69,6 +69,17 @@ Use the following if there is some nasty bug that you cannot find with
 		(delete ".." (directory-files emacs-git))))
 #+END_SRC
 ** package
+Seems that we need certificate pinning before accessing some https sites:
+#+BEGIN_SRC emacs-lisp
+(when (fboundp 'gnutls-available-p)
+  (fmakunbound 'gnutls-available-p))
+(setq tls-program '("gnutls-cli --tofu -p %p %h")
+      imap-ssl-program '("gnutls-cli --tofu -p %p %s")
+      smtpmail-stream-type 'starttls
+      starttls-extra-arguments '("--tofu"))
+#+END_SRC
+
+Now enable =packages.el= with MELPA:
 
 #+BEGIN_SRC emacs-lisp
 (require 'package)
