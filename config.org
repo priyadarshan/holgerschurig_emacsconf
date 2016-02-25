@@ -2505,7 +2505,9 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
 #+BEGIN_SRC emacs-lisp
 (use-package message
   :defer t
+  :commands message-mode
   :config
+
   ;; When composing a mail, start the auto-fill-mode.
   (add-hook 'message-mode-hook 'turn-on-auto-fill)
   ;; (add-hook 'message-setup-hook 'bbdb-define-all-aliases)
@@ -2515,11 +2517,6 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
 
   ;; The message buffer will be killed after sending a message.
   (setq message-kill-buffer-on-exit t)
-
-  ;;(require 'starttls)
-  ;;(require 'smtpmail)
-  :commands message-mode
-  ;;:mode (("/mutt" . message-mode))
 )
 #+END_SRC
 
@@ -2554,7 +2551,6 @@ Some often used commands:
 #+BEGIN_SRC emacs-lisp
   ;; Store gnus specific files to ~/gnus, maybe also set nnml-directory
   (setq gnus-directory (concat user-emacs-directory "News/")
-	message-directory (concat user-emacs-directory "Mail/")
 	gnus-article-save-directory (concat user-emacs-directory "News/saved/")
 	gnus-kill-files-directory (concat user-emacs-directory "News/scores/")
 	gnus-cache-directory (concat user-emacs-directory "News/cache/"))
