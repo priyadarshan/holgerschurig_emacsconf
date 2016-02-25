@@ -2457,10 +2457,10 @@ http://superuser.com/questions/476714/how-to-configure-emacs-smtp-for-using-a-se
   :defer t
   :config
   (setq smtpmail-default-smtp-server "smtp.gmail.com"
-	smtpmail-smtp-server "smtp.gmail.com"
-	smtpmail-stream-type 'starttls
-	smtpmail-smtp-service 587
-	smtpmail-debug-info t))
+		smtpmail-smtp-server "smtp.gmail.com"
+		smtpmail-stream-type 'starttls
+		smtpmail-smtp-service 587
+		smtpmail-debug-info t))
 #+END_SRC
 ** sendmail
 http://www.emacswiki.org/emacs/MuttInEmacs
