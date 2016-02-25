@@ -2521,11 +2521,13 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
 #+END_SRC
 
 ** gnus
+*** Help: useful links
 https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnus-guide-en.org
 http://www.emacswiki.org/emacs/GnusGmail
 http://www.xsteve.at/prg/gnus/
 https://github.com/jwiegley/dot-emacs/blob/master/dot-gnus.el
 
+*** Help: used keys
 Some often used commands:
 
 | Where           | Keys    | Function                             |
@@ -2539,57 +2541,67 @@ Some often used commands:
 | Summary         | O b     | export as /tmp/*.patch               |
 | Summary+Article | h       | toggle between summary/article       |
 | Article         | q       | close article, back to summary       |
+| Article         | y       | call hydra                           |
   
+*** Paths
 #+BEGIN_SRC emacs-lisp
 (use-package gnus
   :bind ("C-c n" . gnus)
   :config
   (require 'mm-decode)
-#+END_SRC
 
-*** Paths
-#+BEGIN_SRC emacs-lisp
   ;; Store gnus specific files to ~/gnus, maybe also set nnml-directory
   (setq gnus-directory (concat user-emacs-directory "News/")
-	gnus-article-save-directory (concat user-emacs-directory "News/saved/")
-	gnus-kill-files-directory (concat user-emacs-directory "News/scores/")
-	gnus-cache-directory (concat user-emacs-directory "News/cache/"))
+		gnus-article-save-directory (concat user-emacs-directory "News/saved/")
+		gnus-kill-files-directory (concat user-emacs-directory "News/scores/")
+		gnus-cache-directory (concat user-emacs-directory "News/cache/"))
 #+END_SRC
-
-*** News source GMANE
+*** News source: GMANE
+See http://www.xsteve.at/prg/gnus/
 
 #+BEGIN_SRC emacs-lisp
-  ;;http://www.xsteve.at/prg/gnus/
   (setq gnus-select-method '(nntp "news.gmane.org"))
+#+END_SRC
+*** News source: Maildir (offlineimap)
+My local offlineimap repository:
 
-  ;; Local offlineimap repository
+#+BEGIN_SRC emacs-lisp
   (add-to-list 'gnus-secondary-select-methods
 		   '(nnmaildir "" (directory "~/Maildir/")))
 
 #+END_SRC
 *** Summary list
-
+Don't refrain to show a big amount of messages
 
 #+BEGIN_SRC emacs-lisp
-  ;; don't refrain to show a big amount of messages
-  (setq gnus-large-newsgroup 10000)
+  (setq gnus-large-newsgroup 6000)
+#+END_SRC
+
+My own summary format, which also doesn't depend on some arbitrary
+colon somewhere.
+
+#+BEGIN_SRC emacs-lisp
   (setq gnus-summary-line-format "%U%R %11,11&user-date; %-22,22n %B%-80,80S\n")
-
-  ;; Added some keybindings to the gnus summary mode
-  (define-key gnus-summary-mode-map [(meta up)] '(lambda() (interactive) (scroll-other-window -1)))
-  (define-key gnus-summary-mode-map [(meta down)] '(lambda() (interactive) (scroll-other-window 1)))
-  (define-key gnus-summary-mode-map [(control down)] 'gnus-summary-next-thread)
-  (define-key gnus-summary-mode-map [(control up)] 'gnus-summary-prev-thread)
-
   ;; stop the annoying "move to colon" function
   (defun gnus-summary-position-point ()
 	)
 #+END_SRC
 
-*** Article list
+Added some keybindings to the gnus summary mode:
 
 #+BEGIN_SRC emacs-lisp
-  ;; And this switches the cursor into this other window when we select an article
+  (define-key gnus-summary-mode-map [(meta up)] '(lambda() (interactive) (scroll-other-window -1)))
+  (define-key gnus-summary-mode-map [(meta down)] '(lambda() (interactive) (scroll-other-window 1)))
+  (define-key gnus-summary-mode-map [(control down)] 'gnus-summary-next-thread)
+  (define-key gnus-summary-mode-map [(control up)] 'gnus-summary-prev-thread)
+#+END_SRC
+
+*** Article list
+
+Switches the cursor into the new other window when we select an
+article. Quit from there with =q=.
+
+#+BEGIN_SRC emacs-lisp
   (defun my--after-select-article (&rest args)
 	(let ((window (get-buffer-window (get-buffer "*Article*"))))
 	  (when window
@@ -2607,74 +2619,98 @@ Some often used commands:
 )
 #+END_SRC
 
-*** gnus-start
-#+BEGIN_SRC emacs-lisp
-(use-package gnus-start
-  :defer t
-  :config
-  ;; Unconditionally read the dribble file
-  (setq gnus-always-read-dribble-file t)
-)
-(use-package gnus-sum
-  :defer t
-  :config
-  ;; re-use one article buffer for every group
-  (setq gnus-single-article-buffer t)
-
-  ;; don't substitute my e-mail with some "-> RECEIVER" magic
-  (setq gnus-ignored-from-addresses nil)
-
-  ;; make threads full
-  (setq gnus-fetch-old-headers t)
-
-  ;; If you prefer to see only the top level message. If a message has
-  ;; several replies or is part of a thread, only show the first
-  ;; message. 'gnus-thread-ignore-subject' will ignore the subject and
-  ;; look at 'In-Reply-To:' and 'References:' headers.
-  ;; (setq gnus-thread-hide-subtree t)
-
-  ;; Sort by date:
-  (setq gnus-thread-sort-functions
-		'((not gnus-thread-sort-by-date)
-		  (not gnus-thread-sort-by-number)))
-
-
-  ;;  %U  "Read" status of this article.
-  ;;  %R  "A" if this article has been replied to, " "
-  ;;  %d  Date of the article (string) in DD-MMM format
-  ;;  %L  Number of lines in the article (integer)
-  ;;  %n  Name of poster
-  ;;  %B  A complex trn-style thread tree (string), see gnus-sum-thread-*
-  ;;  %S  Subject (string)
-  ;; Some others:
-  ;;  %z  Article zcore (character), try %i
-  ;;  %I  Indentation based on thread level
-  ;;  %f  Contents of the From: or To: headers (string)
-  ;;  %s  Subject if it is at the root of a thread, and "" otherwise
-  ;;  %O  Download mark (character).
-  ;; Original                    "%U%R%z%I%(%[%4L: %-23,23f%]%) %s\n"
-  (setq gnus-user-date-format-alist '(
-					  ((gnus-seconds-today)           . "%H:%M")
-					  ((+ 86400 (gnus-seconds-today)) . "gest %H:%M")
-					  ((gnus-seconds-year)            . "%d.%m %H:%M")
-					  (t                              . "%d.%m. %Y")
-					  ))
-)
-#+END_SRC
-
 *** gnus-art
-
 #+BEGIN_SRC emacs-lisp
 (use-package gnus-art
   :defer t
   :commands (gnus-article-reply-with-original
-		 gnus-article-wide-reply-with-original
-		 gnus-mime-save-part)
-)
+			 gnus-article-wide-reply-with-original
+			 gnus-mime-save-part
+			 gnus-article-wide-reply
+			 gnus-article-reply
+			 hydra-gnus-article/body)
+  :config
 #+END_SRC
 
-*** gnus-group
+**** Patch export
+Export patches from Linux mailing lists via =O b=
 
+#+BEGIN_SRC emacs-list  
+
+  ;; save news article body as patch, via gnus-summary-save-article-body-file "O b"
+  (defun gnus-read-save-file-name (prompt &optional filename
+					  function group headers variable
+					  dir-var)
+	(let ((patchnum))
+	  (setq filename (gnus-summary-article-subject))
+	  (when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
+		(setq patchnum (string-to-number (match-string 1 filename)))
+		(message "%s" patchnum))
+	  ;; (when string-match "\\[PATCH.+?\\]" filename)
+	  (message "FILENAME %s" filename)
+	  (setq filename (replace-regexp-in-string "\\[PATCH.*\\]" "" filename))
+	  (setq filename (replace-regexp-in-string "\[^a-zA-Z0-9]" "-" filename))
+	  (setq filename (replace-regexp-in-string "\\-+" "-" filename))
+	  (setq filename (replace-regexp-in-string "^-" "" filename))
+	  (setq filename (replace-regexp-in-string "-$" "" filename))
+	  (when patchnum
+		(setq filename (concat (format "%04d" patchnum) "-" filename)))
+	  (setq filename (concat "/tmp/" filename ".patch"))
+	  (when (file-exists-p filename)
+		(delete-file filename))
+	  filename))
+
+  ;; Test code, position cursor inside and run C-C-x to evaluate:
+  ;;
+  ;; (let ((filename "[PATCH 03/05] foo"))
+  ;;   (when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
+  ;;     (message "%s -> %04d" filename (string-to-number (match-string 1 filename)))
+  ;;     ;; (message "%s" filename)
+  ;;     )
+  ;;   ))
+#+END_SRC
+
+**** Hydra support
+#+BEGIN_SRC emacs-list  
+	(defhydra hydra-gnus-article (:color pink :hint nil)
+	"
+^Posting^                  ^Handling^
+-----------------------+---------------------------
+_f_  forward             | _!_  tick & keep
+_R_  reply & quote       | _p_  untick
+_r_  reply personal      | _c_  catchup
+_W_  wide reply & quote  | _C_  catchup thread
+_w_  wide reply          | _u_  unmark
+					   | _o_  save attachment at point
+_p_  save as patch
+"
+	;; ("n" gnus-summary-insert-new-articles "Refresh / N")
+	("f" gnus-summary-mail-forward :exit t)
+	("R" gnus-article-reply-with-original :exit t)
+	("r" gnus-article-reply :exit t)
+	("W" gnus-article-wide-reply-with-original :exit t)
+	("w" gnus-article-wide-reply :exit t)
+
+	("!" gnus-summary-tick-article-forward)
+	("p" gnus-summary-put-mark-as-read)
+	("c" gnus-summary-catchup-and-exit)
+	("C" gnus-summary-kill-thread)
+	("u" gnus-summary-clear-mark-forward)
+	("o" gnus-mime-save-part)
+
+	("p" gnus-summary-save-article-body-file)
+
+	("q" nil "quit"))
+  ;; y is not used by default
+  (bind-key "y" #'hydra-gnus-article/body gnus-article-mode-map)
+#+END_SRC
+
+**** End of use-package
+#+BEGIN_SRC emacs-lisp
+  ;; end of gnus-sum
+  )
+#+END_SRC
+*** gnus-group
 #+BEGIN_SRC emacs-lisp
 (use-package gnus-group
   :defer t
@@ -2719,33 +2755,111 @@ _m_  mail new post
 	   ;; ("q" nil "cancel")
 	   )
 	 ;; y is not used by default
-	 (bind-key "y" #'hydra-gnus-group/body gnus-group-mode-map ))
+  (bind-key "y" #'hydra-gnus-group/body gnus-group-mode-map )
+)
+#+END_SRC
+
+*** gnus-start
+Unconditionally read the dribble file:
+
+#+BEGIN_SRC emacs-lisp
+(use-package gnus-start
+  :defer t
+  :config
+  (setq gnus-always-read-dribble-file t)
+)
 #+END_SRC
 *** gnus-sum
-
 #+BEGIN_SRC emacs-lisp
 (use-package gnus-sum
   :defer t
   :commands (gnus-summary-catchup-and-exit
-		 gnus-summary-clear-mark-forward
-		 gnus-summary-exit
-		 gnus-summary-exit-no-update
-		 gnus-summary-goto-subject
-		 gnus-summary-kill-thread
-		 gnus-summary-last-subject
-		 gnus-summary-mail-forward
-		 gnus-summary-put-mark-as-read
-		 gnus-summary-reply
-		 gnus-summary-reply-with-original
-		 gnus-summary-resend-message-edit
-		 gnus-summary-save-article-body-file
-		 gnus-summary-tick-article-forward
-		 gnus-summary-wide-reply
-		 gnus-summary-wide-reply-with-original
-		 my--gnus-summary-exit-noop
-		 hydra-gnus-summary/body
-		 )
+			 gnus-summary-clear-mark-forward
+			 gnus-summary-exit
+			 gnus-summary-exit-no-update
+			 gnus-summary-goto-subject
+			 gnus-summary-kill-thread
+			 gnus-summary-last-subject
+			 gnus-summary-mail-forward
+			 gnus-summary-put-mark-as-read
+			 gnus-summary-reply
+			 gnus-summary-reply-with-original
+			 gnus-summary-resend-message-edit
+			 gnus-summary-save-article-body-file
+			 gnus-summary-tick-article-forward
+			 gnus-summary-wide-reply
+			 gnus-summary-wide-reply-with-original
+			 my--gnus-summary-exit-noop
+			 hydra-gnus-summary/body
+			 )
   :config
+  ;; re-use one article buffer for every group
+  (setq gnus-single-article-buffer t)
+
+  ;; don't substitute my e-mail with some "-> RECEIVER" magic
+  (setq gnus-ignored-from-addresses nil)
+#+END_SRC
+**** Don't quit the summary with =q=
+You need to use =Q= to quit the summary. Why? Because I bound =q= to
+quit the article display, and pressing erraneously =q= saved all the
+article states, even when I was not yet finished (e.g. with marking
+articles as =!=).
+
+#+BEGIN_SRC emacs-lisp
+  ;; (almost) swap "q" and "Q"
+  (defun my--gnus-summary-exit-noop ()
+	"This stops q from working, use Q instead."
+	(interactive)
+	(message "Please use \"Q\" instead"))
+  (bind-key "q" #'my--gnus-summary-exit-noop gnus-summary-mode-map)
+  (bind-key "Q" #'gnus-summary-exit gnus-summary-mode-map)
+#+END_SRC
+**** Mmake threads full
+What this means is that any thread with a new message will also
+display the older thread mails as well.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-fetch-old-headers t)
+#+END_SRC
+
+**** Sort by date
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-thread-sort-functions
+		'((not gnus-thread-sort-by-date)
+		  (not gnus-thread-sort-by-number)))
+
+#+END_SRC
+
+**** Date format
+%U  "Read" status of this article.
+%R  "A" if this article has been replied to, " "
+%d  Date of the article (string) in DD-MMM format
+%L  Number of lines in the article (integer)
+%n  Name of poster
+%B  A complex trn-style thread tree (string), see gnus-sum-thread-*
+%S  Subject (string)
+
+Some others:
+
+%z  Article zcore (character), try %i
+%I  Indentation based on thread level
+%f  Contents of the From: or To: headers (string)
+%s  Subject if it is at the root of a thread, and "" otherwise
+%O  Download mark (character).
+
+riginal                    "%U%R%z%I%(%[%4L: %-23,23f%]%) %s\n"
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-user-date-format-alist '(
+					  ((gnus-seconds-today)           . "%H:%M")
+					  ((+ 86400 (gnus-seconds-today)) . "gest %H:%M")
+					  ((gnus-seconds-year)            . "%d.%m %H:%M")
+					  (t                              . "%d.%m. %Y")
+					  ))
+#+END_SRC
+
+**** Hydra support
+#+BEGIN_SRC emacs-lisp
   (defhydra hydra-gnus-summary (:color pink :hint nil)
 	"
 ^Posting^                  ^Handling^
@@ -2778,93 +2892,12 @@ _p_  save as patch
 	("q" nil "quit"))
   ;; y is not used by default
   (bind-key "y" #'hydra-gnus-summary/body gnus-summary-mode-map)
-
-  ;; (almost) swap "q" and "Q"
-  (defun my--gnus-summary-exit-noop ()
-	"This stops q from working, use Q instead."
-	(interactive)
-	(message "Please use \"Q\" instead"))
-  (bind-key "q" #'my--gnus-summary-exit-noop gnus-summary-mode-map)
-  (bind-key "Q" #'gnus-summary-exit gnus-summary-mode-map)
-  )
 #+END_SRC
 
-*** gnus-art
-
+**** End of use-package
 #+BEGIN_SRC emacs-lisp
-(use-package gnus-art
-  :defer t
-  :commands (gnus-article-wide-reply
-		 gnus-article-reply
-		 hydra-gnus-article/body)
-  :config
-
-  ;; Test code, position cursor inside and run C-C-x to evaluate:
-  ;;
-  ;; (let ((filename "[PATCH 03/05] foo"))
-  ;;   (when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
-  ;;     (message "%s -> %04d" filename (string-to-number (match-string 1 filename)))
-  ;;     ;; (message "%s" filename)
-  ;;     )
-  ;;   ))
-
-  ;; save news article body as patch, via gnus-summary-save-article-body-file "O b"
-  (defun gnus-read-save-file-name (prompt &optional filename
-					  function group headers variable
-					  dir-var)
-	(let ((patchnum))
-	  (setq filename (gnus-summary-article-subject))
-	  (when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
-		(setq patchnum (string-to-number (match-string 1 filename)))
-		(message "%s" patchnum))
-	  ;; (when string-match "\\[PATCH.+?\\]" filename)
-	  (message "FILENAME %s" filename)
-	  (setq filename (replace-regexp-in-string "\\[PATCH.*\\]" "" filename))
-	  (setq filename (replace-regexp-in-string "\[^a-zA-Z0-9]" "-" filename))
-	  (setq filename (replace-regexp-in-string "\\-+" "-" filename))
-	  (setq filename (replace-regexp-in-string "^-" "" filename))
-	  (setq filename (replace-regexp-in-string "-$" "" filename))
-	  (when patchnum
-		(setq filename (concat (format "%04d" patchnum) "-" filename)))
-	  (setq filename (concat "/tmp/" filename ".patch"))
-	  (when (file-exists-p filename)
-		(delete-file filename))
-	  filename))
-
-	(defhydra hydra-gnus-article (:color pink :hint nil)
-	"
-^Posting^                  ^Handling^
------------------------+---------------------------
-_f_  forward             | _!_  tick & keep
-_R_  reply & quote       | _p_  untick
-_r_  reply personal      | _c_  catchup
-_W_  wide reply & quote  | _C_  catchup thread
-_w_  wide reply          | _u_  unmark
-					   | _o_  save attachment at point
-_p_  save as patch
-"
-	;; ("n" gnus-summary-insert-new-articles "Refresh / N")
-	("f" gnus-summary-mail-forward :exit t)
-	("R" gnus-article-reply-with-original :exit t)
-	("r" gnus-article-reply :exit t)
-	("W" gnus-article-wide-reply-with-original :exit t)
-	("w" gnus-article-wide-reply :exit t)
-
-	("!" gnus-summary-tick-article-forward)
-	("p" gnus-summary-put-mark-as-read)
-	("c" gnus-summary-catchup-and-exit)
-	("C" gnus-summary-kill-thread)
-	("u" gnus-summary-clear-mark-forward)
-	("o" gnus-mime-save-part)
-
-	("p" gnus-summary-save-article-body-file)
-
-	("q" nil "quit"))
-  ;; y is not used by default
-  (bind-key "y" #'hydra-gnus-article/body gnus-article-mode-map)
   )
 #+END_SRC
-
 *** mm-decode
 #+BEGIN_SRC emacs-lisp
 (use-package mm-decode
