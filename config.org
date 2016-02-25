@@ -1888,21 +1888,6 @@ https://github.com/ShingoFukuyama/helm-swoop
 )
 #+END_SRC
 
-** hydra
-
-#+BEGIN_SRC emacs-lisp
-(use-package hydra
-  :defer t
-  :ensure t
-  :commands (defhydra
-		  hydra-default-pre
-		  hydra-keyboard-quit
-		  hydra-set-transient-map)
-  )
-(use-package lv
-  :defer t
-  :commands (lv-message))
-#+END_SRC
 * org-mode
 *** org itself
 
@@ -2446,6 +2431,21 @@ https://github.com/pronobis/helm-flyspell
   :config
   (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
   )
+#+END_SRC
+** hydra
+
+#+BEGIN_SRC emacs-lisp
+(use-package hydra
+  :defer t
+  :ensure t
+  :commands (defhydra
+		  hydra-default-pre
+		  hydra-keyboard-quit
+		  hydra-set-transient-map)
+  )
+(use-package lv
+  :defer t
+  :commands (lv-message))
 #+END_SRC
 * Mail & News
 ** smtpmail
