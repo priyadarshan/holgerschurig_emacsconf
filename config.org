@@ -2501,7 +2501,6 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
 #+END_SRC
 
 ** message
-
 #+BEGIN_SRC emacs-lisp
 (use-package message
   :defer t
@@ -2597,7 +2596,6 @@ Added some keybindings to the gnus summary mode:
 #+END_SRC
 
 *** Article list
-
 Switches the cursor into the new other window when we select an
 article. Quit from there with =q=.
 
