@@ -569,7 +569,7 @@ The following can visualize white space quite neatly:
 #+BEGIN_SRC emacs-lisp
 (use-package whitespace
   :defer t
-  :bind ("\C-cw" . global-whitespace-mode)
+  :bind ("C-cw" . global-whitespace-mode)
   :config
   (setq whitespace-style
 	'(face
@@ -2243,7 +2243,7 @@ http://www.suenkler.info/docs/emacs-orgmode/
 (use-package ox-publish
   :defer t
   :if (string= "holger" system-name)
-  :bind (("C-c p" . my-publish))
+  :bind ("C-c p" . my-publish)
   :config
   (setq org-publish-project-alist
 	'(("twbs"
@@ -3575,7 +3575,7 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 #+BEGIN_SRC emacs-lisp
 (use-package helm-tags
   :defer t
-  :bind (("M-." . helm-etags-select))
+  :bind ("M-." . helm-etags-select)
 )
 #+END_SRC
 ** CANCELED Package: helm-gtags
