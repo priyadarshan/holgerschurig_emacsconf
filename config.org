@@ -1787,10 +1787,12 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   :defer t
   :config
   (setq helm-ff-skip-boring-files t)
+
   ;; search for library in `require' and `declare-function' sexp.
   (setq helm-ff-search-library-in-sexp t)
   (setq helm-ff-file-name-history-use-recentf t)
   (setq helm-ff-newfile-prompt-p nil)
+
   ;; ignore Emacs save files
   (add-to-list 'helm-boring-file-regexp-list "\\.#")
 
@@ -1843,14 +1845,6 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   (setq helm-google-suggest-default-browser-function 'helm-browse-url-chromium)
   (setq helm-home-url "http://www.google.de")
   (setq helm-autoresize-mode t)
-)
-#+END_SRC
-
-** helm-source
-#+BEGIN_SRC emacs-lisp
-(use-package helm-source
-  :defer t
-  :commands (helm-make-source)
 )
 #+END_SRC
 
