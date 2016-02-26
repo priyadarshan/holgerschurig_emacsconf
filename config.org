@@ -1762,20 +1762,37 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   )
 #+END_SRC
 
-** helm autoloads
-
+** helm-config
 #+BEGIN_SRC emacs-lisp
 (use-package helm-config
   :defer t
   :config
   (bind-key "g"   'helm-all-mark-rings helm-command-map)
 )
+#+END_SRC
+
+** helm-command
+#+BEGIN_SRC emacs-lisp
 (use-package helm-command
   :defer t
   :config
   (setq helm-M-x-requires-pattern nil)
   ;; this is kind of a goto, you can visit all marks
 )
+#+END_SRC
+
+** helm-descbinds
+#+BEGIN_SRC emacs-lisp
+(use-package helm-descbinds
+  :ensure t
+  :commands helm-descbinds
+  :bind (("C-h b" . helm-descbinds)
+	 ("C-h w" . helm-descbinds)) ;; used to be where-is
+  )
+#+END_SRC
+
+** helm-files
+#+BEGIN_SRC emacs-lisp
 (use-package helm-files
   :defer t
   :config
@@ -1814,27 +1831,19 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   (bind-key "RET" 'helm-execute-persistent-action helm-find-files-map)
   (bind-key "RET" 'helm-execute-persistent-action helm-read-file-map)
 )
+#+END_SRC
+
+** helm-imenu
+#+BEGIN_SRC emacs-lisp
 (use-package helm-imenu
   :defer t
   :config
   (setq helm-imenu-delimiter " ")
 )
-(use-package helm-semantic
-  :commands (my-semantic-or-helm-imenu)
-  :bind (("M-s i"   . my-helm-semantic-or-imenu)
-	 ("M-s m"   . my-helm-semantic-or-imenu))
-  :config
-  (defun my-helm-semantic-or-imenu ()
-	"This is just like helm-semantic-or-imenu, but it will
-maximize the buffer"
-	(interactive)
-	(let ((helm-full-frame t))
-	  (helm-semantic-or-imenu nil)))
-)
-(use-package helm-source
-  :defer t
-  :commands (helm-make-source)
-)
+#+END_SRC
+
+** helm-net
+#+BEGIN_SRC emacs-lisp
 (use-package helm-net
   :defer t
   :config
@@ -1847,15 +1856,28 @@ maximize the buffer"
 )
 #+END_SRC
 
-** helm-descbinds
-
+** helm-semantic
 #+BEGIN_SRC emacs-lisp
-(use-package helm-descbinds
-  :ensure t
-  :commands helm-descbinds
-  :bind (("C-h b" . helm-descbinds)
-	 ("C-h w" . helm-descbinds)) ;; used to be where-is
-  )
+(use-package helm-semantic
+  :commands (my-semantic-or-helm-imenu)
+  :bind (("M-s i"   . my-helm-semantic-or-imenu)
+	 ("M-s m"   . my-helm-semantic-or-imenu))
+  :config
+  (defun my-helm-semantic-or-imenu ()
+	"This is just like helm-semantic-or-imenu, but it will
+maximize the buffer"
+	(interactive)
+	(let ((helm-full-frame t))
+	  (helm-semantic-or-imenu nil)))
+)
+#+END_SRC
+
+** helm-source
+#+BEGIN_SRC emacs-lisp
+(use-package helm-source
+  :defer t
+  :commands (helm-make-source)
+)
 #+END_SRC
 
 ** helm-swoop
