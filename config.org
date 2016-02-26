@@ -1845,8 +1845,8 @@ https://github.com/ShingoFukuyama/helm-swoop
   :ensure t
   :commands (helm-swoop helm-swoop-back-to-last-point)
   :bind (("M-s s"  . helm-swoop)
-	 ("M-s M-s" . helm-swoop)
-	 ("M-s S"   . helm-swoop-back-to-last-point))
+		 ("M-s M-s" . helm-swoop)
+		 ("M-s S"   . helm-swoop-back-to-last-point))
   :config
   (setq helm-swoop-split-direction 'split-window-sensibly)
   ;; Switch to edit mode with C-c C-e, and exit edit mode with C-c C-c
