@@ -1676,7 +1676,11 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   (setq helm-move-to-line-cycle-in-source t)
   ;; scroll 8 lines other window using M-<next>/M-<prior>
   (setq helm-scroll-amount 8)
+#+END_SRC
 
+** Helm faces
+
+#+BEGIN_SRC emacs-lisp tangle: no
   ;; see (customize-group "helm-files-faces")
   (set-face-attribute 'helm-ff-directory        nil :foreground "red" :background 'unspecified)
   (set-face-attribute 'helm-ff-dotted-directory nil :foreground "red" :background 'unspecified)
@@ -1687,9 +1691,13 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   (set-face-attribute 'helm-ff-symlink          nil :foreground 'unspecified :background 'unspecified)
   (set-face-attribute 'helm-history-deleted     nil :foreground 'unspecified :background 'unspecified)
   (set-face-attribute 'helm-history-remote      nil :foreground 'unspecified :background 'unspecified)
+#+END_SRC
 
-  ;; Hide modelines of other windows while helm is open
-  ;; again from https://github.com/hatschipuh/better-helm
+** Hide mode lines
+Hide modelines of other windows while helm is open, again from
+https://github.com/hatschipuh/better-helm.
+
+#+BEGIN_SRC emacs-lisp
   (defvar my-helm-bottom-buffers nil
 	"List of bottom buffers before helm session.
 	Its element is a pair of `buffer-name' and `mode-line-format'.")
@@ -1702,14 +1710,12 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 		   collect (with-current-buffer (window-buffer w)
 				 (cons (buffer-name) mode-line-format)))))
 
-
   (defun my-helm-bottom-buffers-hide-mode-line ()
 	(setq-default cursor-in-non-selected-windows nil)
 	(mapc (lambda (elt)
 		(with-current-buffer (car elt)
 		  (setq-local mode-line-format nil)))
 	  my-helm-bottom-buffers))
-
 
   (defun my-helm-bottom-buffers-show-mode-line ()
 	(setq-default cursor-in-non-selected-windows t)
@@ -1724,33 +1730,40 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 	(my-helm-bottom-buffers-show-mode-line)
 	(apply orig-func args))
 
-
   (add-hook 'helm-before-initialize-hook #'my-helm-bottom-buffers-init)
   (add-hook 'helm-after-initialize-hook #'my-helm-bottom-buffers-hide-mode-line)
   (add-hook 'helm-exit-minibuffer-hook #'my-helm-bottom-buffers-show-mode-line)
   (add-hook 'helm-cleanup-hook #'my-helm-bottom-buffers-show-mode-line)
   (advice-add 'helm-keyboard-quit :around #'my-helm-keyboard-quit-advice)
+#+END_SRC
 
-  ;; Hide source lines if there is only one source
-  ;; based on https://github.com/hatschipuh/better-helm
+** Hide single source line
+Hide source lines if there is only one source, based on
+https://github.com/hatschipuh/better-helm
+
+#+BEGIN_SRC emacs-lisp :tangle no
   (setq helm-display-header-line nil)
   (defun my-helm-toggle-header-line ()
 	(if (> (length helm-sources) 1)
-	(set-face-attribute 'helm-source-header
-				nil
-				:foreground (face-attribute 'helm-source-header :foreground)
-				:background (face-attribute 'helm-source-header :background)
-				:box (face-attribute 'helm-source-header :box)
-				:height 1.0)
+		(set-face-attribute 'helm-source-header
+							nil
+							:foreground (face-attribute 'helm-source-header :foreground)
+							:background (face-attribute 'helm-source-header :background)
+							:box (face-attribute 'helm-source-header :box)
+							:height 1.0)
 	  (set-face-attribute 'helm-source-header
-			  nil
-			  :foreground (face-attribute 'helm-selection :background)
-			  :background (face-attribute 'helm-selection :background)
-			  :box nil
-			  :height 0.1)))
+						  nil
+						  :foreground (face-attribute 'helm-selection :background)
+						  :background (face-attribute 'helm-selection :background)
+						  :box nil
+						  :height 0.1)))
   (add-hook 'helm-before-initialize-hook #'my-helm-toggle-header-line)
+#+END_SRC
 
-  ;; Hide minibuffer while helm is active
+** Hide minibuffer
+Hide minibuffer while helm is active
+
+#+BEGIN_SRC emacs-lisp
   (defun my-helm-hide-minibuffer-maybe ()
 	(when (with-helm-buffer helm-echo-input-in-header-line)
 	  (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
@@ -1759,11 +1772,12 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 				`(:background ,bg-color :foreground ,bg-color)))
 	(setq-local cursor-type nil))))
   (add-hook 'helm-minibuffer-set-up-hook #'helm-hide-minibuffer-maybe)
-  )
 #+END_SRC
 
 ** helm-config
 #+BEGIN_SRC emacs-lisp
+) ;; this closes "(use-package helm" from way above!
+
 (use-package helm-config
   :defer t
   :config
