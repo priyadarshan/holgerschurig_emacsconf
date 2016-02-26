@@ -2048,9 +2048,8 @@ http://www.suenkler.info/docs/emacs-orgmode/
 
 #+BEGIN_SRC emacs-lisp
 (use-package org-agenda
-  :bind (("C-c a" . org-agenda)
-		 ;;("C-c w" . org-agenda-list)  ;; w like week
-	 )
+  :bind (("M-g a" . org-agenda)
+		 ("M-g w" . org-agenda-list))
   :config
   (bind-key "i" 'org-agenda-clock-in org-agenda-mode-map)
   ;; (bind-key "!" 'my/org-clock-in-and-track org-agenda-mode-map)
@@ -2520,6 +2519,12 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
 #+END_SRC
 
 ** gnus
+#+BEGIN_SRC emacs-lisp
+(use-package gnus
+  :bind ("M-g n" . gnus)
+  :config
+  (require 'mm-decode)
+#+END_SRC
 *** Help: useful links
 https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnus-guide-en.org
 http://www.emacswiki.org/emacs/GnusGmail
@@ -2543,17 +2548,14 @@ Some often used commands:
 | Article         | y       | call hydra                           |
   
 *** Paths
-#+BEGIN_SRC emacs-lisp
-(use-package gnus
-  :bind ("C-c n" . gnus)
-  :config
-  (require 'mm-decode)
+Store gnus specific files to ~/gnus, maybe also set nnml-directory:
 
-  ;; Store gnus specific files to ~/gnus, maybe also set nnml-directory
+#+BEGIN_SRC emacs-lisp
   (setq gnus-directory (concat user-emacs-directory "News/")
 		gnus-article-save-directory (concat user-emacs-directory "News/saved/")
 		gnus-kill-files-directory (concat user-emacs-directory "News/scores/")
-		gnus-cache-directory (concat user-emacs-directory "News/cache/"))
+		gnus-cache-directory (concat user-emacs-directory "News/cache/")
+)
 #+END_SRC
 *** News source: GMANE
 See http://www.xsteve.at/prg/gnus/
@@ -3610,28 +3612,27 @@ bindings that use pop-up buffers.
 (use-package magit
   :diminish magit-auto-revert-mode  ;; disable "MRev" in the status line
   :defines (magit-rigid-key-bindings)
+  :commands (magit-get-top-dir)
+  :bind ("M-g m" . magit-status)
   :init
   ;; disable warning about magit-auto-revert-mode
   (setq magit-last-seen-setup-instructions "1.4.0")
   (setq magit-rigid-key-bindings t)
   :config
-  (progn
-	;; Save modified buffers without asking
-	(setq magit-save-some-buffers 'dontask)
-	;; (setq magit-commit-all-when-nothing-staged nil)
-	(setq magit-stage-all-confirm nil)
-	(setq magit-unstage-all-confirm nil)
-	;; switch the current window to magit-status (was pop-to-buffer)
-	(setq magit-status-buffer-switch-function 'switch-to-buffer)
-	;; (setq magit-refresh-file-buffer-hook '(revert-buffer))
-	(setq magit-use-overlays nil)
-	(setq magit-item-highlight-face nil)
-	(setq magit-completing-read-function 'completing-read)
-	;; (set-face-foreground 'magit-diff-add "green4")
-	;; (set-face-foreground 'magit-diff-del "red3")
-	 )
-  :bind ("C-c m" . magit-status)
-  :commands (magit-get-top-dir))
+  ;; Save modified buffers without asking
+  (setq magit-save-some-buffers 'dontask)
+  ;; (setq magit-commit-all-when-nothing-staged nil)
+  (setq magit-stage-all-confirm nil)
+  (setq magit-unstage-all-confirm nil)
+  ;; switch the current window to magit-status (was pop-to-buffer)
+  (setq magit-status-buffer-switch-function 'switch-to-buffer)
+  ;; (setq magit-refresh-file-buffer-hook '(revert-buffer))
+  (setq magit-use-overlays nil)
+  (setq magit-item-highlight-face nil)
+  (setq magit-completing-read-function 'completing-read)
+  ;; (set-face-foreground 'magit-diff-add "green4")
+  ;; (set-face-foreground 'magit-diff-del "red3")
+)
 #+END_SRC
 
 ** Package: magit-timemachine
