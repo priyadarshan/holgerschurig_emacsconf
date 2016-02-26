@@ -1771,16 +1771,6 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 )
 #+END_SRC
 
-** helm-command
-#+BEGIN_SRC emacs-lisp
-(use-package helm-command
-  :defer t
-  :config
-  (setq helm-M-x-requires-pattern nil)
-  ;; this is kind of a goto, you can visit all marks
-)
-#+END_SRC
-
 ** helm-descbinds
 #+BEGIN_SRC emacs-lisp
 (use-package helm-descbinds
