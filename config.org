@@ -3648,3 +3648,12 @@ Nice for elisp faces or CSS files.
   :commands (rainbow-mode)
 )
 #+END_SRC
+** Package: semantic
+#+BEGIN_SRC emacs-lisp
+(use-package semantic
+  :defer t
+  :config
+
+  ;; maybe set semantic-default-submodes
+)
+#+END_SRC
