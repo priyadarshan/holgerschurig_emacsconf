@@ -1856,22 +1856,6 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 )
 #+END_SRC
 
-** helm-semantic
-#+BEGIN_SRC emacs-lisp
-(use-package helm-semantic
-  :commands (my-semantic-or-helm-imenu)
-  :bind (("M-s i"   . my-helm-semantic-or-imenu)
-	 ("M-s m"   . my-helm-semantic-or-imenu))
-  :config
-  (defun my-helm-semantic-or-imenu ()
-	"This is just like helm-semantic-or-imenu, but it will
-maximize the buffer"
-	(interactive)
-	(let ((helm-full-frame t))
-	  (helm-semantic-or-imenu nil)))
-)
-#+END_SRC
-
 ** helm-source
 #+BEGIN_SRC emacs-lisp
 (use-package helm-source
@@ -3586,6 +3570,22 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 	(setq-local ml-interactive? t) ;; for mode line
 	(eshell/addpath "~/bin"))
   (add-hook 'eshell-mode-hook 'my--eshell-hook)
+)
+#+END_SRC
+
+** Package: helm-semantic
+#+BEGIN_SRC emacs-lisp
+(use-package helm-semantic
+  :commands (my-semantic-or-helm-imenu)
+  :bind (("M-s i"   . my-helm-semantic-or-imenu)
+		 ("M-s m"   . my-helm-semantic-or-imenu))
+  :config
+  (defun my-helm-semantic-or-imenu ()
+	"This is just like helm-semantic-or-imenu, but it will
+maximize the buffer."
+	(interactive)
+	(let ((helm-full-frame t))
+	  (helm-semantic-or-imenu nil)))
 )
 #+END_SRC
 
