@@ -3266,9 +3266,10 @@ just in the common hook
 		   '("linux" (c-offsets-alist (arglist-cont-nonempty
 					   c-lineup-gcc-asm-reg
 					   c-lineup-arglist-tabs-only))))
-  (setq c-default-style '((java-mode . "javax")
-			  (awk-mode . "awk")
-			  (other . "linux"))))
+  (setq c-default-style '((java-mode . "java")
+						  (awk-mode . "awk")
+						  (other . "linux")))
+)
 (add-hook 'c-initialization-hook 'my-c-initialization-setup)
 #+END_SRC
 
