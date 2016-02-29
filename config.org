@@ -1,7 +1,6 @@
 #+TITLE: Holger Schurig's Emacs configuration
 
 * About this file
-
 Inspired by the [[http://eschulte.me/emacs24-starter-kit/#installation][Emacs Starter Kit]], I set up my configuration file
 using Org-babel. You could load it with =(org-babel-load-file
 "/path/to/file")=, changing the path appropriately, but you'll
@@ -44,13 +43,13 @@ making sure to copy a complete set of parentheses) into your
 eval-buffer= to evaluate the code and see if you like the way that
 Emacs behaves. See [[https://www.gnu.org/software/emacs/manual/html_mono/eintr.html][An Introduction to Programming in Emacs Lisp]] for more details on Emacs Lisp. You can also find the manual by using =C-h i= (=info=) and choosing "Emacs Lisp Intro".
 
-I've installed a lot of packages. When you see =use-package= and a
-package name you might like, you can use =M-x package-install= to
-install the package of that name. Note that use-package is itself
-provided by a package, so you'll probably want to install that and
-=bind-key=.
-
-If you're viewing the Org file, you can open source code blocks (those are the ones in begin_src) in a separate buffer by moving your point inside them and typing C-c ' (=org-edit-special=). This opens another buffer in =emacs-lisp-mode=, so you can use =M-x eval-buffer= to load the changes. If you want to explore how functions work, use =M-x edebug-defun= to set up debugging for that function, and then call it. You can learn more about edebug in the [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Edebug.html][Emacs Lisp]] manual.
+If you're viewing the Org file, you can open source code blocks (those
+are the ones in begin_src) in a separate buffer by moving your point
+inside them and typing C-c ' (=org-edit-special=). This opens another
+buffer in =emacs-lisp-mode=, so you can use =M-x eval-buffer= to load
+the changes. If you want to explore how functions work, use =M-x
+edebug-defun= to set up debugging for that function, and then call it.
+You can learn more about edebug in the [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Edebug.html][Emacs Lisp]] manual.
 
 I like using =(setq ...)= more than Customize because I can neatly organize my configuration that way.
 
@@ -70,18 +69,28 @@ Use the following if there is some nasty bug that you cannot find with
 		(delete ".." (directory-files emacs-git))))
 #+END_SRC
 ** package
-Enable =packages.el= with MELPA:
+Seems that we need certificate pinning before accessing some https sites:
+#+BEGIN_SRC emacs-lisp
+(when (fboundp 'gnutls-available-p)
+  (fmakunbound 'gnutls-available-p))
+(setq tls-program '("gnutls-cli --tofu -p %p %h")
+      imap-ssl-program '("gnutls-cli --tofu -p %p %s")
+      smtpmail-stream-type 'starttls
+      starttls-extra-arguments '("--tofu"))
+#+END_SRC
+
+Now enable =packages.el= with MELPA:
 
 #+BEGIN_SRC emacs-lisp
 (require 'package)
 (setq package-enable-at-startup nil
 	  package-archives
 	  '(("gnu"             . "https://elpa.gnu.org/packages/")
-	("melpa"           . "https://melpa.org/packages/")
+		("melpa"           . "https://melpa.org/packages/")
 		;; ("melpa-stable" . "http://stable.melpa.org/packages/")
-	;; ("elpy"         . "http://jorgenschaefer.github.io/packages/")
-	;; ("org"          . "http://orgmode.org/elpa/") ;; for org-plus-contrib
-	))
+		;; ("elpy"         . "http://jorgenschaefer.github.io/packages/")
+		;; ("org"          . "http://orgmode.org/elpa/") ;; for org-plus-contrib
+		))
 #+END_SRC
 
 ** use-package
@@ -137,6 +146,37 @@ Basic syntax:
 (setq use-package-verbose t)
 #+END_SRC
 
+** paradox
+https://github.com/Malabarba/paradox
+
+| Key   | Function                        |
+|-------+---------------------------------|
+| =v=   | visit homepage                  |
+| =l=   | list recent commits             |
+| =f r= | filter by regexp                |
+| =f u= | filter by upgradeable packages  |
+| =f k= | filter by keyword               |
+| =f s= | filter by user-starred packages |
+|-------+---------------------------------|
+
+#+BEGIN_SRC emacs-lisp
+(use-package paradox
+  :ensure t
+  :bind (("M-g p" . paradox-list-packages-no-fetch)
+		 ("M-g P" . paradox-list-packages))
+  :config
+  (defun paradox-list-packages-no-fetch ()
+	"Shows you the packages without actually fetching new ones."
+	(interactive)
+	(paradox-list-packages t))
+
+  ;; disable the github token generation
+  (setq paradox-github-token t)
+
+  (setq paradox-execute-asynchronously t
+		paradox-display-download-count t)
+)
+#+END_SRC
 ** tangle on save
 #+BEGIN_SRC emacs-lisp
 (defun my--collect-elisp-source-bodies ()
@@ -409,27 +449,6 @@ in the mode-line isn't too long.
 	output))
 #+END_SRC
 
-This detects the current state of narrowing. It is a slight
-modification of the original function powerline-narrow from
-powerline.el: It displays a unicode flag as well.
-
-#+BEGIN_SRC emacs-lisp
-(defpowerline my-powerline-narrow
-  (let (real-point-min real-point-max)
-	(save-excursion
-	  (save-restriction
-		(widen)
-		(setq real-point-min (point-min)
-			  real-point-max (point-max))))
-	(when (or (/= real-point-min (point-min))
-			  (/= real-point-max (point-max)))
-	  (propertize (char-to-string #x2691)
-				  'mouse-face 'mode-line-highlight
-				  'help-echo "mouse-1: Remove narrowing from the current buffer"
-				  'local-map (make-mode-line-mouse-map
-							  'mouse-1 'mode-line-widen)))))
-#+END_SRC
-
 *** finally the mode line
 And finally we build our mode line:
 
@@ -474,6 +493,24 @@ And finally we build our mode line:
   ;; used for left/right border, indicator + empty space
   (set-face-attribute 'powerline-active2   nil :background "blue1")
   (set-face-attribute 'powerline-inactive2 nil :background "blue4")
+
+  ;; This detects the current state of narrowing. It is a slight
+  ;; modification of the original function powerline-narrow from
+  ;; powerline.el: It displays a unicode flag as well.
+  (defpowerline my-powerline-narrow
+	(let (real-point-min real-point-max)
+	  (save-excursion
+		(save-restriction
+		  (widen)
+		  (setq real-point-min (point-min)
+				real-point-max (point-max))))
+	  (when (or (/= real-point-min (point-min))
+				(/= real-point-max (point-max)))
+		(propertize (char-to-string #x2691)
+					'mouse-face 'mode-line-highlight
+					'help-echo "mouse-1: Remove narrowing from the current buffer"
+					'local-map (make-mode-line-mouse-map
+								'mouse-1 'mode-line-widen)))))
 
   (setq-default mode-line-format
 				'("%e"
@@ -563,7 +600,7 @@ The following can visualize white space quite neatly:
 #+BEGIN_SRC emacs-lisp
 (use-package whitespace
   :defer t
-  :bind ("\C-cw" . global-whitespace-mode)
+  :bind ("C-cw" . global-whitespace-mode)
   :config
   (setq whitespace-style
 	'(face
@@ -2215,7 +2252,7 @@ http://www.suenkler.info/docs/emacs-orgmode/
 (use-package ox-publish
   :defer t
   :if (string= "holger" system-name)
-  :bind (("C-c p" . my-publish))
+  :bind ("C-c p" . my-publish)
   :config
   (setq org-publish-project-alist
 	'(("twbs"
@@ -3566,7 +3603,7 @@ maximize the buffer."
 #+BEGIN_SRC emacs-lisp
 (use-package helm-tags
   :defer t
-  :bind (("M-." . helm-etags-select))
+  :bind ("M-." . helm-etags-select)
 )
 #+END_SRC
 ** CANCELED Package: helm-gtags
