@@ -70,7 +70,7 @@ Use the following if there is some nasty bug that you cannot find with
 #+END_SRC
 ** package
 Seems that we need certificate pinning before accessing some https sites:
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (when (fboundp 'gnutls-available-p)
   (fmakunbound 'gnutls-available-p))
 (setq tls-program '("gnutls-cli --tofu -p %p %h")
@@ -82,15 +82,15 @@ Seems that we need certificate pinning before accessing some https sites:
 Now enable =packages.el= with MELPA:
 
 #+BEGIN_SRC emacs-lisp
-(require 'package)
-(setq package-enable-at-startup nil
-	  package-archives
-	  '(("gnu"             . "https://elpa.gnu.org/packages/")
-		("melpa"           . "https://melpa.org/packages/")
-		;; ("melpa-stable" . "http://stable.melpa.org/packages/")
-		;; ("elpy"         . "http://jorgenschaefer.github.io/packages/")
-		;; ("org"          . "http://orgmode.org/elpa/") ;; for org-plus-contrib
-		))
+  (require 'package)
+  (setq package-enable-at-startup nil
+            package-archives
+            '(("gnu"             . "http://elpa.gnu.org/packages/")
+              ("melpa"           . "http://melpa.org/packages/")
+              ;; ("melpa-stable" . "http://stable.melpa.org/packages/")
+              ;; ("elpy"         . "http://jorgenschaefer.github.io/packages/")
+              ;; ("org"          . "http://orgmode.org/elpa/") ;; for org-plus-contrib
+              ))
 #+END_SRC
 
 ** use-package
