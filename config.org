@@ -1786,14 +1786,9 @@ Hide minibuffer while helm is active
   (add-hook 'helm-minibuffer-set-up-hook #'helm-hide-minibuffer-maybe)
 #+END_SRC
 
-** helm-config
+** end of use-package
 #+BEGIN_SRC emacs-lisp
-) ;; this closes "(use-package helm" from way above!
-
-(use-package helm-config
-  :defer t
-  :config
-  (bind-key "g"   'helm-all-mark-rings helm-command-map)
+;; this closes "(use-package helm" from way above!
 )
 #+END_SRC
 
@@ -1871,6 +1866,14 @@ Hide minibuffer while helm is active
   (setq helm-google-suggest-default-browser-function 'helm-browse-url-chromium)
   (setq helm-home-url "http://www.google.de")
   (setq helm-autoresize-mode t)
+)
+#+END_SRC
+** helm-ring
+#+BEGIN_SRC emacs-lisp
+(use-package helm-ring
+  :defer t
+  :bind (:map helm-command-map
+			  ("g" . helm-all-mark-rings))
 )
 #+END_SRC
 
