@@ -600,7 +600,7 @@ The following can visualize white space quite neatly:
 #+BEGIN_SRC emacs-lisp
 (use-package whitespace
   :defer t
-  :bind ("C-cw" . global-whitespace-mode)
+  :bind ("C-c w" . global-whitespace-mode)
   :config
   (setq whitespace-style
 	'(face
