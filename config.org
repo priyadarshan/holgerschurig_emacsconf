@@ -702,20 +702,22 @@ Delete identical history entries
 #+END_SRC
 
 ** Customization
-
 #+BEGIN_SRC emacs-lisp
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (when (file-exists-p custom-file)
   (load-file custom-file))
 #+END_SRC
 
-Keep lisp names in the custom buffers, don't capitalize:
+Keep lisp names in the custom buffers, don't capitalize. And kill old
+buffers.
 
 #+BEGIN_SRC emacs-lisp
 (use-package cus-edit
   :defer t
   :config
-  (setq custom-unlispify-tag-names nil))
+  (setq custom-unlispify-tag-names nil
+		custom-buffer-done-kill t)
+)
 #+END_SRC
 
 ** Localisation
