@@ -3060,7 +3060,7 @@ We only use git, not other version controls:
 (bind-key "C-c c" 'comment-dwim)
 #+END_SRC
 
-** CANCELED Smart parens
+** Smart parens
 Cancelled till I find out how to make it do it's magic only if there
 rest of the line is empty.
 
@@ -3074,14 +3074,22 @@ rest of the line is empty.
 (defun my-smart-parens-setup ()
   (show-smartparens-mode +1)
   (smartparens-mode 1)
-  
+
   ;; when you press RET, the curly braces automatically
   ;; add another newline
   (sp-with-modes '(c-mode c++-mode)
-	(sp-local-pair "{" nil :post-handlers '(("||\n[i]"     "RET")))
-	(sp-local-pair "/*" "*/" :post-handlers '((" | "       "SPC")
-											  ("* ||\n[i]" "RET")))))
+	(sp-local-pair "{" nil
+				   :when '(sp-point-before-eol-p)
+				   :post-handlers '(("||\n[i]"     "RET")))
+	(sp-local-pair "/*" "*/"
+				   :when '(sp-point-before-eol-p)
+				   :post-handlers '((" | "       "SPC")
+									("* ||\n[i]" "RET"))))
+  (dolist (old-pair (cdr (assq t sp-pairs)))
+  	(sp-pair (plist-get old-pair :open) nil :when '(sp-point-before-eol-p)))
+  )
 (add-hook 'c-mode-common-hook 'my-smart-parens-setup)
+(add-hook 'emacs-lisp-mode-hook 'my-smart-parens-setup)
 #+END_SRC
 ** Compilation
 set initial compile-command to nothing, so that F7 will prompt for one
