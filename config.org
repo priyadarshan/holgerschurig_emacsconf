@@ -2829,6 +2829,7 @@ articles as =!=).
   (defun my--gnus-summary-exit-noop ()
 	"This stops q from working, use Q instead."
 	(interactive)
+	(delete-other-windows) ;; if article window is open, close it
 	(message "Please use \"Q\" instead"))
   (bind-key "q" #'my--gnus-summary-exit-noop gnus-summary-mode-map)
   (bind-key "Q" #'gnus-summary-exit gnus-summary-mode-map)
