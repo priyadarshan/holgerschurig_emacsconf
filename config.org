@@ -622,7 +622,7 @@ The following can visualize white space quite neatly:
 )
 #+END_SRC
 
-** TODO Mouse avoidance
+** Mouse avoidance
 Unfortunately this doesn't work well in =customize-group=. We turn it
 therefore off in some hook. What's not working is turning it back
 on ...
@@ -633,7 +633,7 @@ on ...
   (defun my-turn-off-mouse-avoidance ()
 	(mouse-avoidance-mode 'none))
   (mouse-avoidance-mode 'jump)
-  (add-hook 'custom-mode-hook #'my-turn-off-mouse-avoidance)
+  (add-hook 'Custom-mode-hook #'my-turn-off-mouse-avoidance)
 )
 #+END_SRC
 * Misc settings
@@ -702,20 +702,22 @@ Delete identical history entries
 #+END_SRC
 
 ** Customization
-
 #+BEGIN_SRC emacs-lisp
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (when (file-exists-p custom-file)
   (load-file custom-file))
 #+END_SRC
 
-Keep lisp names in the custom buffers, don't capitalize:
+Keep lisp names in the custom buffers, don't capitalize. And kill old
+buffers.
 
 #+BEGIN_SRC emacs-lisp
 (use-package cus-edit
   :defer t
   :config
-  (setq custom-unlispify-tag-names nil))
+  (setq custom-unlispify-tag-names nil
+		custom-buffer-done-kill t)
+)
 #+END_SRC
 
 ** Localisation
@@ -3059,7 +3061,7 @@ We only use git, not other version controls:
 (bind-key "C-c c" 'comment-dwim)
 #+END_SRC
 
-** CANCELED Smart parens
+** Smart parens
 Cancelled till I find out how to make it do it's magic only if there
 rest of the line is empty.
 
@@ -3073,14 +3075,22 @@ rest of the line is empty.
 (defun my-smart-parens-setup ()
   (show-smartparens-mode +1)
   (smartparens-mode 1)
-  
+
   ;; when you press RET, the curly braces automatically
   ;; add another newline
   (sp-with-modes '(c-mode c++-mode)
-	(sp-local-pair "{" nil :post-handlers '(("||\n[i]"     "RET")))
-	(sp-local-pair "/*" "*/" :post-handlers '((" | "       "SPC")
-											  ("* ||\n[i]" "RET")))))
+	(sp-local-pair "{" nil
+				   ;; :when '(sp-point-before-eol-p)
+				   :post-handlers '(("||\n[i]"     "RET")))
+	(sp-local-pair "/*" "*/"
+				   ;; :when '(sp-point-before-eol-p)
+				   :post-handlers '((" | "       "SPC")
+									("* ||\n[i]" "RET"))))
+  ;; (dolist (old-pair (cdr (assq t sp-pairs)))
+  ;; 	(sp-pair (plist-get old-pair :open) nil :when '(sp-point-before-eol-p)))
+  )
 (add-hook 'c-mode-common-hook 'my-smart-parens-setup)
+;; (add-hook 'emacs-lisp-mode-hook 'my-smart-parens-setup)
 #+END_SRC
 ** Compilation
 set initial compile-command to nothing, so that F7 will prompt for one
