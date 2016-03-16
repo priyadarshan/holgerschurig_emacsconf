@@ -2656,8 +2656,7 @@ article. Quit from there with =q=.
 **** Patch export
 Export patches from Linux mailing lists via =O b=
 
-#+BEGIN_SRC emacs-list  
-
+#+BEGIN_SRC emacs-lisp
   ;; save news article body as patch, via gnus-summary-save-article-body-file "O b"
   (defun gnus-read-save-file-name (prompt &optional filename
 					  function group headers variable
@@ -2692,7 +2691,7 @@ Export patches from Linux mailing lists via =O b=
 #+END_SRC
 
 **** Hydra support
-#+BEGIN_SRC emacs-list  
+#+BEGIN_SRC emacs-lisp  
 	(defhydra hydra-gnus-article (:color pink :hint nil)
 	"
 ^Posting^                  ^Handling^
