@@ -597,6 +597,7 @@ And finally we build our mode line:
 
 ** Whitespace
 The following can visualize white space quite neatly:
+
 #+BEGIN_SRC emacs-lisp
 (use-package whitespace
   :defer t
