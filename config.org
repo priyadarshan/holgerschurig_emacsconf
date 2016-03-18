@@ -3063,7 +3063,7 @@ We only use git, not other version controls:
 (bind-key "C-c c" 'comment-dwim)
 #+END_SRC
 
-** Smart parens
+** CANCELED Smart parens
 Cancelled till I find out how to make it do it's magic only if there
 rest of the line is empty.
 
