@@ -3382,6 +3382,13 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
 (add-hook 'emacs-lisp-mode-hook 'my--elisp-setup)
 #+END_SRC
 
+** Mode: Go
+#+BEGIN_SRC emacs-lisp
+(use-package go-mode
+  :ensure t
+  :defer t
+)
+#+END_SRC
 ** Mode: JS2-Mode
 #+BEGIN_SRC emacs-lisp
 (use-package js2-mode
