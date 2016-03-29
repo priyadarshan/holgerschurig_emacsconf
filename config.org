@@ -3459,6 +3459,8 @@ Home page: http://web-mode.org/
 		 ("\\.json\\'" . web-mode)
 		 )
   :config
+  (unless (car (car (last web-mode-engines-auto-pairs)))
+	(setq web-mode-engines-auto-pairs (butlast web-mode-engines-auto-pairs)))
   (defun my-web-mode-hook ()
 	;; (whitespace-turn-off)
 	;; (rainbow-turn-off)
