@@ -3044,7 +3044,6 @@ Now try yasnippet again now that it's faster.
   ;; Set my own
   ;; (setq yas-snippet-dirs '((concat user-emacs-directory "yasnippet")))
 
-  ;; Now turn it on
   ;; This creates errors when I open ansi-term
   ;; (yas-global-mode 1)
 )
@@ -3463,22 +3462,27 @@ Home page: http://web-mode.org/
   :ensure t
   :commands web-mode
   :mode (("\\.html\\'" . web-mode)
-	 ("\\.css\\'" . web-mode)
-	 ("\\.json\\'" . web-mode)
-	 )
+		 ("\\.css\\'"  . web-mode)
+		 ("\\.scss\\'" . web-mode)
+		 ("\\.json\\'" . web-mode)
+		 )
   :config
+  (unless (car (car (last web-mode-engines-auto-pairs)))
+	(setq web-mode-engines-auto-pairs (butlast web-mode-engines-auto-pairs)))
   (defun my-web-mode-hook ()
-	;; (whitespace-turn-off)
-	;; (rainbow-turn-off)
-	;; (visual-line-mode)
-	;; (local-set-key (kbd "RET") 'newline-and-indent)
+	(visual-line-mode 1)
 	(setq web-mode-markup-indent-offset 2
-	  web-mode-css-indent-offset 2
-	  web-mode-code-indent-offset 2
-	  web-mode-indent-style 2
-	  web-mode-style-padding 1
-	  web-mode-script-padding 1
-	  web-mode-block-padding 0))
+		  web-mode-css-indent-offset 4
+		  web-mode-code-indent-offset 2
+		  web-mode-indent-style 2
+		  web-mode-style-padding 1
+		  web-mode-script-padding 1
+		  web-mode-block-padding 0
+		  indent-tabs-mode t
+		  tab-width 4
+		  web-mode-engines-alist '(("go" . "\\.html\\'")))
+	(web-mode-guess-engine-and-content-type)
+	)
   (add-hook 'web-mode-hook 'my-web-mode-hook)
 )
 #+END_SRC
