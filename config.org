@@ -3044,7 +3044,7 @@ Now try yasnippet again now that it's faster.
   ;; (setq yas-snippet-dirs '((concat user-emacs-directory "yasnippet")))
 
   ;; Now turn it on
-  (yas-global-mode 1)
+  ;; (yas-global-mode 1)
 )
 #+END_SRC
 ** Disable vc backends
