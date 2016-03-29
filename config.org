@@ -3454,9 +3454,10 @@ Home page: http://web-mode.org/
   :ensure t
   :commands web-mode
   :mode (("\\.html\\'" . web-mode)
-	 ("\\.css\\'" . web-mode)
-	 ("\\.json\\'" . web-mode)
-	 )
+		 ("\\.css\\'"  . web-mode)
+		 ("\\.scss\\'" . web-mode)
+		 ("\\.json\\'" . web-mode)
+		 )
   :config
   (defun my-web-mode-hook ()
 	;; (whitespace-turn-off)
