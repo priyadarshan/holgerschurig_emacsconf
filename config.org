@@ -2970,6 +2970,28 @@ This used to be in the gnus setup section:
 )
 #+END_SRC
 * Blogging
+  :PROPERTIES:
+  :TITLE:    Blog from Org-Mode to Hugo
+  :HUGO_TAGS: Emacs, Hugo, Blogging, org-mode
+  :HUGO_CATEGORY: Emacs
+  :HUGO_FILE: en/emacs-blog-from-org-to-hugo.md
+  :HUGO_DATE: [2016-03-31 11:46]
+  :END:
+
+As you might know, I use [[https://gohugo.io/][Hugo]] as my static web site generator. I also
+use [[https://www.gnu.org/software/emacs/][Emacs]] as my main editor. Hugo is good with (Github-flavored-)[[https://help.github.com/categories/writing-on-github/][Markdown]]. But
+Emacs is good with [[http://orgmode.org/][Org-Mode]].
+
+But org-mode has a powerful publishing engine. Giles Paterson has a
+[[https://vurt.co.uk/post/blogging-with-emacs-and-hugo/][blog]] where he shows how to use org-mode to publish pages inside Hugo.
+
+Nice ... but I'd rather want to publish individual subtrees of my huge
+[[https://bitbucket.org/holgerschurig/emacsconf/src][Emacs configuration]], which I happen to have in org-mode format.
+
+And so I wrote my own "publish this specific subtree" export. The
+interactive function is simply called =hugo=, and I bind it to some
+key combination, in my case to =Alt-g h=, g like go, and h like go. So
+I type "go hugo", more or less.
 
 #+BEGIN_SRC emacs-lisp
 (defun hugo-ensure-property (property)
