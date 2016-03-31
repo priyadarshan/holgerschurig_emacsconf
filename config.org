@@ -2969,6 +2969,79 @@ This used to be in the gnus setup section:
   ;; (setq bbdb-allow-duplicates t)
 )
 #+END_SRC
+* Blogging
+
+#+BEGIN_SRC emacs-lisp
+(defun hugo-ensure-property (property)
+  "Make sure that a property exists. If not, it will be created.
+
+Returns the property name if the property has been created,
+otherwise nil."
+  (if (org-entry-get nil property)
+	  nil
+	(progn (org-entry-put nil property "")
+		   property)))
+
+(defun hugo-ensure-properties ()
+  "This ensures that several properties exists. If not, these
+properties will be created in an empty form. In this case, the
+drawer will also be opened and the cursor will be positioned
+at the first element that needs to be filled.
+
+Returns list of properties that still must be filled in"
+  (require 'dash)
+  (let ((current-time (format-time-string (org-time-stamp-format t t) (org-current-time)))
+		first)
+	(save-excursion
+	  (unless (org-entry-get nil "TITLE")
+		(org-entry-put nil "TITLE" (nth 4 (org-heading-components))))
+	  (setq first (--first it (mapcar #'hugo-ensure-property '("HUGO_TAGS" "HUGO_CATEGORY" "HUGO_FILE"))))
+	  (unless (org-entry-get nil "HUGO_DATE")
+		(org-entry-put nil "HUGO_DATE" current-time)))
+	(when first
+	  (goto-char (org-entry-beginning-position))
+	  ;; The following opens the drawer
+	  (forward-line 1)
+	  (beginning-of-line 1)
+	  (when (looking-at org-drawer-regexp)
+		(org-flag-drawer nil))
+	  ;; And now move to the drawer property
+	  (search-forward (concat ":" first ":"))
+	  (end-of-line))
+	first))
+
+(defun hugo ()
+  (interactive)
+  (unless (hugo-ensure-properties)
+	(let* (;; Blog Text
+		   (title    (concat "title = \"" (org-entry-get nil "TITLE") "\"\n"))
+		   (date     (concat "date = \"" (format-time-string "%Y-%m-%d %H:%M" (apply 'encode-time (org-parse-time-string (org-entry-get nil "HUGO_DATE"))) t) "\"\n"))
+		   (category (concat "category = \"" (org-entry-get nil "HUGO_CATEGORY") "\"\n"))
+		   (tags     (concat "tags = [ \"" (mapconcat 'identity (split-string (org-entry-get nil "HUGO_TAGS") "\\( *, *\\)" t) "\", \"") "\" ]\n"))
+		   (fm (concat "+++\n"
+					   title
+					   date
+					   tags
+					   category
+					   "+++\n\n"))
+		   (file     (org-entry-get nil "HUGO_FILE"))
+		   (coding-system-for-write buffer-file-coding-system)
+		   (backend  'md)
+		   (blog))
+	  (if (require 'ox-gfm nil t)
+		  (setq backend 'gfm)
+		(require 'ox-md))
+	  (message "BACKEND: %s" backend)
+	  (setq blog (org-export-as backend t)q)
+	  (with-temp-buffer
+	  	(insert fm)
+	  	;; try to load org-mode/contrib/lisp/ox-gfm.el and use it as backend
+	  	(insert blog)
+	  	(write-file file)
+	  	(message "Exported to %s" file)))
+	))
+(bind-key "M-g h" #'hugo)
+#+END_SRC
 * Programming
 ** Tabs and indentation
 *** Tab width 4
