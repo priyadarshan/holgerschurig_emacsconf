@@ -3010,6 +3010,9 @@ Returns list of properties that still must be filled in"
 	  (end-of-line))
 	first))
 
+(defvar hugo-contents-dir "~/www.hugo/contents/"
+  "Path to Hugo's contents directory")
+
 (defun hugo ()
   (interactive)
   (unless (hugo-ensure-properties)
@@ -3029,17 +3032,23 @@ Returns list of properties that still must be filled in"
 		   (backend  'md)
 		   (blog))
 	  (if (require 'ox-gfm nil t)
-		  (setq backend 'gfm)
-		(require 'ox-md))
+	  	  (setq backend 'gfm)
+	  	(require 'ox-md))
 	  (message "BACKEND: %s" backend)
-	  (setq blog (org-export-as backend t)q)
+	  (setq blog (org-export-as backend t))
+	  ;; Normalize save file path
+	  (unless (string-match "^[/~]" file)
+		(setq file (concat hugo-contents-dir file))
+	  (unless (string-match "\\.md$" file)
+		(setq file (concat file ".md")))
+	  ;; save markdown
 	  (with-temp-buffer
 	  	(insert fm)
 	  	;; try to load org-mode/contrib/lisp/ox-gfm.el and use it as backend
 	  	(insert blog)
 	  	(write-file file)
-	  	(message "Exported to %s" file)))
-	))
+	  	(message "Exported to %s" file))
+	  ))))
 (bind-key "M-g h" #'hugo)
 #+END_SRC
 * Programming
