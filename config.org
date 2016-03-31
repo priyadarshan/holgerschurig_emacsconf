@@ -2972,8 +2972,8 @@ This used to be in the gnus setup section:
 * Blogging
   :PROPERTIES:
   :TITLE:    Blog from Org-Mode to Hugo
-  :HUGO_TAGS: Emacs, Hugo, Blogging, org-mode
-  :HUGO_CATEGORY: Emacs
+  :HUGO_TAGS: Emacs, Hugo, org-mode
+  :HUGO_TOPICS: Emacs
   :HUGO_FILE: en/emacs-blog-from-org-to-hugo.md
   :HUGO_DATE: [2016-03-31 11:46]
   :END:
@@ -2993,6 +2993,49 @@ interactive function is simply called =hugo=, and I bind it to some
 key combination, in my case to =Alt-g h=, g like go, and h like go. So
 I type "go hugo", more or less.
 
+** Usage
+
+One question is how we store Hugo-specific information. So far I only
+care for the title, tags, topics and, of course, the file name. As I
+don't want to have one-file per blog post, but instead use subtrees of
+my org-file, I need to store this information into org's property
+drawers.
+
+But writing them by hand is tedious. So I added code that ensures that
+all needed properties exists. Before I started blogging this article, 
+my org-mode buffer looked like this:
+
+[[./start.png]]
+
+Then I called the =(hugo)= function and my buffer looked like this:
+
+[[./started.png]]
+
+The cursor is positioned at the first empty field.
+
+(Note that I later changed the code below from =HUGO_CATEGORIES= to
+=HUGO_TOPICS=, because that's how I now have defined my taxonomy in
+Hugo.)
+
+Note that the title and date fields are pre-filled. 
+You can of course change them. Only when everything is filled in ...
+
+[[./ready.png]]
+
+... does the export to Hugo create the markdown file with the properly
+formatted TOML front matter.
+
+** Implementation
+
+Let's start simple. First we define where our contents should be stored:
+
+#+BEGIN_SRC emacs-lisp
+(defvar hugo-contents-dir "~/www.hugo/content/"
+  "Path to Hugo's contents directory")
+#+END_SRC
+
+The next two functions care that all needed property drawers exist:
+
 #+BEGIN_SRC emacs-lisp
 (defun hugo-ensure-property (property)
   "Make sure that a property exists. If not, it will be created.
@@ -3000,9 +3043,9 @@ I type "go hugo", more or less.
 Returns the property name if the property has been created,
 otherwise nil."
   (if (org-entry-get nil property)
-	  nil
-	(progn (org-entry-put nil property "")
-		   property)))
+      nil
+    (progn (org-entry-put nil property "")
+           property)))
 
 (defun hugo-ensure-properties ()
   "This ensures that several properties exists. If not, these
@@ -3013,66 +3056,90 @@ at the first element that needs to be filled.
 Returns list of properties that still must be filled in"
   (require 'dash)
   (let ((current-time (format-time-string (org-time-stamp-format t t) (org-current-time)))
-		first)
-	(save-excursion
-	  (unless (org-entry-get nil "TITLE")
-		(org-entry-put nil "TITLE" (nth 4 (org-heading-components))))
-	  (setq first (--first it (mapcar #'hugo-ensure-property '("HUGO_TAGS" "HUGO_CATEGORY" "HUGO_FILE"))))
-	  (unless (org-entry-get nil "HUGO_DATE")
-		(org-entry-put nil "HUGO_DATE" current-time)))
-	(when first
-	  (goto-char (org-entry-beginning-position))
-	  ;; The following opens the drawer
-	  (forward-line 1)
-	  (beginning-of-line 1)
-	  (when (looking-at org-drawer-regexp)
-		(org-flag-drawer nil))
-	  ;; And now move to the drawer property
-	  (search-forward (concat ":" first ":"))
-	  (end-of-line))
-	first))
+        first)
+    (save-excursion
+      (unless (org-entry-get nil "TITLE")
+        (org-entry-put nil "TITLE" (nth 4 (org-heading-components))))
+      (setq first (--first it (mapcar #'hugo-ensure-property '("HUGO_TAGS" "HUGO_TOPICS" "HUGO_FILE"))))
+      (unless (org-entry-get nil "HUGO_DATE")
+        (org-entry-put nil "HUGO_DATE" current-time)))
+    (when first
+      (goto-char (org-entry-beginning-position))
+      ;; The following opens the drawer
+      (forward-line 1)
+      (beginning-of-line 1)
+      (when (looking-at org-drawer-regexp)
+        (org-flag-drawer nil))
+      ;; And now move to the drawer property
+      (search-forward (concat ":" first ":"))
+      (end-of-line))
+    first))
+#+END_SRC
 
-(defvar hugo-contents-dir "~/www.hugo/contents/"
-  "Path to Hugo's contents directory")
+And this is the main function. It simply gathers all information from org-mode,
+formats it correctly, and writes it out.
 
+In case you have the =ox-gfm.el= elisp package is available, the
+export will use "Github Flavored Markdown". Otherwise, the normal
+markdown export backend will be use. The benefit of ='gfm= is that
+code blocks can be highlighted.
+
+#+BEGIN_SRC emacs-lisp
 (defun hugo ()
   (interactive)
   (unless (hugo-ensure-properties)
-	(let* (;; Blog Text
-		   (title    (concat "title = \"" (org-entry-get nil "TITLE") "\"\n"))
-		   (date     (concat "date = \"" (format-time-string "%Y-%m-%d %H:%M" (apply 'encode-time (org-parse-time-string (org-entry-get nil "HUGO_DATE"))) t) "\"\n"))
-		   (category (concat "category = \"" (org-entry-get nil "HUGO_CATEGORY") "\"\n"))
-		   (tags     (concat "tags = [ \"" (mapconcat 'identity (split-string (org-entry-get nil "HUGO_TAGS") "\\( *, *\\)" t) "\", \"") "\" ]\n"))
-		   (fm (concat "+++\n"
-					   title
-					   date
-					   tags
-					   category
-					   "+++\n\n"))
-		   (file     (org-entry-get nil "HUGO_FILE"))
-		   (coding-system-for-write buffer-file-coding-system)
-		   (backend  'md)
-		   (blog))
-	  (if (require 'ox-gfm nil t)
-	  	  (setq backend 'gfm)
-	  	(require 'ox-md))
-	  (message "BACKEND: %s" backend)
-	  (setq blog (org-export-as backend t))
-	  ;; Normalize save file path
-	  (unless (string-match "^[/~]" file)
-		(setq file (concat hugo-contents-dir file))
-	  (unless (string-match "\\.md$" file)
-		(setq file (concat file ".md")))
-	  ;; save markdown
-	  (with-temp-buffer
-	  	(insert fm)
-	  	;; try to load org-mode/contrib/lisp/ox-gfm.el and use it as backend
-	  	(insert blog)
-	  	(write-file file)
-	  	(message "Exported to %s" file))
-	  ))))
+    (let* ((title    (concat "title = \"" (org-entry-get nil "TITLE") "\"\n"))
+           (date     (concat "date = \"" (format-time-string "%Y-%m-%d" (apply 'encode-time (org-parse-time-string (org-entry-get nil "HUGO_DATE"))) t) "\"\n"))
+           (topics   (concat "topics = [ \"" (mapconcat 'identity (split-string (org-entry-get nil "HUGO_TOPICS") "\\( *, *\\)" t) "\", \"") "\" ]\n"))
+           (tags     (concat "tags = [ \"" (mapconcat 'identity (split-string (org-entry-get nil "HUGO_TAGS") "\\( *, *\\)" t) "\", \"") "\" ]\n"))
+           (fm (concat "+++\n"
+                       title
+                       date
+                       tags
+                       topics
+                       "+++\n\n"))
+           (file     (org-entry-get nil "HUGO_FILE"))
+           (coding-system-for-write buffer-file-coding-system)
+           (backend  'md)
+           (blog))
+      ;; try to load org-mode/contrib/lisp/ox-gfm.el and use it as backend
+      (if (require 'ox-gfm nil t)
+          (setq backend 'gfm)
+        (require 'ox-md))
+      (setq blog (org-export-as backend t))
+      ;; Normalize save file path
+      (unless (string-match "^[/~]" file)
+        (setq file (concat hugo-contents-dir file))
+      (unless (string-match "\\.md$" file)
+        (setq file (concat file ".md")))
+      ;; save markdown
+      (with-temp-buffer
+        (insert fm)
+        (insert blog)
+        (write-file file)
+        (message "Exported to %s" file))
+      ))))
+#+END_SRC
+
+And finally I set my preferred key-binding with =(bind-key)=. I like
+this method over over the standard keybinding methods because it works
+together with =(describe-personal-keybindings)=. And because I'm
+already a [use-package](https://github.com/jwiegley/use-package) user
+it's already loaded anyway :-)
+#+BEGIN_SRC emacs-lisp
 (bind-key "M-g h" #'hugo)
 #+END_SRC
+
+** Final note
+
+In this blog post are 3 pictures. My current code does *not* copy them to
+Hugo's contents directory, and I don't really plan this. I don't want to
+maintain images as part of my Emacs configuration. Instead, I added text like
+this into my org-mode buffer and do the rest in my Hugo setup:
+
+#+BEGIN_EXAMPLE
+[[./ready.png]]
+#+END_EXAMPLE
 * Programming
 ** Tabs and indentation
 *** Tab width 4
