@@ -5,6 +5,7 @@
 ;; Override the packages with the git version of Org and other packages
 (add-to-list 'load-path (concat user-emacs-directory "elisp"))
 (add-to-list 'load-path (concat user-emacs-directory "git/org-mode/lisp"))
+(add-to-list 'load-path (concat user-emacs-directory "git/org-mode/contrib/lisp"))
 ;; Load the rest of the packages
 (package-initialize nil)
 (setq package-enable-at-startup nil)
