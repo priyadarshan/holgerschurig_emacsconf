@@ -2978,17 +2978,21 @@ This used to be in the gnus setup section:
   :HUGO_DATE: [2016-03-31 11:46]
   :END:
 
-As you might know, I use [[https://gohugo.io/][Hugo]] as my static web site generator. I also
-use [[https://www.gnu.org/software/emacs/][Emacs]] as my main editor. Hugo is good with (Github-flavored-)[[https://help.github.com/categories/writing-on-github/][Markdown]]. But
-Emacs is good with [[http://orgmode.org/][Org-Mode]].
+I use the static web-site generator [[https://gohugo.io/][Hugo]] to create my home page. I
+also use [[https://www.gnu.org/software/emacs/][Emacs]] as my main editor. Hugo is good with [[https://help.github.com/categories/writing-on-github/][Markdown]]. Emacs is
+good at Markdown, too. But much better with [[http://orgmode.org/][Org-Mode]].
 
-But org-mode has a powerful publishing engine. Giles Paterson has a
-[[https://vurt.co.uk/post/blogging-with-emacs-and-hugo/][blog]] where he shows how to use org-mode to publish pages inside Hugo.
+If you want ...
 
-Nice ... but I'd rather want to publish individual subtrees of my huge
-[[https://bitbucket.org/holgerschurig/emacsconf/src][Emacs configuration]], which I happen to have in org-mode format.
+- export one =.org= file as one web page, look at Giles Paterson
+  [[https://vurt.co.uk/post/blogging-with-emacs-and-hugo/][solution]]
+- export just a subtree of an org-file (e.g. from your org-based Emacs
+  configuration), then look here.
 
-And so I wrote my own "publish this specific subtree" export. The
+#+HTML: <!--more-->
+
+I wanted a nice way to publish single sub-trees of an org-file to
+Hugo. So I wrote my own "publish this specific subtree" export. The
 interactive function is simply called =hugo=, and I bind it to some
 key combination, in my case to =Alt-g h=, g like go, and h like go. So
 I type "go hugo", more or less.
@@ -3030,6 +3034,9 @@ formatted TOML front matter.
 Let's start simple. First we define where our contents should be stored:
 
 #+BEGIN_SRC emacs-lisp
+;; This is GPLv2. If you still don't know the details, read
+;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+
 (defvar hugo-contents-dir "~/www.hugo/content/"
   "Path to Hugo's contents directory")
 #+END_SRC
@@ -3037,6 +3044,9 @@ Let's start simple. First we define where our contents should be stored:
 The next two functions care that all needed property drawers exist:
 
 #+BEGIN_SRC emacs-lisp
+;; This is GPLv2. If you still don't know the details, read
+;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+
 (defun hugo-ensure-property (property)
   "Make sure that a property exists. If not, it will be created.
 
@@ -3085,6 +3095,9 @@ markdown export backend will be use. The benefit of ='gfm= is that
 code blocks can be highlighted.
 
 #+BEGIN_SRC emacs-lisp
+;; This is GPLv2. If you still don't know the details, read
+;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+
 (defun hugo ()
   (interactive)
   (unless (hugo-ensure-properties)
@@ -3130,7 +3143,7 @@ it's already loaded anyway :-)
 (bind-key "M-g h" #'hugo)
 #+END_SRC
 
-** Final note
+** Images
 
 In this blog post are 3 pictures. My current code does *not* copy them to
 Hugo's contents directory, and I don't really plan this. I don't want to
@@ -3140,6 +3153,13 @@ this into my org-mode buffer and do the rest in my Hugo setup:
 #+BEGIN_EXAMPLE
 [[./ready.png]]
 #+END_EXAMPLE
+
+** Separate description (teaser) from main content
+
+In Hugo, you can separate your normal content fromt he teaser at the
+top with a "<!--more-->" marker. Generate this HTML with
+"#+HTML: <!--more-->" in a line by itself.
+
 * Programming
 ** Tabs and indentation
 *** Tab width 4
