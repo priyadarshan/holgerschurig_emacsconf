@@ -3037,8 +3037,8 @@ Let's start simple. First we define where our contents should be stored:
 ;; This is GPLv2. If you still don't know the details, read
 ;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-(defvar hugo-contents-dir "~/www.hugo/content/"
-  "Path to Hugo's contents directory")
+(defvar hugo-content-dir "~/www.hugo/content/"
+  "Path to Hugo's content directory")
 #+END_SRC
 
 The next two functions care that all needed property drawers exist:
@@ -3122,7 +3122,7 @@ code blocks can be highlighted.
       (setq blog (org-export-as backend t))
       ;; Normalize save file path
       (unless (string-match "^[/~]" file)
-        (setq file (concat hugo-contents-dir file))
+        (setq file (concat hugo-content-dir file))
       (unless (string-match "\\.md$" file)
         (setq file (concat file ".md")))
       ;; save markdown
