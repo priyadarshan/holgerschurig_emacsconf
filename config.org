@@ -204,8 +204,9 @@ byte-compiler won't bark at me.
 Disable toolbars and the scroll-bar
 
 #+BEGIN_SRC emacs-lisp
-(setq tool-bar-mode nil)
-(setq scroll-bar-mode nil)
+(tool-bar-mode -1)
+(unless (eq system-type 'windows-nt)
+  (scroll-bar-mode -1))
 #+END_SRC
 
 You may also put something like this into =~/.Xresources= to enable/disable
