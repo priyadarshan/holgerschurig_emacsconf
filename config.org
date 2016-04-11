@@ -391,14 +391,17 @@ Show line and column numbers in the mode-line
 
 ** Powerline mode line
 *** Powerline faces
+Without this we have some proportional font on Windows:
+
+#+BEGIN_SRC emacs-lisp
+(when (eq system-type 'windows-nt)
+  (set-face-attribute 'mode-line nil :font "Courier New"))
+#+END_SRC
+
 Define new faces for elements on an active powerline:
 
 #+BEGIN_SRC emacs-lisp
 ;; Base faces, face1 is active, face2 is inactive
-
-;; (set-face-attribute 'mode-line          nil :foreground "black" :background "dark orange")
-;; (set-face-attribute 'mode-line-inactive nil :foreground "black" :background "DarkOrange4")
-
 (defface my-pl-face1 '((t (:foreground "white" :background "blue1" :inherit mode-line))) nil)
 (defface my-pl-face2 '((t (:foreground "dimgray" :background "#000040" ))) nil)
 (defface my-pl-face3 '((t (:foreground "black" :background "dark orange" :inherit mode-line))) nil)
