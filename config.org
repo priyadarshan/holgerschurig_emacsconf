@@ -1605,20 +1605,16 @@ This is from https://www.emacswiki.org/emacs/DescribeThingAtPoint
 (bind-key "C-h a" 'apropos)
 #+END_SRC
 
-** Guide key
-It's hard to remember keyboard shortcuts. The guide-key package
-pops up help after a short delay.
-
+** which-key
 #+BEGIN_SRC emacs-lisp
-(use-package guide-key
+(use-package which-key
   :ensure t
   :defer 2
-  :diminish guide-key-mode
+  :diminish which-key-mode
   :config
-  (setq guide-key/guide-key-sequence
-	'("C-c" "C-h" "C-x" "M-g" "M-s"))
-  (setq guide-key/recursive-key-sequence-flag t)
-  (guide-key-mode 1))
+  (which-key-mode)
+  (which-key-setup-side-window-right-bottom)
+)
 #+END_SRC
 * Miscelleanous functions
 ** dos2unix
