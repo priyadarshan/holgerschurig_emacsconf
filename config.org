@@ -1672,241 +1672,86 @@ minibuffer."
 	(-1 (message value))))))
 (bind-key "C-=" #'calc-eval-region)
 #+END_SRC
-* helm
-Very good intro: http://tuhdo.github.io/helm-intro.html
+* ivy, swiper, counsel
+** ivy
+- http://oremacs.com/swiper/
+- https://github.com/abo-abo/swiper
+- http://oremacs.com/2016/04/26/ivy-0.8.0/
+
+If is just another minibuffer completion framework.
+
+- ~C-x b~ is then ivy-switch-buffer
+
+Try this while in the ivy-minibuffer:
+
+- ~C-o~: call the hydra
+- ~C-h m~: while in ivy-mode brings a help text
 
 #+BEGIN_SRC emacs-lisp
-(use-package helm
-  :ensure helm
-  :diminish helm-mode
-  :bind (
-	 ("C-h a"   . helm-apropos)
-	 ("C-x C-f" . helm-find-files)
-	 ("M-s o"   . helm-occur)
-	 ("M-x"     . helm-M-x)
-	 ("M-y"     . helm-show-kill-ring)
-	 ("C-x C-b" . helm-mini)
-	 )
-  :init
-  (require 'helm-config)
-  (helm-mode t)
-  :config
-  ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
-  ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
-  ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-  ;; (from http://tuhdo.github.io/helm-intro.html)
-  (bind-key "C-c h" 'helm-command-prefix)
-  (global-unset-key (kbd "C-x c"))
-
-  ;; allow "find man at point" for C-c h m (helm-man-woman)
-  (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
-
-  (setq helm-candidate-number-limit 100)
-  (setq helm-quick-update t)
-
-  ;; Open full helm frame
-  ;; (setq helm-full-frame t)
-  ;; Put helm window on somewhere else
-  (setq helm-split-window-default-side 'below)
-
-  ;; move to end or beginning of source when reaching top or bottom of source.
-  (setq helm-move-to-line-cycle-in-source t)
-  ;; scroll 8 lines other window using M-<next>/M-<prior>
-  (setq helm-scroll-amount 8)
-#+END_SRC
-** Helm faces
-
-#+BEGIN_SRC emacs-lisp tangle: no
-  ;; see (customize-group "helm-files-faces")
-  (set-face-attribute 'helm-ff-directory        nil :foreground "red" :background 'unspecified)
-  (set-face-attribute 'helm-ff-dotted-directory nil :foreground "red" :background 'unspecified)
-  (set-face-attribute 'helm-ff-executable       nil :foreground 'unspecified :background 'unspecified)
-  (set-face-attribute 'helm-ff-file             nil :foreground 'unspecified :background 'unspecified :inherit 'unspecified)
-  (set-face-attribute 'helm-ff-invalid-symlink  nil :foreground 'unspecified :background 'unspecified)
-  ;;(set-face-attribute 'helm-ff-prefix         nil :foreground 'unspecified :background 'unspecified)
-  (set-face-attribute 'helm-ff-symlink          nil :foreground 'unspecified :background 'unspecified)
-  (set-face-attribute 'helm-history-deleted     nil :foreground 'unspecified :background 'unspecified)
-  (set-face-attribute 'helm-history-remote      nil :foreground 'unspecified :background 'unspecified)
-#+END_SRC
-** Hide mode lines
-Hide modelines of other windows while helm is open, again from
-https://github.com/hatschipuh/better-helm.
-
-#+BEGIN_SRC emacs-lisp
-  (defvar my-helm-bottom-buffers nil
-	"List of bottom buffers before helm session.
-	Its element is a pair of `buffer-name' and `mode-line-format'.")
-
-  (defun my-helm-bottom-buffers-init ()
-	(setq-local mode-line-format (default-value 'mode-line-format))
-	(setq my-helm-bottom-buffers
-	  (cl-loop for w in (window-list)
-		   when (window-at-side-p w 'bottom)
-		   collect (with-current-buffer (window-buffer w)
-				 (cons (buffer-name) mode-line-format)))))
-
-  (defun my-helm-bottom-buffers-hide-mode-line ()
-	(setq-default cursor-in-non-selected-windows nil)
-	(mapc (lambda (elt)
-		(with-current-buffer (car elt)
-		  (setq-local mode-line-format nil)))
-	  my-helm-bottom-buffers))
-
-  (defun my-helm-bottom-buffers-show-mode-line ()
-	(setq-default cursor-in-non-selected-windows t)
-	(when my-helm-bottom-buffers
-	  (mapc (lambda (elt)
-		  (with-current-buffer (car elt)
-		(setq-local mode-line-format (cdr elt))))
-		my-helm-bottom-buffers)
-	  (setq my-helm-bottom-buffers nil)))
-
-  (defun my-helm-keyboard-quit-advice (orig-func &rest args)
-	(my-helm-bottom-buffers-show-mode-line)
-	(apply orig-func args))
-
-  (add-hook 'helm-before-initialize-hook #'my-helm-bottom-buffers-init)
-  (add-hook 'helm-after-initialize-hook #'my-helm-bottom-buffers-hide-mode-line)
-  (add-hook 'helm-exit-minibuffer-hook #'my-helm-bottom-buffers-show-mode-line)
-  (add-hook 'helm-cleanup-hook #'my-helm-bottom-buffers-show-mode-line)
-  (advice-add 'helm-keyboard-quit :around #'my-helm-keyboard-quit-advice)
-#+END_SRC
-
-** Hide minibuffer
-Hide minibuffer while helm is active
-
-#+BEGIN_SRC emacs-lisp
-  (defun my-helm-hide-minibuffer-maybe ()
-	(when (with-helm-buffer helm-echo-input-in-header-line)
-	  (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-	(overlay-put ov 'window (selected-window))
-	(overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
-				`(:background ,bg-color :foreground ,bg-color)))
-	(setq-local cursor-type nil))))
-  (add-hook 'helm-minibuffer-set-up-hook #'helm-hide-minibuffer-maybe)
-#+END_SRC
-
-** end of use-package
-#+BEGIN_SRC emacs-lisp
-;; this closes "(use-package helm" from way above!
-)
-#+END_SRC
-
-** helm-descbinds
-#+BEGIN_SRC emacs-lisp
-(use-package helm-descbinds
+(use-package ivy
   :ensure t
-  :commands helm-descbinds
-  :bind (("C-h b" . helm-descbinds)
-	 ("C-h w" . helm-descbinds)) ;; used to be where-is
-  )
-#+END_SRC
-
-** helm-files
-#+BEGIN_SRC emacs-lisp
-(use-package helm-files
-  :defer t
+  :diminish ivy-mode
+  :bind (("C-x b"   . ivy-switch-buffer)
+		 ("C-x C-b" . ivy-switch-buffer)
+		 ("C-x C-r" . ivy-resume)
+		 )
+  :commands ivy-set-actions
   :config
-  (setq helm-ff-skip-boring-files t)
+  (ivy-mode 1)
 
-  ;; search for library in `require' and `declare-function' sexp.
-  (setq helm-ff-search-library-in-sexp t)
-  (setq helm-ff-file-name-history-use-recentf t)
-  (setq helm-ff-newfile-prompt-p nil)
+  ;; The optics
+  (setq ivy-height 20)
+  (setq ivy-fixed-height-minibuffer t)
+  (setq ivy-count-format "(%d/%d) ")
+  (setq ivy-display-style 'fancy)
+  (setq ivy-minibuffer-faces nil)
+  (set-face-attribute 'ivy-current-match  nil :foreground "red" :background 'unspecified)
 
-  ;; ignore Emacs save files
-  (add-to-list 'helm-boring-file-regexp-list "\\.#")
+  ;; How C-x b behaves:
+  (setq ivy-use-virtual-buffers t) ;; add recentf and bookmarks to ivy-switch-buffer
+  (setq ivy-virtual-abbreviate 'path)
 
-  ;; Make return delete one character or the last path (if before a '/')
-  ;; from https://github.com/hatschipuh/better-helm
-  (defun my-dwim-helm-find-files-up-one-level-maybe ()
-	(interactive)
-	(if (looking-back "/" 1)
-	(call-interactively 'helm-find-files-up-one-level)
-	  (delete-backward-char 1)))
-  (bind-key "<backspace>" #'my-dwim-helm-find-files-up-one-level-maybe helm-read-file-map)
-  (bind-key "<backspace>" #'my-dwim-helm-find-files-up-one-level-maybe helm-find-files-map)
-  (bind-key "DEL" #'my-dwim-helm-find-files-up-one-level-maybe helm-read-file-map)
-  (bind-key "DEL" #'my-dwim-helm-find-files-up-one-level-maybe helm-find-files-map)
+  ;; Behavior of ivy-find-files
+  (setq ivy-extra-directories nil) ;; don't prepend ./ and ../ to ivy-find-file
 
-  ;; If on a directory, switch helm to this directory. Don't call it with dired.
-  ;; from https://github.com/hatschipuh/better-helm
-  (defun my-dwim-helm-find-files-navigate-forward (orig-fun &rest args)
-  "Adjust how helm-execute-persistent actions behaves, depending on context"
-  (if (file-directory-p (helm-get-selection))
-	  (apply orig-fun args)
-	(helm-maybe-exit-minibuffer)))
-  (advice-add 'helm-execute-persistent-action :around #'my-dwim-helm-find-files-navigate-forward)
-  (bind-key "<return>" 'helm-maybe-exit-minibuffer helm-map)
-  (bind-key "RET" 'helm-maybe-exit-minibuffer helm-map)
-  (bind-key "<return>" 'helm-execute-persistent-action helm-find-files-map)
-  (bind-key "<return>" 'helm-execute-persistent-action helm-read-file-map)
-  (bind-key "RET" 'helm-execute-persistent-action helm-find-files-map)
-  (bind-key "RET" 'helm-execute-persistent-action helm-read-file-map)
+  ;; TODO ivy-sort-functions-alist, ivy-sort-matches-functions-alist
+
+  ;; Make home and end move to begin/end of buffer. Note: to move around the entry-line, use C-a and C-e
+  (bind-key "<home>" #'ivy-beginning-of-buffer ivy-minibuffer-map)
+  (bind-key "<end>"  #'ivy-end-of-buffer ivy-minibuffer-map)
 )
 #+END_SRC
-
-** helm-imenu
-#+BEGIN_SRC emacs-lisp
-(use-package helm-imenu
-  :defer t
-  :config
-  (setq helm-imenu-delimiter " ")
-)
-#+END_SRC
-
-** helm-net
-#+BEGIN_SRC emacs-lisp
-(use-package helm-net
-  :defer t
-  :config
-  (when (executable-find "curl")
-	(setq helm-net-prefer-curl t))
-  (setq helm-browse-url-chromium-program "x-www-browser")
-  (setq helm-google-suggest-default-browser-function 'helm-browse-url-chromium)
-  (setq helm-home-url "http://www.google.de")
-  (setq helm-autoresize-mode t)
-)
-#+END_SRC
-** helm-ring
-#+BEGIN_SRC emacs-lisp
-(use-package helm-ring
-  :defer t
-  :bind (:map helm-command-map
-			  ("g" . helm-all-mark-rings))
-)
-#+END_SRC
-
-** helm-swoop
-https://github.com/ShingoFukuyama/helm-swoop
+** swiper
+Swiper is a different isearch, so to say.
 
 #+BEGIN_SRC emacs-lisp
-(use-package helm-swoop
+(use-package swiper
   :ensure t
-  :commands (helm-swoop helm-swoop-back-to-last-point)
-  :bind (("M-s s"  . helm-swoop)
-		 ("M-s M-s" . helm-swoop)
-		 ("M-s S"   . helm-swoop-back-to-last-point))
+  :bind (("M-s o" . swiper)
+		 ("M-s O" . swiper-all))
+)
+
+#+END_SRC
+** counsel
+#+BEGIN_SRC emacs-lisp
+(use-package counsel
+  :ensure t
+  :defer 10
+  :diminish counsel-mode
+  :bind (("M-x" . counsel-M-x)
+		 ("M-s o" . counsel-grep-or-swiper)
+		 ("M-s i" . counsel-imenu)
+		 ("M-s a" . counsel-ag)
+		 ("M-s g" . counsel-git)
+		 ("C-h b" . counsel-descbinds)
+		 ("C-h w" . counsel-descbinds) ;; use to be where-is
+		 ("M-y"   . counsel-yank-pop)
+		 )
   :config
-  (setq helm-swoop-split-direction 'split-window-sensibly)
-  ;; Switch to edit mode with C-c C-e, and exit edit mode with C-c C-c
-  (bind-key "C-c C-c" 'helm-swoop--edit-complete helm-swoop-edit-map)
-  ;; When doing isearch, hand the word over to helm-swoop
-  (bind-key "M-s s"   'helm-swoop-from-isearch isearch-mode-map)
-  (bind-key "M-s M-s" 'helm-swoop-from-isearch isearch-mode-map)
-  ;; Move up and down like isearch
-  (bind-key "C-r" 'helm-previous-line helm-swoop-map)
-  (bind-key "C-s" 'helm-next-line     helm-swoop-map)
-  (bind-key "C-r" 'helm-previous-line helm-multi-swoop-map)
-  (bind-key "C-s" 'helm-next-line     helm-multi-swoop-map)
-  ;; always pop at bottom
-  ;; from https://github.com/hatschipuh/better-helm
-  (setq helm-swoop-split-with-multiple-windows nil
-		helm-swoop-split-direction 'split-window-vertically
-		helm-swoop-split-window-function 'helm-default-display-buffer)
+  (setq counsel-find-file-ignore-regexp "\\(?:\\`[#.]\\)\\|\\(?:[#~]\\'\\)")
+  (counsel-mode 1)
 )
 #+END_SRC
-
 * org-mode
 *** org itself
 
@@ -1963,7 +1808,6 @@ https://github.com/ShingoFukuyama/helm-swoop
 
   ;; :bind cannot bind into a different map
   (bind-key "C-TAB"   'org-cycle org-mode-map)
-  (bind-key "C-c C-j" 'helm-org-in-buffer-headings org-mode-map) ;; was org-goto
   (bind-key "C-c k"   'org-cut-subtree org-mode-map)
   (bind-key "C-c R"   'org-reveal org-mode-map)
   ;; (bind-key "C-c t"   'org-show-todo-tree org-mode-map)
@@ -2440,15 +2284,6 @@ after launching emacs, which is a bit unfortunate.
 (add-hook 'LaTeX-mode-hook #'flyspell-mode)
 #+END_SRC
 
-*** helm-flyspell
-https://github.com/pronobis/helm-flyspell
-
-#+BEGIN_SRC emacs-lisp
-(use-package helm-flyspell
-  :commands helm-flyspell-correct
-  :config
-  (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
-  )
 #+END_SRC
 ** hydra
 
@@ -3220,7 +3055,7 @@ Now try yasnippet again now that it's faster.
   :config
   (setq yas-indent-line nil)
 
-  ;; No dropdowns please. Oh, and this also turns on helm :-)
+  ;; No dropdowns please.
   (setq yas-prompt-functions '(yas-completing-prompt))
 
   ;; No need to be so verbose
@@ -3284,9 +3119,6 @@ rest of the line is empty.
 set initial compile-command to nothing, so that F7 will prompt for one
 
 #+BEGIN_SRC emacs-lisp
-(setq compile-command nil)
-
-
 (defvar compile-commands nil
   "The compile commands are an alist where the key is
    is the command and the value is the time when it was
@@ -3307,7 +3139,7 @@ set initial compile-command to nothing, so that F7 will prompt for one
    are near the top."
 
   (setq compile-commands (sort compile-commands (lambda (x y)
-							(not (string< (cdr x) (cdr y)))))))
+												  (not (string< (cdr x) (cdr y)))))))
 
 (defun comp--add-command (cmd)
   "Adds a command to compile-commands if it isn't already in it.
@@ -3318,51 +3150,58 @@ set initial compile-command to nothing, so that F7 will prompt for one
   (unless (assoc cmd compile-commands)
 	(add-to-list 'compile-commands (cons cmd (format-time-string "%s")))))
 
+(defun comp--del-command (cmd)
+  "This ivy-read action deletes CMD from the compile-commands list."
+
+  (setq compile-commands (delq (assoc cmd compile-commands) compile-commands)))
+;; (setq compile-commands nil)
+;; (comp--add-command "make 1")
+;; (comp--add-command "make 2")
+;; (comp--del-command "make 1")
 
 (defun comp--get-compile-commands-from-buffers ()
   "Searches all open buffers that have a file-name associated
    and adds compile commands from to compile-commands. Valid
    forms for compile commands in the source code are:
 
-   // @command: make
-   ## @command: make
-   /* @command: make */
+   // @compile: make
+   ## @compile: make
+   /* @compile: make */
    (setq compile-command \"make\")"
 
-  ;; (message "loading commands from buffers")
-  (dolist (buffer (buffer-list))
-	(with-current-buffer buffer
-	  (when (buffer-file-name)
-	(save-excursion
-	  (goto-char (point-min))
-	  (while (re-search-forward "^.. @compile: \\(.*\\)$" nil t)
-		(let ((s (match-string-no-properties 1)))
-		  ;; \s- whitespace character class
-		  (setq s (replace-regexp-in-string "\s-*\\*/$" "" s))
-		  (comp--add-command s)))
-	  (goto-char (point-min))
-	  (while (re-search-forward "(setq compile-command \"\\(.*\\)\")" nil t)
-		;; (message "via setq '%s'" (match-string-no-properties 1))
-		(comp--add-command (match-string-no-properties 1))))))))
+  (save-excursion
+	(goto-char (point-min))
+	(while (re-search-forward "^.. @compile: \\(.*\\)$" nil t)
+	  (let ((s (match-string-no-properties 1)))
+		;; \s- whitespace character class
+		;; (message "FOUND '%s'" s)
+		(setq s (replace-regexp-in-string "\s-*\\*/$" "" s))
+		(comp--add-command s)))
+	(goto-char (point-min))
+	(while (re-search-forward "(setq compile-command \"\\(.*\\)\")" nil t)
+	  ;; (message "via setq '%s'" (match-string-no-properties 1))
+	  (comp--add-command (match-string-no-properties 1)))))
+
+(defun comp--default-action (cmd &optional _r1 _r2)
+  (message "comp--default-action: '%s'" cmd)
+  (when cmd
+  	(comp--add-command cmd)
+  	(setq compile-command cmd)
+	(compile compile-command)
+	))
+
+(defun comp--del-action (cmd)
+  "This ivy-read action deletes CMD from the compile-commands list."
+
+  ;; (message "comp--del-action: '%s'" cmd)
+  (comp--del-command cmd)
+  (when (string= compile-command cmd)
+	(setq compile-command nil))
+  (setq ivy-exit 'done)
+  )
 
 
-(defun comp--delete-command (candidate)
-  "This deletes the selected compile-command from compile-commands."
-
-  (assq-delete-all candidate compile-commands)
-  (setq compile-commands (delq (assoc candidate compile-commands) compile-commands))
-  ;; (message "deleted: %s" candidate)
-  nil)
-
-
-(defun comp--persistent-action (candidate)
-  (with-selected-window (minibuffer-window)
-	(delete-minibuffer-contents)
-	(set-text-properties 0 (length candidate) nil candidate)
-	(insert candidate)))
-
-;; http://wikemacs.org/wiki/How_to_write_helm_extensions
-(defun comp--helm-compile-command (arg)
+(defun counsel-compile-command (arg)
   "Interactively select a compile-command.
 
    Releads possible commends from open buffers when run with argument."
@@ -3372,31 +3211,27 @@ set initial compile-command to nothing, so that F7 will prompt for one
 	(setq arg 1))
   (when arg
 	(comp--get-compile-commands-from-buffers))
+
   (comp--sort-command-alist)
   ;; compile-commands is now something like:
   ;; '(("make -C foo" . 1) ("ccmake && make" . 2))
-  ;; (message "commands: %s" compile-commands)
-  (let* ((src (helm-build-sync-source "Select compile command"
-		:candidates (mapcar 'car compile-commands)
-		:action '(("Select" . identity)
-			  ("Delete" . comp--delete-command))
-		:mode-line "F1 select, F2 delete"
-		:persistent-action 'comp--persistent-action
-		;; :volatile nil
-		))
-	 (ent (helm-build-dummy-source "Or enter new compile command ..."
-		:mode-line ""
-		))
-	 (cmd (helm :sources '(src ent)
-			:prompt "cmd: "
-			:buffer "*compile-command*"
-			)))
-	(when cmd
-	  (message "command: %s" cmd)
-	  (comp--add-command cmd)
-	  (setq compile-command cmd)
-	  )))
-(bind-key "S-<f7>" 'comp--helm-compile-command)
+
+  (setq ivy--all-candidates nil)
+  (setq ivy--old-cands nil)
+  (ivy-set-actions 'counsel-compile-command
+				   '(("d" comp--del-action "delete")))
+  (ivy-read "Compile cmd: "
+			(mapcar 'car compile-commands)
+			;; #'comp--get-compile-commands
+			;; :dynamic-collection t
+
+			:action #'comp--default-action
+			:preselect compile-command
+			:history 'counsel-compile-command
+			:caller 'counsel-compile-command
+			)
+  )
+(bind-key "S-<f7>" 'counsel-compile-command)
 
 
 (defun comp--compile ()
@@ -3404,16 +3239,16 @@ set initial compile-command to nothing, so that F7 will prompt for one
   (delete-other-windows)
   (save-buffer)
   (unless compile-command
-	(comp--helm-compile-command nil))
+	(counsel-compile-command nil))
   (when compile-command
-	(message "compile command: %s" compile-command)
+	;; (message "compile command: %s" compile-command)
 	(let ((cmd (assoc compile-command compile-commands)))
 	  (when cmd
-	(message "assoc: %s" (assoc compile-command compile-commands))
-	(setcdr cmd (format-time-string "%s"))
-	(message "assoc: %s" (assoc compile-command compile-commands))
-	)))
-	(compile compile-command))
+		;; (message "assoc: %s" (assoc compile-command compile-commands))
+		(setcdr cmd (format-time-string "%s"))
+		;; (message "assoc: %s" (assoc compile-command compile-commands))
+		)))
+  (compile compile-command))
 (bind-key "<f7>" 'comp--compile)
 #+END_SRC
 
@@ -3798,59 +3633,6 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 	(setq-local ml-interactive? t) ;; for mode line
 	(eshell/addpath "~/bin"))
   (add-hook 'eshell-mode-hook 'my--eshell-hook)
-)
-#+END_SRC
-
-** Package: helm-semantic
-#+BEGIN_SRC emacs-lisp
-(use-package helm-semantic
-  :commands (my-semantic-or-helm-imenu)
-  :bind (("M-s i"   . my-helm-semantic-or-imenu)
-		 ("M-s m"   . my-helm-semantic-or-imenu))
-  :config
-  (defun my-helm-semantic-or-imenu ()
-	"This is just like helm-semantic-or-imenu, but it will
-maximize the buffer."
-	(interactive)
-	(let ((helm-full-frame t))
-	  (helm-semantic-or-imenu nil)))
-)
-#+END_SRC
-
-** Package: helm-tags
-#+BEGIN_SRC emacs-lisp
-(use-package helm-tags
-  :defer t
-  :bind ("M-." . helm-etags-select)
-)
-#+END_SRC
-** CANCELED Package: helm-gtags
-http://tuhdo.github.io/c-ide.html
-
-#+BEGIN_SRC emacs-lisp
-(use-package helm-gtags
-  :ensure t
-  :diminish helm-gtags-mode
-  :config
-  (setq helm-gtags-ignore-case t
-	helm-gtags-auto-update t
-	helm-gtags-use-input-at-cursor t
-	helm-gtags-pulse-at-cursor t
-	helm-gtags-prefix-key "\C-cg"
-	helm-gtags-suggested-key-mapping t)
-  (add-hook 'dired-mode-hook 'helm-gtags-mode)
-  (add-hook 'eshell-mode-hook 'helm-gtags-mode)
-  (add-hook 'c-mode-hook 'helm-gtags-mode)
-  (add-hook 'c++-mode-hook 'helm-gtags-mode)
-  (add-hook 'asm-mode-hook 'helm-gtags-mode)
-
-  (bind-key "C-c g a" 'helm-gtags-tags-in-this-function helm-gtags-mode-map)
-  (bind-key "C-c g r" 'helm-gtags-find-rtag helm-gtags-mode-map)
-  (bind-key "C-j" 'helm-gtags-select helm-gtags-mode-map)
-  (bind-key "M-." 'helm-gtags-dwim helm-gtags-mode-map)
-  (bind-key "M-," 'helm-gtags-pop-stack helm-gtags-mode-map)
-  (bind-key "C-c <" 'helm-gtags-previous-history helm-gtags-mode-map)
-  (bind-key "C-c >" 'helm-gtags-next-history helm-gtags-mode-map)
 )
 #+END_SRC
 
