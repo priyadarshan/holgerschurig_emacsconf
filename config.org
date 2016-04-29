@@ -1146,25 +1146,57 @@ character will be gone, too.
 )
 #+END_SRC
 * Completion
+** Case
 Ignore case when reading a file name completion
 
 #+BEGIN_SRC emacs-lisp
 (setq read-file-name-completion-ignore-case t)
 #+END_SRC
 
-do not consider case significant in completion (GNU Emacs default)
+Do not consider case significant in completion (GNU Emacs default)
 
 #+BEGIN_SRC emacs-lisp
 (setq completion-ignore-case t)
 #+END_SRC
 
-lets TAB do completion as well
+** Tab
+Lets TAB do completion as well
 
 #+BEGIN_SRC emacs-lisp
 (setq tab-always-indent 'complete)
-(setq completions-format 'vertical)
 #+END_SRC
 
+** company
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :ensure t
+  :diminish company-mode
+  :bind ("C-<tab>" . company-complete)
+  :init
+  (add-hook 'after-init-hook 'global-company-mode)
+  :config
+  (setq company-idle-delay              0.3
+		company-tooltip-flip-when-above t
+		company-tooltip-limit           20
+		company-backends '(;; company-bbdb
+						   company-nxml
+						   company-css
+						   ;; company-eclim
+						   company-semantic
+						   ;; company-clang
+						   ;; company-xcode
+						   company-cmake
+						   company-capf
+						   company-files
+						   (company-dabbrev-code
+							;; company-gtags
+							company-etags
+							company-keywords)
+						   ;; company-oddmuse
+						   company-dabbrev)
+		)
+)
+#+END_SRC
 * Windows handling
 ** delete-window
 If only one window in frame, `delete-frame'.
@@ -3093,6 +3125,17 @@ Now try yasnippet again now that it's faster.
 
   ;; This creates errors when I open ansi-term
   ;; (yas-global-mode 1)
+)
+#+END_SRC
+*** Completion for programmers
+#+BEGIN_SRC emacs-lisp
+(use-package company-c-headers
+  :ensure t
+  :config
+  (add-to-list 'company-backends 'company-c-headers)
+  (add-to-list 'company-c-headers-path-system "/usr/include/qt4/qt/")
+  (add-to-list 'company-c-headers-path-system "/usr/include/qt4/QtCore/")
+  (add-to-list 'company-c-headers-path-system "/usr/include/qt4/QtGui/")
 )
 #+END_SRC
 ** Disable vc backends
