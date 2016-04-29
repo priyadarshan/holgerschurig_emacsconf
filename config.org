@@ -3265,7 +3265,9 @@ set initial compile-command to nothing, so that F7 will prompt for one
 		))
 	(if (string= (substring compile-command 0 1) "(")
 		(eval (car (read-from-string compile-command)))
-	  (compile compile-command))))
+	  (progn
+		(let ((default-directory (or (magit-get-top-dir) default-directory)))
+		  (compile compile-command))))))
 (bind-key "<f7>" 'comp--compile)
 #+END_SRC
 
