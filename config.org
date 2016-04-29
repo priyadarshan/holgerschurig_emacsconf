@@ -3207,8 +3207,7 @@ set initial compile-command to nothing, so that F7 will prompt for one
   (when cmd
   	(comp--add-command cmd)
   	(setq compile-command cmd)
-	(compile compile-command)
-	))
+	(comp--compile)))
 
 (defun comp--del-action (cmd)
   "This ivy-read action deletes CMD from the compile-commands list."
@@ -3217,9 +3216,7 @@ set initial compile-command to nothing, so that F7 will prompt for one
   (comp--del-command cmd)
   (when (string= compile-command cmd)
 	(setq compile-command nil))
-  (setq ivy-exit 'done)
-  )
-
+  (setq ivy-exit 'done))
 
 (defun counsel-compile-command (arg)
   "Interactively select a compile-command.
@@ -3252,7 +3249,6 @@ set initial compile-command to nothing, so that F7 will prompt for one
 			)
   )
 (bind-key "S-<f7>" 'counsel-compile-command)
-
 
 (defun comp--compile ()
   (interactive)
