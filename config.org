@@ -1,4 +1,5 @@
 #+TITLE: Holger Schurig's Emacs configuration
+# @compile: (progn (my--collect-elisp-source-bodies) (byte-compile-file "config.el"))
 
 * About this file
 Inspired by the [[http://eschulte.me/emacs24-starter-kit/#installation][Emacs Starter Kit]], I set up my configuration file
@@ -197,6 +198,7 @@ make =freenode-password= known via =:defines=, so that the
 byte-compiler won't bark at me.
 
 #+BEGIN_SRC emacs-lisp
+(defvar freenode-password)
 (require 'private nil 'noerror)
 #+END_SRC
 * Visual elements
@@ -404,31 +406,31 @@ Define new faces for elements on an active powerline:
 
 #+BEGIN_SRC emacs-lisp
 ;; Base faces, face1 is active, face2 is inactive
-(defface my-pl-face1 '((t (:foreground "white" :background "blue1" :inherit mode-line))) nil)
-(defface my-pl-face2 '((t (:foreground "dimgray" :background "#000040" ))) nil)
-(defface my-pl-face3 '((t (:foreground "black" :background "dark orange" :inherit mode-line))) nil)
-(defface my-pl-face4 '((t (:foreground "dimgray" :background "#402000"))) nil)
+(defface my-pl-face1 '((t (:foreground "white" :background "blue1" :inherit mode-line))) nil :group 'powerline)
+(defface my-pl-face2 '((t (:foreground "dimgray" :background "#000040" ))) nil :group 'powerline)
+(defface my-pl-face3 '((t (:foreground "black" :background "dark orange" :inherit mode-line))) nil :group 'powerline)
+(defface my-pl-face4 '((t (:foreground "dimgray" :background "#402000"))) nil :group 'powerline)
 
-(defface my-pl-indi-romod-face1 '((t (:inherit my-pl-face1))) nil)
-(defface my-pl-indi-romod-face2 '((t (:inherit my-pl-face2))) nil)
-(defface my-pl-indi-narrow-face1 '((t (:inherit my-pl-face1))) nil)
-(defface my-pl-indi-narrow-face2 '((t (:inherit my-pl-face2))) nil)
-(defface my-pl-size-face1 '((t (:inherit my-pl-face1))) nil)
-(defface my-pl-size-face2 '((t (:inherit my-pl-face2))) nil)
-(defface my-pl-mule-face1 '((t (:inherit my-pl-face1))) nil)
-(defface my-pl-mule-face2 '((t (:inherit my-pl-face2))) nil)
-(defface my-pl-name-face1 '((t (:inherit my-pl-face3 :foreground "white" :background "darkred"))) nil)
-(defface my-pl-name-face2 '((t (:inherit my-pl-face4 :background "#400000"))) nil)
-(defface my-pl-dir-face1 '((t (:inherit mode-line :foreground "dimgray"))) nil)
-(defface my-pl-dir-face2 '((t (:inherit mode-line-inactive :foreground "dimgray"))) nil)
-(defface my-pl-major-face1 '((t (:inherit my-pl-face1))) nil)
-(defface my-pl-major-face2 '((t (:inherit my-pl-face2))) nil)
-(defface my-pl-process-face1 '((t (:inherit my-pl-face1))) nil)
-(defface my-pl-process-face2 '((t (:inherit my-pl-face2))) nil)
-(defface my-pl-minor-face1 '((t (:inherit my-pl-face3))) nil)
-(defface my-pl-minor-face2 '((t (:inherit my-pl-face4))) nil)
-(defface my-pl-lincol-face1 '((t (:inherit my-pl-face1))) nil)
-(defface my-pl-lincol-face2 '((t (:inherit my-pl-face2))) nil)
+(defface my-pl-indi-romod-face1 '((t (:inherit my-pl-face1))) nil :group 'powerline)
+(defface my-pl-indi-romod-face2 '((t (:inherit my-pl-face2))) nil :group 'powerline)
+(defface my-pl-indi-narrow-face1 '((t (:inherit my-pl-face1))) nil :group 'powerline)
+(defface my-pl-indi-narrow-face2 '((t (:inherit my-pl-face2))) nil :group 'powerline)
+(defface my-pl-size-face1 '((t (:inherit my-pl-face1))) nil :group 'powerline)
+(defface my-pl-size-face2 '((t (:inherit my-pl-face2))) nil :group 'powerline)
+(defface my-pl-mule-face1 '((t (:inherit my-pl-face1))) nil :group 'powerline)
+(defface my-pl-mule-face2 '((t (:inherit my-pl-face2))) nil :group 'powerline)
+(defface my-pl-name-face1 '((t (:inherit my-pl-face3 :foreground "white" :background "darkred"))) nil :group 'powerline)
+(defface my-pl-name-face2 '((t (:inherit my-pl-face4 :background "#400000"))) nil :group 'powerline)
+(defface my-pl-dir-face1 '((t (:inherit mode-line :foreground "dimgray"))) nil :group 'powerline)
+(defface my-pl-dir-face2 '((t (:inherit mode-line-inactive :foreground "dimgray"))) nil :group 'powerline)
+(defface my-pl-major-face1 '((t (:inherit my-pl-face1))) nil :group 'powerline)
+(defface my-pl-major-face2 '((t (:inherit my-pl-face2))) nil :group 'powerline)
+(defface my-pl-process-face1 '((t (:inherit my-pl-face1))) nil :group 'powerline)
+(defface my-pl-process-face2 '((t (:inherit my-pl-face2))) nil :group 'powerline)
+(defface my-pl-minor-face1 '((t (:inherit my-pl-face3))) nil :group 'powerline)
+(defface my-pl-minor-face2 '((t (:inherit my-pl-face4))) nil :group 'powerline)
+(defface my-pl-lincol-face1 '((t (:inherit my-pl-face1))) nil :group 'powerline)
+(defface my-pl-lincol-face2 '((t (:inherit my-pl-face2))) nil :group 'powerline)
 (when (display-graphic-p)
   (set-face-attribute 'mode-line-highlight nil :foreground "white" :weight 'bold)
   (set-face-attribute 'my-pl-indi-romod-face1 nil :weight 'bold)
@@ -3046,6 +3048,7 @@ And if we ever need it, =C-j= is now newline.
 Nice tip from tuhdo, see https://www.emacswiki.org/emacs/CleanAutoIndent
 #+BEGIN_SRC emacs-lisp
 (use-package clean-aindent-mode
+  :commands (clean-aindent-mode)
   :config
   (add-hook 'prog-mode-hook #'clean-aindent-mode)
 )
@@ -3498,12 +3501,13 @@ Home page: http://web-mode.org/
 #+BEGIN_SRC emacs-lisp
 (use-package web-mode
   :ensure t
-  :commands web-mode
+  :commands (web-mode web-mode-guess-engine-and-content-type)
   :mode (("\\.html\\'" . web-mode)
 		 ("\\.css\\'"  . web-mode)
 		 ("\\.scss\\'" . web-mode)
 		 ("\\.json\\'" . web-mode)
 		 )
+  :defines (web-mode-engines-alist)
   :config
   (unless (car (car (last web-mode-engines-auto-pairs)))
 	(setq web-mode-engines-auto-pairs (butlast web-mode-engines-auto-pairs)))
@@ -3543,8 +3547,14 @@ the terminal "eterm-color" is available.
 
 #+BEGIN_SRC emacs-lisp
 (use-package ansi-term
-  :commands (ansi-term ansi-shell)
   :bind ("M-g a" . ansi-shell)
+  :commands (ansi-term ansi-shell
+					   term-in-line-mode
+					   term-line-mode
+					   term-char-mode)
+  :defines (term-buffer-maximum-size
+			ml-interactive?
+			show-dir-in-mode-line?)
   :init
   (defun ansi-shell ()
 	"Start ansi-term with bash"
@@ -3555,16 +3565,16 @@ the terminal "eterm-color" is available.
   ;; don't linger around when closing
   (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
 	(if (memq (process-status proc) '(signal exit))
-	(let ((buffer (process-buffer proc)))
-	  ad-do-it
-	  (kill-buffer buffer))
+		(let ((buffer (process-buffer proc)))
+		  ad-do-it
+		  (kill-buffer buffer))
 	  ad-do-it))
   (ad-activate 'term-sentinel)
 
   (defun term-toggle-mode ()
 	(interactive)
 	(if (term-in-line-mode)
-	(term-char-mode)
+		(term-char-mode)
 	  (term-line-mode)))
 
   (defun my-term-hook ()
@@ -3614,6 +3624,8 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 (use-package eshell
   :defer t
   :bind ("M-g e" . eshell)
+  :commands (eshell/addpath eshell-read-aliases-list)
+  :defines (eshell-visual-commands)
   :config
   (defun eshell/clear ()
 	"Deletes the contents of eshell buffer, except the last prompt"
