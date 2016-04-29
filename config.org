@@ -1602,7 +1602,7 @@ This is from https://www.emacswiki.org/emacs/DescribeThingAtPoint
 				  ((setq sym (variable-at-point)) (describe-variable sym))
 				  ;; now let it operate fully -- i.e. also check the
 				  ;; surrounding sexp for a function call.
-				  ((setq sym (function-at-point)) (describe-function sym)))))
+				  ((setq sym (function-called-at-point)) (describe-function sym)))))
 (bind-key "<f1>" 'my-help)
 #+END_SRC
 
