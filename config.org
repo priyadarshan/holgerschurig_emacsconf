@@ -3240,6 +3240,7 @@ set initial compile-command to nothing, so that F7 will prompt for one
 			;; #'comp--get-compile-commands
 			;; :dynamic-collection t
 
+			:sort nil
 			:action #'comp--default-action
 			:preselect compile-command
 			:history 'counsel-compile-command
