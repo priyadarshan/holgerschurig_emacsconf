@@ -1695,11 +1695,11 @@ Try this while in the ivy-minibuffer:
 (use-package ivy
   :ensure t
   :diminish ivy-mode
+  :defer nil
   :bind (("C-x b"   . ivy-switch-buffer)
 		 ("C-x C-b" . ivy-switch-buffer)
 		 ("C-x C-r" . ivy-resume)
 		 )
-  :commands ivy-set-actions
   :config
   (ivy-mode 1)
 
