@@ -3048,6 +3048,7 @@ And if we ever need it, =C-j= is now newline.
 Nice tip from tuhdo, see https://www.emacswiki.org/emacs/CleanAutoIndent
 #+BEGIN_SRC emacs-lisp
 (use-package clean-aindent-mode
+  :ensure t
   :commands (clean-aindent-mode)
   :config
   (add-hook 'prog-mode-hook #'clean-aindent-mode)
