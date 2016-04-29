@@ -3218,17 +3218,15 @@ set initial compile-command to nothing, so that F7 will prompt for one
 	(setq compile-command nil))
   (setq ivy-exit 'done))
 
-(defun counsel-compile-command (arg)
+(defun counsel-compile-command ()
   "Interactively select a compile-command.
 
    Releads possible commends from open buffers when run with argument."
 
-  (interactive "P")
-  (unless compile-commands
-	(setq arg 1))
-  (when arg
-	(comp--get-compile-commands-from-buffers))
+  (interactive)
 
+  ;; Always get list of compilation commands and sort them
+  (comp--get-compile-commands-from-buffers)
   (comp--sort-command-alist)
   ;; compile-commands is now something like:
   ;; '(("make -C foo" . 1) ("ccmake && make" . 2))
@@ -3253,8 +3251,6 @@ set initial compile-command to nothing, so that F7 will prompt for one
   (interactive)
   (delete-other-windows)
   (save-buffer)
-  (unless compile-command
-	(counsel-compile-command nil))
   (when compile-command
 	;; (message "compile command: %s" compile-command)
 	(let ((cmd (assoc compile-command compile-commands)))
