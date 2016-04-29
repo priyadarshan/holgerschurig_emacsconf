@@ -3636,8 +3636,8 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 	(beginning-of-line)
 	(let ((pos (point)))
 	  (if (bobp)
-		  (if (interactive-p)
-		  (error "Buffer too short to truncate"))
+		  (if (called-interactively-p 'interactive)
+			  (error "Buffer too short to truncate"))
 		(delete-region (point-min) (point)))))))
 
   ;; We don't need no banner
