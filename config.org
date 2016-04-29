@@ -3191,7 +3191,7 @@ set initial compile-command to nothing, so that F7 will prompt for one
 
   (save-excursion
 	(goto-char (point-min))
-	(while (re-search-forward "^.. @compile: \\(.*\\)$" nil t)
+	(while (re-search-forward "^..? @compile: \\(.*\\)$" nil t)
 	  (let ((s (match-string-no-properties 1)))
 		;; \s- whitespace character class
 		;; (message "FOUND '%s'" s)
