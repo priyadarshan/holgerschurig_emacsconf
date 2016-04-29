@@ -1756,6 +1756,22 @@ Swiper is a different isearch, so to say.
   (counsel-mode 1)
 )
 #+END_SRC
+
+*** counsel-goto-recent-directory
+
+This is from http://blog.binchen.org/posts/use-ivy-to-open-recent-directories.html, but slighly modified.
+
+#+BEGIN_SRC emacs-lisp
+(defun counsel-goto-recent-directory ()
+  "Open recent directory with dired"
+  (interactive)
+  (unless recentf-mode
+	(recentf-mode 1))
+  (ivy-read "directories:"
+			(delete-dups (mapcar 'file-name-directory recentf-list))
+			:action #'dired))
+(bind-key "M-g d" #'counsel-goto-recent-directory)
+#+END_SRC
 * org-mode
 *** org itself
 
