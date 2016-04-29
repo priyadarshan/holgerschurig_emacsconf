@@ -3233,8 +3233,6 @@ set initial compile-command to nothing, so that F7 will prompt for one
   ;; compile-commands is now something like:
   ;; '(("make -C foo" . 1) ("ccmake && make" . 2))
 
-  (setq ivy--all-candidates nil)
-  (setq ivy--old-cands nil)
   (ivy-set-actions 'counsel-compile-command
 				   '(("d" comp--del-action "delete")))
   (ivy-read "Compile cmd: "
