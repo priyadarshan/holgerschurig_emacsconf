@@ -2855,6 +2855,112 @@ This used to be in the gnus setup section:
   ;; (setq bbdb-allow-duplicates t)
 )
 #+END_SRC
+** notmuch
+*** notmuch itself
+#+BEGIN_SRC emacs-lisp
+(use-package notmuch
+  :bind ("M-g n" . notmuch-hello)
+  :config
+  ;; Change flagged lines to be dark blue in the background, not blue
+  ;; in the foreground. This harmonizes much more with my dark theme.
+  (add-to-list 'notmuch-search-line-faces
+  			   '("flagged" :background "dark blue"))
+
+  (setq notmuch-search-result-format
+		'(("date" . "%12s ")
+		  ("count" . "%6s ")
+		  ("authors" . "%-23s ")
+		  ("subject" . "%s ")
+		  ;; ("tags" . "(%s)")
+		  ))
+)
+#+END_SRC
+*** notmuch-hello
+#+BEGIN_SRC emacs-lisp
+(use-package notmuch-hello
+  :defer t
+  :config
+  (setq notmuch-saved-searches
+		'((:key "i" :name "(i)nbox" :query "folder:inbox")
+		  (:key "b" :name "(b)arebox" :query "folder:barebox")
+		  (:key "c" :name "linux-(c)an" :query "folder:linux-can")
+		  (:key "a" :name "linux-(a)rm-kernel" :query "folder:linux-arm-kernel")
+		  (:key "m" :name "linux-(m)mc" :query "folder:linux-mmc")
+		  (:key "9" :name "ath(9)k-devel" :query "folder:ath9k-devel")
+		  (:key "e" :name "elecraft" :query "folder:elecraft")
+		  (:key "A" :name "(A)ll mail" :query "*")
+		  (:key "D" :name "(D)eleted" :query "tag:deleted")
+		  (:key "D" :name "(D)rafts" :query "tag:draft")
+		  (:key "F" :name "(F)lagged" :query "tag:flagged")
+		  (:key "S" :name "(S)ent" :query "tag:sent")
+		  (:key "T" :name "(T)rash" :query "folder:trash")
+		  (:key "u" :name "(u)nread" :query "tag:unread")
+		  ))
+
+  ;; No header/footer in the hello screen
+  (setq notmuch-hello-sections
+		'(;;notmuch-hello-insert-header
+		  notmuch-hello-insert-saved-searches
+		  notmuch-hello-insert-search
+		  notmuch-hello-insert-recent-searches
+		  notmuch-hello-insert-alltags
+		  ;;notmuch-hello-insert-footer
+		  ))
+
+  ;; don't display columns
+  (setq notmuch-column-control 1.0)
+
+  ;; Add a thousamnd separator
+  (setq notmuch-hello-thousands-separator ".")
+)
+#+END_SRC
+*** motmuch-lib
+#+BEGIN_SRC emacs-lisp
+(use-package notmuch-lib
+  :defer t
+  :config
+  (setq notmuch-search-oldest-first nil)
+)
+#+END_SRC
+*** notmuch-show
+#+BEGIN_SRC emacs-lisp
+(use-package notmuch-show
+  :defer t
+  :config
+  (setq notmuch-show-relative-dates nil)
+)
+#+END_SRC
+*** notmuch-tag
+#+BEGIN_SRC emacs-lisp
+(use-package notmuch-tag
+  :defer t
+  :config
+
+  ;; change "unread" into an icon
+  (add-to-list 'notmuch-tag-formats
+			   '("unread"
+				 (notmuch-tag-format-image-data tag (notmuch-tag-tag-icon))))
+
+  ;; hide "attachment" and "signed" properties
+  (add-to-list 'notmuch-tag-formats '("attachment" (propertize tag 'invisible t)))
+  (add-to-list 'notmuch-tag-formats '("signed" (propertize tag 'invisible t)))
+)
+#+END_SRC
+*** notmuch-tree
+#+BEGIN_SRC emacs-lisp
+(use-package notmuch-tree
+  :defer t
+  :config
+  (setq notmuch-tree-result-format
+		'(("date" . "%12s  ")
+		  ("authors" . "%-23s")
+		  ((("tree" . "%s")
+			("subject" . "%s"))
+		   . " %-54s ")
+		  ;;("tags" . "(%s)")
+		  ))
+)
+#+END_SRC
 * Blogging
   :PROPERTIES:
   :TITLE:    Blog from Org-Mode to Hugo
