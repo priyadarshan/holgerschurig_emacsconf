@@ -2997,6 +2997,12 @@ the CLI and emacs interface."))
   :defer t
   :config
   (setq notmuch-show-relative-dates nil)
+
+  ;; remove archiving commands
+  (define-key notmuch-show-mode-map "x" nil)  
+  (define-key notmuch-show-mode-map "X" nil)  
+  (define-key notmuch-show-mode-map "a" nil)  
+  (define-key notmuch-show-mode-map "A" nil) 
 )
 #+END_SRC
 *** notmuch-tag
@@ -3028,6 +3034,10 @@ the CLI and emacs interface."))
 		   . " %-54s ")
 		  ;;("tags" . "(%s)")
 		  ))
+
+  ;; remove archiving commands
+  (define-key notmuch-tree-mode-map "a" nil)  
+  (define-key notmuch-tree-mode-map "A" nil) 
 )
 #+END_SRC
 * Blogging
