@@ -1010,6 +1010,7 @@ very un-intrusive, no pop-up, no nothing,
 
 #+BEGIN_SRC emacs-lisp
 (use-package smartscan
+  :ensure t
   :config
   (global-smartscan-mode t)
   )
