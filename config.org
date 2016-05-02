@@ -3035,6 +3035,9 @@ the CLI and emacs interface."))
 		  ;;("tags" . "(%s)")
 		  ))
 
+  ;; view selected messages in full window instead of split-pane
+  (setq notmuch-tree-show-out t)
+
   ;; remove archiving commands
   (define-key notmuch-tree-mode-map "a" nil)  
   (define-key notmuch-tree-mode-map "A" nil) 
