@@ -1011,6 +1011,7 @@ very un-intrusive, no pop-up, no nothing,
 #+BEGIN_SRC emacs-lisp
 (use-package smartscan
   :ensure t
+  :commands (global-smartscan-mode)
   :config
   (global-smartscan-mode t)
   )
@@ -1735,6 +1736,7 @@ Try this while in the ivy-minibuffer:
 		 ("C-x C-b" . ivy-switch-buffer)
 		 ("C-x C-r" . ivy-resume)
 		 )
+  :commands (ivy-set-actions)
   :config
   (ivy-mode 1)
 
@@ -3526,6 +3528,7 @@ Somehow a the first visited file stays in "gnu" style when I set the c-default-s
 just in the common hook
 
 #+BEGIN_SRC emacs-lisp
+(eval-when-compile (require 'cc-vars))
 (defun my-c-initialization-setup ()
   ;; Default style
   (c-add-style "linux-tabs-only"
@@ -3556,6 +3559,7 @@ Things that will only ever apply to .C files
 Things that will apply to .C and .CPP files
 
 #+BEGIN_SRC emacs-lisp
+(eval-when-compile (require 'cc-engine))
 (defun my-c-mode-common-setup ()
   (turn-off-auto-fill)
 
