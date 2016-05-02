@@ -2893,7 +2893,7 @@ This used to be in the gnus setup section:
 		  (:key "e" :name "elecraft" :query "folder:elecraft")
 		  ;; (:key "A" :name "All mails" :query "*")
 		  (:key "D" :name "Deleted" :query "tag:deleted")
-		  (:key "D" :name "Drafts" :query "tag:draft")
+		  (:key "R" :name "Drafts" :query "tag:draft")
 		  (:key "F" :name "Flagged" :query "tag:flagged")
 		  (:key "S" :name "Sent" :query "tag:sent")
 		  (:key "T" :name "Trash" :query "folder:trash")
