@@ -1166,7 +1166,7 @@ Lets TAB do completion as well
 (setq tab-always-indent 'complete)
 #+END_SRC
 
-** company
+** CANCELED company
 #+BEGIN_SRC emacs-lisp
 (use-package company
   :ensure t
