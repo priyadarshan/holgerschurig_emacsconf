@@ -2429,7 +2429,7 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
 ** gnus
 #+BEGIN_SRC emacs-lisp
 (use-package gnus
-  :bind ("M-g n" . gnus)
+  :bind ("M-g N" . gnus)
   :config
   (require 'mm-decode)
 #+END_SRC
