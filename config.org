@@ -2903,8 +2903,7 @@ This used to be in the gnus setup section:
   ;; No header/footer in the hello screen
   (setq notmuch-hello-sections
 		'(;;notmuch-hello-insert-header
-		  my-notmuch-hello-insert-searches
-		  notmuch-hello-insert-saved-searches
+		  ;; notmuch-hello-insert-saved-searches
 		  notmuch-hello-insert-search
 		  ;; notmuch-hello-insert-recent-searches
 		  ;; notmuch-hello-insert-alltags
@@ -2916,8 +2915,18 @@ This used to be in the gnus setup section:
 
   ;; don't display columns
   (setq notmuch-column-control 1.0)
+#+END_SRC
 
-  (defun my-count-query-integer (query)
+*** My own hello screen
+#+BEGIN_SRC emacs-lisp
+  (defface my-notmuch-hello-header-face
+	'((t :foreground "white"
+		 :background "blue"
+		 :weight bold))
+	"Font for the header in `my-notmuch-hello-insert-searches`."
+	:group 'notmuch-faces)
+
+  (defun my-count-query (query)
 	(with-temp-buffer
 	  (insert query "\n")
 	  (unless (= (call-process-region (point-min) (point-max) notmuch-command
@@ -2928,59 +2937,61 @@ This used to be in the gnus setup section:
 the CLI and emacs interface."))
 
 	  (goto-char (point-min))
-	  (read (current-buffer))))
-  ;; (my-count-query-integer "folder:linux-arm-kernel")
-  ;; (my-count-query-integer "folder:linux-can")
-  (defun my-count-query (query)
-	(let* ((n  (my-count-query-integer query))
-		   (ns (if (= n 0) "" (notmuch-hello-nice-number n)))
-		   (w  (widget-create 'push-button
-							  :notify #'notmuch-hello-widget-search
-							  :notmuch-search-terms query
-							  ;; :notmuch-search-oldest-first oldest-first
-							  ;; :notmuch-search-type search-type
-							  ns)))
+	  (let ((n (read (current-buffer))))
+		(if (= n 0)
+			nil
+		  (notmuch-hello-nice-number n)))))
 
-	  ))
-  ;; (my-count-query "folder:linux-arm-kernel")[29.534]q
-  ;; (my-count-query "folder:linux-can")
-
-
+  (defun my-notmuch-hello-query-insert (cnt query elem)
+	(if cnt
+		(let* ((str (format "%s" cnt))
+			   (widget-push-button-prefix "")
+			   (widget-push-button-suffix "")
+			   (oldest-first (case (plist-get elem :sort-order)
+							   (newest-first nil)
+							   (oldest-first t)
+							   (otherwise notmuch-search-oldest-first))))
+		  (widget-insert (make-string (- 8 (length str)) ? ))
+		  (widget-create 'push-button
+						 :notify #'notmuch-hello-widget-search
+						 :notmuch-search-terms query
+						 :notmuch-search-oldest-first oldest-first
+						 :notmuch-search-type 'tree
+						 str))
+	  (widget-insert "        ")))
 
   (defun my-notmuch-hello-insert-searches ()
 	"Insert the saved-searches section."
-	(widget-insert "     New   Total   Key  List\n")
+	;; (widget-insert (propertize "     New    Total   Key  List\n" 'face '(:foreground "red")))
+	(widget-insert (propertize "     New    Total   Key  List\n" 'face 'my-notmuch-hello-header-face))
 	(mapc (lambda (elem)
 			(when elem
-			  (let* ((query (plist-get elem :query))
-					 (n_new (my-count-query (concat query " tag:unread")))
-					 (n_tot (my-count-query query)))
-				(message "TYPE %s" (type-of n_new))
-				(setq n_new
-					  (format "%8s" (if (= n_new 0)
-						  ""
-						(notmuch-hello-nice-number n_new))))
-				(setq n_tot
-					  (format "%8s" (if (= n_tot 0)
-						  ""
-						(notmuch-hello-nice-number n_tot))))
-				(widget-insert n_new)
-				(widget-insert n_tot)
-				(widget-insert "   j ")
+			  (let* ((q_tot (plist-get elem :query))
+					 (q_new (concat q_tot " AND tag:unread"))
+					 (n_tot (my-count-query q_tot))
+					 (n_new (my-count-query q_new)))
+				(my-notmuch-hello-query-insert n_new q_new elem)
+				(widget-insert " ")
+				(my-notmuch-hello-query-insert n_tot q_tot elem)
+				(widget-insert "   ")
 				(widget-insert (plist-get elem :key))
-				(widget-insert "  ")
+				(widget-insert "    ")
 				(widget-insert (plist-get elem :name))
-				;; (widget-insert " ")
-				;; (widget-insert query)
 				(widget-insert "\n")
 			  ))
 			)
-		  notmuch-saved-searches)
-	(widget-insert "\n")
-	)
+		  notmuch-saved-searches))
 
-  ;; Add a thousamnd separator
-  (setq notmuch-hello-thousands-separator ".")
+  (defun my-notmuch-hello-reposition-after-refresh ()
+	(goto-char (point-min))
+	(forward-line 1))
+  (add-hook 'notmuch-hello-refresh-hook #'my-notmuch-hello-reposition-after-refresh)
+
+  (add-to-list 'notmuch-hello-sections #'my-notmuch-hello-insert-searches)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;; this is the end of use-package notmuch:
 )
 #+END_SRC
 *** motmuch-lib
