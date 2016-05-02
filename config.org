@@ -2881,34 +2881,97 @@ This used to be in the gnus setup section:
   :defer t
   :config
   (setq notmuch-saved-searches
-		'((:key "i" :name "(i)nbox" :query "folder:inbox")
-		  (:key "b" :name "(b)arebox" :query "folder:barebox")
-		  (:key "c" :name "linux-(c)an" :query "folder:linux-can")
-		  (:key "a" :name "linux-(a)rm-kernel" :query "folder:linux-arm-kernel")
-		  (:key "m" :name "linux-(m)mc" :query "folder:linux-mmc")
-		  (:key "9" :name "ath(9)k-devel" :query "folder:ath9k-devel")
+		'((:key "i" :name "inbox" :query "folder:inbox")
+		  (:key "b" :name "barebox" :query "folder:barebox")
+		  (:key "c" :name "linux-can" :query "folder:linux-can")
+		  (:key "a" :name "linux-arm-kernel" :query "folder:linux-arm-kernel")
+		  (:key "m" :name "linux-mmc" :query "folder:linux-mmc")
+		  (:key "9" :name "ath9k-devel" :query "folder:ath9k-devel")
 		  (:key "e" :name "elecraft" :query "folder:elecraft")
-		  (:key "A" :name "(A)ll mail" :query "*")
-		  (:key "D" :name "(D)eleted" :query "tag:deleted")
-		  (:key "D" :name "(D)rafts" :query "tag:draft")
-		  (:key "F" :name "(F)lagged" :query "tag:flagged")
-		  (:key "S" :name "(S)ent" :query "tag:sent")
-		  (:key "T" :name "(T)rash" :query "folder:trash")
-		  (:key "u" :name "(u)nread" :query "tag:unread")
+		  (:key "A" :name "All mail" :query "*")
+		  (:key "D" :name "Deleted" :query "tag:deleted")
+		  (:key "D" :name "Drafts" :query "tag:draft")
+		  (:key "F" :name "Flagged" :query "tag:flagged")
+		  (:key "S" :name "Sent" :query "tag:sent")
+		  (:key "T" :name "Trash" :query "folder:trash")
+		  (:key "u" :name "unread" :query "tag:unread")
 		  ))
 
   ;; No header/footer in the hello screen
   (setq notmuch-hello-sections
 		'(;;notmuch-hello-insert-header
+		  my-notmuch-hello-insert-searches
 		  notmuch-hello-insert-saved-searches
 		  notmuch-hello-insert-search
-		  notmuch-hello-insert-recent-searches
-		  notmuch-hello-insert-alltags
+		  ;; notmuch-hello-insert-recent-searches
+		  ;; notmuch-hello-insert-alltags
 		  ;;notmuch-hello-insert-footer
 		  ))
 
   ;; don't display columns
   (setq notmuch-column-control 1.0)
+
+  (defun my-count-query-integer (query)
+	(with-temp-buffer
+	  (insert query "\n")
+	  (unless (= (call-process-region (point-min) (point-max) notmuch-command
+									  t t nil "count" "--batch") 0)
+		(notmuch-logged-error "notmuch count --batch failed"
+"Please check that the notmuch CLI is new enough to support `count
+--batch'. In general we recommend running matching versions of
+the CLI and emacs interface."))
+
+	  (goto-char (point-min))
+	  (read (current-buffer))))
+  ;; (my-count-query-integer "folder:linux-arm-kernel")
+  ;; (my-count-query-integer "folder:linux-can")
+  (defun my-count-query (query)
+	(let* ((n  (my-count-query-integer query))
+		   (ns (if (= n 0) "" (notmuch-hello-nice-number n)))
+		   (w  (widget-create 'push-button
+							  :notify #'notmuch-hello-widget-search
+							  :notmuch-search-terms query
+							  ;; :notmuch-search-oldest-first oldest-first
+							  ;; :notmuch-search-type search-type
+							  ns)))
+
+	  ))
+  ;; (my-count-query "folder:linux-arm-kernel")[29.534]q
+  ;; (my-count-query "folder:linux-can")
+
+
+
+  (defun my-notmuch-hello-insert-searches ()
+	"Insert the saved-searches section."
+	(widget-insert "     New   Total   Key  List\n")
+	(mapc (lambda (elem)
+			(when elem
+			  (let* ((query (plist-get elem :query))
+					 (n_new (my-count-query (concat query " tag:unread")))
+					 (n_tot (my-count-query query)))
+				(message "TYPE %s" (type-of n_new))
+				(setq n_new
+					  (format "%8s" (if (= n_new 0)
+						  ""
+						(notmuch-hello-nice-number n_new))))
+				(setq n_tot
+					  (format "%8s" (if (= n_tot 0)
+						  ""
+						(notmuch-hello-nice-number n_tot))))
+				(widget-insert n_new)
+				(widget-insert n_tot)
+				(widget-insert "   j ")
+				(widget-insert (plist-get elem :key))
+				(widget-insert "  ")
+				(widget-insert (plist-get elem :name))
+				;; (widget-insert " ")
+				;; (widget-insert query)
+				(widget-insert "\n")
+			  ))
+			)
+		  notmuch-saved-searches)
+	(widget-insert "\n")
+	)
 
   ;; Add a thousamnd separator
   (setq notmuch-hello-thousands-separator ".")
