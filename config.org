@@ -2911,6 +2911,9 @@ This used to be in the gnus setup section:
 		  ;;notmuch-hello-insert-footer
 		  ))
 
+  ;; Add a thousand separator
+  (setq notmuch-hello-thousands-separator ".")
+
   ;; don't display columns
   (setq notmuch-column-control 1.0)
 
