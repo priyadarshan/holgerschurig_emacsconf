@@ -3054,6 +3054,14 @@ the CLI and emacs interface."))
   (define-key notmuch-tree-mode-map "A" nil) 
 )
 #+END_SRC
+*** notmuch-mua
+#+BEGIN_SRC emacs-lisp
+(use-package notmuch-mua
+  :defer t
+  :config
+  (setq notmuch-mua-cite-function #'message-cite-original-without-signature)
+)
+#+END_SRC
 * Blogging
   :PROPERTIES:
   :TITLE:    Blog from Org-Mode to Hugo
