@@ -54,6 +54,13 @@ You can learn more about edebug in the [[http://www.gnu.org/software/emacs/manua
 
 I like using =(setq ...)= more than Customize because I can neatly organize my configuration that way.
 
+* License
+
+All code sections in this =.org= file are licensed under
+[[GPLv2][http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html]] except otherwise noted. For example,
+I derives some functions from notmuch. And as notmuch uses GPLv3 or higher, this functions
+got the same license.
+
 * Optional debug
 Use the following if there is some nasty bug that you cannot find with
 =emacs --debug-init=:
@@ -2974,7 +2981,7 @@ At the bottom are the recent searches, just without the "Save" and
 
 #+BEGIN_SRC emacs-lisp
 ;; This is GPLv3. If you still don't know the details, read
-;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+;; http://www.gnu.org/licenses/gpl-3.0.en.html
 
 (defun my-notmuch-hello-insert-recent-searches ()
   "Insert recent searches."
@@ -3052,7 +3059,7 @@ I implemented a simpler version of =notmuch-hello-query-counts=:
 
 #+BEGIN_SRC emacs-lisp
   ;; This is GPLv3. If you still don't know the details, read
-  ;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+  ;; http://www.gnu.org/licenses/gpl-3.0.en.html
 
   (defun my-count-query (query)
 	(with-temp-buffer
