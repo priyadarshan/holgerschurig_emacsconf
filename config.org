@@ -2891,6 +2891,7 @@ This used to be in the gnus setup section:
 		  (:key "m" :name "linux-mmc" :query "folder:linux-mmc")
 		  (:key "9" :name "ath9k-devel" :query "folder:ath9k-devel")
 		  (:key "e" :name "elecraft" :query "folder:elecraft")
+		  (:key "p" :name "powertop" :query "folder:powertop")
 		  ;; (:key "A" :name "All mails" :query "*")
 		  (:key "D" :name "Deleted" :query "tag:deleted")
 		  (:key "R" :name "Drafts" :query "tag:draft")
