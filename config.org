@@ -2876,6 +2876,9 @@ This used to be in the gnus setup section:
 		  ("subject" . "%s ")
 		  ;; ("tags" . "(%s)")
 		  ))
+
+  ;; remove archiving commands
+  (define-key notmuch-search-mode-map "a" nil)
 )
 #+END_SRC
 *** notmuch-hello
@@ -3039,6 +3042,11 @@ the CLI and emacs interface."))
   :defer t
   :config
   (setq notmuch-search-oldest-first nil)
+
+  ;; remove poll function
+  (define-key notmuch-common-keymap "G" nil)
+  ;; remove search function (we already have a search field)
+  (define-key notmuch-common-keymap "s" nil)
 )
 #+END_SRC
 *** notmuch-show
@@ -3053,6 +3061,8 @@ the CLI and emacs interface."))
   (define-key notmuch-show-mode-map "X" nil)  
   (define-key notmuch-show-mode-map "a" nil)  
   (define-key notmuch-show-mode-map "A" nil) 
+  ; M-TAB is in use by the window manager
+  (define-key notmuch-show-mode-map (kbd "M-TAB") nil)
 )
 #+END_SRC
 *** notmuch-tag
@@ -3090,7 +3100,12 @@ the CLI and emacs interface."))
 
   ;; remove archiving commands
   (define-key notmuch-tree-mode-map "a" nil)  
-  (define-key notmuch-tree-mode-map "A" nil) 
+  (define-key notmuch-tree-mode-map "A" nil)
+  ;; Use "Z" to switch back to non-tree view
+  (define-key notmuch-tree-mode-map "S" nil)
+  (define-key notmuch-tree-mode-map "Z" #'notmuch-search-from-tree-current-query)
+  ; M-TAB is in use by the window manager
+  (define-key notmuch-tree-mode-map (kbd "M-TAB") nil)
 )
 #+END_SRC
 *** notmuch-mua
