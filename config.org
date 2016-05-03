@@ -2882,7 +2882,52 @@ This used to be in the gnus setup section:
 )
 #+END_SRC
 *** notmuch-hello
+	:PROPERTIES:
+	:TITLE:    notmuch: a nicer notmuch-hello screen for Emacs
+	:HUGO_TAGS: Emacs, notmuch
+	:HUGO_TOPICS: Emacs
+	:HUGO_FILE: en/emacs-notmuch-hello.md
+	:HUGO_DATE: [2016-05-03 10:29]
+	:END:
+
+Here I define my own hello screen for [[http://notmuchmail.org/][notmuch]]. However, I didn't like it's original
+"hello" screen not that much. So I wrote something to replace it.
+
+#+HTML: <!--more-->
+
+This is how it used to look:
+
+[[./emacs-notmuch-hello-orig.png]]
+
+That's nice for a start.
+
+- Notmuch's hello page is using Emacs' config feature. I however like
+  to write everything out, and document the things while I doing them
+  in my [[https://bitbucket.org/holgerschurig/emacsconf/raw/HEAD/config.org][config.org]] file. &rarr; Get rid of buttons like "Save" or the
+  "Customize ..." text.
+- Notmuch doesn't show the amount of messages. Okay, when I add query
+  to =notmuch-saved-searches=, it will show them. But at an awkward
+  position: around the center of the screen. Also it won't
+  differentiate between new and total counts .. or it would need two
+  queries, not just one. &rarr; Present the queries better.
+- I see elements that i never use, e.g. the header, the footer, or the
+  "Clear" button. &rarr; Get rid of them.
+
+What I wrote now looks like this:
+
+[[./emacs-notmuch-hello-mine.png]]
+
+**** The implementation
+
+Let's start simple: define the queries.
+
+Note that I define basic queries, e.g. at this point in time I don't
+create two queries for the unread/total amount of messages.
+
 #+BEGIN_SRC emacs-lisp
+;; This is GPLv2. If you still don't know the details, read
+;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+
 (use-package notmuch-hello
   :defer t
   :config
@@ -2904,21 +2949,33 @@ This used to be in the gnus setup section:
 		  (:key "u" :name "unread" :query "tag:unread")
 		  ))
 
-  ;; We add items later in reverse order with add-to-list:
+  ;; We add items later in reverse order with (add-to-list ...):
   (setq notmuch-hello-sections '())
 
   ;; Add a thousand separator
   (setq notmuch-hello-thousands-separator ".")
-
+#+END_SRC
+#+BEGIN_SRC emacs-lisp :exports none
   ;; don't display columns
   (setq notmuch-column-control 1.0)
 #+END_SRC
 
-*** My own recent searches hello screen
+We set =notmuch-hello-sections= to the empty list, so we add
+hello-section after hello-section with =(add-to-list=. This prepends,
+so we add the sections in reverse order. 
 
-The difference compared to notmuch-hello-insert-recent-searches is
-that it doesn't have the SAVE widgets.
+**** List of recent searches
+
+[[./emacs-notmuch-hello-recent.png]]
+
+At the bottom are the recent searches, just without the "Save" and
+"Clear" buttons. This is just a slightly modified reimplementation of
+=notmuch-hello-insert-recent-searches=:
+
 #+BEGIN_SRC emacs-lisp
+;; This is GPLv3. If you still don't know the details, read
+;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+
 (defun my-notmuch-hello-insert-recent-searches ()
   "Insert recent searches."
   (when notmuch-search-history
@@ -2959,16 +3016,43 @@ that it doesn't have the SAVE widgets.
     nil))
 
   (add-to-list 'notmuch-hello-sections #'my-notmuch-hello-insert-recent-searches)
+#+END_SRC
+
+**** Simple search line
+
+[[./emacs-notmuch-hello-search.png]]
+
+Then I want a simple search method. The original implementation suited
+my needs quite fine, I use it unmodified:
+
+#+BEGIN_SRC emacs-lisp
   (add-to-list 'notmuch-hello-sections #'notmuch-hello-insert-search)
 #+END_SRC
-*** My own folder selection hello screen
+
+**** Header face for the search screen
+
+And finally we want out improved hello screen. Let's start with the
+face for the header:
+
 #+BEGIN_SRC emacs-lisp
+  ;; This is GPLv2. If you still don't know the details, read
+  ;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+
   (defface my-notmuch-hello-header-face
 	'((t :foreground "white"
 		 :background "blue"
 		 :weight bold))
 	"Font for the header in `my-notmuch-hello-insert-searches`."
 	:group 'notmuch-faces)
+#+END_SRC
+
+**** Helper function to count messages
+
+I implemented a simpler version of =notmuch-hello-query-counts=:
+
+#+BEGIN_SRC emacs-lisp
+  ;; This is GPLv3. If you still don't know the details, read
+  ;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
   (defun my-count-query (query)
 	(with-temp-buffer
@@ -2985,6 +3069,28 @@ the CLI and emacs interface."))
 		(if (= n 0)
 			nil
 		  (notmuch-hello-nice-number n)))))
+#+END_SRC
+
+This function can be called like this:
+
+#+BEGIN_EXAMPLE
+(my-count-query "folder:linux-arm-kernel tag:unread")
+#+END_EXAMPLE
+
+It will return either nil or a string containing the nicely
+formatted amount of messages. Note that it doesn't return the integer
+0 or the string "0" but nil. I've done it so that I can easier depend
+on the return value in an =(if ...)= form --- if considers "0" to be
+true.
+
+**** Create query widget
+
+The following either inserts a ='push-button= widget (if the query has
+a count associated) or some empty spaces:
+
+#+BEGIN_SRC emacs-lisp
+  ;; This is GPLv2. If you still don't know the details, read
+  ;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
   (defun my-notmuch-hello-query-insert (cnt query elem)
 	(if cnt
@@ -3003,6 +3109,20 @@ the CLI and emacs interface."))
 						 str)
 		  (widget-insert (make-string (- 8 (length str)) ? )))
 	  (widget-insert "        ")))
+#+END_SRC
+
+**** Binding everything together
+
+And finally we iterate over the =notmuch-saved-searches=, get the base
+query, calculate the count of total messages into =q_tot= and the
+count of new messages into =q_new=. We use that information to create
+the widgets accordingly.
+
+[[./emacs-notmuch-hello.png]]
+
+#+BEGIN_SRC emacs-lisp
+  ;; This is GPLv2. If you still don't know the details, read
+  ;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
   (defun my-notmuch-hello-insert-searches ()
 	"Insert the saved-searches section."
@@ -3023,19 +3143,23 @@ the CLI and emacs interface."))
 			  ))
 			)
 		  notmuch-saved-searches))
+#+END_SRC
 
+
+#+BEGIN_SRC emacs-lisp :exports none
   (defun my-notmuch-hello-reposition-after-refresh ()
 	(goto-char (point-min))
 	(forward-line 1))
   (add-hook 'notmuch-hello-refresh-hook #'my-notmuch-hello-reposition-after-refresh)
 
   (add-to-list 'notmuch-hello-sections #'my-notmuch-hello-insert-searches)
-#+END_SRC
 
-#+BEGIN_SRC emacs-lisp
 ;; this is the end of use-package notmuch:
 )
 #+END_SRC
+
+That's all, folks.
+
 *** motmuch-lib
 #+BEGIN_SRC emacs-lisp
 (use-package notmuch-lib
