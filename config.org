@@ -3447,6 +3447,9 @@ rest of the line is empty.
 set initial compile-command to nothing, so that F7 will prompt for one
 
 #+BEGIN_SRC emacs-lisp
+;; Prevent from "make -k" popping up whenever I start emacs
+(setq compile-command "")
+
 (defvar compile-commands nil
   "The compile commands are an alist where the key is
    is the command and the value is the time when it was
@@ -3559,7 +3562,8 @@ set initial compile-command to nothing, so that F7 will prompt for one
   (interactive)
   (delete-other-windows)
   (save-buffer)
-  (when compile-command
+  (if (string= compile-command "")
+	  (counsel-compile-command)
 	;; (message "compile command: %s" compile-command)
 	(let ((cmd (assoc compile-command compile-commands)))
 	  (when cmd
