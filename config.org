@@ -2951,19 +2951,18 @@ the CLI and emacs interface."))
 							   (newest-first nil)
 							   (oldest-first t)
 							   (otherwise notmuch-search-oldest-first))))
-		  (widget-insert (make-string (- 8 (length str)) ? ))
 		  (widget-create 'push-button
 						 :notify #'notmuch-hello-widget-search
 						 :notmuch-search-terms query
 						 :notmuch-search-oldest-first oldest-first
 						 :notmuch-search-type 'tree
-						 str))
+						 str)
+		  (widget-insert (make-string (- 8 (length str)) ? )))
 	  (widget-insert "        ")))
 
   (defun my-notmuch-hello-insert-searches ()
 	"Insert the saved-searches section."
-	;; (widget-insert (propertize "     New    Total   Key  List\n" 'face '(:foreground "red")))
-	(widget-insert (propertize "     New    Total   Key  List\n" 'face 'my-notmuch-hello-header-face))
+	(widget-insert (propertize "New     Total      Key  List\n" 'face 'my-notmuch-hello-header-face))
 	(mapc (lambda (elem)
 			(when elem
 			  (let* ((q_tot (plist-get elem :query))
@@ -2971,7 +2970,6 @@ the CLI and emacs interface."))
 					 (n_tot (my-count-query q_tot))
 					 (n_new (my-count-query q_new)))
 				(my-notmuch-hello-query-insert n_new q_new elem)
-				(widget-insert " ")
 				(my-notmuch-hello-query-insert n_tot q_tot elem)
 				(widget-insert "   ")
 				(widget-insert (plist-get elem :key))
