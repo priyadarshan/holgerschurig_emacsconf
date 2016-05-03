@@ -2947,12 +2947,9 @@ create two queries for the unread/total amount of messages.
 		  (:key "9" :name "ath9k-devel" :query "folder:ath9k-devel")
 		  (:key "e" :name "elecraft" :query "folder:elecraft")
 		  (:key "p" :name "powertop" :query "folder:powertop")
-		  ;; (:key "A" :name "All mails" :query "*")
 		  (:key "D" :name "Deleted" :query "tag:deleted")
-		  (:key "R" :name "Drafts" :query "tag:draft")
 		  (:key "F" :name "Flagged" :query "tag:flagged")
-		  (:key "S" :name "Sent" :query "tag:sent")
-		  (:key "T" :name "Trash" :query "folder:trash")
+		  (:key "S" :name "Sent" :query "folder:sent")
 		  (:key "u" :name "unread" :query "tag:unread")
 		  ))
 
