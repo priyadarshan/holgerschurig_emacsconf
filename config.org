@@ -2884,7 +2884,7 @@ This used to be in the gnus setup section:
   :defer t
   :config
   (setq notmuch-saved-searches
-		'((:key "i" :name "inbox" :query "folder:inbox")
+		'((:key "i" :name "inbox" :query "folder:INBOX")
 		  (:key "b" :name "barebox" :query "folder:barebox")
 		  (:key "c" :name "linux-can" :query "folder:linux-can")
 		  (:key "a" :name "linux-arm-kernel" :query "folder:linux-arm-kernel")
