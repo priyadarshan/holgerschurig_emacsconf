@@ -1719,7 +1719,7 @@ minibuffer."
 	(-1 (message value))))))
 (bind-key "C-=" #'calc-eval-region)
 #+END_SRC
-* ivy, swiper, counsel
+* ivy, helm
 ** ivy
 - http://oremacs.com/swiper/
 - https://github.com/abo-abo/swiper
@@ -1739,13 +1739,11 @@ Try this while in the ivy-minibuffer:
   :ensure t
   :diminish ivy-mode
   :defer nil
-  :bind (("C-x b"   . ivy-switch-buffer)
-		 ("C-x C-b" . ivy-switch-buffer)
-		 ("C-x C-r" . ivy-resume)
-		 )
-  :commands (ivy-set-actions)
+  ;; :bind (("C-x b"   . ivy-switch-buffer)
+  ;;        ("C-x C-b" . ivy-switch-buffer)
+  ;;        ("C-x C-r" . ivy-resume))
+  :commands (ivy-read ivy-set-actions)
   :config
-  (ivy-mode 1)
 
   ;; The optics
   (setq ivy-height 20)
@@ -1769,38 +1767,6 @@ Try this while in the ivy-minibuffer:
   (bind-key "<end>"  #'ivy-end-of-buffer ivy-minibuffer-map)
 )
 #+END_SRC
-** swiper
-Swiper is a different isearch, so to say.
-
-#+BEGIN_SRC emacs-lisp
-(use-package swiper
-  :ensure t
-  :bind (("M-s o" . swiper)
-		 ("M-s O" . swiper-all))
-)
-
-#+END_SRC
-** counsel
-#+BEGIN_SRC emacs-lisp
-(use-package counsel
-  :ensure t
-  :defer 10
-  :diminish counsel-mode
-  :bind (("M-x" . counsel-M-x)
-		 ("M-s o" . counsel-grep-or-swiper)
-		 ("M-s i" . counsel-imenu)
-		 ("M-s a" . counsel-ag)
-		 ("M-s g" . counsel-git)
-		 ("C-h b" . counsel-descbinds)
-		 ("C-h w" . counsel-descbinds) ;; use to be where-is
-		 ("M-y"   . counsel-yank-pop)
-		 )
-  :config
-  (setq counsel-find-file-ignore-regexp "\\(?:\\`[#.]\\)\\|\\(?:[#~]\\'\\)")
-  (counsel-mode 1)
-)
-#+END_SRC
-
 *** counsel-goto-recent-directory
 
 This is from http://blog.binchen.org/posts/use-ivy-to-open-recent-directories.html, but slighly modified.
@@ -1816,6 +1782,241 @@ This is from http://blog.binchen.org/posts/use-ivy-to-open-recent-directories.ht
 			:action #'dired))
 (bind-key "M-g d" #'counsel-goto-recent-directory)
 #+END_SRC
+** helm
+Very good intro: http://tuhdo.github.io/helm-intro.html
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm
+  :ensure helm
+  :diminish helm-mode
+  :bind (
+	 ("C-h a"   . helm-apropos)
+	 ("C-x C-f" . helm-find-files)
+	 ("M-s o"   . helm-occur)
+	 ("M-x"     . helm-M-x)
+	 ("M-y"     . helm-show-kill-ring)
+	 ("C-x C-b" . helm-mini)
+	 )
+  :init
+  (require 'helm-config)
+  (helm-mode t)
+  :config
+  ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+  ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+  ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+  ;; (from http://tuhdo.github.io/helm-intro.html)
+  (bind-key "C-c h" 'helm-command-prefix)
+  (global-unset-key (kbd "C-x c"))
+
+  ;; allow "find man at point" for C-c h m (helm-man-woman)
+  (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+
+  (setq helm-candidate-number-limit 100)
+  (setq helm-quick-update t)
+
+  ;; Open full helm frame
+  ;; (setq helm-full-frame t)
+  ;; Put helm window on somewhere else
+  (setq helm-split-window-default-side 'below)
+
+  ;; move to end or beginning of source when reaching top or bottom of source.
+  (setq helm-move-to-line-cycle-in-source t)
+  ;; scroll 8 lines other window using M-<next>/M-<prior>
+  (setq helm-scroll-amount 8)
+#+END_SRC
+*** Helm faces
+
+#+BEGIN_SRC emacs-lisp tangle: no
+  ;; see (customize-group "helm-files-faces")
+  (set-face-attribute 'helm-ff-directory        nil :foreground "red" :background 'unspecified)
+  (set-face-attribute 'helm-ff-dotted-directory nil :foreground "red" :background 'unspecified)
+  (set-face-attribute 'helm-ff-executable       nil :foreground 'unspecified :background 'unspecified)
+  (set-face-attribute 'helm-ff-file             nil :foreground 'unspecified :background 'unspecified :inherit 'unspecified)
+  (set-face-attribute 'helm-ff-invalid-symlink  nil :foreground 'unspecified :background 'unspecified)
+  ;;(set-face-attribute 'helm-ff-prefix         nil :foreground 'unspecified :background 'unspecified)
+  (set-face-attribute 'helm-ff-symlink          nil :foreground 'unspecified :background 'unspecified)
+  (set-face-attribute 'helm-history-deleted     nil :foreground 'unspecified :background 'unspecified)
+  (set-face-attribute 'helm-history-remote      nil :foreground 'unspecified :background 'unspecified)
+#+END_SRC
+*** Hide mode lines
+Hide modelines of other windows while helm is open, again from
+https://github.com/hatschipuh/better-helm.
+
+#+BEGIN_SRC emacs-lisp
+  (defvar my-helm-bottom-buffers nil
+	"List of bottom buffers before helm session.
+	Its element is a pair of `buffer-name' and `mode-line-format'.")
+
+  (defun my-helm-bottom-buffers-init ()
+	(setq-local mode-line-format (default-value 'mode-line-format))
+	(setq my-helm-bottom-buffers
+	  (cl-loop for w in (window-list)
+		   when (window-at-side-p w 'bottom)
+		   collect (with-current-buffer (window-buffer w)
+				 (cons (buffer-name) mode-line-format)))))
+
+  (defun my-helm-bottom-buffers-hide-mode-line ()
+	(setq-default cursor-in-non-selected-windows nil)
+	(mapc (lambda (elt)
+		(with-current-buffer (car elt)
+		  (setq-local mode-line-format nil)))
+	  my-helm-bottom-buffers))
+
+  (defun my-helm-bottom-buffers-show-mode-line ()
+	(setq-default cursor-in-non-selected-windows t)
+	(when my-helm-bottom-buffers
+	  (mapc (lambda (elt)
+		  (with-current-buffer (car elt)
+		(setq-local mode-line-format (cdr elt))))
+		my-helm-bottom-buffers)
+	  (setq my-helm-bottom-buffers nil)))
+
+  (defun my-helm-keyboard-quit-advice (orig-func &rest args)
+	(my-helm-bottom-buffers-show-mode-line)
+	(apply orig-func args))
+
+  (add-hook 'helm-before-initialize-hook #'my-helm-bottom-buffers-init)
+  (add-hook 'helm-after-initialize-hook #'my-helm-bottom-buffers-hide-mode-line)
+  (add-hook 'helm-exit-minibuffer-hook #'my-helm-bottom-buffers-show-mode-line)
+  (add-hook 'helm-cleanup-hook #'my-helm-bottom-buffers-show-mode-line)
+  (advice-add 'helm-keyboard-quit :around #'my-helm-keyboard-quit-advice)
+#+END_SRC
+
+*** Hide minibuffer
+Hide minibuffer while helm is active
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-helm-hide-minibuffer-maybe ()
+	(when (with-helm-buffer helm-echo-input-in-header-line)
+	  (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+	(overlay-put ov 'window (selected-window))
+	(overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
+				`(:background ,bg-color :foreground ,bg-color)))
+	(setq-local cursor-type nil))))
+  (add-hook 'helm-minibuffer-set-up-hook #'helm-hide-minibuffer-maybe)
+#+END_SRC
+
+*** end of use-package
+#+BEGIN_SRC emacs-lisp
+;; this closes "(use-package helm" from way above!
+)
+#+END_SRC
+
+*** helm-descbinds
+#+BEGIN_SRC emacs-lisp
+(use-package helm-descbinds
+  :ensure t
+  :commands helm-descbinds
+  :bind (("C-h b" . helm-descbinds)
+	 ("C-h w" . helm-descbinds)) ;; used to be where-is
+  )
+#+END_SRC
+
+*** helm-files
+#+BEGIN_SRC emacs-lisp
+(use-package helm-files
+  :defer t
+  :config
+  (setq helm-ff-skip-boring-files t)
+
+  ;; search for library in `require' and `declare-function' sexp.
+  (setq helm-ff-search-library-in-sexp t)
+  (setq helm-ff-file-name-history-use-recentf t)
+  (setq helm-ff-newfile-prompt-p nil)
+
+  ;; ignore Emacs save files
+  (add-to-list 'helm-boring-file-regexp-list "\\.#")
+
+  ;; Make return delete one character or the last path (if before a '/')
+  ;; from https://github.com/hatschipuh/better-helm
+  (defun my-dwim-helm-find-files-up-one-level-maybe ()
+	(interactive)
+	(if (looking-back "/" 1)
+	(call-interactively 'helm-find-files-up-one-level)
+	  (delete-backward-char 1)))
+  (bind-key "<backspace>" #'my-dwim-helm-find-files-up-one-level-maybe helm-read-file-map)
+  (bind-key "<backspace>" #'my-dwim-helm-find-files-up-one-level-maybe helm-find-files-map)
+  (bind-key "DEL" #'my-dwim-helm-find-files-up-one-level-maybe helm-read-file-map)
+  (bind-key "DEL" #'my-dwim-helm-find-files-up-one-level-maybe helm-find-files-map)
+
+  ;; If on a directory, switch helm to this directory. Don't call it with dired.
+  ;; from https://github.com/hatschipuh/better-helm
+  (defun my-dwim-helm-find-files-navigate-forward (orig-fun &rest args)
+  "Adjust how helm-execute-persistent actions behaves, depending on context"
+  (if (file-directory-p (helm-get-selection))
+	  (apply orig-fun args)
+	(helm-maybe-exit-minibuffer)))
+  (advice-add 'helm-execute-persistent-action :around #'my-dwim-helm-find-files-navigate-forward)
+  (bind-key "<return>" 'helm-maybe-exit-minibuffer helm-map)
+  (bind-key "RET" 'helm-maybe-exit-minibuffer helm-map)
+  (bind-key "<return>" 'helm-execute-persistent-action helm-find-files-map)
+  (bind-key "<return>" 'helm-execute-persistent-action helm-read-file-map)
+  (bind-key "RET" 'helm-execute-persistent-action helm-find-files-map)
+  (bind-key "RET" 'helm-execute-persistent-action helm-read-file-map)
+)
+#+END_SRC
+
+*** helm-imenu
+#+BEGIN_SRC emacs-lisp
+(use-package helm-imenu
+  :defer t
+  :config
+  (setq helm-imenu-delimiter " ")
+)
+#+END_SRC
+
+*** helm-net
+#+BEGIN_SRC emacs-lisp
+(use-package helm-net
+  :defer t
+  :config
+  (when (executable-find "curl")
+	(setq helm-net-prefer-curl t))
+  (setq helm-browse-url-chromium-program "x-www-browser")
+  (setq helm-google-suggest-default-browser-function 'helm-browse-url-chromium)
+  (setq helm-home-url "http://www.google.de")
+  (setq helm-autoresize-mode t)
+)
+#+END_SRC
+*** helm-ring
+#+BEGIN_SRC emacs-lisp
+(use-package helm-ring
+  :defer t
+  :bind (:map helm-command-map
+			  ("g" . helm-all-mark-rings))
+)
+#+END_SRC
+
+*** helm-swoop
+https://github.com/ShingoFukuyama/helm-swoop
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-swoop
+  :ensure t
+  :commands (helm-swoop helm-swoop-back-to-last-point)
+  :bind (("M-s s"  . helm-swoop)
+		 ("M-s M-s" . helm-swoop)
+		 ("M-s S"   . helm-swoop-back-to-last-point))
+  :config
+  (setq helm-swoop-split-direction 'split-window-sensibly)
+  ;; Switch to edit mode with C-c C-e, and exit edit mode with C-c C-c
+  (bind-key "C-c C-c" 'helm-swoop--edit-complete helm-swoop-edit-map)
+  ;; When doing isearch, hand the word over to helm-swoop
+  (bind-key "M-s s"   'helm-swoop-from-isearch isearch-mode-map)
+  (bind-key "M-s M-s" 'helm-swoop-from-isearch isearch-mode-map)
+  ;; Move up and down like isearch
+  (bind-key "C-r" 'helm-previous-line helm-swoop-map)
+  (bind-key "C-s" 'helm-next-line     helm-swoop-map)
+  (bind-key "C-r" 'helm-previous-line helm-multi-swoop-map)
+  (bind-key "C-s" 'helm-next-line     helm-multi-swoop-map)
+  ;; always pop at bottom
+  ;; from https://github.com/hatschipuh/better-helm
+  (setq helm-swoop-split-with-multiple-windows nil
+		helm-swoop-split-direction 'split-window-vertically
+		helm-swoop-split-window-function 'helm-default-display-buffer)
+)
+#+END_SRC
+
 * org-mode
 *** org itself
 
@@ -1872,6 +2073,7 @@ This is from http://blog.binchen.org/posts/use-ivy-to-open-recent-directories.ht
 
   ;; :bind cannot bind into a different map
   (bind-key "C-TAB"   'org-cycle org-mode-map)
+  (bind-key "C-c C-j" 'helm-org-in-buffer-headings org-mode-map) ;; was org-goto
   (bind-key "C-c k"   'org-cut-subtree org-mode-map)
   (bind-key "C-c R"   'org-reveal org-mode-map)
   ;; (bind-key "C-c t"   'org-show-todo-tree org-mode-map)
@@ -2348,6 +2550,16 @@ after launching emacs, which is a bit unfortunate.
 (add-hook 'LaTeX-mode-hook #'flyspell-mode)
 #+END_SRC
 
+#+END_SRC
+*** helm-flyspell
+https://github.com/pronobis/helm-flyspell
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-flyspell
+  :commands helm-flyspell-correct
+  :config
+  (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
+  )
 #+END_SRC
 ** hydra
 
