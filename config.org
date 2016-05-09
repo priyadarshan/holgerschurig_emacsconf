@@ -3886,7 +3886,7 @@ set initial compile-command to nothing, so that F7 will prompt for one
   (ivy-set-actions 'counsel-compile-command
 				   '(("d" comp--del-action "delete")))
   (ivy-read "Compile cmd: "
-			(mapcar 'car compile-commands)
+			(delq "" (mapcar 'car compile-commands))
 			;; #'comp--get-compile-commands
 			;; :dynamic-collection t
 
