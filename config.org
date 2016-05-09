@@ -3872,7 +3872,7 @@ set initial compile-command to nothing, so that F7 will prompt for one
   (ivy-set-actions 'counsel-compile-command
 				   '(("d" comp--del-action "delete")))
   (ivy-read "Compile cmd: "
-			(mapcar 'car compile-commands)
+			(delq "" (mapcar 'car compile-commands))
 			;; #'comp--get-compile-commands
 			;; :dynamic-collection t
 
@@ -3911,13 +3911,9 @@ set initial compile-command to nothing, so that F7 will prompt for one
 
 #+BEGIN_SRC emacs-lisp
 (defun compile-autoclose (buffer string)
-  (cond ((string-match "finished" string)
-	 ;; (message "Build maybe successful: closing window.")
-	 (run-with-timer 1 nil
-			 'delete-window
-			 (get-buffer-window buffer t)))
-	(t
-	 (message "Compilation exited abnormally: %s" string))))
+  (when (string-match "finished" string)
+	(delete-window (get-buffer-window buffer t))
+	(bury-buffer-internal buffer)))
 (use-package compile
 	:diminish compilation-in-progress
 	:config
