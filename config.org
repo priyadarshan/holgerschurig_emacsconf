@@ -2638,7 +2638,7 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
 #+BEGIN_SRC emacs-lisp
 (use-package message
   :defer t
-  :commands message-mode
+  :commands (message-mode message-cite-original-without-signature)
   :config
 
   ;; When composing a mail, start the auto-fill-mode.
