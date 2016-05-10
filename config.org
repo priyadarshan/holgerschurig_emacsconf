@@ -1,5 +1,6 @@
 #+TITLE: Holger Schurig's Emacs configuration
 # @compile: (progn (my--collect-elisp-source-bodies) (byte-compile-file "config.el"))
+# @compile: (org-twbs-export-to-html)
 
 * About this file
 Inspired by the [[http://eschulte.me/emacs24-starter-kit/#installation][Emacs Starter Kit]], I set up my configuration file
@@ -2359,10 +2360,6 @@ http://www.suenkler.info/docs/emacs-orgmode/
 
 *** ox-publish
 #+BEGIN_SRC emacs-lisp
-(use-package ox-twbs
-  :defer t
-  :commands (org-twbs-publish-to-html)
-)
 (use-package ox-publish
   :defer t
   :if (string= "holger" system-name)
@@ -2452,6 +2449,13 @@ http://www.suenkler.info/docs/emacs-orgmode/
   (defun my-publish ()
 	(interactive)
 	(org-publish "site" t))
+)
+#+END_SRC
+*** ox-twbs
+#+BEGIN_SRC emacs-lisp
+(use-package ox-twbs
+  :defer t
+  :commands (org-twbs-publish-to-html)
 )
 #+END_SRC
 *** htmlize
