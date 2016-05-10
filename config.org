@@ -1861,7 +1861,7 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 #+END_SRC
 *** Helm faces
 
-#+BEGIN_SRC emacs-lisp tangle: no
+#+BEGIN_SRC emacs-lisp
   ;; see (customize-group "helm-files-faces")
   (set-face-attribute 'helm-ff-directory        nil :foreground "red" :background 'unspecified)
   (set-face-attribute 'helm-ff-dotted-directory nil :foreground "red" :background 'unspecified)
