@@ -316,10 +316,11 @@ Avoid Emacs hanging for a while after changing default font:
 
 ** Theme
 
+=my-theme= is derived from kooten-theme, I just changed it to a real black background.
+
 #+BEGIN_SRC emacs-lisp
-(use-package kooten-theme
+(use-package my-theme
   :if (display-graphic-p)
-  :ensure t
 )
 #+END_SRC
 
