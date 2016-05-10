@@ -2,6 +2,14 @@
 # @compile: (progn (my--collect-elisp-source-bodies) (byte-compile-file "config.el"))
 # @compile: (org-twbs-export-to-html)
 
+* License
+
+All code sections in this =.org= file are licensed under
+[[GPLv2][http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html]] except
+otherwise noted. For example, I derives some functions from notmuch.
+And as notmuch uses GPLv3 or higher, this functions got the same
+license.
+
 * About this file
 Inspired by the [[http://eschulte.me/emacs24-starter-kit/#installation][Emacs Starter Kit]], I set up my configuration file
 using Org-babel. You could load it with =(org-babel-load-file
@@ -85,12 +93,7 @@ You can learn more about edebug in the [[http://www.gnu.org/software/emacs/manua
 
 I like using =(setq ...)= more than Customize because I can neatly organize my configuration that way.
 
-* License
 
-All code sections in this =.org= file are licensed under
-[[GPLv2][http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html]] except otherwise noted. For example,
-I derives some functions from notmuch. And as notmuch uses GPLv3 or higher, this functions
-got the same license.
 
 * Optional debug
 Use the following if there is some nasty bug that you cannot find with
