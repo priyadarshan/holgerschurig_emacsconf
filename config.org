@@ -12,43 +12,87 @@ license.
 
 * About this file
 Inspired by the [[http://eschulte.me/emacs24-starter-kit/#installation][Emacs Starter Kit]], I set up my configuration file
-using Org-babel. You could load it with =(org-babel-load-file
-"/path/to/file")=, changing the path appropriately, but you'll
-probably want to tweak it extensively first.
+using org-babel. You may use it as-is, but I guess (and suggest) that
+you only look here to get ideas. Create your own Emacs config, in the
+same pace as your knowledge about Emacs grows.
 
-To be precise, this is what's in the first part of my =~/.emacs.d/init.el= (what used to be the =~/.emacs= file):
+* Optional debug
+Use the following if there is some nasty bug that you cannot find with
+=emacs --debug-init=:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(toggle-debug-on-error)
+#+END_SRC
+* Loading of elisp
+** Loading config.org
+   :PROPERTIES:
+   :TITLE:    Efficiently untangling Elisp from .org files
+   :HUGO_TAGS: Emacs, org-mode
+   :HUGO_TOPICS: Emacs
+   :HUGO_FILE: en/emacs-efficiently-untabling-elisp.md
+   :HUGO_DATE: [2016-05-10 09:58]
+   :END:
+Many people keep their Emacs config in =~/.emacs.d/init.el= because
+it's easier to manage.
+
+However, we need to extract the Elisp parts out of the org file and
+evaluate them somehow. org-mode has a built-in command for this and
+you could do =(org-babel-load-file "config.org")=. But to be able to
+do this you'd need to load a good amount of the org-mode file. I
+wanted to have something better, that gives me a quick startup time.
+
+#+HTML: <!--more-->
+
+And my method is to do the following:
+
+1. If the =config.org= is newer than =config.el=, then /efficiently/
+   extract all /eligible/ Elisp source code blocks from the =.org=
+   file and write them into the =.el= file. Even when done efficiently,
+   this is relatively slow. But it almost never happens.
+2. then load the =config.el= file. This is quite fast.
+
+I wrote two words in italics:
+
+/efficiently/: to un-tangle the source-code blocks I could have used
+=(org-babel-tangle nil "config.el")=. But it opens and closes the
+target file for every single source code blocks. You can hear the
+churn if you still use spinning rust (a hard disk). My code fixes
+this.
+
+/eligible/: We all know than org-tangle and friends honor the =:tangle
+no= mark on source code blocks. But in org-mode, you can tag any
+section with a "todo-mark", e.g. "TODO", "WAIT", "CANCELED" etc. I wrote
+my code so that it will skip over items marked as "CANCELED".
+
+It's just nicer to mark one section with "CANCELED" --- compared to
+change everyone of it's five source-code blocks with =:tangle no=.
+
+*** The tangling
+
+In my (otherwise very small) =~/.emacs.d/init.el= I have this code:
 
 #+BEGIN_SRC emacs-lisp  :tangle no
-;; Don't load old .elc files when the .el file is newer
-(setq load-prefer-newer t)
-;; This sets up the load path so that we can override it
-(package-initialize nil)
-;; Override the packages with the git version of Org and other packages
-(add-to-list 'load-path (concat user-emacs-directory "elisp"))
-(add-to-list 'load-path (concat user-emacs-directory "git/org-mode/lisp"))
-(add-to-list 'load-path (concat user-emacs-directory "git/org-mode/contrib/lisp"))
-;; Load the rest of the packages
-(package-initialize nil)
-(setq package-enable-at-startup nil)
-
-(setq inhibit-startup-screen t)
+;; This is GPLv2. If you still don't know the details, read
+;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
 (defun my-tangle-config-org ()
   "This function will write all source blocks from =config.org= into
 =config.el= that are ...
 
-- not marked as =tangle: no=
-- doesn't have the TODO state =CANCELLED=
+- not marked as =:tangle no=
+- doesn't have the TODO state =CANCELED=
 - have a source-code of =emacs-lisp="
   (require 'org)
   (let* ((body-list ())
-         (output-file "config.el")
-         (org-babel-default-header-args (org-babel-merge-params org-babel-default-header-args
-                                                                (list (cons :tangle output-file)))))
-    (message "Writing %s ..." output-file)
+		 (elfile (concat user-emacs-directory "config.el"))
+		 (orgfile (concat user-emacs-directory "config.org"))
+		 (gc-cons-threshold most-positive-fixnum)
+		 (org-babel-default-header-args (org-babel-merge-params org-babel-default-header-args
+																(list (cons :tangle elfile)))))
+    (message "Writing %s ..." elfile)
     (save-restriction
       (save-excursion
-        (org-babel-map-src-blocks "config.org"
+        (org-babel-map-src-blocks orgfile
                                   (let* ((info (org-babel-get-src-block-info 'light))
                                          (tfile (cdr (assq :tangle (nth 2 info))))
                                          (match))
@@ -63,46 +107,43 @@ To be precise, this is what's in the first part of my =~/.emacs.d/init.el= (what
                                                 (string= "CANCELED" match)
                                                 (not (string= "emacs-lisp" lang)))
                                       (add-to-list 'body-list body)))))
-      (with-temp-file output-file
-        (insert ";; Don't edit this file, edit config.org' instead ...\n\n")
+      (with-temp-file elfile
+        (insert (format ";; Don't edit this file, edit %s instead ...\n\n" orgfile))
         (insert (apply 'concat (reverse body-list))))
-      (message "Wrote %s ..." output-file))))
-
-(let ((el-file (concat user-emacs-directory "config.el"))
-      (gc-cons-threshold most-positive-fixnum))
-  (unless (file-exists-p el-file)
-    (my-tangle-config-org))
-  (load-file (concat user-emacs-directory "config.el")))
-(setq gc-cons-threshold (* 8 1024 1024))
+      (message "Wrote %s ..." elfile))))
 #+END_SRC
 
-If you're new to Emacs Lisp, you probably don't want to copy and paste
-large chunks of this code. Instead, copy small parts of it (always
-making sure to copy a complete set of parentheses) into your
-=*scratch*= buffer or some other buffer in =emacs-lisp-mode=. Use =M-x
-eval-buffer= to evaluate the code and see if you like the way that
-Emacs behaves. See [[https://www.gnu.org/software/emacs/manual/html_mono/eintr.html][An Introduction to Programming in Emacs Lisp]] for more details on Emacs Lisp. You can also find the manual by using =C-h i= (=info=) and choosing "Emacs Lisp Intro".
+Using =(let ...)= to set =gc-cons-threshold= is a trick that disables
+the garbage collector during this operation :-)
 
-If you're viewing the Org file, you can open source code blocks (those
-are the ones in begin_src) in a separate buffer by moving your point
-inside them and typing C-c ' (=org-edit-special=). This opens another
-buffer in =emacs-lisp-mode=, so you can use =M-x eval-buffer= to load
-the changes. If you want to explore how functions work, use =M-x
-edebug-defun= to set up debugging for that function, and then call it.
-You can learn more about edebug in the [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Edebug.html][Emacs Lisp]] manual.
+*** TODO The Usage
 
-I like using =(setq ...)= more than Customize because I can neatly organize my configuration that way.
+#+BEGIN_QUOTE
+I've marked this section as TODO because I need to actually check the
+time stamp, not just the existence.
+#+END_QUOTE
 
-
-
-* Optional debug
-Use the following if there is some nasty bug that you cannot find with
-=emacs --debug-init=:
+Now I can use this function:
 
 #+BEGIN_SRC emacs-lisp :tangle no
-(toggle-debug-on-error)
+(let ((elfile (concat user-emacs-directory "config.el")))
+  (unless (file-exists-p elfile)
+    (my-tangle-config-org))
+  (load-file elfile))
 #+END_SRC
-* Package infrastructure
+
+*** Also tangle on save
+
+Here is a little function that also tangles the =.org=-file whenever I
+save it. This avoids the tangle-delay when I start emacs the next
+time:
+
+#+BEGIN_SRC emacs-lisp
+(defun my-tangle-config-org-hook-func ()
+  (when (string= "config.org" (buffer-name))
+	(my-tangle-config-org)))
+(add-hook 'after-save-hook #'my-tangle-config-org-hook-func)
+#+END_SRC
 ** add =git/*= to =load-path=
 #+BEGIN_SRC emacs-lisp
 (let ((emacs-git (expand-file-name "git/" user-emacs-directory)))
@@ -220,13 +261,6 @@ https://github.com/Malabarba/paradox
   (setq paradox-execute-asynchronously t
 		paradox-display-download-count t)
 )
-#+END_SRC
-** tangle on save
-#+BEGIN_SRC emacs-lisp
-(defun my--collect-elisp-source-bodies ()
-  (when (string= "config.org" (buffer-name))
-	(my-tangle-config-org)))
-(add-hook 'after-save-hook #'my--collect-elisp-source-bodies)
 #+END_SRC
 
 * Personal information

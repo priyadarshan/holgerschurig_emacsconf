@@ -17,17 +17,19 @@
 =config.el= that are ...
 
 - not marked as =tangle: no=
-- doesn't have the TODO state =CANCELLED=
+- doesn't have the TODO state =CANCELED=
 - have a source-code of =emacs-lisp="
   (require 'org)
   (let* ((body-list ())
-         (output-file "config.el")
-         (org-babel-default-header-args (org-babel-merge-params org-babel-default-header-args
-                                                                (list (cons :tangle output-file)))))
-    (message "Writing %s ..." output-file)
+		 (elfile (concat user-emacs-directory "config.el"))
+		 (orgfile (concat user-emacs-directory "config.org"))
+		 (gc-cons-threshold most-positive-fixnum)
+		 (org-babel-default-header-args (org-babel-merge-params org-babel-default-header-args
+																(list (cons :tangle elfile)))))
+    (message "Writing %s ..." elfile)
     (save-restriction
       (save-excursion
-        (org-babel-map-src-blocks "config.org"
+        (org-babel-map-src-blocks orgfile
                                   (let* ((info (org-babel-get-src-block-info 'light))
                                          (tfile (cdr (assq :tangle (nth 2 info))))
                                          (match))
@@ -42,14 +44,12 @@
                                                 (string= "CANCELED" match)
                                                 (not (string= "emacs-lisp" lang)))
                                       (add-to-list 'body-list body)))))
-      (with-temp-file output-file
-        (insert ";; Don't edit this file, edit config.org' instead ...\n\n")
+      (with-temp-file elfile
+        (insert (format ";; Don't edit this file, edit %s instead ...\n\n" orgfile))
         (insert (apply 'concat (reverse body-list))))
-      (message "Wrote %s ..." output-file))))
+      (message "Wrote %s ..." elfile))))
 
-(let ((el-file (concat user-emacs-directory "config.el"))
-      (gc-cons-threshold most-positive-fixnum))
-  (unless (file-exists-p el-file)
+(let ((elfile (concat user-emacs-directory "config.el")))
+  (unless (file-exists-p elfile)
     (my-tangle-config-org))
-  (load-file (concat user-emacs-directory "config.el")))
-(setq gc-cons-threshold (* 8 1024 1024))
+  (load-file elfile))
