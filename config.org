@@ -1,5 +1,5 @@
 #+TITLE: Holger Schurig's Emacs configuration
-# @compile: (progn (my--collect-elisp-source-bodies) (byte-compile-file "config.el"))
+# @compile: (byte-compile-file "config.el")
 # @compile: (org-twbs-export-to-html)
 
 * License
@@ -148,6 +148,23 @@ the .org file.
 	  (my-tangle-config-org orgfile elfile))))
 (add-hook 'after-save-hook #'my-tangle-config-org-hook-func)
 #+END_SRC
+*** Some benchmark results
+
+| Task                                                                   | Duration |
+|------------------------------------------------------------------------+----------|
+| Loading without my code, but with =(org-babel-load-file "config.org")= | 1.31 s   |
+| Loading with my code                                                   | 0.90 s   |
+| Loading with my code, after byte-compiling                             | 0.84 s   |
+| Loading with my code, but need to re-generate config.el                | 2.46 s   |
+
+I see things:
+
+- my approach is 0.41 seconds faster than using =org-babel-load-file=. But I have the added benefit that I can mark sections as CANCELED :-)
+- after a fresh "git pull", I pay a price of 1.56 seconds
+- byte-compilation somehow doesn't bring much in this case...
+
+All measurements were done on my laptop. My desktop is about double as fast.
+
 ** add =git/*= to =load-path=
 #+BEGIN_SRC emacs-lisp
 (let ((emacs-git (expand-file-name "git/" user-emacs-directory)))

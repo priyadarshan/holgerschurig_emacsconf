@@ -13,6 +13,10 @@
 
 (setq inhibit-startup-screen t)
 
+;; Just here for benchmark purposes, uncomment the rest of this file
+;; if you use it:
+;; (org-babel-load-file "config.org")
+
 (defun my-tangle-config-org (orgfile elfile)
   "This function will write all source blocks from =config.org= into
 =config.el= that are ...
