@@ -1,3 +1,7 @@
+(defvar my-start-time (current-time)
+  "Time when Emacs was started")
+
+
 ;; Don't load old .elc files when the .el file is newer
 (setq load-prefer-newer t)
 ;; This sets up the load path so that we can override it
@@ -53,3 +57,6 @@
   (unless (file-exists-p elfile)
     (my-tangle-config-org))
   (load-file elfile))
+
+
+(message "Start up time %.2fs" (float-time (time-subtract (current-time) my-start-time)))
