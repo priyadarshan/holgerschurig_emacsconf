@@ -588,7 +588,7 @@ And finally we build our mode line:
 - [?] GIT branch?
 - [?] time?
 
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp
 (use-package powerline
   :if (display-graphic-p)
   :ensure t
