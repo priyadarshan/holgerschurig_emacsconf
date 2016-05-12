@@ -17,40 +17,51 @@
 ;; if you use it:
 ;; (org-babel-load-file "config.org")
 
+
+(defun my-tangle-section-canceled ()
+  "Checks if the previous section header was CANCELED"
+  (save-excursion
+    (if (re-search-backward "^\\*+\\s-+\\(.*?\\)?\\s-*$" nil t)
+        (progn
+          (message "FOUND '%s'" (match-string 1))
+          (string-prefix-p "CANCELED" (match-string 1)))
+      nil)))
+
 (defun my-tangle-config-org (orgfile elfile)
   "This function will write all source blocks from =config.org= into
 =config.el= that are ...
 
-- not marked as =tangle: no=
-- doesn't have the TODO state =CANCELED=
-- have a source-code of =emacs-lisp="
-  (require 'org)
+- not marked as :tangle no
+- have a source-code of =emacs-lisp=
+- doesn't have the todo-marker CANCELED"
   (let* ((body-list ())
 		 (gc-cons-threshold most-positive-fixnum)
-		 (org-babel-default-header-args (org-babel-merge-params org-babel-default-header-args
-																(list (cons :tangle elfile)))))
-    (message "Writing %s ..." elfile)
-    (save-restriction
-      (save-excursion
-        (org-babel-map-src-blocks orgfile
-                                  (let* ((info (org-babel-get-src-block-info 'light))
-                                         (tfile (cdr (assq :tangle (nth 2 info))))
-                                         (match))
-                                    (save-excursion
-                                      (catch 'exit
-                                        (org-back-to-heading t)
-                                        (when (looking-at org-outline-regexp)
-                                          (goto-char (1- (match-end 0))))
-                                        (when (looking-at (concat " +" org-todo-regexp "\\( +\\|[ \t]*$\\)"))
-                                          (setq match (match-string 1)))))
-                                    (unless (or (string= "no" tfile)
-                                                (string= "CANCELED" match)
-                                                (not (string= "emacs-lisp" lang)))
-                                      (add-to-list 'body-list body)))))
-      (with-temp-file elfile
-        (insert (format ";; Don't edit this file, edit %s instead ...\n\n" orgfile))
-        (insert (apply 'concat (reverse body-list))))
-      (message "Wrote %s ..." elfile))))
+         (org-babel-src-block-regexp   (concat
+                                        ;; (1) indentation                 (2) lang
+                                        "^\\([ \t]*\\)#\\+begin_src[ \t]+\\([^ \f\t\n\r\v]+\\)[ \t]*"
+                                        ;; (3) switches
+                                        "\\([^\":\n]*\"[^\"\n*]*\"[^\":\n]*\\|[^\":\n]*\\)"
+                                        ;; (4) header arguments
+                                        "\\([^\n]*\\)\n"
+                                        ;; (5) body
+                                        "\\([^\000]*?\n\\)??[ \t]*#\\+end_src")))
+    (with-temp-buffer
+      (insert-file-contents orgfile)
+      (goto-char (point-min))
+      (while (re-search-forward org-babel-src-block-regexp nil t)
+        (let ((lang (match-string 2))
+              (args (match-string 4))
+              (body (match-string 5))
+              (canc (my-tangle-section-canceled)))
+          (when (and (string= lang "emacs-lisp")
+                     (not (string-match-p ":tangle\\s-+no" args))
+                     (not canc))
+              (add-to-list 'body-list body)))))
+    (with-temp-file elfile
+      (insert (format ";; Don't edit this file, edit %s instead ...\n\n" orgfile))
+      ;; (insert (apply 'concat (reverse body-list)))
+      (apply 'insert (reverse body-list)))
+    (message "Wrote %s ..." elfile)))
 
 (let ((orgfile (concat user-emacs-directory "config.org"))
       (elfile (concat user-emacs-directory "config.el"))
