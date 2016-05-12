@@ -69,52 +69,77 @@ change everyone of it's five source-code blocks with =:tangle no=.
 
 *** The tangling
 
-In my (otherwise very small) =~/.emacs.d/init.el= I have this code:
+I used to untangle the emacs sections via org-mode's functions
+=org-babel-map-src-blocks= and =org-back-to-heading=. This was however
+slow.
 
-#+BEGIN_SRC emacs-lisp  :tangle no
+So I rewrote everything without the help of org-mode.
+
+First I define a function that, when the point is at some source-code block
+goes back to the section header and checks if there entry has been cancelled:
+
+#+BEGIN_SRC emacs-lisp :tangle no
 ;; This is GPLv2. If you still don't know the details, read
 ;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-(defun my-tangle-config-org ()
+(defun my-tangle-section-canceled ()
+  "Return t if the current section header was CANCELED, else nil."
+  (save-excursion
+    (if (re-search-backward "^\\*+\\s-+\\(.*?\\)?\\s-*$" nil t)
+        (progn
+          (message "FOUND '%s'" (match-string 1))
+          (string-prefix-p "CANCELED" (match-string 1)))
+      nil)))
+#+END_SRC
+
+And this is my big untangle function. It first ...
+
+- disabled garbage collection
+- defines the regexp (stolen from org-mode) to parse org-mode source blocks
+- uses a while-loop to search every source-block
+- checks that the source block is neither untangleable nor in a CANCELED section
+- appends the body of the source block to =body-list=
+- finally, it uses a temporary file and insert all the collected bodies into it
+- and writes the result out into a =.el=-file
+
+#+BEGIN_SRC emacs-lisp :tangle no
+;; This is GPLv2. If you still don't know the details, read
+;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+(defun my-tangle-config-org (orgfile elfile)
   "This function will write all source blocks from =config.org= into
 =config.el= that are ...
 
-- not marked as =:tangle no=
-- doesn't have the TODO state =CANCELED=
-- have a source-code of =emacs-lisp="
-  (require 'org)
+- not marked as :tangle no
+- have a source-code of =emacs-lisp=
+- doesn't have the todo-marker CANCELED"
   (let* ((body-list ())
-		 (elfile (concat user-emacs-directory "config.el"))
-		 (orgfile (concat user-emacs-directory "config.org"))
 		 (gc-cons-threshold most-positive-fixnum)
-		 (org-babel-default-header-args (org-babel-merge-params org-babel-default-header-args
-																(list (cons :tangle elfile)))))
-    (message "Writing %s ..." elfile)
-    (save-restriction
-      (save-excursion
-        (org-babel-map-src-blocks orgfile
-                                  (let* ((info (org-babel-get-src-block-info 'light))
-                                         (tfile (cdr (assq :tangle (nth 2 info))))
-                                         (match))
-                                    (save-excursion
-                                      (catch 'exit
-                                        (org-back-to-heading t)
-                                        (when (looking-at org-outline-regexp)
-                                          (goto-char (1- (match-end 0))))
-                                        (when (looking-at (concat " +" org-todo-regexp "\\( +\\|[ \t]*$\\)"))
-                                          (setq match (match-string 1)))))
-                                    (unless (or (string= "no" tfile)
-                                                (string= "CANCELED" match)
-                                                (not (string= "emacs-lisp" lang)))
-                                      (add-to-list 'body-list body)))))
-      (with-temp-file elfile
-        (insert (format ";; Don't edit this file, edit %s instead ...\n\n" orgfile))
-        (insert (apply 'concat (reverse body-list))))
-      (message "Wrote %s ..." elfile))))
+         (org-babel-src-block-regexp   (concat
+                                        ;; (1) indentation                 (2) lang
+                                        "^\\([ \t]*\\)#\\+begin_src[ \t]+\\([^ \f\t\n\r\v]+\\)[ \t]*"
+                                        ;; (3) switches
+                                        "\\([^\":\n]*\"[^\"\n*]*\"[^\":\n]*\\|[^\":\n]*\\)"
+                                        ;; (4) header arguments
+                                        "\\([^\n]*\\)\n"
+                                        ;; (5) body
+                                        "\\([^\000]*?\n\\)??[ \t]*#\\+end_src")))
+    (with-temp-buffer
+      (insert-file-contents orgfile)
+      (goto-char (point-min))
+      (while (re-search-forward org-babel-src-block-regexp nil t)
+        (let ((lang (match-string 2))
+              (args (match-string 4))
+              (body (match-string 5))
+              (canc (my-tangle-section-canceled)))
+          (when (and (string= lang "emacs-lisp")
+                     (not (string-match-p ":tangle\\s-+no" args))
+                     (not canc))
+              (add-to-list 'body-list body)))))
+    (with-temp-file elfile
+      (insert (format ";; Don't edit this file, edit %s instead ...\n\n" orgfile))
+      (apply 'insert (reverse body-list)))
+    (message "Wrote %s ..." elfile)))
 #+END_SRC
-
-Using =(let ...)= to set =gc-cons-threshold= is a trick that disables
-the garbage collector during this operation :-)
 
 *** The Usage
 
@@ -136,9 +161,9 @@ This code is mostly active when I update my emacs configuration with
 
 *** Also tangle on save
 
-But normally I want to avoid even this time. So I wrote a function
-that is called whenever I save a file. It checks if the file is indeed
-the .org file.
+But normally I'd like to avoid even this. I wrote a function that is
+called whenever I save a file. It checks if the file is indeed the
+.org file.
 
 #+BEGIN_SRC emacs-lisp
 (defun my-tangle-config-org-hook-func ()
@@ -153,15 +178,15 @@ the .org file.
 | Task                                                                   | Duration |
 |------------------------------------------------------------------------+----------|
 | Loading without my code, but with =(org-babel-load-file "config.org")= | 1.31 s   |
-| Loading with my code                                                   | 0.90 s   |
-| Loading with my code, after byte-compiling                             | 0.84 s   |
-| Loading with my code, but need to re-generate config.el                | 2.46 s   |
+| Loading with my code, config.el is up-to-date                          | 0.99 s   |
+| Loading with my code, after byte-compiling                             | 0.85 s   |
+| Loading with my code, but need to re-generate config.el                | 1.10 s   |
 
 I see things:
 
-- my approach is 0.41 seconds faster than using =org-babel-load-file=. But I have the added benefit that I can mark sections as CANCELED :-)
-- after a fresh "git pull", I pay a price of 1.56 seconds
-- byte-compilation somehow doesn't bring much in this case...
+- my approach is 0.32 seconds faster than using =org-babel-load-file=. But I have the added benefit that I can mark sections as CANCELED :-)
+- after a fresh "git pull", I pay a very low price of 0.09 seconds
+- byte-compilation doesn't bring much for this file ...
 
 All measurements were done on my laptop. My desktop is about double as fast.
 
