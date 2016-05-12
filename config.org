@@ -123,7 +123,8 @@ the =.org= file is newer, I'll re-create the =.el= file.
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (let ((orgfile (concat user-emacs-directory "config.org"))
-      (elfile (concat user-emacs-directory "config.el")))
+      (elfile (concat user-emacs-directory "config.el"))
+	  (gc-cons-threshold most-positive-fixnum))
   (when (or (not (file-exists-p elfile))
             (file-newer-than-file-p orgfile elfile))
     (my-tangle-config-org orgfile elfile))
