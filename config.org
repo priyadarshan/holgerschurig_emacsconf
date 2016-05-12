@@ -116,32 +116,35 @@ In my (otherwise very small) =~/.emacs.d/init.el= I have this code:
 Using =(let ...)= to set =gc-cons-threshold= is a trick that disables
 the garbage collector during this operation :-)
 
-*** TODO The Usage
+*** The Usage
 
-#+BEGIN_QUOTE
-I've marked this section as TODO because I need to actually check the
-time stamp, not just the existence.
-#+END_QUOTE
-
-Now I can use this function:
+Now I can use this function. If either the =.el= file doesn't exist or
+the =.org= file is newer, I'll re-create the =.el= file.
 
 #+BEGIN_SRC emacs-lisp :tangle no
-(let ((elfile (concat user-emacs-directory "config.el")))
-  (unless (file-exists-p elfile)
-    (my-tangle-config-org))
+(let ((orgfile (concat user-emacs-directory "config.org"))
+      (elfile (concat user-emacs-directory "config.el")))
+  (when (or (not (file-exists-p elfile))
+            (file-newer-than-file-p orgfile elfile))
+    (my-tangle-config-org orgfile elfile))
   (load-file elfile))
 #+END_SRC
 
+This code is mostly active when I update my emacs configuration with
+=git pull=, e.g. when switching from desktop to laptop or vica versa.
+
 *** Also tangle on save
 
-Here is a little function that also tangles the =.org=-file whenever I
-save it. This avoids the tangle-delay when I start emacs the next
-time:
+But normally I want to avoid even this time. So I wrote a function
+that is called whenever I save a file. It checks if the file is indeed
+the .org file.
 
 #+BEGIN_SRC emacs-lisp
 (defun my-tangle-config-org-hook-func ()
   (when (string= "config.org" (buffer-name))
-	(my-tangle-config-org)))
+	(let ((orgfile (concat user-emacs-directory "config.org"))
+		  (elfile (concat user-emacs-directory "config.el")))
+	  (my-tangle-config-org orgfile elfile))))
 (add-hook 'after-save-hook #'my-tangle-config-org-hook-func)
 #+END_SRC
 ** add =git/*= to =load-path=

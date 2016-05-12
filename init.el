@@ -13,7 +13,7 @@
 
 (setq inhibit-startup-screen t)
 
-(defun my-tangle-config-org ()
+(defun my-tangle-config-org (orgfile elfile)
   "This function will write all source blocks from =config.org= into
 =config.el= that are ...
 
@@ -22,8 +22,6 @@
 - have a source-code of =emacs-lisp="
   (require 'org)
   (let* ((body-list ())
-		 (elfile (concat user-emacs-directory "config.el"))
-		 (orgfile (concat user-emacs-directory "config.org"))
 		 (gc-cons-threshold most-positive-fixnum)
 		 (org-babel-default-header-args (org-babel-merge-params org-babel-default-header-args
 																(list (cons :tangle elfile)))))
@@ -50,9 +48,12 @@
         (insert (apply 'concat (reverse body-list))))
       (message "Wrote %s ..." elfile))))
 
-(let ((elfile (concat user-emacs-directory "config.el")))
-  (unless (file-exists-p elfile)
-    (my-tangle-config-org))
+(let ((orgfile (concat user-emacs-directory "config.org"))
+      (elfile (concat user-emacs-directory "config.el")))
+  (when (or (not (file-exists-p elfile))
+            (file-newer-than-file-p orgfile elfile))
+    (message "Tangling %s into %s ..." orgfile elfile)
+    (my-tangle-config-org orgfile elfile))
   (load-file elfile))
 
 
