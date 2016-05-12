@@ -64,11 +64,9 @@
     (message "Wrote %s ..." elfile)))
 
 (let ((orgfile (concat user-emacs-directory "config.org"))
-      (elfile (concat user-emacs-directory "config.el"))
-      (gc-cons-threshold most-positive-fixnum))
+      (elfile (concat user-emacs-directory "config.el")))
   (when (or (not (file-exists-p elfile))
             (file-newer-than-file-p orgfile elfile))
-    (message "Tangling %s into %s ..." orgfile elfile)
     (my-tangle-config-org orgfile elfile))
   (load-file elfile))
 

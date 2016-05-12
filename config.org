@@ -29,54 +29,50 @@ Use the following if there is some nasty bug that you cannot find with
    :TITLE:    Efficiently untangling Elisp from .org files
    :HUGO_TAGS: Emacs, org-mode
    :HUGO_TOPICS: Emacs
-   :HUGO_FILE: en/emacs-efficiently-untabling-elisp.md
-   :HUGO_DATE: [2016-05-10 09:58]
+   :HUGO_FILE: en/emacs-efficiently-untangling-elisp.md
+   :HUGO_DATE: [2016-05-12 23:01]
    :END:
-Many people keep their Emacs config in =~/.emacs.d/init.el= because
-it's easier to manage.
+Many people keep their Emacs config in and org-mode file because it's
+easier to manage.
 
 However, we need to extract the Elisp parts out of the org file and
-evaluate them somehow. org-mode has a built-in command for this and
-you could do =(org-babel-load-file "config.org")=. But to be able to
-do this you'd need to load a good amount of the org-mode file. I
-wanted to have something better, that gives me a quick startup time.
+evaluate them somehow. org-mode has a built-in command for this:
+=(org-babel-load-file "config.org")=. However, this is an org-mode
+command, and org-mode is huge. So your init.el needs to load a good
+amount of org-mode just to get the elisp out of it.
+But to be able to do this you'd
+need to load a good amount of the org-mode file. 
+
+I wanted to have something better. Something that is flexible and
+gives me a quicker startup time.
 
 #+HTML: <!--more-->
 
-And my method is to do the following:
+My method is to do the following:
 
-1. If the =config.org= is newer than =config.el=, then /efficiently/
-   extract all /eligible/ Elisp source code blocks from the =.org=
+1. If the =config.org= is newer than =config.el=, then *efficiently*
+   extract all *eligible* Elisp source code blocks from the =.org=
    file and write them into the =.el= file. Even when done efficiently,
    this is relatively slow. But it almost never happens.
 2. then load the =config.el= file. This is quite fast.
 
-I wrote two words in italics:
+I wrote two words in bold:
 
-/efficiently/: to un-tangle the source-code blocks I could have used
-=(org-babel-tangle nil "config.el")=. But it opens and closes the
-target file for every single source code blocks. You can hear the
-churn if you still use spinning rust (a hard disk). My code fixes
-this.
-
-/eligible/: We all know than org-tangle and friends honor the =:tangle
-no= mark on source code blocks. But in org-mode, you can tag any
-section with a "todo-mark", e.g. "TODO", "WAIT", "CANCELED" etc. I wrote
-my code so that it will skip over items marked as "CANCELED".
-
-It's just nicer to mark one section with "CANCELED" --- compared to
-change everyone of it's five source-code blocks with =:tangle no=.
+- efficiently :: to un-tangle the source-code blocks I could have
+     used =(org-babel-tangle nil "config.el")=. But it opens and
+     closes the target file for every single source code blocks. You
+     can hear the churn if you still use spinning rust (a hard disk).
+     My code fixes this.
+- eligible :: we all know than org-tangle honors "=:tangle no=". But
+     it doesn't care for the todo-state of a section. I wrote my code
+     so that it will skip over items marked as "CANCELED". It's just
+     nicer to mark one section with "CANCELED" --- compared to change
+     everyone of it's five source-code blocks with =:tangle no=.
 
 *** The tangling
 
-I used to untangle the emacs sections via org-mode's functions
-=org-babel-map-src-blocks= and =org-back-to-heading=. This was however
-slow.
-
-So I rewrote everything without the help of org-mode.
-
-First I define a function that, when the point is at some source-code block
-goes back to the section header and checks if there entry has been cancelled:
+First I define a function that --- when the point is at some source-code block ---
+goes back to the section header and checks if there entry has been canceled:
 
 #+BEGIN_SRC emacs-lisp :tangle no
 ;; This is GPLv2. If you still don't know the details, read
@@ -92,7 +88,7 @@ goes back to the section header and checks if there entry has been cancelled:
       nil)))
 #+END_SRC
 
-And this is my big untangle function. It first ...
+With that done, we can untangle source-code blocks like this:
 
 - disabled garbage collection
 - defines the regexp (stolen from org-mode) to parse org-mode source blocks
@@ -148,8 +144,7 @@ the =.org= file is newer, I'll re-create the =.el= file.
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (let ((orgfile (concat user-emacs-directory "config.org"))
-      (elfile (concat user-emacs-directory "config.el"))
-	  (gc-cons-threshold most-positive-fixnum))
+      (elfile (concat user-emacs-directory "config.el")))
   (when (or (not (file-exists-p elfile))
             (file-newer-than-file-p orgfile elfile))
     (my-tangle-config-org orgfile elfile))
@@ -175,16 +170,19 @@ called whenever I save a file. It checks if the file is indeed the
 #+END_SRC
 *** Some benchmark results
 
-| Task                                                                   | Duration |
-|------------------------------------------------------------------------+----------|
-| Loading without my code, but with =(org-babel-load-file "config.org")= | 1.31 s   |
-| Loading with my code, config.el is up-to-date                          | 0.99 s   |
-| Loading with my code, after byte-compiling                             | 0.85 s   |
-| Loading with my code, but need to re-generate config.el                | 1.10 s   |
+| Task                                                    | Duration |
+|---------------------------------------------------------+----------|
+| /                                                       |        > |
+| Loading with (org-babel-load-file "config.org")         |   1.31 s |
+| Loading with my code, config.el is up-to-date           |   0.99 s |
+| Loading with my code, after byte-compiling              |   0.85 s |
+| Loading with my code, but need to re-generate config.el |   1.10 s |
 
-I see things:
+You'll see that ...
 
-- my approach is 0.32 seconds faster than using =org-babel-load-file=. But I have the added benefit that I can mark sections as CANCELED :-)
+- my approach is 0.32 seconds faster than using =org-babel-load-file=.
+  But I have the added benefit that I can mark sections as CANCELED
+  :-)
 - after a fresh "git pull", I pay a very low price of 0.09 seconds
 - byte-compilation doesn't bring much for this file ...
 
