@@ -152,7 +152,15 @@ time:
 		(delete ".." (directory-files emacs-git))))
 #+END_SRC
 ** package
+We already have part of the package initialization in =init.el=, so here is the rest:
+
+#+BEGIN_SRC emacs-lisp
+(package-initialize nil)
+(setq package-enable-at-startup nil)
+#+END_SRC
+
 Seems that we need certificate pinning before accessing some https sites:
+
 #+BEGIN_SRC emacs-lisp :tangle no
 (when (fboundp 'gnutls-available-p)
   (fmakunbound 'gnutls-available-p))
