@@ -3550,6 +3550,14 @@ That's all, folks.
   ;; view selected messages in full window instead of split-pane
   (setq notmuch-tree-show-out t)
 
+  ;; add unread tree command
+  (defun notmuch-tree-tag-thread-read ()
+	"Mark whole tree as read"
+	(interactive)
+	(notmuch-tree-tag-thread '("-unread"))
+	(notmuch-tree-refresh-view))
+  (bind-key "." #'notmuch-tree-tag-thread-read notmuch-tree-mode-map)
+
   ;; remove archiving commands
   (define-key notmuch-tree-mode-map "a" nil)  
   (define-key notmuch-tree-mode-map "A" nil)
