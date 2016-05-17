@@ -13,10 +13,6 @@
 
 (setq inhibit-startup-screen t)
 
-;; Just here for benchmark purposes, uncomment the rest of this file
-;; if you use it:
-;; (org-babel-load-file "config.org")
-
 
 (defun my-tangle-section-canceled ()
   "Checks if the previous section header was CANCELED"
@@ -64,7 +60,8 @@
     (message "Wrote %s ..." elfile)))
 
 (let ((orgfile (concat user-emacs-directory "config.org"))
-      (elfile (concat user-emacs-directory "config.el")))
+      (elfile (concat user-emacs-directory "config.el"))
+      (gc-cons-threshold most-positive-fixnum))
   (when (or (not (file-exists-p elfile))
             (file-newer-than-file-p orgfile elfile))
     (my-tangle-config-org orgfile elfile))

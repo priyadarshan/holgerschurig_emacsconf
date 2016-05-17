@@ -82,9 +82,7 @@ goes back to the section header and checks if there entry has been canceled:
   "Return t if the current section header was CANCELED, else nil."
   (save-excursion
     (if (re-search-backward "^\\*+\\s-+\\(.*?\\)?\\s-*$" nil t)
-        (progn
-          (message "FOUND '%s'" (match-string 1))
-          (string-prefix-p "CANCELED" (match-string 1)))
+        (string-prefix-p "CANCELED" (match-string 1))
       nil)))
 #+END_SRC
 
