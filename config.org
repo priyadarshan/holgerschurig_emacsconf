@@ -2442,7 +2442,14 @@ http://www.suenkler.info/docs/emacs-orgmode/
   ;; #+OPTIONS toc:nil, use "#+TOC: headlines 2" or similar if you need a headline
   (setq org-export-with-toc nil)
   ;; #+OPTIONS ^:{}
-  (setq org-export-with-sub-superscripts nil))
+  (setq org-export-with-sub-superscripts nil)
+
+  ;; This exports broken links as [BROKEN LINK %s], so we can actually
+  ;; find them. The default value nil just aborts the export process
+  ;; with an error message "Unable to resolve link: nil". This doesn't
+  ;; give any hint on which line the broken link actually is :-(
+  (setq org-export-with-broken-links 'mark)
+)
 #+END_SRC
 
 *** ox-html
