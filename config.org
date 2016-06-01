@@ -3568,6 +3568,8 @@ That's all, folks.
   (define-key notmuch-tree-mode-map "Z" #'notmuch-search-from-tree-current-query)
   ;; M-TAB is in use by the window manager
   (define-key notmuch-tree-mode-map (kbd "M-TAB") nil)
+  ;; "x" to close the tree and exit isn't needed, we have "q" for this
+  (define-key notmuch-tree-mode-map "x" nil)
 )
 #+END_SRC
 *** notmuch-mua
