@@ -3580,6 +3580,130 @@ That's all, folks.
   (setq notmuch-mua-cite-function #'message-cite-original-without-signature)
 )
 #+END_SRC
+** notmuch patch exporting
+   :PROPERTIES:
+   :TITLE:    Easy export of Linux patches from Emacs' Notmuch
+   :HUGO_TAGS: Emacs, notmuch
+   :HUGO_TOPICS: Emacs
+   :HUGO_FILE: en/emacs-notmuch-export-patch.md
+   :HUGO_DATE: [2016-06-01 11:00]
+   :END:
+
+I'm reading several Linux related mailing lists. They are full of
+proposed patches, and from time to time a few of them look
+interesting.
+
+Here I present a function that makes exporting such patches simple.
+
+#+HTML: <!--more-->
+
+If you ever contributed a patch to Linux, you'd know that your patch
+must follow some formatting rules, or it might be ignored. Some of those
+rules are import for my purpose:
+
+- if a patch isn't self, consistent, it should have some 1/4 (1 of 4)
+  marking in the subject
+- patches should have a [PATCH ...] tag
+- patches cannot have an attachment, they must be inside the e-mail itself.
+  This effectively means that I don't have to deal with MIME parts.
+
+Here are some examples of patch subjects, just to get you an idea:
+
+#+BEGIN_EXAMPLE
+[PATCH] mmc: host: use pr_err for sdhci_dumpregs
+[PATCH 3/9] clocksource/drivers/rockchip_timer: Convert init function to return error
+#+END_EXAMPLE
+
+We'll massage the subjects into some suitable file name. For this we need the
+variables =subject= and =patchnum=.
+
+But we need some more variables. Later, when I create the patch file,
+I want to write some of the message properties into the file. But I
+cannot call =(notmuch-...)= functions inside of
+=(with-current-buffer=. And so I do that now and store it away.
+
+#+BEGIN_SRC emacs-lisp
+(defun my-notmuch-export-patch ()
+  (interactive)
+  (let* ((from (notmuch-show-get-from))
+		 (date (notmuch-show-get-date))
+		 (subject (notmuch-show-get-subject))
+		 (id (notmuch-show-get-message-id))
+		 (filename subject)
+		 (patchnum))
+#+END_SRC
+
+The first step is to extract the patch number.
+
+#+BEGIN_SRC emacs-lisp
+	(when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
+	  (setq patchnum (string-to-number (match-string 1 filename))))
+#+END_SRC
+
+And now massage to subject to a safe and suitable filename
+
+- remove the optional [PATCH ...] prefix
+- replace everything that is nota  normal letters or digit with a dash
+- convert consecutive dashes into one dash
+- make sure we don't have a dash at the start
+- make sure we don't have a dash at the end
+
+#+BEGIN_SRC emacs-lisp
+	(setq filename (replace-regexp-in-string "\\[PATCH.*\\]" "" filename))
+	(setq filename (replace-regexp-in-string "\[^a-zA-Z0-9]" "-" filename))
+	(setq filename (replace-regexp-in-string "\\-+" "-" filename))
+	(setq filename (replace-regexp-in-string "^-" "" filename))
+	(setq filename (replace-regexp-in-string "-$" "" filename))
+#+END_SRC
+
+Now prepend the patchnum, if we have any:
+
+#+BEGIN_SRC emacs-lisp
+	(when patchnum
+	  (setq filename (concat (format "%04d" patchnum) "-" filename)))
+#+END_SRC
+
+Currently, I've hard-coded that all paths shouild be written to
+=/tmp/=. Maybe you can do better?
+
+#+BEGIN_SRC emacs-lisp
+	(setq filename (concat "/tmp/" filename ".patch"))
+#+END_SRC
+
+And now we need write things out.
+
+First we create a temporary buffer and insert some of message properties
+as a header. Then we call the notmuch program and let it get us mime part
+1 if the message. Because Linux patches must always be part of the body
+and can't contain attachments, this is save for my needs.
+
+The =t= as the 3rd argument to =(call-process= makes the output of the
+notmuch command end in my temporary buffer.
+
+All i then need to do is to write the buffer out and kill the temporary
+buffer.
+
+#+BEGIN_SRC emacs-lisp
+	(save-excursion
+	  (let ((buf (generate-new-buffer (concat "*notmuch-export-patch-" id "*"))))
+		(with-current-buffer buf
+		  (insert (format "Subject: %s\n" subject))
+		  (insert (format "From: %s\n" from))
+		  (insert (format "Date: %s\n" date))
+		  (insert (format "Message-Id: %s\n\n" (substring id 3)))
+		  (let ((coding-system-for-read 'no-conversion))
+			(call-process notmuch-command nil t nil "show" "--part:1" id))
+		  (write-file filename))
+		(kill-buffer buf)))))
+#+END_SRC
+
+And the last step is to bind this to some keys. As the function works
+both in tree-view and in message-show mode, I bind it to both places.
+
+#+BEGIN_SRC emacs-lisp
+(define-key notmuch-show-mode-map "x" #'my-notmuch-export-patch)
+(define-key notmuch-tree-mode-map "x" #'my-notmuch-export-patch)
+#+END_SRC
 * Blogging
   :PROPERTIES:
   :TITLE:    Blog from Org-Mode to Hugo
