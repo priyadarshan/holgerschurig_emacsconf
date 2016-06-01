@@ -320,7 +320,7 @@ https://github.com/Malabarba/paradox
 #+END_SRC
 
 Passwords that shouldn't end up in my public git tree. Also not that I
-make =freenode-password= known via =:defines=, so that the
+make =freenode-password= known via =(defvar=, so that the
 byte-compiler won't bark at me.
 
 #+BEGIN_SRC emacs-lisp
@@ -448,7 +448,7 @@ Mark =\todo= in LaTeX mode:
 #+END_SRC
 
 ** Line truncation
-don't display continuation lines
+Don't display continuation lines
 
 #+BEGIN_SRC emacs-lisp
 (setq-default truncate-lines t)
@@ -456,7 +456,7 @@ don't display continuation lines
 
 Do `M-x toggle-truncate-lines` to toggle truncation mode.
 `truncate-partial-width-windows' has to be nil for `toggle-truncate-lines'
-to work even in split windows
+to work in split windows
 
 #+BEGIN_SRC emacs-lisp
 (setq truncate-partial-width-windows nil)
@@ -3566,7 +3566,7 @@ That's all, folks.
   ;; Use "Z" to switch back to non-tree view
   (define-key notmuch-tree-mode-map "S" nil)
   (define-key notmuch-tree-mode-map "Z" #'notmuch-search-from-tree-current-query)
-  ; M-TAB is in use by the window manager
+  ;; M-TAB is in use by the window manager
   (define-key notmuch-tree-mode-map (kbd "M-TAB") nil)
 )
 #+END_SRC
