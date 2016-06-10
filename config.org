@@ -2031,7 +2031,7 @@ Hide minibuffer while helm is active
   ;; ignore Emacs save files
   (add-to-list 'helm-boring-file-regexp-list "\\.#")
 
-  ;; Make return delete one character or the last path (if before a '/')
+  ;; Make DEL delete one character or the last path (if before a '/')
   ;; from https://github.com/hatschipuh/better-helm
   (defun my-dwim-helm-find-files-up-one-level-maybe ()
 	(interactive)
