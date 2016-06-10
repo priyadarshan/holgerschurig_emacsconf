@@ -2043,6 +2043,14 @@ Hide minibuffer while helm is active
   (bind-key "DEL" #'my-dwim-helm-find-files-up-one-level-maybe helm-read-file-map)
   (bind-key "DEL" #'my-dwim-helm-find-files-up-one-level-maybe helm-find-files-map)
 
+  ;; This stops helm-find-files from pre-setting the input to the file
+  ;; under point and/or changing to another directory. Somehow setting
+  ;; setq helm-ff-guess-ffap-filenames and helm-ff-guess-ffap-urls
+  ;; didn't do the job.
+  (defun helm-find-files-initial-input (&optional input)
+    "Dummy function from my config.el to disable this helm feature"
+    )
+
   ;; If on a directory, switch helm to this directory. Don't call it with dired.
   ;; from https://github.com/hatschipuh/better-helm
   (defun my-dwim-helm-find-files-navigate-forward (orig-fun &rest args)
