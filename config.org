@@ -851,6 +851,7 @@ A sentence doesn't end with two spaces:
 Add =-difference= as a deferred load to silence the byte-compiler.
 #+BEGIN_SRC emacs-lisp
 (use-package dash
+  :ensure t
   :defer t
   :commands (-difference)
 )
