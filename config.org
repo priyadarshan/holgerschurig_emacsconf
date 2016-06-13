@@ -2067,6 +2067,7 @@ Hide minibuffer while helm is active
   ;; didn't do the job.
   (defun helm-find-files-initial-input (&optional input)
     "Dummy function from my config.el to disable this helm feature"
+	nil
     )
 
   ;; If on a directory, switch helm to this directory. Don't call it with dired.
