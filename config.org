@@ -3520,12 +3520,13 @@ That's all, folks.
   (setq notmuch-show-relative-dates nil)
 
   ;; remove archiving commands
-  (define-key notmuch-show-mode-map "x" nil)  
+  (define-key notmuch-show-mode-map "x" 'my-notmuch-export-patch)
   (define-key notmuch-show-mode-map "X" nil)  
   (define-key notmuch-show-mode-map "a" nil)  
   (define-key notmuch-show-mode-map "A" nil) 
   ; M-TAB is in use by the window manager
   (define-key notmuch-show-mode-map (kbd "M-TAB") nil)
+
 )
 #+END_SRC
 *** notmuch-tag
@@ -3578,7 +3579,7 @@ That's all, folks.
   ;; M-TAB is in use by the window manager
   (define-key notmuch-tree-mode-map (kbd "M-TAB") nil)
   ;; "x" to close the tree and exit isn't needed, we have "q" for this
-  (define-key notmuch-tree-mode-map "x" nil)
+  (define-key notmuch-tree-mode-map "x" #'my-notmuch-export-patch)
 )
 #+END_SRC
 *** notmuch-mua
@@ -3709,7 +3710,7 @@ buffer.
 And the last step is to bind this to some keys. As the function works
 both in tree-view and in message-show mode, I bind it to both places.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (define-key notmuch-show-mode-map "x" #'my-notmuch-export-patch)
 (define-key notmuch-tree-mode-map "x" #'my-notmuch-export-patch)
 #+END_SRC
