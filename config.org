@@ -761,15 +761,12 @@ The following can visualize white space quite neatly:
 I got the idea from here: http://amitp.blogspot.de/2013/05/emacs-highlight-active-buffer.html
 
 #+BEGIN_SRC emacs-lisp
-(require 'face-remap)
-(defvar highlight-focus:cookie nil)
-
 (defun highlight-focus:app-focus-in ()
   (global-font-lock-mode 1)
-  (face-remap-remove-relative highlight-focus:cookie))
+  (set-face-attribute 'default nil :foreground "white"))
 (defun highlight-focus:app-focus-out ()
   (global-font-lock-mode -1)
-  (setq highlight-focus:cookie (face-remap-add-relative 'default :foreground "#555555")))
+  (set-face-attribute 'default nil :foreground "#555555"))
 
 (add-hook 'focus-in-hook  #'highlight-focus:app-focus-in)
 (add-hook 'focus-out-hook #'highlight-focus:app-focus-out)
