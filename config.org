@@ -4364,6 +4364,17 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
   (defalias 'run-node 'nodejs-repl)
 )
 #+END_SRC
+** Mode: lua
+#+BEGIN_SRC emacs-lisp
+(use-package lua-mode
+  :ensure t
+  :init
+  ;; normally long lines get the same face as comments, which is quite irritating
+  (defun my-lua-hook ()
+	(setq-local whitespace-line-column 132))
+  (add-hook 'lua-mode-hook #'my-lua-hook)
+)
+#+END_SRC
 ** Mode: Markdown
 
 #+BEGIN_SRC emacs-lisp
