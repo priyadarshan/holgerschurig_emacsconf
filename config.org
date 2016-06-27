@@ -4123,11 +4123,14 @@ set initial compile-command to nothing, so that F7 will prompt for one
 		;; \s- whitespace character class
 		;; (message "FOUND '%s'" s)
 		(setq s (replace-regexp-in-string "\s-*\\*/$" "" s))
+		(comp--del-command s)
 		(comp--add-command s)))
 	(goto-char (point-min))
 	(while (re-search-forward "(setq compile-command \"\\(.*\\)\")" nil t)
-	  ;; (message "via setq '%s'" (match-string-no-properties 1))
-	  (comp--add-command (match-string-no-properties 1)))))
+	  (let ((s (match-string-no-properties 1)))
+		;; (message "via setq '%s'" s)
+		(comp--del-command s)
+		(comp--add-command s)))))
 
 (defun comp--default-action (cmd &optional _r1 _r2)
   (message "comp--default-action: '%s'" cmd)
