@@ -4093,8 +4093,9 @@ set initial compile-command to nothing, so that F7 will prompt for one
   It inserts the seconds since 1970 into the value."
 
   ;; (message "adding command '%s'" cmd)
-  (unless (assoc cmd compile-commands)
-	(add-to-list 'compile-commands (cons cmd (format-time-string "%s")))))
+  (unless (string= "" cmd)
+	(unless (assoc cmd compile-commands)
+	  (add-to-list 'compile-commands (cons cmd (format-time-string "%s"))))))
 
 (defun comp--del-command (cmd)
   "This ivy-read action deletes CMD from the compile-commands list."
