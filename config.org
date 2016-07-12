@@ -2089,20 +2089,18 @@ This is from http://blog.binchen.org/posts/use-ivy-to-open-recent-directories.ht
 adapted to helm.
 
 #+BEGIN_SRC emacs-lisp
-(defvar helm-source-recent-directories
-  (helm-build-sync-source "Recent directories"
-    :candidates (delete-dups (mapcar 'file-name-directory recentf-list))
-    :action (lambda (candidate)
-              (dired candidate))))
-
 (defun helm-goto-recent-directory ()
   "Open recent directory with dired"
   (interactive)
   (unless recentf-mode
 	(recentf-mode 1))
-  (helm :sources 'helm-source-recent-directories
-		:buffer "*helm recentf dir*"
-		:preselect default-directory))
+  (let ((src (helm-build-sync-source "Recent directories"
+			   :candidates (delete-dups (mapcar 'file-name-directory recentf-list))
+			   :action (lambda (candidate)
+						 (dired candidate)))))
+	(helm :sources src
+		  :buffer "*helm recentf dir*"
+		  :preselect default-directory)))
 
 (bind-key "M-g d" #'helm-goto-recent-directory)
 
