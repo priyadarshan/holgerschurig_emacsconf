@@ -1886,21 +1886,6 @@ Try this while in the ivy-minibuffer:
   (bind-key "<end>"  #'ivy-end-of-buffer ivy-minibuffer-map)
 )
 #+END_SRC
-*** counsel-goto-recent-directory
-
-This is from http://blog.binchen.org/posts/use-ivy-to-open-recent-directories.html, but slighly modified.
-
-#+BEGIN_SRC emacs-lisp
-(defun counsel-goto-recent-directory ()
-  "Open recent directory with dired"
-  (interactive)
-  (unless recentf-mode
-	(recentf-mode 1))
-  (ivy-read "directories:"
-			(delete-dups (mapcar 'file-name-directory recentf-list))
-			:action #'dired))
-(bind-key "M-g d" #'counsel-goto-recent-directory)
-#+END_SRC
 ** helm
 Very good intro: http://tuhdo.github.io/helm-intro.html
 
@@ -2145,6 +2130,30 @@ https://github.com/ShingoFukuyama/helm-swoop
 )
 #+END_SRC
 
+*** helm-goto-recent-directory
+
+This is from http://blog.binchen.org/posts/use-ivy-to-open-recent-directories.html, but 
+adapted to helm.
+
+#+BEGIN_SRC emacs-lisp
+(defvar helm-source-recent-directories
+  (helm-build-sync-source "Recent directories"
+    :candidates (delete-dups (mapcar 'file-name-directory recentf-list))
+    :action (lambda (candidate)
+              (dired candidate))))
+
+(defun helm-goto-recent-directory ()
+  "Open recent directory with dired"
+  (interactive)
+  (unless recentf-mode
+	(recentf-mode 1))
+  (helm :sources 'helm-source-recent-directories
+		:buffer "*helm recentf dir*"
+		:preselect default-directory))
+
+(bind-key "M-g d" #'helm-goto-recent-directory)
+
+#+END_SRC
 * org-mode
 *** org itself
 
