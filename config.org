@@ -3678,7 +3678,7 @@ set initial compile-command to nothing, so that F7 will prompt for one
 	  (add-to-list 'compile-commands (cons cmd (format-time-string "%s"))))))
 
 (defun comp--del-command (cmd)
-  "This ivy-read action deletes CMD from the compile-commands list."
+  "This deletes CMD from the compile-commands list."
 
   (setq compile-commands (delq (assoc cmd compile-commands) compile-commands)))
 ;; (setq compile-commands nil)
@@ -3720,15 +3720,14 @@ set initial compile-command to nothing, so that F7 will prompt for one
 	(comp--compile)))
 
 (defun comp--del-action (cmd)
-  "This ivy-read action deletes CMD from the compile-commands list."
+  "This deletes CMD from the compile-commands list and clears compile-command if needed."
 
-  ;; (message "comp--del-action: '%s'" cmd)
+  (message "comp--del-action: '%s'" cmd)
   (comp--del-command cmd)
   (when (string= compile-command cmd)
-	(setq compile-command nil))
-  (setq ivy-exit 'done))
+	(setq compile-command nil)))
 
-(defun ivy-compile-command ()
+(defun helm-compile-command ()
   "Interactively select a compile-command.
 
    Releads possible commends from open buffers when run with argument."
@@ -3741,27 +3740,27 @@ set initial compile-command to nothing, so that F7 will prompt for one
   ;; compile-commands is now something like:
   ;; '(("make -C foo" . 1) ("ccmake && make" . 2))
 
-  (ivy-set-actions 'ivy-compile-command
-				   '(("d" comp--del-action "delete")))
-  (ivy-read "Compile cmd: "
-			(delq "" (mapcar 'car compile-commands))
-			;; #'comp--get-compile-commands
-			;; :dynamic-collection t
+  (let ((cmds (helm-build-sync-source "Select compile command"
+				:candidates (delq "" (mapcar 'car compile-commands))
+				:action '(("Run"    . comp--default-action)
+						  ("Delete" . comp--del-action))
+				:mode-line "F1 run, F2 delete"
+				))
+		(dummy (helm-build-dummy-source "Or enter new command ..."
+				 :mode-line ""
+				 :action #'comp--default-action)))
+	(helm :sources '(cmds dummy)
+		  :buffer "*helm compile command*"
+		  :prompt "cmd: ")))
 
-			:sort nil
-			:action #'comp--default-action
-			:history 'ivy-compile-command
-			:caller 'ivy-compile-command
-			)
-  )
-(bind-key "S-<f7>" 'ivy-compile-command)
+(bind-key "S-<f7>" #'helm-compile-command)
 
 (defun comp--compile ()
   (interactive)
   (delete-other-windows)
   (save-buffer)
   (if (string= compile-command "")
-	  (ivy-compile-command)
+	  (helm-compile-command)
 	;; (message "compile command: %s" compile-command)
 	(let ((cmd (assoc compile-command compile-commands)))
 	  (when cmd
