@@ -1,4 +1,5 @@
 #+TITLE: Holger Schurig's Emacs configuration
+# @compile: (message "FOO")
 # @compile: (byte-compile-file "config.el")
 # @compile: (org-twbs-export-to-html)
 
@@ -1838,55 +1839,7 @@ minibuffer."
 	(-1 (message value))))))
 (bind-key "C-=" #'calc-eval-region)
 #+END_SRC
-* ivy, helm
-** ivy
-- http://oremacs.com/swiper/
-- https://github.com/abo-abo/swiper
-- http://oremacs.com/2016/04/26/ivy-0.8.0/
-
-If is just another minibuffer completion framework.
-
-- ~C-x b~ is then ivy-switch-buffer
-
-Try this while in the ivy-minibuffer:
-
-- ~C-o~: call the hydra
-- ~C-h m~: while in ivy-mode brings a help text
-
-#+BEGIN_SRC emacs-lisp
-(use-package ivy
-  :ensure t
-  :diminish ivy-mode
-  :defer nil
-  ;; :bind (("C-x b"   . ivy-switch-buffer)
-  ;;        ("C-x C-b" . ivy-switch-buffer)
-  ;;        ("C-x C-r" . ivy-resume))
-  :commands (ivy-read ivy-set-actions)
-  :config
-
-  ;; The optics
-  (setq ivy-height 20)
-  (setq ivy-fixed-height-minibuffer t)
-  (setq ivy-count-format "(%d/%d) ")
-  (setq ivy-display-style 'fancy)
-  (setq ivy-minibuffer-faces nil)
-  (set-face-attribute 'ivy-current-match  nil :foreground "red" :background 'unspecified)
-
-  ;; How C-x b behaves:
-  (setq ivy-use-virtual-buffers t) ;; add recentf and bookmarks to ivy-switch-buffer
-  (setq ivy-virtual-abbreviate 'path)
-
-  ;; Behavior of ivy-find-files
-  (setq ivy-extra-directories nil) ;; don't prepend ./ and ../ to ivy-find-file
-
-  ;; TODO ivy-sort-functions-alist, ivy-sort-matches-functions-alist
-
-  ;; Make home and end move to begin/end of buffer. Note: to move around the entry-line, use C-a and C-e
-  (bind-key "<home>" #'ivy-beginning-of-buffer ivy-minibuffer-map)
-  (bind-key "<end>"  #'ivy-end-of-buffer ivy-minibuffer-map)
-)
-#+END_SRC
-** helm
+* helm
 Very good intro: http://tuhdo.github.io/helm-intro.html
 
 #+BEGIN_SRC emacs-lisp
@@ -1928,7 +1881,7 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   ;; scroll 8 lines other window using M-<next>/M-<prior>
   (setq helm-scroll-amount 8)
 #+END_SRC
-*** Helm faces
+** Helm faces
 
 #+BEGIN_SRC emacs-lisp
   ;; see (customize-group "helm-files-faces")
@@ -1942,7 +1895,7 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   (set-face-attribute 'helm-history-deleted     nil :foreground 'unspecified :background 'unspecified)
   (set-face-attribute 'helm-history-remote      nil :foreground 'unspecified :background 'unspecified)
 #+END_SRC
-*** Hide mode lines
+** Hide mode lines
 Hide modelines of other windows while helm is open, again from
 https://github.com/hatschipuh/better-helm.
 
@@ -1986,7 +1939,7 @@ https://github.com/hatschipuh/better-helm.
   (advice-add 'helm-keyboard-quit :around #'my-helm-keyboard-quit-advice)
 #+END_SRC
 
-*** Hide minibuffer
+** Hide minibuffer
 Hide minibuffer while helm is active
 
 #+BEGIN_SRC emacs-lisp
@@ -2000,13 +1953,13 @@ Hide minibuffer while helm is active
   (add-hook 'helm-minibuffer-set-up-hook #'helm-hide-minibuffer-maybe)
 #+END_SRC
 
-*** end of use-package
+** end of use-package
 #+BEGIN_SRC emacs-lisp
 ;; this closes "(use-package helm" from way above!
 )
 #+END_SRC
 
-*** helm-descbinds
+** helm-descbinds
 #+BEGIN_SRC emacs-lisp
 (use-package helm-descbinds
   :ensure t
@@ -2016,7 +1969,7 @@ Hide minibuffer while helm is active
   )
 #+END_SRC
 
-*** helm-files
+** helm-files
 #+BEGIN_SRC emacs-lisp
 (use-package helm-files
   :defer t
@@ -2069,7 +2022,7 @@ Hide minibuffer while helm is active
 )
 #+END_SRC
 
-*** helm-imenu
+** helm-imenu
 #+BEGIN_SRC emacs-lisp
 (use-package helm-imenu
   :defer t
@@ -2078,7 +2031,7 @@ Hide minibuffer while helm is active
 )
 #+END_SRC
 
-*** helm-net
+** helm-net
 #+BEGIN_SRC emacs-lisp
 (use-package helm-net
   :defer t
@@ -2091,7 +2044,7 @@ Hide minibuffer while helm is active
   (setq helm-autoresize-mode t)
 )
 #+END_SRC
-*** helm-ring
+** helm-ring
 #+BEGIN_SRC emacs-lisp
 (use-package helm-ring
   :defer t
@@ -2100,7 +2053,7 @@ Hide minibuffer while helm is active
 )
 #+END_SRC
 
-*** helm-swoop
+** helm-swoop
 https://github.com/ShingoFukuyama/helm-swoop
 
 #+BEGIN_SRC emacs-lisp
@@ -2130,7 +2083,7 @@ https://github.com/ShingoFukuyama/helm-swoop
 )
 #+END_SRC
 
-*** helm-goto-recent-directory
+** helm-goto-recent-directory
 
 This is from http://blog.binchen.org/posts/use-ivy-to-open-recent-directories.html, but 
 adapted to helm.
