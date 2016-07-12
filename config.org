@@ -4148,7 +4148,7 @@ set initial compile-command to nothing, so that F7 will prompt for one
 	(setq compile-command nil))
   (setq ivy-exit 'done))
 
-(defun counsel-compile-command ()
+(defun ivy-compile-command ()
   "Interactively select a compile-command.
 
    Releads possible commends from open buffers when run with argument."
@@ -4161,7 +4161,7 @@ set initial compile-command to nothing, so that F7 will prompt for one
   ;; compile-commands is now something like:
   ;; '(("make -C foo" . 1) ("ccmake && make" . 2))
 
-  (ivy-set-actions 'counsel-compile-command
+  (ivy-set-actions 'ivy-compile-command
 				   '(("d" comp--del-action "delete")))
   (ivy-read "Compile cmd: "
 			(delq "" (mapcar 'car compile-commands))
@@ -4170,19 +4170,18 @@ set initial compile-command to nothing, so that F7 will prompt for one
 
 			:sort nil
 			:action #'comp--default-action
-			:preselect compile-command
-			:history 'counsel-compile-command
-			:caller 'counsel-compile-command
+			:history 'ivy-compile-command
+			:caller 'ivy-compile-command
 			)
   )
-(bind-key "S-<f7>" 'counsel-compile-command)
+(bind-key "S-<f7>" 'ivy-compile-command)
 
 (defun comp--compile ()
   (interactive)
   (delete-other-windows)
   (save-buffer)
   (if (string= compile-command "")
-	  (counsel-compile-command)
+	  (ivy-compile-command)
 	;; (message "compile command: %s" compile-command)
 	(let ((cmd (assoc compile-command compile-commands)))
 	  (when cmd
