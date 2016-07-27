@@ -98,8 +98,10 @@ With that done, we can untangle source-code blocks like this:
 - and writes the result out into a =.el=-file
 
 #+BEGIN_SRC emacs-lisp :tangle no
-;; This is GPLv2. If you still don't know the details, read
-;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+;; This uses partially derived code from ob-core.el. So this snippet
+;; is GPLv3 or later. If you still don't know the details, read
+;; http://www.gnu.org/licenses/
+
 (defun my-tangle-config-org (orgfile elfile)
   "This function will write all source blocks from =config.org= into
 =config.el= that are ...
@@ -142,6 +144,9 @@ Now I can use this function. If either the =.el= file doesn't exist or
 the =.org= file is newer, I'll re-create the =.el= file.
 
 #+BEGIN_SRC emacs-lisp :tangle no
+;; This is GPLv2. If you still don't know the details, read
+;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+
 (let ((orgfile (concat user-emacs-directory "config.org"))
       (elfile (concat user-emacs-directory "config.el")))
   (when (or (not (file-exists-p elfile))
@@ -160,6 +165,9 @@ called whenever I save a file. It checks if the file is indeed the
 .org file.
 
 #+BEGIN_SRC emacs-lisp
+;; This is GPLv2. If you still don't know the details, read
+;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+
 (defun my-tangle-config-org-hook-func ()
   (when (string= "config.org" (buffer-name))
 	(let ((orgfile (concat user-emacs-directory "config.org"))
@@ -3818,7 +3826,7 @@ Things that will apply to .C and .CPP files
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 #+END_SRC
 
-*** CANCELED from linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
+*** from linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
 
 #+BEGIN_SRC emacs-lisp
 (defun c-lineup-arglist-tabs-only (ignored)
