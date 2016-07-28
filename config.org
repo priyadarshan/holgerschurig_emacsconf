@@ -1681,6 +1681,21 @@ list of regular expressions:
 	  recentf-max-menu-items 20)
 (recentf-mode 1)
 #+END_SRC
+** save local variables
+
+The following change allows me to have some files flychecked in
+german-new8 and others in english (the default). I just need to put
+this line into the file:
+
+#+BEGIN_EXAMPLE
+# -*- ispell-local-dictionary: "german-new8" -*-
+#+END_EXAMPLE
+
+into the file.
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'safe-local-variable-values '(ispell-dictionary . german-new8))
+#+END_SRC
 * Minibuffer
 Don't insert current directory into minubuffer
 
