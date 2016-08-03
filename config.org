@@ -3098,6 +3098,11 @@ That's all, folks.
   :config
   (setq notmuch-show-relative-dates nil)
 
+  ;; do not indent messages when showing a message
+  (setq notmuch-show-indent-messages-width 0)
+  ;; only show this one, selected message
+  (setq notmuch-show-only-matching-messages t)
+
   ;; remove archiving commands
   (define-key notmuch-show-mode-map "x" 'my-notmuch-export-patch)
   (define-key notmuch-show-mode-map "X" nil)  
@@ -3105,7 +3110,6 @@ That's all, folks.
   (define-key notmuch-show-mode-map "A" nil) 
   ; M-TAB is in use by the window manager
   (define-key notmuch-show-mode-map (kbd "M-TAB") nil)
-
 )
 #+END_SRC
 *** notmuch-tag
