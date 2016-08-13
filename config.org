@@ -3570,7 +3570,7 @@ Now try yasnippet again now that it's faster.
   ;; (yas-global-mode 1)
 )
 #+END_SRC
-*** Completion for programmers
+*** CANCELED Completion for programmers
 #+BEGIN_SRC emacs-lisp
 (use-package company-c-headers
   :ensure t
