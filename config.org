@@ -4120,6 +4120,24 @@ the terminal "eterm-color" is available.
   )
 #+END_SRC
 
+** Package: dump-jump (goto definition)
+With this package you can goto a definition without any setup (e.g. no
+TAGS file is needed).
+
+See https://github.com/jacktasia/dumb-jump.
+
+| C-M g | goto definition                    |
+| C-M p | back (can be called multiple times |
+
+#+BEGIN_SRC emacs-lisp
+(use-package dumb-jump
+  :ensure t
+  :bind (("C-M-g" . dumb-jump-go)
+		 ("C-M-p" . dumb-jump-back)
+		 ("C-M-q" . dumb-jump-quick-look) ;; this one is often used for other stuff
+		 )
+)
+#+END_SRC
 ** CANCELED Package: auto-compile
 
 #+BEGIN_SRC emacs-lisp
