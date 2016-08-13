@@ -4226,7 +4226,7 @@ Nice for elisp faces or CSS files.
   :commands (rainbow-mode)
 )
 #+END_SRC
-** Package: semantic
+** CANCELED Package: semantic
 #+BEGIN_SRC emacs-lisp
 (use-package semantic
   :defer t
