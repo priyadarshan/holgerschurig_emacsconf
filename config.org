@@ -1992,6 +1992,18 @@ Hide minibuffer while helm is active
   )
 #+END_SRC
 
+** helm-bookmarks
+
+| C-x r m | bookma*r*k re*m*ember   |
+| C-x r l | bookmark menu           |
+| M-g b   | goto bookmarks via helm |
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-bookmarks
+  :defer t
+  :bind ("M-g b" . helm-bookmarks)
+)
+#+END_SRC
 ** helm-buffer
 #+BEGIN_SRC emacs-lisp
 (use-package help-buffer
