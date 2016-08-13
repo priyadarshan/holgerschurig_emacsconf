@@ -3582,7 +3582,7 @@ Now try yasnippet again now that it's faster.
 )
 #+END_SRC
 ** Disable vc backends
-We only use git, not other version controls:
+We only use git via magit, not other version controls.
 
 #+BEGIN_SRC emacs-lisp
 (setq vc-handled-backends nil)
