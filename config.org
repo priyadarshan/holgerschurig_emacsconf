@@ -4223,3 +4223,15 @@ Nice for elisp faces or CSS files.
   ;; maybe set semantic-default-submodes
 )
 #+END_SRC
+** Package: zeal-at-point - a documentation browser
+I got the idea from this [[https://www.reddit.com/r/emacs/comments/4xa253/browser_for_api_documentation_inside_emacs/][reddit]] post: [[http://zealdocs.org/][Zeal]] and [[https://github.com/jinzhu/zeal-at-point][zeal-at-point]] are nice
+documentation browsers.
+#+BEGIN_SRC emacs-lisp
+(use-package zeal-at-point
+  :ensure t
+  :bind ("C-c d" . zeal-at-point)
+  :config
+  ;; (add-to-list 'zeal-at-point-mode-alist '(perl-mode . "perl"))
+  ;; (add-hook 'rinari-minor-mode-hook (lambda () (setq zeal-at-point-docset "rails")))
+)
+#+END_SRC
