@@ -2197,7 +2197,7 @@ adapted to helm.
 
   ;; Time stamp format
   (setq org-display-custom-times t)
-  (setq org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
+  (setq org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d>"))
   (setq org-time-stamp-custom-formats '("<%Y-%m-%d>"))
 
   ;; :bind cannot bind into a different map
