@@ -2193,11 +2193,10 @@ adapted to helm.
   ;; "x/y"  use x when entering state, y when leaving state
   ;; the first letter can be used with C-c C-t
   (setq org-todo-keywords
-	;; '((sequence "TODO(t)" "STARTED(s!)" "|" "DONE(x!)")
-	;;   (sequence "WAIT(w@/!)" "DELEGATED(d@/!)" "|" "CANCELED(c@)")
-	'((sequence "TODO(t)" "STARTED(s)" "|" "DONE(x)")
-	  (sequence "WAIT(w)" "DELEGATED(d)" "|" "CANCELED(c)")
-	  ))
+	'((sequence "TODO(t)" "STARTED(s!)" "|" "DONE(x!)")
+	  (sequence "WAIT(w@/!)" "DELEGATED(d@/!)" "|" "CANCELED(c@)"))
+	org-export-with-drawers t
+	)
 
   (setq org-todo-keyword-faces
 	  '(("TODO"      . (:foreground "red" :weight bold))
@@ -2434,6 +2433,9 @@ http://www.suenkler.info/docs/emacs-orgmode/
   ;; with an error message "Unable to resolve link: nil". This doesn't
   ;; give any hint on which line the broken link actually is :-(
   (setq org-export-with-broken-links 'mark)
+
+  (setq org-export-time-stamp-file nil)
+
 )
 #+END_SRC
 
