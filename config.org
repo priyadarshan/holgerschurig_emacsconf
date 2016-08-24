@@ -98,8 +98,10 @@ With that done, we can untangle source-code blocks like this:
 - and writes the result out into a =.el=-file
 
 #+BEGIN_SRC emacs-lisp :tangle no
-;; This is GPLv2. If you still don't know the details, read
-;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+;; This uses partially derived code from ob-core.el. So this snippet
+;; is GPLv3 or later. If you still don't know the details, read
+;; http://www.gnu.org/licenses/
+
 (defun my-tangle-config-org (orgfile elfile)
   "This function will write all source blocks from =config.org= into
 =config.el= that are ...
@@ -142,6 +144,9 @@ Now I can use this function. If either the =.el= file doesn't exist or
 the =.org= file is newer, I'll re-create the =.el= file.
 
 #+BEGIN_SRC emacs-lisp :tangle no
+;; This is GPLv2. If you still don't know the details, read
+;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+
 (let ((orgfile (concat user-emacs-directory "config.org"))
       (elfile (concat user-emacs-directory "config.el")))
   (when (or (not (file-exists-p elfile))
@@ -160,6 +165,9 @@ called whenever I save a file. It checks if the file is indeed the
 .org file.
 
 #+BEGIN_SRC emacs-lisp
+;; This is GPLv2. If you still don't know the details, read
+;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+
 (defun my-tangle-config-org-hook-func ()
   (when (string= "config.org" (buffer-name))
 	(let ((orgfile (concat user-emacs-directory "config.org"))
@@ -1673,6 +1681,21 @@ list of regular expressions:
 	  recentf-max-menu-items 20)
 (recentf-mode 1)
 #+END_SRC
+** save local variables
+
+The following change allows me to have some files flychecked in
+german-new8 and others in english (the default). I just need to put
+this line into the file:
+
+#+BEGIN_EXAMPLE
+# -*- ispell-local-dictionary: "german-new8" -*-
+#+END_EXAMPLE
+
+into the file.
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'safe-local-variable-values '(ispell-dictionary . german-new8))
+#+END_SRC
 * Minibuffer
 Don't insert current directory into minubuffer
 
@@ -1967,6 +1990,27 @@ Hide minibuffer while helm is active
   :bind (("C-h b" . helm-descbinds)
 	 ("C-h w" . helm-descbinds)) ;; used to be where-is
   )
+#+END_SRC
+
+** helm-bookmarks
+
+| C-x r m | bookma*r*k re*m*ember   |
+| C-x r l | bookmark menu           |
+| M-g b   | goto bookmarks via helm |
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-bookmarks
+  :defer t
+  :bind ("M-g b" . helm-bookmarks)
+)
+#+END_SRC
+** helm-buffer
+#+BEGIN_SRC emacs-lisp
+(use-package help-buffer
+  :defer t
+  :config
+  (setq helm-buffer-max-length 28)
+)
 #+END_SRC
 
 ** helm-files
@@ -3068,6 +3112,11 @@ That's all, folks.
   :config
   (setq notmuch-show-relative-dates nil)
 
+  ;; do not indent messages when showing a message
+  (setq notmuch-show-indent-messages-width 0)
+  ;; only show this one, selected message
+  (setq notmuch-show-only-matching-messages t)
+
   ;; remove archiving commands
   (define-key notmuch-show-mode-map "x" 'my-notmuch-export-patch)
   (define-key notmuch-show-mode-map "X" nil)  
@@ -3075,7 +3124,6 @@ That's all, folks.
   (define-key notmuch-show-mode-map "A" nil) 
   ; M-TAB is in use by the window manager
   (define-key notmuch-show-mode-map (kbd "M-TAB") nil)
-
 )
 #+END_SRC
 *** notmuch-tag
@@ -3536,7 +3584,7 @@ Now try yasnippet again now that it's faster.
   ;; (yas-global-mode 1)
 )
 #+END_SRC
-*** Completion for programmers
+*** CANCELED Completion for programmers
 #+BEGIN_SRC emacs-lisp
 (use-package company-c-headers
   :ensure t
@@ -3548,7 +3596,7 @@ Now try yasnippet again now that it's faster.
 )
 #+END_SRC
 ** Disable vc backends
-We only use git, not other version controls:
+We only use git via magit, not other version controls.
 
 #+BEGIN_SRC emacs-lisp
 (setq vc-handled-backends nil)
@@ -3820,7 +3868,7 @@ Things that will apply to .C and .CPP files
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 #+END_SRC
 
-*** CANCELED from linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
+*** from linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
 
 #+BEGIN_SRC emacs-lisp
 (defun c-lineup-arglist-tabs-only (ignored)
@@ -4074,6 +4122,24 @@ the terminal "eterm-color" is available.
   )
 #+END_SRC
 
+** Package: dump-jump (goto definition)
+With this package you can goto a definition without any setup (e.g. no
+TAGS file is needed).
+
+See https://github.com/jacktasia/dumb-jump.
+
+| C-M g | goto definition                    |
+| C-M p | back (can be called multiple times |
+
+#+BEGIN_SRC emacs-lisp
+(use-package dumb-jump
+  :ensure t
+  :bind (("C-M-g" . dumb-jump-go)
+		 ("C-M-p" . dumb-jump-back)
+		 ("C-M-q" . dumb-jump-quick-look) ;; this one is often used for other stuff
+		 )
+)
+#+END_SRC
 ** CANCELED Package: auto-compile
 
 #+BEGIN_SRC emacs-lisp
@@ -4180,12 +4246,24 @@ Nice for elisp faces or CSS files.
   :commands (rainbow-mode)
 )
 #+END_SRC
-** Package: semantic
+** CANCELED Package: semantic
 #+BEGIN_SRC emacs-lisp
 (use-package semantic
   :defer t
   :config
 
   ;; maybe set semantic-default-submodes
+)
+#+END_SRC
+** Package: zeal-at-point - a documentation browser
+I got the idea from this [[https://www.reddit.com/r/emacs/comments/4xa253/browser_for_api_documentation_inside_emacs/][reddit]] post: [[http://zealdocs.org/][Zeal]] and [[https://github.com/jinzhu/zeal-at-point][zeal-at-point]] are nice
+documentation browsers.
+#+BEGIN_SRC emacs-lisp
+(use-package zeal-at-point
+  :ensure t
+  :bind ("C-c d" . zeal-at-point)
+  :config
+  ;; (add-to-list 'zeal-at-point-mode-alist '(perl-mode . "perl"))
+  ;; (add-hook 'rinari-minor-mode-hook (lambda () (setq zeal-at-point-docset "rails")))
 )
 #+END_SRC
