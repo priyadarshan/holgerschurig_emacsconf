@@ -4063,7 +4063,7 @@ the terminal "eterm-color" is available.
 
 #+BEGIN_SRC emacs-lisp
 (use-package ansi-term
-  :bind ("M-g a" . ansi-shell)
+  :bind ("M-g s" . ansi-shell)
   :commands (ansi-term ansi-shell
 					   term-in-line-mode
 					   term-line-mode
