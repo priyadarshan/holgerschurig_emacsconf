@@ -15,12 +15,12 @@
 
 
 (defun my-tangle-section-canceled ()
-  "Checks if the previous section header was CANCELED"
+  "Checks if the previous section header was CANC"
   (save-excursion
     (if (re-search-backward "^\\*+\\s-+\\(.*?\\)?\\s-*$" nil t)
         (progn
           (message "FOUND '%s'" (match-string 1))
-          (string-prefix-p "CANCELED" (match-string 1)))
+          (string-prefix-p "CANC" (match-string 1)))
       nil)))
 
 (defun my-tangle-config-org (orgfile elfile)
@@ -29,7 +29,7 @@
 
 - not marked as :tangle no
 - have a source-code of =emacs-lisp=
-- doesn't have the todo-marker CANCELED"
+- doesn't have the todo-marker CANC"
   (let* ((body-list ())
 		 (gc-cons-threshold most-positive-fixnum)
          (org-babel-src-block-regexp   (concat

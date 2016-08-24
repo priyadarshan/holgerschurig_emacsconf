@@ -66,8 +66,8 @@ I wrote two words in bold:
      My code fixes this.
 - eligible :: we all know than org-tangle honors "=:tangle no=". But
      it doesn't care for the todo-state of a section. I wrote my code
-     so that it will skip over items marked as "CANCELED". It's just
-     nicer to mark one section with "CANCELED" --- compared to change
+     so that it will skip over items marked as "CANC". It's just
+     nicer to mark one section with "CANC" --- compared to change
      everyone of it's five source-code blocks with =:tangle no=.
 
 *** The tangling
@@ -80,10 +80,10 @@ goes back to the section header and checks if there entry has been canceled:
 ;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
 (defun my-tangle-section-canceled ()
-  "Return t if the current section header was CANCELED, else nil."
+  "Return t if the current section header was CANC, else nil."
   (save-excursion
     (if (re-search-backward "^\\*+\\s-+\\(.*?\\)?\\s-*$" nil t)
-        (string-prefix-p "CANCELED" (match-string 1))
+        (string-prefix-p "CANC" (match-string 1))
       nil)))
 #+END_SRC
 
@@ -92,7 +92,7 @@ With that done, we can untangle source-code blocks like this:
 - disabled garbage collection
 - defines the regexp (stolen from org-mode) to parse org-mode source blocks
 - uses a while-loop to search every source-block
-- checks that the source block is neither untangleable nor in a CANCELED section
+- checks that the source block is neither untangleable nor in a CANC section
 - appends the body of the source block to =body-list=
 - finally, it uses a temporary file and insert all the collected bodies into it
 - and writes the result out into a =.el=-file
@@ -108,7 +108,7 @@ With that done, we can untangle source-code blocks like this:
 
 - not marked as :tangle no
 - have a source-code of =emacs-lisp=
-- doesn't have the todo-marker CANCELED"
+- doesn't have the todo-marker CANC"
   (let* ((body-list ())
 		 (gc-cons-threshold most-positive-fixnum)
          (org-babel-src-block-regexp   (concat
@@ -188,7 +188,7 @@ called whenever I save a file. It checks if the file is indeed the
 You'll see that ...
 
 - my approach is 0.32 seconds faster than using =org-babel-load-file=.
-  But I have the added benefit that I can mark sections as CANCELED
+  But I have the added benefit that I can mark sections as CANC
   :-)
 - after a fresh "git pull", I pay a very low price of 0.09 seconds
 - byte-compilation doesn't bring much for this file ...
@@ -906,7 +906,7 @@ May may also set the environment variables =EDITOR= and/or =VISUAL=,
 but then you better omit the "=--no-wait=" option.
 
 * Editing
-** CANCELED Transpose
+** CANC Transpose
 http://endlessparentheses.com/transposing-keybinds-in-emacs.html
 
 #+BEGIN_SRC emacs-lisp
@@ -1306,7 +1306,7 @@ Lets TAB do completion as well
 (setq tab-always-indent 'complete)
 #+END_SRC
 
-** CANCELED company
+** CANC company
 #+BEGIN_SRC emacs-lisp
 (use-package company
   :ensure t
@@ -2238,7 +2238,7 @@ adapted to helm.
   ;; the first letter can be used with C-c C-t
   (setq org-todo-keywords
 	'((sequence "TODO(t)" "STARTED(s!)" "|" "DONE(x!)")
-	  (sequence "WAIT(w@/!)" "DELEGATED(d@/!)" "|" "CANCELED(c@)"))
+	  (sequence "WAIT(w@/!)" "DELE(d@/!)" "|" "CANC(c@)"))
 	org-export-with-drawers t
 	)
 
@@ -2247,8 +2247,8 @@ adapted to helm.
 		("STARTED"   . (:foreground "#b70101" :weight bold))
 		("DONE"      . (:foreground "forestgreen" :weight bold))
 		("WAIT"      . (:foreground "orange" :weight bold))
-		("DELEGATED" . (:foreground "forestgreen" :weight bold))
-		("CANCELED"  . shadow)))
+		("DELE"      . (:foreground "forestgreen" :weight bold))
+		("CANC"      . shadow)))
 
   ;; use extra drawer
   (setq org-log-into-drawer t)
@@ -2492,7 +2492,7 @@ http://www.suenkler.info/docs/emacs-orgmode/
   (setq org-html-postamble-format '(("en" "<p class=\"author\">Author: %a</p><p class=\"creator\">Created with %c</p>")))
   (setq org-html-validation-link nil)
   (setq org-html-postamble nil)
-  (setq org-html-style-default "<style type=\"text/css\">\n <!--/*--><![CDATA[/*><!--*/\n  body { text-align: center; font-family: \"Aria\", sans-serif; }\n  #content { margin: 0 auto; width: 860px; text-align: left; }\n  #text-table-of-contents > ul > li { margin-top: 1em; }\n  .title  { text-align: center; }\n  .todo   { color: red; }\n  .done   { color: green; }\n  .WAIT, .DELEGATED   { color: blue; }\n  .done   { color: green; }\n  .tag    { background-color: #eee; font-family: monospace;\n            padding: 2px; font-size: 80%; font-weight: normal; }\n  .timestamp { color: #bebebe; }\n  .timestamp-kwd { color: #5f9ea0; }\n  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }\n  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }\n  .center { margin-left: auto; margin-right: auto; text-align: center; }\n  .underline { text-decoration: underline; }\n  #postamble p, #preamble p { font-size: 90%; margin: .2em; }\n  p.verse { margin-left: 3%; }\n  pre {\n    border: 1px solid #ccc;\n    box-shadow: 3px 3px 3px #eee;\n    padding: 8pt;\n    font-family: monospace;\n    overflow: auto;\n    margin: 1em 0;\n  }\n  pre.src {\n    position: relative;\n    overflow: visible;\n    padding-top: 8pt;\n  }\n  pre.src:before {\n    display: none;\n    position: absolute;\n    background-color: white;\n    top: -10px;\n    right: 10px;\n    padding: 3px;\n    border: 1px solid black;\n  }\n  pre.src:hover:before { display: inline;}\n  pre.src-sh:before    { content: 'sh'; }\n  pre.src-bash:before  { content: 'sh'; }\n  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }\n  pre.src-R:before     { content: 'R'; }\n  pre.src-perl:before  { content: 'Perl'; }\n  pre.src-java:before  { content: 'Java'; }\n  pre.src-sql:before   { content: 'SQL'; }\n\n  table { border-collapse:collapse; }\n  caption.t-above { caption-side: top; }\n  caption.t-bottom { caption-side: bottom; }\n  td, th { vertical-align:top;  }\n  th.right  { text-align: center;  }\n  th.left   { text-align: center;   }\n  th.center { text-align: center; }\n  td.right  { text-align: right;  }\n  td.left   { text-align: left;   }\n  td.center { text-align: center; }\n  dt { font-weight: bold; }\n  .footpara:nth-child(2) { display: inline; }\n  .footpara { display: block; }\n  .footdef  { margin-bottom: 1em; }\n  .figure { padding: 1em; }\n  .figure p { text-align: center; }\n  .inlinetask {\n    padding: 10px;\n    border: 2px solid gray;\n    margin: 10px;\n    background: #ffffcc;\n  }\n  #org-div-home-and-up\n   { text-align: right; font-size: 70%; white-space: nowrap; }\n  textarea { overflow-x: auto; }\n  .linenr { font-size: smaller }\n  .code-highlighted { background-color: #ffff00; }\n  .org-info-js_info-navigation { border-style: none; }\n  #org-info-js_console-label\n    { font-size: 10px; font-weight: bold; white-space: nowrap; }\n  .org-info-js_search-highlight\n    { background-color: #ffff00; color: #000000; font-weight: bold; }\n  .ulClassNameOrID > li {}\n  /*]]>*/-->\n</style>")
+  (setq org-html-style-default "<style type=\"text/css\">\n <!--/*--><![CDATA[/*><!--*/\n  body { text-align: center; font-family: \"Aria\", sans-serif; }\n  #content { margin: 0 auto; width: 860px; text-align: left; }\n  #text-table-of-contents > ul > li { margin-top: 1em; }\n  .title  { text-align: center; }\n  .todo   { color: red; }\n  .done   { color: green; }\n  .WAIT, .DELE   { color: blue; }\n  .done   { color: green; }\n  .tag    { background-color: #eee; font-family: monospace;\n            padding: 2px; font-size: 80%; font-weight: normal; }\n  .timestamp { color: #bebebe; }\n  .timestamp-kwd { color: #5f9ea0; }\n  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }\n  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }\n  .center { margin-left: auto; margin-right: auto; text-align: center; }\n  .underline { text-decoration: underline; }\n  #postamble p, #preamble p { font-size: 90%; margin: .2em; }\n  p.verse { margin-left: 3%; }\n  pre {\n    border: 1px solid #ccc;\n    box-shadow: 3px 3px 3px #eee;\n    padding: 8pt;\n    font-family: monospace;\n    overflow: auto;\n    margin: 1em 0;\n  }\n  pre.src {\n    position: relative;\n    overflow: visible;\n    padding-top: 8pt;\n  }\n  pre.src:before {\n    display: none;\n    position: absolute;\n    background-color: white;\n    top: -10px;\n    right: 10px;\n    padding: 3px;\n    border: 1px solid black;\n  }\n  pre.src:hover:before { display: inline;}\n  pre.src-sh:before    { content: 'sh'; }\n  pre.src-bash:before  { content: 'sh'; }\n  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }\n  pre.src-R:before     { content: 'R'; }\n  pre.src-perl:before  { content: 'Perl'; }\n  pre.src-java:before  { content: 'Java'; }\n  pre.src-sql:before   { content: 'SQL'; }\n\n  table { border-collapse:collapse; }\n  caption.t-above { caption-side: top; }\n  caption.t-bottom { caption-side: bottom; }\n  td, th { vertical-align:top;  }\n  th.right  { text-align: center;  }\n  th.left   { text-align: center;   }\n  th.center { text-align: center; }\n  td.right  { text-align: right;  }\n  td.left   { text-align: left;   }\n  td.center { text-align: center; }\n  dt { font-weight: bold; }\n  .footpara:nth-child(2) { display: inline; }\n  .footpara { display: block; }\n  .footdef  { margin-bottom: 1em; }\n  .figure { padding: 1em; }\n  .figure p { text-align: center; }\n  .inlinetask {\n    padding: 10px;\n    border: 2px solid gray;\n    margin: 10px;\n    background: #ffffcc;\n  }\n  #org-div-home-and-up\n   { text-align: right; font-size: 70%; white-space: nowrap; }\n  textarea { overflow-x: auto; }\n  .linenr { font-size: smaller }\n  .code-highlighted { background-color: #ffff00; }\n  .org-info-js_info-navigation { border-style: none; }\n  #org-info-js_console-label\n    { font-size: 10px; font-weight: bold; white-space: nowrap; }\n  .org-info-js_search-highlight\n    { background-color: #ffff00; color: #000000; font-weight: bold; }\n  .ulClassNameOrID > li {}\n  /*]]>*/-->\n</style>")
   (setq org-html-table-default-attributes '(:border "2" :cellspacing "0" :cellpadding "6"))
   (setq org-html-postamble t))
 #+END_SRC
@@ -3553,7 +3553,7 @@ Nice tip from tuhdo, see https://www.emacswiki.org/emacs/CleanAutoIndent
 )
 #+END_SRC
 ** Expansion
-*** CANCELED yasnippet
+*** CANC yasnippet
 Now try yasnippet again now that it's faster.
 
 #+BEGIN_SRC emacs-lisp
@@ -3584,7 +3584,7 @@ Now try yasnippet again now that it's faster.
   ;; (yas-global-mode 1)
 )
 #+END_SRC
-*** CANCELED Completion for programmers
+*** CANC Completion for programmers
 #+BEGIN_SRC emacs-lisp
 (use-package company-c-headers
   :ensure t
@@ -3608,7 +3608,7 @@ We only use git via magit, not other version controls.
 (bind-key "C-c c" 'comment-dwim)
 #+END_SRC
 
-** CANCELED Smart parens
+** CANC Smart parens
 Cancelled till I find out how to make it do it's magic only if there
 rest of the line is empty.
 
@@ -3887,7 +3887,7 @@ newline to the correct position"
   (self-insert-command (prefix-numeric-value arg))
   (newline-and-indent))
 #+END_SRC
-*** CANCELED c-syntactic-element?
+*** CANC c-syntactic-element?
 #+BEGIN_SRC emacs-lisp
 (defvar c-syntactic-element)
 (eval-when-compile (require 'cc-mode))
@@ -4140,7 +4140,7 @@ See https://github.com/jacktasia/dumb-jump.
 		 )
 )
 #+END_SRC
-** CANCELED Package: auto-compile
+** CANC Package: auto-compile
 
 #+BEGIN_SRC emacs-lisp
 (use-package auto-compile
@@ -4246,7 +4246,7 @@ Nice for elisp faces or CSS files.
   :commands (rainbow-mode)
 )
 #+END_SRC
-** CANCELED Package: semantic
+** CANC Package: semantic
 #+BEGIN_SRC emacs-lisp
 (use-package semantic
   :defer t
