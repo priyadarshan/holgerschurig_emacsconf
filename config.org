@@ -2158,6 +2158,9 @@ adapted to helm.
 		 ("C-c o" . org-open-at-point-global))
   :commands (org-open-file orgstruct++-mode)
   :init
+  ;; allow Shift-Cursor to mark stuff
+  (setq org-replace-disputed-keys t)
+
   ;; modules to load together with org-mode
   (setq org-modules '(
 					  ;; org-annotate-file
