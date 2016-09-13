@@ -206,7 +206,7 @@ All measurements were done on my laptop. My desktop is about double as fast.
 We already have part of the package initialization in =init.el=, so here is the rest:
 
 #+BEGIN_SRC emacs-lisp
-(package-initialize nil)
+(require 'package)
 (setq package-enable-at-startup nil)
 #+END_SRC
 
@@ -224,15 +224,16 @@ Seems that we need certificate pinning before accessing some https sites:
 Now enable =packages.el= with MELPA:
 
 #+BEGIN_SRC emacs-lisp
-  (require 'package)
-  (setq package-enable-at-startup nil
-            package-archives
-            '(("gnu"             . "http://elpa.gnu.org/packages/")
-              ("melpa"           . "http://melpa.org/packages/")
-              ;; ("melpa-stable" . "http://stable.melpa.org/packages/")
-              ;; ("elpy"         . "http://jorgenschaefer.github.io/packages/")
-              ;; ("org"          . "http://orgmode.org/elpa/") ;; for org-plus-contrib
-              ))
+(setq package-enable-at-startup nil
+	  package-archives
+	  '(("gnu"             . "http://elpa.gnu.org/packages/")
+		("melpa"           . "http://melpa.org/packages/")
+		;; ("melpa-stable" . "http://stable.melpa.org/packages/")
+		;; ("elpy"         . "http://jorgenschaefer.github.io/packages/")
+		;; ("org"          . "http://orgmode.org/elpa/") ;; for org-plus-contrib
+		))
+
+(package-initialize :noactivate)
 #+END_SRC
 
 ** use-package
@@ -280,6 +281,8 @@ Basic syntax:
 :ensure        Loads the package using package.el if necessary.
 :pin           Pin the package to an archive.
 #+END_EXAMPLE
+
+Bootstrap use-package:
 
 #+BEGIN_SRC emacs-lisp
 (unless (package-installed-p 'use-package)
