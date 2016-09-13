@@ -908,6 +908,48 @@ alias e="emacsclient --no-wait --alternate-editor=\"\" --create-frame"
 May may also set the environment variables =EDITOR= and/or =VISUAL=,
 but then you better omit the "=--no-wait=" option.
 
+** Keyfreq
+Idea from http://blog.binchen.org/posts/how-to-be-extremely-efficient-in-emacs.html
+
+Use =keyfreq-show= to see what you've used mostly.
+
+#+BEGIN_SRC emacs-lisp
+(use-package keyfreq
+  :ensure t
+  :config
+  (defun turnon-keyfreq-mode ()
+	(interactive)
+	(keyfreq-mode 1)
+	(keyfreq-autosave-mode 1))
+
+  (defun turnoff-keyfreq-mode ()
+	(interactive)
+	(keyfreq-mode -1)
+	(keyfreq-autosave-mode -1))
+
+  (setq keyfreq-excluded-commands
+		'(self-insert-command
+		  org-self-insert-command
+		  abort-recursive-edit
+		  backward-char
+		  delete-backward-char
+		  forward-char
+		  keyfreq-mode
+		  previous-line
+		  next-line
+		  undefined ;; lambda
+		  ))
+
+  (unless (file-exists-p (file-truename keyfreq-file))
+	(with-temp-buffer
+	  (insert "()")
+	  (write-file (file-truename keyfreq-file))))
+
+  ;; And use keyfreq-show to see how many times you used a command.
+  ;; comment out below line if there is performance impact
+  (turnon-keyfreq-mode)
+)
+#+END_SRC
 * Editing
 ** CANC Transpose
 http://endlessparentheses.com/transposing-keybinds-in-emacs.html
