@@ -4108,6 +4108,14 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
   :mode (("\\.md\\'"       . markdown-mode)
 	 ("\\.markdown\\'" . markdown-mode)))
 #+END_SRC
+** Mode: pug (for vibe.d templates)
+#+BEGIN_SRC emacs-lisp
+(use-package pug-mode
+  :ensure t
+  :defer t
+  :mode ("\\.dt\\'" . pug-mode)
+)
+#+END_SRC
 
 ** Mode: Python
 
