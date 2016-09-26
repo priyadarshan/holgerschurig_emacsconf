@@ -3922,7 +3922,7 @@ set initial compile-command to nothing, so that F7 will prompt for one
 (use-package compile
 	:diminish compilation-in-progress
 	:config
-	(setq compilation-finish-functions 'compile-autoclose)
+	(add-to-list 'compilation-finish-functions 'compile-autoclose)
 	(setq compilation-ask-about-save nil)
 	(setq compilation-scroll-output t))
 #+END_SRC
