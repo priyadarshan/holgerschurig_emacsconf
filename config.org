@@ -4389,6 +4389,16 @@ From  https://raw.githubusercontent.com/chriskonstad/emacs/master/elisp/qt-pro.e
 (add-hook 'sh-mode-hook    'my-shell-tab-setup)
 #+END_SRC
 
+** Mode: TOML
+This is used for Hugo's config files:
+
+#+BEGIN_SRC emacs-lisp
+(use-package toml-mode
+  :defer t
+  :ensure t
+  :mode ("\\.toml\\'" . toml-mode)
+)
+#+END_SRC
 ** Mode: web-mode
 Home page: http://web-mode.org/
 
