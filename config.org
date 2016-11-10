@@ -2115,6 +2115,7 @@ Hide minibuffer while helm is active
 #+BEGIN_SRC emacs-lisp
 (use-package helm-imenu
   :defer t
+  :bind ("M-g i" . helm-imenu)
   :config
   (setq helm-imenu-delimiter " ")
 )
