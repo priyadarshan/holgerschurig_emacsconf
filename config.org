@@ -11,11 +11,13 @@ otherwise noted. For example, I derives some functions from notmuch.
 And as notmuch uses GPLv3 or higher, this functions got the same
 license.
 
+
 * About this file
 Inspired by the [[http://eschulte.me/emacs24-starter-kit/#installation][Emacs Starter Kit]], I set up my configuration file
 using org-babel. You may use it as-is, but I guess (and suggest) that
 you only look here to get ideas. Create your own Emacs config, in the
 same pace as your knowledge about Emacs grows.
+
 
 * Optional debug
 Use the following if there is some nasty bug that you cannot find with
@@ -24,7 +26,10 @@ Use the following if there is some nasty bug that you cannot find with
 #+BEGIN_SRC emacs-lisp :tangle no
 (toggle-debug-on-error)
 #+END_SRC
+
+
 * Loading of elisp
+
 ** Loading config.org
    :PROPERTIES:
    :TITLE:    Efficiently untangling Elisp from .org files
@@ -175,6 +180,7 @@ called whenever I save a file. It checks if the file is indeed the
 	  (my-tangle-config-org orgfile elfile))))
 (add-hook 'after-save-hook #'my-tangle-config-org-hook-func)
 #+END_SRC
+
 *** Some benchmark results
 
 | Task                                                    | Duration |
@@ -202,6 +208,7 @@ All measurements were done on my laptop. My desktop is about double as fast.
 		  (add-to-list 'load-path (expand-file-name x emacs-git)))
 		(delete ".." (directory-files emacs-git))))
 #+END_SRC
+
 ** package
 We already have part of the package initialization in =init.el=, so here is the rest:
 
@@ -325,6 +332,7 @@ https://github.com/Malabarba/paradox
 )
 #+END_SRC
 
+
 * Personal information
 #+BEGIN_SRC emacs-lisp
 (setq user-full-name "Holger Schurig")
@@ -339,7 +347,11 @@ byte-compiler won't bark at me.
 (defvar freenode-password)
 (require 'private nil 'noerror)
 #+END_SRC
+
+
+
 * Visual elements
+
 ** GUI elements
 
 Disable toolbars and the scroll-bar
@@ -412,6 +424,7 @@ http://emacs.stackexchange.com/a/5343/115
   (setq show-paren-delay 0)
 )
 #+END_SRC
+
 ** Font locking
 #+BEGIN_SRC emacs-lisp
 (use-package font-lock
@@ -423,6 +436,7 @@ http://emacs.stackexchange.com/a/5343/115
   (setq-default font-lock-multiline t)
 )
 #+END_SRC
+
 ** Highlight keywords
 
 See https://www.emacswiki.org/emacs/AddKeywords for the example and
@@ -532,7 +546,9 @@ Show line and column numbers in the mode-line
 (column-number-mode 1)
 #+END_SRC
 
+
 ** Powerline mode line
+
 *** Powerline faces
 Without this we have some proportional font on Windows:
 
@@ -741,6 +757,7 @@ And finally we build our mode line:
 )
 #+END_SRC
 
+
 ** Whitespace
 The following can visualize white space quite neatly:
 
@@ -784,7 +801,10 @@ I got the idea from here: http://amitp.blogspot.de/2013/05/emacs-highlight-activ
 (add-hook 'focus-out-hook #'highlight-focus:app-focus-out)
 
 #+END_SRC
+
+
 * Misc settings
+
 ** Emacs internals
 
 #+BEGIN_SRC emacs-lisp
@@ -811,11 +831,13 @@ will probably /not/ work on windows.
 	  (replace-regexp-in-string "[ \t\n]*\\'" ""
 		 (shell-command-to-string "hostname"))))
 #+END_SRC
+
 ** History
 Delete identical history entries
 #+BEGIN_SRC emacs-lisp
 (setq history-delete-duplicates t)
 #+END_SRC
+
 ** Save mini-buffer history
 #+BEGIN_SRC emacs-lisp
 (use-package savehist
@@ -825,6 +847,7 @@ Delete identical history entries
   :config
   (savehist-mode 1))
 #+END_SRC
+
 ** Enable some disabled commands
 
 #+BEGIN_SRC emacs-lisp
@@ -874,6 +897,7 @@ A sentence doesn't end with two spaces:
 #+BEGIN_SRC emacs-lisp
 (setq sentence-end-double-space nil)
 #+END_SRC
+
 ** Dash
 Add =-difference= as a deferred load to silence the byte-compiler.
 #+BEGIN_SRC emacs-lisp
@@ -883,6 +907,7 @@ Add =-difference= as a deferred load to silence the byte-compiler.
   :commands (-difference)
 )
 #+END_SRC
+
 ** Emacs server
 
 - always start the emacs-server, except when run in daemon mode
@@ -950,7 +975,11 @@ Use =keyfreq-show= to see what you've used mostly.
   (turnon-keyfreq-mode)
 )
 #+END_SRC
+
+
+
 * Editing
+
 ** CANC Transpose
 http://endlessparentheses.com/transposing-keybinds-in-emacs.html
 
@@ -958,6 +987,7 @@ http://endlessparentheses.com/transposing-keybinds-in-emacs.html
 (bind-key "\C-t" #'transpose-lines)
 (bind-key "\C-t" #'transpose-chars ctl-x-map)
 #+END_SRC
+
 ** Undo-Tree
 This lets you use =C-z= (undo-tree-visualize) to visually walk through
 the changes you've made, undo back to a certain point (or redo), and
@@ -975,6 +1005,9 @@ go down different branches.
 	(setq undo-tree-visualizer-timestamps t)
 	(setq undo-tree-visualizer-diff t)))
 #+END_SRC
+
+
+
 * Cursor movement
 First we define code that allows us to bind multiple functions to
 repeated commands. Taken from
@@ -1207,7 +1240,11 @@ Smooth scrolling (default is 5).
 (setq mouse-wheel-scroll-amount '(2 ((shift) . 1) ((control) . nil))
 	  mouse-wheel-progressive-speed nil)
 #+END_SRC
+
+
+
 * Yank and Delete
+
 ** Delete word or yank
 The following may be of interest to people who (a) are happy with
 "C-w" and friends for killing and yanking, (b) use
@@ -1318,6 +1355,7 @@ Paste at text-cursor, not at mouse-cursor:
 #+BEGIN_SRC emacs-lisp
 (setq mouse-yank-at-point t)
 #+END_SRC
+
 ** Package avy-zap: delete up to a character
 This makes =M-z= ask via avy to which character text should be
 deleted. The character itself will stay. If you use =M-Z=, then this
@@ -1330,7 +1368,11 @@ character will be gone, too.
 		 ("M-Z" . avy-zap-to-char-dwim))
 )
 #+END_SRC
+
+
+
 * Completion
+
 ** Case
 Ignore case when reading a file name completion
 
@@ -1382,7 +1424,11 @@ Lets TAB do completion as well
 		)
 )
 #+END_SRC
+
+
+
 * Windows handling
+
 ** delete-window
 If only one window in frame, `delete-frame'.
 From http://www.emacswiki.org/emacs/frame-cmds.el
@@ -1468,6 +1514,7 @@ are two windows displayed, act like C-x1:"
 	(delete-other-windows)))
 (bind-key "<f5>" 'my-explode-window)
 #+END_SRC
+
 ** Windows toggle / Buffer switching (F6)
 If there is only one window displayed, swap it with previous buffer.
 If there are two windows displayed, act like =C-x o=.
@@ -1491,11 +1538,16 @@ If there are two windows displayed, act like =C-x o=."
   :init
   (winner-mode 1))
 #+END_SRC
+
 ** Other window
 #+BEGIN_SRC emacs-lisp
 (bind-key "M-o" #'other-window)
 #+END_SRC
+
+
+
 * Buffers
+
 ** Insert buffer
 |-------+---------------|
 | C-x i | insert file   |
@@ -1613,7 +1665,9 @@ http://www.emacswiki.org/emacs/iflipb
   )
 #+END_SRC
 
+
 * File opening/saving
+
 ** Basic settings
 Never show GTK file open dialog
 
@@ -1726,6 +1780,7 @@ list of regular expressions:
 	  recentf-max-menu-items 20)
 (recentf-mode 1)
 #+END_SRC
+
 ** save local variables
 
 The following change allows me to have some files flychecked in
@@ -1741,6 +1796,9 @@ into the file.
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'safe-local-variable-values '(ispell-dictionary . german-new8))
 #+END_SRC
+
+
+
 * Minibuffer
 Don't insert current directory into minubuffer
 
@@ -1768,7 +1826,11 @@ for example).
 (define-key minibuffer-local-completion-map " " nil)
 (define-key minibuffer-local-must-match-map " " nil)
 #+END_SRC
+
+
+
 * Searching
+
 ** isearch (incremental search)
 Scrolling while searching
 
@@ -1792,7 +1854,11 @@ subdirectories:
 	  (grep (concat "egrep -s -i -n -r " needle " *")))))
 (bind-key "M-s g" 'my-grep)
 #+END_SRC
+
+
+
 * Help
+
 ** Go to back to previous help buffer
 Make 'b' (back) go to the previous position in emacs help.
 [[http://www.emacswiki.org/cgi-bin/wiki/EmacsNiftyTricks]]
@@ -1852,7 +1918,11 @@ This is from https://www.emacswiki.org/emacs/DescribeThingAtPoint
   (which-key-setup-side-window-right-bottom)
 )
 #+END_SRC
+
+
+
 * Miscelleanous functions
+
 ** dos2unix
 
 #+BEGIN_SRC emacs-lisp
@@ -1872,6 +1942,7 @@ Inserts something like "Fri,  1 Dec 2006 15:41:36 +0100"
   (interactive)
   (insert (format-time-string "%a, %e %b %Y %H:%M:%S %z")))
 #+END_SRC
+
 ** Calculate region
 From https://www.reddit.com/r/emacs/comments/445w6s/whats_some_small_thing_in_your_dotemacs_that_you/:
 
@@ -1907,6 +1978,9 @@ minibuffer."
 	(-1 (message value))))))
 (bind-key "C-=" #'calc-eval-region)
 #+END_SRC
+
+
+
 * helm
 Very good intro: http://tuhdo.github.io/helm-intro.html
 
@@ -1949,6 +2023,7 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   ;; scroll 8 lines other window using M-<next>/M-<prior>
   (setq helm-scroll-amount 8)
 #+END_SRC
+
 ** Helm faces
 
 #+BEGIN_SRC emacs-lisp
@@ -1963,6 +2038,7 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   (set-face-attribute 'helm-history-deleted     nil :foreground 'unspecified :background 'unspecified)
   (set-face-attribute 'helm-history-remote      nil :foreground 'unspecified :background 'unspecified)
 #+END_SRC
+
 ** Hide mode lines
 Hide modelines of other windows while helm is open, again from
 https://github.com/hatschipuh/better-helm.
@@ -2049,6 +2125,7 @@ Hide minibuffer while helm is active
   :bind ("M-g b" . helm-bookmarks)
 )
 #+END_SRC
+
 ** helm-buffer
 #+BEGIN_SRC emacs-lisp
 (use-package help-buffer
@@ -2134,6 +2211,7 @@ Hide minibuffer while helm is active
   (setq helm-autoresize-mode t)
 )
 #+END_SRC
+
 ** helm-ring
 #+BEGIN_SRC emacs-lisp
 (use-package helm-ring
@@ -2195,7 +2273,11 @@ adapted to helm.
 (bind-key "M-g d" #'helm-goto-recent-directory)
 
 #+END_SRC
+
+
+
 * org-mode
+
 *** org itself
 
 #+BEGIN_SRC emacs-lisp
@@ -2642,6 +2724,7 @@ http://www.suenkler.info/docs/emacs-orgmode/
 	(org-publish "site" t))
 )
 #+END_SRC
+
 *** ox-twbs
 #+BEGIN_SRC emacs-lisp
 (use-package ox-twbs
@@ -2649,6 +2732,7 @@ http://www.suenkler.info/docs/emacs-orgmode/
   :commands (org-twbs-publish-to-html)
 )
 #+END_SRC
+
 *** htmlize
 #+BEGIN_SRC emacs-lisp
 (use-package htmlize
@@ -2657,7 +2741,11 @@ http://www.suenkler.info/docs/emacs-orgmode/
   :defines (htmlize-version)
 )
 #+END_SRC
+
+
+
 * Single packages
+
 ** circe (IRC client)
 see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Configuration
 
@@ -2699,6 +2787,7 @@ see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Con
   (interactive)
   (circe "Freenode"))
 #+END_SRC
+
 ** dired
 #+BEGIN_SRC emacs-lisp
 (use-package dired
@@ -2714,6 +2803,7 @@ see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Con
   :commands dired-jump
 )
 #+END_SRC
+
 ** flyspell
 
 #+BEGIN_SRC emacs-lisp
@@ -2747,6 +2837,7 @@ after launching emacs, which is a bit unfortunate.
 #+END_SRC
 
 #+END_SRC
+
 *** helm-flyspell
 https://github.com/pronobis/helm-flyspell
 
@@ -2757,6 +2848,7 @@ https://github.com/pronobis/helm-flyspell
   (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
   )
 #+END_SRC
+
 ** hydra
 
 #+BEGIN_SRC emacs-lisp
@@ -2772,6 +2864,7 @@ https://github.com/pronobis/helm-flyspell
   :defer t
   :commands (lv-message))
 #+END_SRC
+
 ** pdf-tools
 - Home page: https://github.com/politza/pdf-tools
 - Configuration based on https://github.com/abo-abo/hydra/wiki/PDF-Tools, but modified to lazy-load and to bind to *.pdf files
@@ -2861,7 +2954,11 @@ https://github.com/pronobis/helm-flyspell
 ;; (use-package org-pdfview
 ;;   :ensure t))
 #+END_SRC
+
+
+
 * Mail & News
+
 ** smtpmail
 http://emacs.stackexchange.com/questions/6105/how-to-set-proper-smtp-gmail-settings-in-emacs-in-order-to-be-able-to-work-with
 http://superuser.com/questions/476714/how-to-configure-emacs-smtp-for-using-a-secure-server-gmail
@@ -2876,6 +2973,7 @@ http://superuser.com/questions/476714/how-to-configure-emacs-smtp-for-using-a-se
 		smtpmail-smtp-service 587
 		smtpmail-debug-info t))
 #+END_SRC
+
 ** sendmail
 http://www.emacswiki.org/emacs/MuttInEmacs
 http://dev.mutt.org/trac/wiki/MuttFaq/Editor
@@ -2933,7 +3031,9 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
 )
 #+END_SRC
 
+
 ** notmuch
+
 *** notmuch itself
 #+BEGIN_SRC emacs-lisp
 (use-package notmuch
@@ -2956,6 +3056,7 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
   (define-key notmuch-search-mode-map "a" nil)
 )
 #+END_SRC
+
 *** notmuch-hello
 	:PROPERTIES:
 	:TITLE:    notmuch: a nicer notmuch-hello screen for Emacs
@@ -3245,6 +3346,7 @@ That's all, folks.
   (define-key notmuch-common-keymap "s" nil)
 )
 #+END_SRC
+
 *** notmuch-show
 #+BEGIN_SRC emacs-lisp
 (use-package notmuch-show
@@ -3266,6 +3368,7 @@ That's all, folks.
   (define-key notmuch-show-mode-map (kbd "M-TAB") nil)
 )
 #+END_SRC
+
 *** notmuch-tag
 #+BEGIN_SRC emacs-lisp
 (use-package notmuch-tag
@@ -3282,6 +3385,7 @@ That's all, folks.
   (add-to-list 'notmuch-tag-formats '("signed" (propertize tag 'invisible t)))
 )
 #+END_SRC
+
 *** notmuch-tree
 #+BEGIN_SRC emacs-lisp
 (use-package notmuch-tree
@@ -3319,6 +3423,7 @@ That's all, folks.
   (define-key notmuch-tree-mode-map "x" #'my-notmuch-export-patch)
 )
 #+END_SRC
+
 *** notmuch-mua
 #+BEGIN_SRC emacs-lisp
 (use-package notmuch-mua
@@ -3327,6 +3432,7 @@ That's all, folks.
   (setq notmuch-mua-cite-function #'message-cite-original-without-signature)
 )
 #+END_SRC
+
 ** notmuch patch exporting
    :PROPERTIES:
    :TITLE:    Easy export of Linux patches from Emacs' Notmuch
@@ -3451,6 +3557,9 @@ both in tree-view and in message-show mode, I bind it to both places.
 (define-key notmuch-show-mode-map "x" #'my-notmuch-export-patch)
 (define-key notmuch-tree-mode-map "x" #'my-notmuch-export-patch)
 #+END_SRC
+
+
+
 * Blogging
   :PROPERTIES:
   :TITLE:    Blog from Org-Mode to Hugo
@@ -3645,8 +3754,11 @@ top with a "<!--more-->" marker. Generate this HTML with
 
 
 
+
 * Programming
+
 ** Source code version control
+
 *** Disable vc backends
 
 Remove all back-ends from vc-mode, no need to check all these things, I use
@@ -3655,6 +3767,7 @@ Remove all back-ends from vc-mode, no need to check all these things, I use
 #+BEGIN_SRC emacs-lisp
 (setq vc-handled-backends '())
 #+END_SRC
+
 *** Package: magit
 #+BEGIN_SRC emacs-lisp
 (use-package magit
@@ -3705,11 +3818,14 @@ Remove all back-ends from vc-mode, no need to check all these things, I use
 
 
 
+
 ** Tabs and indentation
+
 *** Tab width 4
 #+BEGIN_SRC emacs-lisp
 (setq-default tab-width 4)
 #+END_SRC
+
 *** tabify only leading whitespace
 #+BEGIN_SRC emacs-lisp
 (use-package tabify
@@ -3727,6 +3843,7 @@ kill the tab instead.
 #+BEGIN_SRC emacs-lisp
 (setq backward-delete-char-untabify-method nil)
 #+END_SRC
+
 *** RET is newline-and-indent
 And if we ever need it, =C-j= is now newline.
 
@@ -3734,6 +3851,7 @@ And if we ever need it, =C-j= is now newline.
 (bind-key "RET" 'newline-and-indent)
 (bind-key "C-j" 'newline)
 #+END_SRC
+
 *** Clean wrong indentation
 Nice tip from tuhdo, see https://www.emacswiki.org/emacs/CleanAutoIndent
 #+BEGIN_SRC emacs-lisp
@@ -3744,6 +3862,7 @@ Nice tip from tuhdo, see https://www.emacswiki.org/emacs/CleanAutoIndent
   (add-hook 'prog-mode-hook #'clean-aindent-mode)
 )
 #+END_SRC
+
 *** Guess indent mode
 #+BEGIN_SRC emacs-lisp
 (use-package dtrt-indent
@@ -3753,7 +3872,11 @@ Nice tip from tuhdo, see https://www.emacswiki.org/emacs/CleanAutoIndent
   (setq dtrt-indent-verbosity 0)
 )
 #+END_SRC
+
+
+
 ** Expansion
+
 *** CANC yasnippet
 Now try yasnippet again now that it's faster.
 
@@ -3785,6 +3908,7 @@ Now try yasnippet again now that it's faster.
   ;; (yas-global-mode 1)
 )
 #+END_SRC
+
 *** CANC Completion for programmers
 #+BEGIN_SRC emacs-lisp
 (use-package company-c-headers
@@ -3796,6 +3920,7 @@ Now try yasnippet again now that it's faster.
   (add-to-list 'company-c-headers-path-system "/usr/include/qt4/QtGui/")
 )
 #+END_SRC
+
 
 
 ** Commenting
@@ -3835,6 +3960,7 @@ rest of the line is empty.
 (add-hook 'c-mode-common-hook 'my-smart-parens-setup)
 ;; (add-hook 'emacs-lisp-mode-hook 'my-smart-parens-setup)
 #+END_SRC
+
 ** Compilation
 set initial compile-command to nothing, so that F7 will prompt for one
 
@@ -3994,12 +4120,16 @@ set initial compile-command to nothing, so that F7 will prompt for one
 (bind-key "<f8>" 'next-error)
 (bind-key "S-<f8>" 'previous-error)
 #+END_SRC
+
 ** Make files with shebang executable
 #+BEGIN_SRC emacs-lisp
 (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
 #+END_SRC
 
+
+
 ** Mode: C, C++
+
 *** Open *.h files normally in c++ mode
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
@@ -4083,11 +4213,14 @@ newline to the correct position"
   (self-insert-command (prefix-numeric-value arg))
   (newline-and-indent))
 #+END_SRC
+
 *** CANC c-syntactic-element?
 #+BEGIN_SRC emacs-lisp
 (defvar c-syntactic-element)
 (eval-when-compile (require 'cc-mode))
 #+END_SRC
+
+
 ** Mode: Ediff
 http://oremacs.com/2015/01/17/setting-up-ediff/
 
@@ -4131,6 +4264,7 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
   :mode ("\\.d\\'" . d-mode)
 )
 #+END_SRC
+
 ** Mode: Go
 #+BEGIN_SRC emacs-lisp
 (use-package go-mode
@@ -4138,6 +4272,7 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
   :defer t
 )
 #+END_SRC
+
 ** Mode: JS2-Mode
 #+BEGIN_SRC emacs-lisp
 (use-package js2-mode
@@ -4151,6 +4286,7 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
   (defalias 'run-node 'nodejs-repl)
 )
 #+END_SRC
+
 ** Mode: lua
 #+BEGIN_SRC emacs-lisp
 (use-package lua-mode
@@ -4162,6 +4298,7 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
   (add-hook 'lua-mode-hook #'my-lua-hook)
 )
 #+END_SRC
+
 ** Mode: Markdown
 
 #+BEGIN_SRC emacs-lisp
@@ -4170,6 +4307,7 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
   :mode (("\\.md\\'"       . markdown-mode)
 	 ("\\.markdown\\'" . markdown-mode)))
 #+END_SRC
+
 ** Mode: pug (for vibe.d templates)
 #+BEGIN_SRC emacs-lisp
 (use-package pug-mode
@@ -4193,6 +4331,7 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
 	electric-indent-chars (delq ?: electric-indent-chars)))
 (add-hook 'python-mode-hook 'my-python-setup)
 #+END_SRC
+
 ** Mode: Qt project files
 From  https://raw.githubusercontent.com/chriskonstad/emacs/master/elisp/qt-pro.el
 #+BEGIN_SRC emacs-lisp
@@ -4267,6 +4406,8 @@ former used to be subword-mode, but I rarely want to move by subwords.
   :bind ("C-c w" . whitespace-mode)
 )
 #+END_SRC
+
+
 ** Package: ansi-term
 This term understands ansi escape sequences.
 
@@ -4320,6 +4461,7 @@ the terminal "eterm-color" is available.
   (add-hook 'term-mode-hook 'my-term-hook)
 )
 #+END_SRC
+
 ** Package: column-marker
 
 #+BEGIN_SRC emacs-lisp
@@ -4352,6 +4494,7 @@ See https://github.com/jacktasia/dumb-jump.
 		 )
 )
 #+END_SRC
+
 ** CANC Package: auto-compile
 
 #+BEGIN_SRC emacs-lisp
@@ -4420,6 +4563,7 @@ Nice for elisp faces or CSS files.
   :commands (rainbow-mode)
 )
 #+END_SRC
+
 ** CANC Package: semantic
 #+BEGIN_SRC emacs-lisp
 (use-package semantic
@@ -4429,6 +4573,7 @@ Nice for elisp faces or CSS files.
   ;; maybe set semantic-default-submodes
 )
 #+END_SRC
+
 ** Package: zeal-at-point - a documentation browser
 I got the idea from this [[https://www.reddit.com/r/emacs/comments/4xa253/browser_for_api_documentation_inside_emacs/][reddit]] post: [[http://zealdocs.org/][Zeal]] and [[https://github.com/jinzhu/zeal-at-point][zeal-at-point]] are nice
 documentation browsers.
