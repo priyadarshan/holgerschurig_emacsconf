@@ -1606,12 +1606,9 @@ If the CDR is nil, then the buffer is only buried."
 ** Easier kill buffers with processes
 Don't asks you if you want to kill a buffer with a live process
 attached to it:
-http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/
 
 #+BEGIN_SRC emacs-lisp
-(setq kill-buffer-query-functions
-	  (remq 'process-kill-buffer-query-function
-		 kill-buffer-query-functions))
+(remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
 #+END_SRC
 
 ** Cycle buffers
