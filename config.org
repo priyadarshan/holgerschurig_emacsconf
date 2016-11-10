@@ -2338,6 +2338,9 @@ adapted to helm.
   ;; adjust level
   (setq org-yank-adjusted-subtrees t)
 
+  ;; Hide emphasize markers like the "=" in "=foo=".
+  (setq org-hide-emphasis-markers t)
+
   ;; New line behavior:
   ;; - add blank line after M-ENTER (org-insert-heading)
   (setq org-blank-before-new-entry '((heading . t) (plain-list-item . auto)))
