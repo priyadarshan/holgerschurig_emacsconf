@@ -1829,10 +1829,15 @@ for example).
 * Searching
 
 ** isearch (incremental search)
-Scrolling while searching
+Scrolling (including C-s) while searching:
 
 #+BEGIN_SRC emacs-lisp
 (setq isearch-allow-scroll t)
+#+END_SRC
+
+Allow to easily search for the last yanked string:
+
+#+BEGIN_SRC emacs-lisp
 (bind-key "C-y" 'isearch-yank-kill isearch-mode-map)
 #+END_SRC
 
