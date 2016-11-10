@@ -3028,6 +3028,13 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
 
   ;; The message buffer will be killed after sending a message.
   (setq message-kill-buffer-on-exit t)
+
+  ;; When I reply, I don't want to have me in To or Cc
+  (setq message-dont-reply-to-names (concat "\\("
+                                          user-mail-address
+                                          ;; Nor the Debian BTS
+                                          ;; "\\|^submit@bugs.debian\\.org$"
+                                          "\\)"))
 )
 #+END_SRC
 
