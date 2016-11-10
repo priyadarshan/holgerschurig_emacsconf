@@ -3837,6 +3837,9 @@ Remove all back-ends from vc-mode, no need to check all these things, I use
 		(insert "bind_raise_or_run_web()")
 		(call-process-region (point-min) (point-max) "awesome-client" t)))
   (bind-key "M-g g" 'my-magit-browse-github magit-mode-map)
+
+  ;; Make "q" kill the window, not just bury it
+  (bind-key "q" 'my--kill-buffer-and-window magit-mode-map)
 )
 #+END_SRC
 
