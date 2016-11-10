@@ -3832,6 +3832,7 @@ Remove all back-ends from vc-mode, no need to check all these things, I use
 #+BEGIN_SRC emacs-lisp
 (use-package git-timemachine
   :commands git-timemachine
+  :ensure t
   )
 #+END_SRC
 
