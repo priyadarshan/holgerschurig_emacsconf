@@ -2020,7 +2020,7 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   ;; allow "find man at point" for C-c h m (helm-man-woman)
   (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
-  (setq helm-candidate-number-limit 100)
+  (setq helm-candidate-number-limit 200)
   (setq helm-quick-update t)
 
   ;; Open full helm frame
@@ -2202,7 +2202,7 @@ Hide minibuffer while helm is active
   :defer t
   :bind ("M-g i" . helm-imenu)
   :config
-  (setq helm-imenu-delimiter " ")
+  (setq helm-imenu-delimiter " - ")
 )
 #+END_SRC
 
@@ -2444,6 +2444,8 @@ adapted to helm.
 	  ("i" "#+INDEX: ?")
 	  ("I" "#+INCLUDE: %file ?")
 	  ))
+
+  (setq org-imenu-depth 3)
 )
 #+END_SRC
 
