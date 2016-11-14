@@ -792,11 +792,11 @@ I got the idea from here: http://amitp.blogspot.de/2013/05/emacs-highlight-activ
 #+BEGIN_SRC emacs-lisp
 (defun highlight-focus:app-focus-in ()
   (global-font-lock-mode 1)
-  ;;(set-face-attribute 'default nil :foreground "white")
+  (set-face-attribute 'default nil :foreground "white")
 )
 (defun highlight-focus:app-focus-out ()
   (global-font-lock-mode -1)
-  ;;(set-face-attribute 'default nil :foreground "#555555")
+  (set-face-attribute 'default nil :foreground "#555555")
 )
 (add-hook 'focus-in-hook  #'highlight-focus:app-focus-in)
 (add-hook 'focus-out-hook #'highlight-focus:app-focus-out)
