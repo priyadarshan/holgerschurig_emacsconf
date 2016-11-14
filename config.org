@@ -2285,7 +2285,13 @@ adapted to helm.
 #+BEGIN_SRC emacs-lisp
 (use-package org
   :bind (("C-c l" . org-store-link)
-		 ("C-c o" . org-open-at-point-global))
+		 ("C-c o" . org-open-at-point-global)
+		 ;; This used to be org-shift{up/down}, but I'm not working
+		 ;; with priorities it however also allowed to edit
+		 ;; timestamps, not sure if I'm gonna miss that.
+		 :map org-mode-map
+		 ("M-p"   . org-previous-visible-heading)
+		 ("M-n"   . org-next-visible-heading))
   :commands (org-open-file orgstruct++-mode)
   :init
   ;; allow Shift-Cursor to mark stuff
