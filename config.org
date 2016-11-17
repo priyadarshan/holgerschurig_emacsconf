@@ -4239,19 +4239,6 @@ From linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
 		 (steps (floor offset c-basic-offset)))
 	(* (max steps 1)
 	   c-basic-offset)))
-
-(defun my-c-electric-brace-open (arg)
-  "This just inserts the spaces, a newline, and indents into the
-newline to the correct position"
-  (interactive "*P")
-  (self-insert-command (prefix-numeric-value arg))
-  (newline-and-indent))
-#+END_SRC
-
-*** CANC c-syntactic-element?
-#+BEGIN_SRC emacs-lisp
-(defvar c-syntactic-element)
-(eval-when-compile (require 'cc-mode))
 #+END_SRC
 
 
