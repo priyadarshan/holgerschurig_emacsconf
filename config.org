@@ -2820,8 +2820,6 @@ see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Con
  (setq flyspell-issue-welcome-flag nil)
  ;; M-Tab is owned by the window manager, correct with C-M-i
  (setq flyspell-use-meta-tab nil)
- ;; Flyspell hijacked C-., which I want to use for tags
- (define-key flyspell-mode-map [(control ?\.)] nil)
  )
 
 #+END_SRC
