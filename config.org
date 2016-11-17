@@ -4170,8 +4170,8 @@ set initial compile-command to nothing, so that F7 will prompt for one
 #+END_SRC
 
 *** C initialization
-Somehow a the first visited file stays in "gnu" style when I set the c-default-style
-just in the common hook
+Somehow a the first visited file stays in "gnu" style when I set the
+c-default-style just in the common hook.
 
 #+BEGIN_SRC emacs-lisp
 (eval-when-compile (require 'cc-vars))
@@ -4179,8 +4179,8 @@ just in the common hook
   ;; Default style
   (c-add-style "linux-tabs-only"
 		   '("linux" (c-offsets-alist (arglist-cont-nonempty
-					   c-lineup-gcc-asm-reg
-					   c-lineup-arglist-tabs-only))))
+									   c-lineup-gcc-asm-reg
+									   c-lineup-arglist-tabs-only))))
   (setq c-default-style '((java-mode . "java")
 						  (awk-mode . "awk")
 						  (other . "linux")))
@@ -4227,7 +4227,8 @@ Things that will apply to .C and .CPP files
 (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 #+END_SRC
 
-*** from linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
+*** Helper for Linux
+From linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
 
 #+BEGIN_SRC emacs-lisp
 (defun c-lineup-arglist-tabs-only (ignored)
