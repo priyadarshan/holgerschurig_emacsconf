@@ -4429,8 +4429,10 @@ Home page: http://web-mode.org/
 		 )
   :defines (web-mode-engines-alist)
   :config
+  ;; remove the   (nil ("<!-" . "- | -->"))  data set:
   (unless (car (car (last web-mode-engines-auto-pairs)))
-	(setq web-mode-engines-auto-pairs (butlast web-mode-engines-auto-pairs)))
+   	(setq web-mode-engines-auto-pairs (butlast web-mode-engines-auto-pairs)))
+
   (defun my-web-mode-hook ()
 	(visual-line-mode 1)
 	(setq web-mode-markup-indent-offset 2
