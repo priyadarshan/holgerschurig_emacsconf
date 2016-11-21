@@ -1241,6 +1241,14 @@ Smooth scrolling (default is 5).
 	  mouse-wheel-progressive-speed nil)
 #+END_SRC
 
+** Smooth scrolling
+Normally, at the top-of-screen or bottom-of-screen, emacs would scroll
+quarter-page wise. This is a bit annoying, because I'll always have to
+chase the cursor when this happens. But there's a cure:
+
+#+BEGIN_SRC emacs-lisp
+(setq scroll-conservatively 101)
+#+END_SRC
 
 
 * Yank and Delete
@@ -2012,7 +2020,7 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   ;; allow "find man at point" for C-c h m (helm-man-woman)
   (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
-  (setq helm-candidate-number-limit 100)
+  (setq helm-candidate-number-limit 200)
   (setq helm-quick-update t)
 
   ;; Open full helm frame
@@ -2022,8 +2030,6 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 
   ;; move to end or beginning of source when reaching top or bottom of source.
   (setq helm-move-to-line-cycle-in-source t)
-  ;; scroll 8 lines other window using M-<next>/M-<prior>
-  (setq helm-scroll-amount 8)
 #+END_SRC
 
 ** Helm faces
@@ -2196,7 +2202,7 @@ Hide minibuffer while helm is active
   :defer t
   :bind ("M-g i" . helm-imenu)
   :config
-  (setq helm-imenu-delimiter " ")
+  (setq helm-imenu-delimiter " - ")
 )
 #+END_SRC
 
@@ -2444,6 +2450,8 @@ adapted to helm.
 	  ("i" "#+INDEX: ?")
 	  ("I" "#+INCLUDE: %file ?")
 	  ))
+
+  (setq org-imenu-depth 3)
 )
 #+END_SRC
 
@@ -4427,8 +4435,10 @@ Home page: http://web-mode.org/
 		 )
   :defines (web-mode-engines-alist)
   :config
+  ;; remove the   (nil ("<!-" . "- | -->"))  data set:
   (unless (car (car (last web-mode-engines-auto-pairs)))
-	(setq web-mode-engines-auto-pairs (butlast web-mode-engines-auto-pairs)))
+   	(setq web-mode-engines-auto-pairs (butlast web-mode-engines-auto-pairs)))
+
   (defun my-web-mode-hook ()
 	(visual-line-mode 1)
 	(setq web-mode-markup-indent-offset 2
