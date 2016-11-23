@@ -4140,6 +4140,13 @@ set initial compile-command to nothing, so that F7 will prompt for one
 		(setcdr cmd (format-time-string "%s"))
 		;; (message "assoc: %s" (assoc compile-command compile-commands))
 		))
+	;; (message "compile command: %s" compile-command)
+	(setq compile-command (replace-regexp-in-string
+						   " \\(%\\) "
+						   (buffer-file-name (window-buffer))
+						   compile-command
+						   nil nil 1))
+	;; (message "compile command: %s" compile-command)
 	(if (string= (substring compile-command 0 1) "(")
 		(eval (car (read-from-string compile-command)))
 	  (progn
