@@ -1211,7 +1211,7 @@ use + and - after the first expand to expand further / shrink again.
 #+BEGIN_SRC emacs-lisp
 (use-package avy
   :ensure t
-  :bind ("C-#" . avy-goto-char-timer)
+  :bind ("C-ö" . avy-goto-char-timer)
   :config
   (setq avy-keys (append (number-sequence ?a ?z)
 						 (number-sequence ?0 ?9)))
