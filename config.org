@@ -1212,12 +1212,12 @@ use + and - after the first expand to expand further / shrink again.
 (use-package avy
   :ensure t
   :bind ("C-#" . avy-goto-char-timer)
-  :config (progn
-		(setq avy-keys (append (number-sequence ?a ?z)
-					(number-sequence ?0 ?9)))
-		(setq avy-style 'at-full)
-		(setq avy-all-windows nil)
-		(setq avy-highlight-first t)))
+  :config
+  (setq avy-keys (append (number-sequence ?a ?z)
+						 (number-sequence ?0 ?9)))
+  (setq avy-style 'at-full)
+  (setq avy-all-windows nil)
+  (setq avy-highlight-first t))
 #+END_SRC
 
 ** smartscan
