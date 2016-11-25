@@ -341,6 +341,8 @@
    `(magit-log-head-label-tags ((,class (:foreground ,aqua :box nil :weight bold))))
    `(magit-log-sha1 ((,class (:foreground ,yellow))))
    `(magit-section-title ((,class (:foreground ,blue :weight bold))))
+   `(magit-section-highlight ((,class (:background ,black))))
+   `(magit-diff-context-highlight ((,class (:foreground nil :background nil))))
 
    ;; git-gutter
    `(git-gutter:modified ((,class (:foreground ,orange :weight bold))))
