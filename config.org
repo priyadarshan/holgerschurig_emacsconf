@@ -2352,8 +2352,10 @@ adapted to helm.
   (bind-key "C-c R"   'org-reveal org-mode-map)
   ;; (bind-key "C-c t"   'org-show-todo-tree org-mode-map)
 
-  ;; adjust level
-  (setq org-yank-adjusted-subtrees t)
+  ;; adjust level, but not for drawers/properties
+  (setq org-yank-adjusted-subtrees t
+		org-adapt-indentation nil)
+
 
   ;; Hide emphasize markers like the "=" in "=foo=".
   (setq org-hide-emphasis-markers t)
