@@ -4641,6 +4641,60 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 )
 #+END_SRC
 
+** Package: kurecolor
+https://github.com/emacsfodder/kurecolor
+#+BEGIN_SRC emacs-lisp
+(use-package kurecolor
+  :ensure t
+  :commands (kurecolor-decrease-brightness-by-step
+			 kurecolor-increase-brightness-by-step
+			 kurecolor-decrease-saturation-by-step
+			 kurecolor-increase-saturation-by-step
+			 kurecolor-decrease-hue-by-step
+			 kurecolor-increase-hue-by-step
+			 kurecolor-set-brightness
+			 kurecolor-set-saturation
+			 kurecolor-set-hue
+			 kurecolor-hex-val-group
+			 kurecolor-hex-sat-group
+			 kurecolor-hex-hue-group
+			 kurecolor-cssrgb-at-point-or-region-to-hex
+			 kurecolor-hexcolor-at-point-or-region-to-css-rgb
+			 kurecolor-hexcolor-at-point-or-region-to-css-rgba)
+  :bind ("M-g k" . my-kurecolor)
+  :config
+  (defun my-kurecolor ()
+	(interactive)
+	(rainbow-mode t)
+	(hydra-kurecolor/body)
+	)
+  (defhydra hydra-kurecolor (:color pink :hint  nil)
+      "
+Dec/Inc      _j_/_J_ brightness      _k_/_K_ saturation      _l_/_L_ hue
+Set          _sj_ ^^ brightness      _sk_ ^^ saturation      _sl_ ^^ hue
+Get          _gj_ ^^ brightness      _gk_ ^^ saturation      _gl_ ^^ hue
+
+Convert      _ch_ ^^ RGB → Hex       _cr_ ^^ Hex → RGB       _cR_ ^^ Hex → RGBA
+"
+      ("j"  kurecolor-decrease-brightness-by-step)
+      ("J"  kurecolor-increase-brightness-by-step)
+      ("k"  kurecolor-decrease-saturation-by-step)
+      ("K"  kurecolor-increase-saturation-by-step)
+      ("l"  kurecolor-decrease-hue-by-step)
+      ("L"  kurecolor-increase-hue-by-step)
+      ("sj" kurecolor-set-brightness :color blue)
+      ("sk" kurecolor-set-saturation :color blue)
+      ("sl" kurecolor-set-hue :color blue)
+      ("gj" kurecolor-hex-val-group :color blue)
+      ("gk" kurecolor-hex-sat-group :color blue)
+      ("gl" kurecolor-hex-hue-group :color blue)
+      ("ch" kurecolor-cssrgb-at-point-or-region-to-hex :color blue)
+      ("cr" kurecolor-hexcolor-at-point-or-region-to-css-rgb :color blue)
+      ("cR" kurecolor-hexcolor-at-point-or-region-to-css-rgba :color blue)
+      ("q"  nil "cancel" :color blue))
+)
+#+END_SRC
+
 ** Package: rainbow-mode
 Rainbow-mode turns color codes inside the editor into real colors.
 Nice for elisp faces or CSS files.
@@ -4652,7 +4706,6 @@ Nice for elisp faces or CSS files.
   :commands (rainbow-mode)
 )
 #+END_SRC
-
 ** CANC Package: semantic
 #+BEGIN_SRC emacs-lisp
 (use-package semantic
