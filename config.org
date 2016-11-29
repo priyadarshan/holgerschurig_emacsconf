@@ -2419,6 +2419,9 @@ adapted to helm.
   ;; Try column with this:
   ;; (setq org-columns-default-format "%80ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
 
+  ;; handle jumping into org-mode
+  (setq org-show-context-detail '((default . local)))
+
   ;; misc refile settings
   (setq org-reverse-note-order t)
   (setq org-refile-allow-creating-parent-nodes 'confirm)
