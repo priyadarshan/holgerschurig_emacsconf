@@ -3802,6 +3802,7 @@ Remove all back-ends from vc-mode, no need to check all these things, I use
   :defines (magit-rigid-key-bindings)
   :commands (magit-toplevel)
   :bind ("M-g m" . magit-status)
+  :bind ("M-g M" . magit-list-repositories)
   :config
   ;; Open magit window full-screen
   (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
@@ -3854,6 +3855,22 @@ Remove all back-ends from vc-mode, no need to check all these things, I use
 
   ;; Make "q" kill the window, not just bury it
   (bind-key "q" 'my--kill-buffer-and-window magit-mode-map)
+
+  ;; Switch repositories with magit-list-repositories
+  (setq magit-repository-directories
+		'(
+		  ("~"        . 1)
+		  ("~/d"      . 1)
+		  ("/usr/src" . 1)
+		)
+		magit-repository-directories-depth 1
+		magit-repolist-columns
+		'(
+		  ("Name"    25 magit-repolist-column-ident                  nil)
+		  ("Version" 25 magit-repolist-column-version                nil)
+		  ("Push"    4 magit-repolist-column-unpushed-to-upstream   (:right-align t))
+		  ;; ("L<U"      3 magit-repolist-column-unpulled-from-upstream (:right-align t))
+		  ("Path"    99 magit-repolist-column-path)))
 )
 #+END_SRC
 

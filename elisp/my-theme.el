@@ -4,7 +4,7 @@
 
 ;; Author: Pascal van Kooten <kootenpv@gmail.com>
 ;; Keywords: themes
-;; Package-Version: 20160214.451
+;; Package-Version: 20161023.205
 ;; Package-X-Original-Version: 20140104.1059
 ;; URL: http://github.com/kootenpv/emacs-kooten-theme
 ;; Version: 0.1
@@ -55,11 +55,14 @@
 (let* ((class '((class color) (min-colors 89)))
        (256color (eq (display-color-cells (selected-frame)) 256))
 
+       ;;(background (if 256color "#1c1c1c" "#181a26"))
        (background "#000000")
        (current-line (if 256color "#121212" "#14151E"))
+       ;;(block-background (if 256color "#262626" "#1F2232"))
        (block-background "#000000")
        (selection "#103050")
        (foreground "white")
+       (black "black")
        (comment "#FF7177")
        (red "#d54e53")
        (orange "goldenrod")
@@ -94,15 +97,37 @@
    `(shadow ((,class (:foreground ,comment))))
    `(success ((,class (:foreground "SeaGreen2"))))
    `(error ((,class (:foreground ,red))))
+   ;;`(highlight-indentation-face ((t (:foreground "black" :height 54 :family "Arial"))))
    `(warning ((,class (:foreground ,orange))))
 
    ;; Flycheck
-   `(flycheck-error ((,class (:underline (:style wave :color ,red)))))
-   `(flycheck-warning ((,class (:underline (:style wave :color ,orange)))))
+  `(flycheck-error
+     ((((supports :underline (:style line :color ,red)))
+       (:underline (:style line :color ,red)
+                   :inherit unspecified :foreground unspecified :background unspecified))
+      (t (:foreground ,red :weight bold :underline t))))
+   `(flycheck-warning
+     ((((supports :underline (:style line :color ,orange)))
+       (:underline (:style line :color ,orange)
+                   :inherit unspecified :foreground unspecified :background unspecified))
+      (t (:foreground ,orange :weight bold :underline t))))
 
    ;; Flymake
-   `(flymake-warnline ((,class (:underline (:style line :color ,yellow) :background ,background))))
-   `(flymake-errline ((,class (:underline (:style line :color ,red) :background ,background))))
+  `(flymake-errline
+     ((((supports :underline (:style line :color ,red)))
+       (:underline (:style line :color ,red)
+                   :inherit unspecified :foreground unspecified :background unspecified))
+      (t (:foreground ,red :weight bold :underline t))))
+   `(flymake-warnline
+     ((((supports :underline (:style line :color ,orange)))
+       (:underline (:style line :color ,orange)
+                   :inherit unspecified :foreground unspecified :background unspecified))
+      (t (:foreground ,orange :weight bold :underline t))))
+   `(flymake-infoline
+     ((((supports :underline (:style line :color ,green)))
+       (:underline (:style line :color ,green)
+                   :inherit unspecified :foreground unspecified :background unspecified))
+      (t (:foreground ,green :weight bold :underline t))))
 
    ;; Clojure errors
    `(clojure-test-failure-face ((,class (:background nil :inherit flymake-warnline))))
@@ -184,6 +209,7 @@
    `(mode-line-emphasis ((,class (:foreground ,foreground :slant italic))))
    `(mode-line-highlight ((,class (:foreground ,orange :box nil))))
    `(minibuffer-prompt ((,class (:foreground ,blue))))
+   ;;`(region ((,class (:background ,"#103050"))))
    `(region ((,class (:background ,selection))))
    `(secondary-selection ((,class (:background ,current-line))))
 
@@ -252,6 +278,29 @@
    `(undo-tree-visualizer-active-branch-face ((,class (:foreground ,red))))
    `(undo-tree-visualizer-register-face ((,class (:foreground ,yellow))))
 
+   ;; company
+   ;; background: gray0
+   `(company-tooltip ((,class (:foreground ,comment, :background ,black))))
+   `(company-tooltip-annotation ((,class (:foreground ,blue :weight bold :inherit company-tooltip))))
+
+   `(company-tooltip-selection ((,class (:inherit company-tooltip :foreground ,foreground ))))
+   `(company-tooltip-common ((,class (:inherit company-tooltip :foreground ,blue  ))))
+   `(company-tooltip-common-selection ((,class (:inherit company-tooltip :foreground ,foreground  ))))
+   `(company-tooltip-mouse ((,class (:inherit company-tooltip :foreground ,foreground  ))))
+   `(company-tooltip-search ((,class (:inherit company-tooltip :foreground ,foreground  ))))
+
+   `(company-scrollbar-bg ((,class (:inherit company-tooltip :foreground ,orange ))))
+   `(company-scrollbar-fg ((,class (:inherit company-tooltip :foreground ,black :background ,foreground ))))
+   `(company-echo ((,class (:inherit company-tooltip :foreground ,green ))))
+
+   `(company-preview ((,class (:inherit company-tooltip :foreground ,black :background ,foreground ))))
+   `(company-preview-common ((,class (:inherit company-preview :foreground ,black ))))
+
+   `(company-echo-common ((,class (:inherit company-tooltip :foreground ,background ))))
+   `(company-echo-preview ((,class (:inherit company-tooltip :foreground ,background ))))
+   `(company-echo-preview-common ((,class (:inherit company-tooltip :foreground ,background ))))
+   `(company-echo-preview-search ((,class (:inherit company-tooltip :foreground ,background ))))
+
    ;; dired+
    `(diredp-compressed-file-suffix ((,class (:foreground ,blue))))
    `(diredp-deletion ((,class (:inherit error :inverse-video t))))
@@ -292,6 +341,8 @@
    `(magit-log-head-label-tags ((,class (:foreground ,aqua :box nil :weight bold))))
    `(magit-log-sha1 ((,class (:foreground ,yellow))))
    `(magit-section-title ((,class (:foreground ,blue :weight bold))))
+   `(magit-section-highlight ((,class (:background ,black))))
+   `(magit-diff-context-highlight ((,class (:foreground nil :background nil))))
 
    ;; git-gutter
    `(git-gutter:modified ((,class (:foreground ,orange :weight bold))))
@@ -418,11 +469,11 @@
    `(message-separator ((,class (:foreground ,orange))))
 
    ;; Jabber
-   `(jabber-chat-prompt-local ((,class (:foreground ,yellow))))
+   `(jabber-chat-prompt-local ((,class (:foreground ,blue))))
    `(jabber-chat-prompt-foreign ((,class (:foreground ,orange))))
    `(jabber-chat-prompt-system ((,class (:foreground ,yellow :weight bold))))
-   `(jabber-chat-text-local ((,class (:foreground ,yellow))))
-   `(jabber-chat-text-foreign ((,class (:foreground ,orange))))
+   `(jabber-chat-text-local ((,class (:foreground ,aqua))))
+   `(jabber-chat-text-foreign ((,class (:foreground ,yellow))))
    `(jabber-chat-text-error ((,class (:foreground ,red))))
 
    `(jabber-roster-user-online ((,class (:foreground ,green))))
