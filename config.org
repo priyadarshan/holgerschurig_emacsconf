@@ -2285,7 +2285,6 @@ adapted to helm.
 
 
 * org-mode
-
 *** org itself
 
 #+BEGIN_SRC emacs-lisp
@@ -2407,7 +2406,7 @@ adapted to helm.
 
   ;; when my day ends
   (setq org-use-effective-time t
-	org-extend-today-until 17)
+		org-extend-today-until 17)
 
   ;; Resume clocking tasks when emacs is restarted
   ;; (org-clock-persistence-insinuate)
