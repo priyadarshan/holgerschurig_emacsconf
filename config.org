@@ -1414,7 +1414,7 @@ Lets TAB do completion as well
 		company-tooltip-flip-when-above t
 		company-tooltip-limit           20
 		company-backends '(;; company-bbdb
-						   company-nxml
+						   ;; company-nxml
 						   company-css
 						   ;; company-eclim
 						   company-semantic
@@ -4376,6 +4376,32 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
 )
 #+END_SRC
 
+** Mode: nxml
+#+BEGIN_SRC emacs-lisp
+(use-package nxml-mode
+  :mode ("\\.xml$" . nxml-mode)
+  :commands (indent-xml-region)
+  :defer t
+  :config
+  (setq nxml-child-indent 4)
+  (setq nxml-slash-auto-complete-flag t)
+  ;; (add-hook 'nxml-mode-hook (lambda () (emmet-mode t)))))
+
+ (defun indent-xml-region (begin end)
+   "Pretty format XML markup in region. The function inserts
+ linebreaks to separate tags that have nothing but whitespace
+ between them. It then indents the markup by using nxml's
+ indentation rules."
+   (interactive "r")
+   (save-excursion
+	 (nxml-mode)
+	 (goto-char begin)
+	 (while (search-forward-regexp "\>[ \\t]*\<" nil t)
+	   (backward-char) (insert "\n"))
+	 (indent-region begin end)))
+)
+
+#+END_SRC
 ** Mode: Markdown
 
 #+BEGIN_SRC emacs-lisp
