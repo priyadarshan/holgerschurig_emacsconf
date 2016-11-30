@@ -2568,10 +2568,11 @@ http://www.suenkler.info/docs/emacs-orgmode/
   (setq org-cycle-include-plain-lists 'integrate)
 
   ;; speed commands are fun, not only on the headers, but also on lists
+  ;; see http://orgmode.org/manual/Speed-keys.html
   (defun my/org-use-speed-commands-for-headings-and-lists ()
 	"Activate speed commands on list items too."
-	(or (and (looking-at org-outline-regexp) (looking-back "^\**"))
-	(save-excursion (and (looking-at (org-item-re)) (looking-back "^[ \t]*")))))
+	(or (and (looking-at org-outline-regexp) (looking-back "^\**" nil))
+	(save-excursion (and (looking-at (org-item-re)) (looking-back "^[ \t]*" nil)))))
   (setq org-use-speed-commands 'my/org-use-speed-commands-for-headings-and-lists)
 )
 #+END_SRC
