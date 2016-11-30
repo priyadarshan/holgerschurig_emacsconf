@@ -2998,7 +2998,7 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
   :config
   (defun my-mail-quit ()
 	(interactive)
-	(not-modified)
+	(set-buffer-modified-p nil)
 	(server-edit))
   (defun my-mail-save ()
 	(interactive)
@@ -3011,7 +3011,7 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
 	(delete-trailing-whitespace)
 	(mail-text)
 	(fill-region (point) (point-max))
-	(not-modified)
+	(set-buffer-modified-p nil)
 	(setq make-backup-files nil))
 
   ;; Sending mail
