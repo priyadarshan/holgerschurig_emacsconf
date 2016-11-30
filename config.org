@@ -2644,8 +2644,8 @@ http://www.suenkler.info/docs/emacs-orgmode/
 #+BEGIN_SRC emacs-lisp
 (use-package ox-publish
   :defer t
-  :if (or (string= "holger" system-name)
-		  (string= "laptop" system-name))
+  :if (or (string= "holger" (system-name))
+		  (string= "laptop" (system-name)))
   :bind ("C-c p" . my-publish)
   :config
   (setq org-publish-project-alist
