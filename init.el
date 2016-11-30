@@ -57,6 +57,7 @@
       (insert (format ";; Don't edit this file, edit %s instead ...\n\n" orgfile))
       ;; (insert (apply 'concat (reverse body-list)))
       (apply 'insert (reverse body-list)))
+    (byte-compile-file elfile)
     (message "Wrote %s ..." elfile)))
 
 (let ((orgfile (concat user-emacs-directory "config.org"))
