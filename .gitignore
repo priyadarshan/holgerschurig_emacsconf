@@ -1,5 +1,6 @@
 ?
 *.elc
+network-security.data
 /*.bbdb
 /abbrev_defs
 /places

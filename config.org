@@ -792,11 +792,11 @@ I got the idea from here: http://amitp.blogspot.de/2013/05/emacs-highlight-activ
 #+BEGIN_SRC emacs-lisp
 (defun highlight-focus:app-focus-in ()
   (global-font-lock-mode 1)
-  ;;(set-face-attribute 'default nil :foreground "white")
+  (set-face-attribute 'default nil :foreground "white")
 )
 (defun highlight-focus:app-focus-out ()
   (global-font-lock-mode -1)
-  ;;(set-face-attribute 'default nil :foreground "#555555")
+  (set-face-attribute 'default nil :foreground "#555555")
 )
 (add-hook 'focus-in-hook  #'highlight-focus:app-focus-in)
 (add-hook 'focus-out-hook #'highlight-focus:app-focus-out)
@@ -818,19 +818,6 @@ Use new byte codes from Emacs 24.4
 (setq ad-redefinition-action 'accept)
 #+END_SRC
 
-** Fixup system-name
-Normally, I could use the =system-name= variable to get the current
-hostname, but it seems to return the value of =hostname -f=, e.g.
-"holger.schurig.local". Therefore, I find the hostname manually by
-calling =shell-command-to-string= and stripping some whitespace. This
-will probably /not/ work on windows.
-
-#+BEGIN_SRC emacs-lisp
-(setq system-name
-   (replace-regexp-in-string "\\`[ \t\n]*" ""
-	  (replace-regexp-in-string "[ \t\n]*\\'" ""
-		 (shell-command-to-string "hostname"))))
-#+END_SRC
 
 ** History
 Delete identical history entries
@@ -1211,13 +1198,13 @@ use + and - after the first expand to expand further / shrink again.
 #+BEGIN_SRC emacs-lisp
 (use-package avy
   :ensure t
-  :bind ("C-#" . avy-goto-char-timer)
-  :config (progn
-		(setq avy-keys (append (number-sequence ?a ?z)
-					(number-sequence ?0 ?9)))
-		(setq avy-style 'at-full)
-		(setq avy-all-windows nil)
-		(setq avy-highlight-first t)))
+  :bind ("C-ö" . avy-goto-char-timer)
+  :config
+  (setq avy-keys (append (number-sequence ?a ?z)
+						 (number-sequence ?0 ?9)))
+  (setq avy-style 'at-full)
+  (setq avy-all-windows nil)
+  (setq avy-highlight-first t))
 #+END_SRC
 
 ** smartscan
@@ -1241,6 +1228,14 @@ Smooth scrolling (default is 5).
 	  mouse-wheel-progressive-speed nil)
 #+END_SRC
 
+** Smooth scrolling
+Normally, at the top-of-screen or bottom-of-screen, emacs would scroll
+quarter-page wise. This is a bit annoying, because I'll always have to
+chase the cursor when this happens. But there's a cure:
+
+#+BEGIN_SRC emacs-lisp
+(setq scroll-conservatively 101)
+#+END_SRC
 
 
 * Yank and Delete
@@ -1406,7 +1401,7 @@ Lets TAB do completion as well
 		company-tooltip-flip-when-above t
 		company-tooltip-limit           20
 		company-backends '(;; company-bbdb
-						   company-nxml
+						   ;; company-nxml
 						   company-css
 						   ;; company-eclim
 						   company-semantic
@@ -2012,7 +2007,7 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   ;; allow "find man at point" for C-c h m (helm-man-woman)
   (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
-  (setq helm-candidate-number-limit 100)
+  (setq helm-candidate-number-limit 200)
   (setq helm-quick-update t)
 
   ;; Open full helm frame
@@ -2022,8 +2017,6 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 
   ;; move to end or beginning of source when reaching top or bottom of source.
   (setq helm-move-to-line-cycle-in-source t)
-  ;; scroll 8 lines other window using M-<next>/M-<prior>
-  (setq helm-scroll-amount 8)
 #+END_SRC
 
 ** Helm faces
@@ -2196,7 +2189,7 @@ Hide minibuffer while helm is active
   :defer t
   :bind ("M-g i" . helm-imenu)
   :config
-  (setq helm-imenu-delimiter " ")
+  (setq helm-imenu-delimiter " - ")
 )
 #+END_SRC
 
@@ -2279,13 +2272,18 @@ adapted to helm.
 
 
 * org-mode
-
 *** org itself
 
 #+BEGIN_SRC emacs-lisp
 (use-package org
   :bind (("C-c l" . org-store-link)
-		 ("C-c o" . org-open-at-point-global))
+		 ("C-c o" . org-open-at-point-global)
+		 ;; This used to be org-shift{up/down}, but I'm not working
+		 ;; with priorities it however also allowed to edit
+		 ;; timestamps, not sure if I'm gonna miss that.
+		 :map org-mode-map
+		 ("M-p"   . org-previous-visible-heading)
+		 ("M-n"   . org-next-visible-heading))
   :commands (org-open-file orgstruct++-mode)
   :init
   ;; allow Shift-Cursor to mark stuff
@@ -2340,8 +2338,10 @@ adapted to helm.
   (bind-key "C-c R"   'org-reveal org-mode-map)
   ;; (bind-key "C-c t"   'org-show-todo-tree org-mode-map)
 
-  ;; adjust level
-  (setq org-yank-adjusted-subtrees t)
+  ;; adjust level, but not for drawers/properties
+  (setq org-yank-adjusted-subtrees t
+		org-adapt-indentation nil)
+
 
   ;; Hide emphasize markers like the "=" in "=foo=".
   (setq org-hide-emphasis-markers t)
@@ -2393,7 +2393,7 @@ adapted to helm.
 
   ;; when my day ends
   (setq org-use-effective-time t
-	org-extend-today-until 17)
+		org-extend-today-until 17)
 
   ;; Resume clocking tasks when emacs is restarted
   ;; (org-clock-persistence-insinuate)
@@ -2404,6 +2404,9 @@ adapted to helm.
 
   ;; Try column with this:
   ;; (setq org-columns-default-format "%80ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
+
+  ;; handle jumping into org-mode
+  (setq org-show-context-detail '((default . local)))
 
   ;; misc refile settings
   (setq org-reverse-note-order t)
@@ -2438,6 +2441,8 @@ adapted to helm.
 	  ("i" "#+INDEX: ?")
 	  ("I" "#+INCLUDE: %file ?")
 	  ))
+
+  (setq org-imenu-depth 3)
 )
 #+END_SRC
 
@@ -2563,10 +2568,11 @@ http://www.suenkler.info/docs/emacs-orgmode/
   (setq org-cycle-include-plain-lists 'integrate)
 
   ;; speed commands are fun, not only on the headers, but also on lists
+  ;; see http://orgmode.org/manual/Speed-keys.html
   (defun my/org-use-speed-commands-for-headings-and-lists ()
 	"Activate speed commands on list items too."
-	(or (and (looking-at org-outline-regexp) (looking-back "^\**"))
-	(save-excursion (and (looking-at (org-item-re)) (looking-back "^[ \t]*")))))
+	(or (and (looking-at org-outline-regexp) (looking-back "^\**" nil))
+	(save-excursion (and (looking-at (org-item-re)) (looking-back "^[ \t]*" nil)))))
   (setq org-use-speed-commands 'my/org-use-speed-commands-for-headings-and-lists)
 )
 #+END_SRC
@@ -2639,8 +2645,8 @@ http://www.suenkler.info/docs/emacs-orgmode/
 #+BEGIN_SRC emacs-lisp
 (use-package ox-publish
   :defer t
-  :if (or (string= "holger" system-name)
-		  (string= "laptop" system-name))
+  :if (or (string= "holger" (system-name))
+		  (string= "laptop" (system-name)))
   :bind ("C-c p" . my-publish)
   :config
   (setq org-publish-project-alist
@@ -2990,7 +2996,7 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
   :config
   (defun my-mail-quit ()
 	(interactive)
-	(not-modified)
+	(set-buffer-modified-p nil)
 	(server-edit))
   (defun my-mail-save ()
 	(interactive)
@@ -3003,7 +3009,7 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
 	(delete-trailing-whitespace)
 	(mail-text)
 	(fill-region (point) (point-max))
-	(not-modified)
+	(set-buffer-modified-p nil)
 	(setq make-backup-files nil))
 
   ;; Sending mail
@@ -3786,6 +3792,7 @@ Remove all back-ends from vc-mode, no need to check all these things, I use
   :defines (magit-rigid-key-bindings)
   :commands (magit-toplevel)
   :bind ("M-g m" . magit-status)
+  :bind ("M-g M" . magit-list-repositories)
   :config
   ;; Open magit window full-screen
   (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
@@ -3838,6 +3845,22 @@ Remove all back-ends from vc-mode, no need to check all these things, I use
 
   ;; Make "q" kill the window, not just bury it
   (bind-key "q" 'my--kill-buffer-and-window magit-mode-map)
+
+  ;; Switch repositories with magit-list-repositories
+  (setq magit-repository-directories
+		'(
+		  ("~"        . 1)
+		  ("~/d"      . 1)
+		  ("/usr/src" . 1)
+		)
+		magit-repository-directories-depth 1
+		magit-repolist-columns
+		'(
+		  ("Name"    25 magit-repolist-column-ident                  nil)
+		  ("Version" 25 magit-repolist-column-version                nil)
+		  ("Push"    4 magit-repolist-column-unpushed-to-upstream   (:right-align t))
+		  ;; ("L<U"      3 magit-repolist-column-unpulled-from-upstream (:right-align t))
+		  ("Path"    99 magit-repolist-column-path)))
 )
 #+END_SRC
 
@@ -3960,38 +3983,6 @@ Now try yasnippet again now that it's faster.
 
 #+BEGIN_SRC emacs-lisp
 (bind-key "C-c c" 'comment-dwim)
-#+END_SRC
-
-** CANC Smart parens
-Cancelled till I find out how to make it do it's magic only if there
-rest of the line is empty.
-
-#+BEGIN_SRC emacs-lisp
-(use-package smartparens
-  :ensure t
-  :defer t
-  :diminish smartparens-mode
-  :commands (show-smartparens-global-mode smartparens-global-mode sp-with-modes sp-local-pair)
-)
-(defun my-smart-parens-setup ()
-  (show-smartparens-mode +1)
-  (smartparens-mode 1)
-
-  ;; when you press RET, the curly braces automatically
-  ;; add another newline
-  (sp-with-modes '(c-mode c++-mode)
-	(sp-local-pair "{" nil
-				   ;; :when '(sp-point-before-eol-p)
-				   :post-handlers '(("||\n[i]"     "RET")))
-	(sp-local-pair "/*" "*/"
-				   ;; :when '(sp-point-before-eol-p)
-				   :post-handlers '((" | "       "SPC")
-									("* ||\n[i]" "RET"))))
-  ;; (dolist (old-pair (cdr (assq t sp-pairs)))
-  ;; 	(sp-pair (plist-get old-pair :open) nil :when '(sp-point-before-eol-p)))
-  )
-(add-hook 'c-mode-common-hook 'my-smart-parens-setup)
-;; (add-hook 'emacs-lisp-mode-hook 'my-smart-parens-setup)
 #+END_SRC
 
 ** Compilation
@@ -4124,6 +4115,13 @@ set initial compile-command to nothing, so that F7 will prompt for one
 		(setcdr cmd (format-time-string "%s"))
 		;; (message "assoc: %s" (assoc compile-command compile-commands))
 		))
+	;; (message "compile command: %s" compile-command)
+	(setq compile-command (replace-regexp-in-string
+						   " \\(%\\) "
+						   (buffer-file-name (window-buffer))
+						   compile-command
+						   nil nil 1))
+	;; (message "compile command: %s" compile-command)
 	(if (string= (substring compile-command 0 1) "(")
 		(eval (car (read-from-string compile-command)))
 	  (progn
@@ -4157,6 +4155,38 @@ set initial compile-command to nothing, so that F7 will prompt for one
 ** Make files with shebang executable
 #+BEGIN_SRC emacs-lisp
 (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
+#+END_SRC
+
+** CANC Smart parens
+Cancelled till I find out how to make it do it's magic only if there
+rest of the line is empty.
+
+#+BEGIN_SRC emacs-lisp
+(use-package smartparens
+  :ensure t
+  :defer t
+  :diminish smartparens-mode
+  :commands (show-smartparens-global-mode smartparens-global-mode sp-with-modes sp-local-pair)
+)
+(defun my-smart-parens-setup ()
+  (show-smartparens-mode +1)
+  (smartparens-mode 1)
+
+  ;; when you press RET, the curly braces automatically
+  ;; add another newline
+  (sp-with-modes '(c-mode c++-mode)
+	(sp-local-pair "{" nil
+				   ;; :when '(sp-point-before-eol-p)
+				   :post-handlers '(("||\n[i]"     "RET")))
+	(sp-local-pair "/*" "*/"
+				   ;; :when '(sp-point-before-eol-p)
+				   :post-handlers '((" | "       "SPC")
+									("* ||\n[i]" "RET"))))
+  ;; (dolist (old-pair (cdr (assq t sp-pairs)))
+  ;; 	(sp-pair (plist-get old-pair :open) nil :when '(sp-point-before-eol-p)))
+  )
+(add-hook 'c-mode-common-hook 'my-smart-parens-setup)
+;; (add-hook 'emacs-lisp-mode-hook 'my-smart-parens-setup)
 #+END_SRC
 
 
@@ -4320,6 +4350,32 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
 )
 #+END_SRC
 
+** Mode: nxml
+#+BEGIN_SRC emacs-lisp
+(use-package nxml-mode
+  :mode ("\\.xml$" . nxml-mode)
+  :commands (indent-xml-region)
+  :defer t
+  :config
+  (setq nxml-child-indent 4)
+  (setq nxml-slash-auto-complete-flag t)
+  ;; (add-hook 'nxml-mode-hook (lambda () (emmet-mode t)))))
+
+ (defun indent-xml-region (begin end)
+   "Pretty format XML markup in region. The function inserts
+ linebreaks to separate tags that have nothing but whitespace
+ between them. It then indents the markup by using nxml's
+ indentation rules."
+   (interactive "r")
+   (save-excursion
+	 (nxml-mode)
+	 (goto-char begin)
+	 (while (search-forward-regexp "\>[ \\t]*\<" nil t)
+	   (backward-char) (insert "\n"))
+	 (indent-region begin end)))
+)
+
+#+END_SRC
 ** Mode: Markdown
 
 #+BEGIN_SRC emacs-lisp
@@ -4407,8 +4463,10 @@ Home page: http://web-mode.org/
 		 )
   :defines (web-mode-engines-alist)
   :config
+  ;; remove the   (nil ("<!-" . "- | -->"))  data set:
   (unless (car (car (last web-mode-engines-auto-pairs)))
-	(setq web-mode-engines-auto-pairs (butlast web-mode-engines-auto-pairs)))
+   	(setq web-mode-engines-auto-pairs (butlast web-mode-engines-auto-pairs)))
+
   (defun my-web-mode-hook ()
 	(visual-line-mode 1)
 	(setq web-mode-markup-indent-offset 2
@@ -4526,17 +4584,6 @@ See https://github.com/jacktasia/dumb-jump.
 )
 #+END_SRC
 
-** CANC Package: auto-compile
-
-#+BEGIN_SRC emacs-lisp
-(use-package auto-compile
-  :ensure t
-  :config
-  (auto-compile-on-load-mode 1)
-  (auto-compile-on-save-mode 1)
-  )
-#+END_SRC
-
 ** Package: eshell
 https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 
@@ -4583,6 +4630,60 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 )
 #+END_SRC
 
+** Package: kurecolor
+https://github.com/emacsfodder/kurecolor
+#+BEGIN_SRC emacs-lisp
+(use-package kurecolor
+  :ensure t
+  :commands (kurecolor-decrease-brightness-by-step
+			 kurecolor-increase-brightness-by-step
+			 kurecolor-decrease-saturation-by-step
+			 kurecolor-increase-saturation-by-step
+			 kurecolor-decrease-hue-by-step
+			 kurecolor-increase-hue-by-step
+			 kurecolor-set-brightness
+			 kurecolor-set-saturation
+			 kurecolor-set-hue
+			 kurecolor-hex-val-group
+			 kurecolor-hex-sat-group
+			 kurecolor-hex-hue-group
+			 kurecolor-cssrgb-at-point-or-region-to-hex
+			 kurecolor-hexcolor-at-point-or-region-to-css-rgb
+			 kurecolor-hexcolor-at-point-or-region-to-css-rgba)
+  :bind ("M-g k" . my-kurecolor)
+  :config
+  (defun my-kurecolor ()
+	(interactive)
+	(rainbow-mode t)
+	(hydra-kurecolor/body)
+	)
+  (defhydra hydra-kurecolor (:color pink :hint  nil)
+      "
+Dec/Inc      _j_/_J_ brightness      _k_/_K_ saturation      _l_/_L_ hue
+Set          _sj_ ^^ brightness      _sk_ ^^ saturation      _sl_ ^^ hue
+Get          _gj_ ^^ brightness      _gk_ ^^ saturation      _gl_ ^^ hue
+
+Convert      _ch_ ^^ RGB → Hex       _cr_ ^^ Hex → RGB       _cR_ ^^ Hex → RGBA
+"
+      ("j"  kurecolor-decrease-brightness-by-step)
+      ("J"  kurecolor-increase-brightness-by-step)
+      ("k"  kurecolor-decrease-saturation-by-step)
+      ("K"  kurecolor-increase-saturation-by-step)
+      ("l"  kurecolor-decrease-hue-by-step)
+      ("L"  kurecolor-increase-hue-by-step)
+      ("sj" kurecolor-set-brightness :color blue)
+      ("sk" kurecolor-set-saturation :color blue)
+      ("sl" kurecolor-set-hue :color blue)
+      ("gj" kurecolor-hex-val-group :color blue)
+      ("gk" kurecolor-hex-sat-group :color blue)
+      ("gl" kurecolor-hex-hue-group :color blue)
+      ("ch" kurecolor-cssrgb-at-point-or-region-to-hex :color blue)
+      ("cr" kurecolor-hexcolor-at-point-or-region-to-css-rgb :color blue)
+      ("cR" kurecolor-hexcolor-at-point-or-region-to-css-rgba :color blue)
+      ("q"  nil "cancel" :color blue))
+)
+#+END_SRC
+
 ** Package: rainbow-mode
 Rainbow-mode turns color codes inside the editor into real colors.
 Nice for elisp faces or CSS files.
@@ -4592,16 +4693,6 @@ Nice for elisp faces or CSS files.
   :ensure t
   :defer t
   :commands (rainbow-mode)
-)
-#+END_SRC
-
-** CANC Package: semantic
-#+BEGIN_SRC emacs-lisp
-(use-package semantic
-  :defer t
-  :config
-
-  ;; maybe set semantic-default-submodes
 )
 #+END_SRC
 
@@ -4616,4 +4707,24 @@ documentation browsers.
   ;; (add-to-list 'zeal-at-point-mode-alist '(perl-mode . "perl"))
   ;; (add-hook 'rinari-minor-mode-hook (lambda () (setq zeal-at-point-docset "rails")))
 )
+#+END_SRC
+** CANC Package: semantic
+#+BEGIN_SRC emacs-lisp
+(use-package semantic
+  :defer t
+  :config
+
+  ;; maybe set semantic-default-submodes
+)
+#+END_SRC
+
+** CANC Package: auto-compile
+
+#+BEGIN_SRC emacs-lisp
+(use-package auto-compile
+  :ensure t
+  :config
+  (auto-compile-on-load-mode 1)
+  (auto-compile-on-save-mode 1)
+  )
 #+END_SRC
