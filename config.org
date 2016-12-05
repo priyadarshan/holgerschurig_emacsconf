@@ -4633,6 +4633,7 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 
 #+BEGIN_SRC emacs-lisp
 (use-package eshell
+  :if (unless noninteractive)
   :defer t
   :bind ("M-g e" . eshell)
   :commands (eshell/addpath eshell-read-aliases-list)
@@ -4670,6 +4671,7 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
   (add-hook 'eshell-mode-hook 'my--eshell-hook)
 )
 (use-package em-banner
+  :if (unless noninteractive)
   :defines (eshell-banner-message)
   :config
   ;; We don't need no banner
