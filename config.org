@@ -4035,6 +4035,16 @@ Interactively select compile commands.
 )
 #+END_SRC
 
+** Checking
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck
+  :ensure t
+  :commands (flycheck-mode)
+  :config
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+  ;; (setq flycheck-emacs-lisp-checkdoc-variables (cons 'sentence-end-double-space flycheck-emacs-lisp-checkdoc-variables))
+)
+#+END_SRC
 ** Auto close compile log if there are no errors
 [[http://www.emacswiki.org/emacs/ModeCompile]]
 
@@ -4159,7 +4169,6 @@ rest of the line is empty.
 										   c-lineup-arglist-tabs-only))))
 )
 #+END_SRC
-
 
 *** Helper for Linux
 From linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
