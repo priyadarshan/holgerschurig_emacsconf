@@ -4391,6 +4391,14 @@ From linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
   (add-hook 'lua-mode-hook #'my-lua-hook)
 )
 #+END_SRC
+** Mode: Markdown
+
+#+BEGIN_SRC emacs-lisp
+(use-package markdown-mode
+  :ensure t
+  :mode (("\\.md\\'"       . markdown-mode)
+	 ("\\.markdown\\'" . markdown-mode)))
+#+END_SRC
 
 ** Mode: nxml
 #+BEGIN_SRC emacs-lisp
@@ -4417,14 +4425,6 @@ From linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
 	 (indent-region begin end)))
 )
 
-#+END_SRC
-** Mode: Markdown
-
-#+BEGIN_SRC emacs-lisp
-(use-package markdown-mode
-  :ensure t
-  :mode (("\\.md\\'"       . markdown-mode)
-	 ("\\.markdown\\'" . markdown-mode)))
 #+END_SRC
 
 ** Mode: pug (for vibe.d templates)
