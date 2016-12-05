@@ -2906,6 +2906,7 @@ https://github.com/pronobis/helm-flyspell
 
 #+BEGIN_SRC emacs-lisp
 (use-package pdf-tools
+  :if (unless noninteractive)
     :ensure t
 	:mode ("\\.pdf\\'" . pdf-view-mode)
 
