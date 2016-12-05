@@ -830,6 +830,7 @@ Delete identical history entries
 ** Save mini-buffer history
 #+BEGIN_SRC emacs-lisp
 (use-package savehist
+  :if (unless noninteractive)
   :init
   (defvar savehist-file)
   (setq savehist-file (concat user-emacs-directory "tmp/history.el")
@@ -4028,7 +4029,9 @@ set initial compile-command to nothing, so that F7 will prompt for one
 	 (\"make -C ~/test\" . \"1448748866\"))")
 
 ;; automatically save our compile-commands
-(add-to-list 'savehist-minibuffer-history-variables 'compile-commands)
+;; in batch-mode we don't load the savehist package, so avoid an error
+(when (boundp 'savehist-minibuffer-history-variables)
+  (add-to-list 'savehist-minibuffer-history-variables 'compile-commands))
 
 
 (defun comp--sort-command-alist ()
