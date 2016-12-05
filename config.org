@@ -4532,17 +4532,6 @@ Home page: http://web-mode.org/
 )
 #+END_SRC
 
-** Mode: whitespace
-Here we set =C-c w= and =C-c C-w= to whitespace-mode. Note that the
-former used to be subword-mode, but I rarely want to move by subwords.
-
-#+BEGIN_SRC emacs-lisp
-(use-package whitespace
-  :defer t
-  :bind ("C-c w" . whitespace-mode)
-)
-#+END_SRC
-
 
 ** Package: term (for ansi-term)
 This term understands ansi escape sequences.
@@ -4745,6 +4734,17 @@ Nice for elisp faces or CSS files.
   :ensure t
   :defer t
   :commands (rainbow-mode)
+)
+#+END_SRC
+
+** Package: whitespace
+Here we set =C-c w= and =C-c C-w= to whitespace-mode. Note that the
+former used to be subword-mode, but I rarely want to move by subwords.
+
+#+BEGIN_SRC emacs-lisp
+(use-package whitespace
+  :defer t
+  :bind ("C-c w" . whitespace-mode)
 )
 #+END_SRC
 
