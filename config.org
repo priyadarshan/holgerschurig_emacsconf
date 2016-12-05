@@ -4272,6 +4272,7 @@ Things that will apply to .C and .CPP files
 From linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
 
 #+BEGIN_SRC emacs-lisp
+(defvar c-syntactic-element)
 (defun c-lineup-arglist-tabs-only (ignored)
   "Line up argument lists by tabs, not spaces"
   (let* ((anchor (c-langelem-pos c-syntactic-element))
