@@ -1734,6 +1734,7 @@ Revert all buffers, including dired buffers. And do it silently.
 
 #+BEGIN_SRC emacs-lisp
 (use-package autorevert
+  :if (unless noninteractive)
   :init
   (global-auto-revert-mode 1)
   :config
