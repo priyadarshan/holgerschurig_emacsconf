@@ -2781,7 +2781,6 @@ see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Con
   :commands (circe)
   :config
   (setq circe-default-part-message "Fire on mainboard error")
-  (setq circe-quit-part-message "Fire on mainboard error")
   (setq circe-reduce-lurker-spam t)
   ;; (circe-set-display-handler "JOIN" (lambda (&rest ignored) nil))
   ;; (circe-set-display-handler "QUIT" (lambda (&rest ignored) nil))
