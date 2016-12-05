@@ -19,7 +19,7 @@
   (save-excursion
     (if (re-search-backward "^\\*+\\s-+\\(.*?\\)?\\s-*$" nil t)
         (progn
-          (message "FOUND '%s'" (match-string 1))
+          ;; (message "FOUND '%s'" (match-string 1))
           (string-prefix-p "CANC" (match-string 1)))
       nil)))
 
