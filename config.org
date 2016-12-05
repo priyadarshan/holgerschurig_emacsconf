@@ -931,7 +931,7 @@ Use =keyfreq-show= to see what you've used mostly.
 (use-package keyfreq
   :ensure t
   :config
-  (defun turnon-keyfreq-mode ()
+  (defun my-turnon-keyfreq-mode ()
 	(interactive)
 	(keyfreq-mode 1)
 	(keyfreq-autosave-mode 1))
@@ -961,7 +961,7 @@ Use =keyfreq-show= to see what you've used mostly.
 
   ;; And use keyfreq-show to see how many times you used a command.
   ;; comment out below line if there is performance impact
-  (turnon-keyfreq-mode)
+  (my-turnon-keyfreq-mode)
 )
 #+END_SRC
 
