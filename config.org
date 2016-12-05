@@ -2115,7 +2115,7 @@ Hide minibuffer while helm is active
 | M-g b   | goto bookmarks via helm |
 
 #+BEGIN_SRC emacs-lisp
-(use-package helm-bookmarks
+(use-package helm-bookmark
   :defer t
   :bind ("M-g b" . helm-bookmarks)
 )
