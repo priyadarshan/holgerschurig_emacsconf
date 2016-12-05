@@ -4231,89 +4231,6 @@ rest of the line is empty.
 #+END_SRC
 
 
-
-** Mode: C, C++
-
-*** Open *.h files normally in c++ mode
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
-(add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
-#+END_SRC
-
-*** C initialization
-Somehow a the first visited file stays in "gnu" style when I set the
-c-default-style just in the common hook.
-
-#+BEGIN_SRC emacs-lisp
-(eval-when-compile (require 'cc-vars))
-(defun my-c-initialization-setup ()
-  ;; Default style
-  (c-add-style "linux-tabs-only"
-		   '("linux" (c-offsets-alist (arglist-cont-nonempty
-									   c-lineup-gcc-asm-reg
-									   c-lineup-arglist-tabs-only))))
-  (setq c-default-style '((java-mode . "java")
-						  (awk-mode . "awk")
-						  (other . "linux")))
-)
-(add-hook 'c-initialization-hook 'my-c-initialization-setup)
-#+END_SRC
-
-*** c-mode-hook (for C files)
-Things that will only ever apply to .C files
-
-#+BEGIN_SRC emacs-lisp
-(defun my-c-mode-setup ()
-  (when (and buffer-file-name
-				 (string-match "linux" buffer-file-name))
-	(progn (c-set-style "linux-tabs-only")
-	   (setq tab-width 8
-		 c-basic-offset 8))))
-(add-hook 'c-mode-hook 'my-c-mode-setup)
-#+END_SRC
-
-*** c-mode-common-hook (for C and C++ files)
-Things that will apply to .C and .CPP files
-
-#+BEGIN_SRC emacs-lisp
-(eval-when-compile (require 'cc-engine))
-(defun my-c-mode-common-setup ()
-  (turn-off-auto-fill)
-
-  ;; This makes things like super_function_for_you a word
-  (modify-syntax-entry ?_ "w")
-  (setq fill-column 78
-	;; indent by 4 (almost) everywhere
-	tab-width 4
-	c-basic-offset 4
-
-	;; Let RET break and continue a comment
-	;; C doesn't start functions with a ( in the first column
-	open-paren-in-column-0-is-defun-start nil
-
-	;; Tell cc-mode not to check for old-style (K&R) function
-	;; declarations. This speeds up indenting a lot (I hear).
-	c-recognize-knr-p nil)
-  )
-(add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
-#+END_SRC
-
-*** Helper for Linux
-From linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
-
-#+BEGIN_SRC emacs-lisp
-(defvar c-syntactic-element)
-(defun c-lineup-arglist-tabs-only (ignored)
-  "Line up argument lists by tabs, not spaces"
-  (let* ((anchor (c-langelem-pos c-syntactic-element))
-		 (column (c-langelem-2nd-pos c-syntactic-element))
-		 (offset (- (1+ column) anchor))
-		 (steps (floor offset c-basic-offset)))
-	(* (max steps 1)
-	   c-basic-offset)))
-#+END_SRC
-
-
 ** Mode: Ediff
 http://oremacs.com/2015/01/17/setting-up-ediff/
 
@@ -4332,7 +4249,98 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
   (add-hook 'ediff-after-quit-hook-internal 'winner-undo))
 #+END_SRC
 
-** TODO Mode: ELisp
+
+
+** Mode: C, C++
+#+BEGIN_SRC emacs-lisp
+(use-package xxx
+  ;; open *.h files normally in c++ mode
+  :mode (("\\.h$" . c++-mode)
+		 ("\\.inl\\'" . c++-mode))
+
+  :config
+
+  ;; This makes things like super_function_for_you a word
+  (modify-syntax-entry ?_ "w")
+
+  ;; indent by 4 (almost) everywhere
+  (setq fill-column 78
+		tab-width 4
+		c-basic-offset 4)
+
+  ;; Let RET break and continue a comment
+  ;; C doesn't start functions with a ( in the first column
+  (setq open-paren-in-column-0-is-defun-start nil)
+
+  ;; for C and C++ files
+  (defun my-c-mode-common-setup ()
+	(message "HOOK c-mode-common-setup")
+	(turn-off-auto-fill))
+  (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
+
+  ;; only for C files
+  (defun my-c-mode-setup ()
+	(message "HOOK my-c-mode-setup")
+	(when (and buffer-file-name
+			   (string-match "linux" buffer-file-name))
+	  (progn (c-set-style "linux-tabs-only")
+			 (setq tab-width 8
+				   c-basic-offset 8))))
+  (add-hook 'c-mode-hook 'my-c-mode-setup)
+)
+
+(use-package cc-engine
+  :defer t
+  :config
+  ;; Tell cc-mode not to check for old-style (K&R) function
+  ;; declarations. This speeds up indenting a lot (I hear).
+  (setq c-recognize-knr-p nil)
+)
+
+(use-package cc-vars
+  :defer t
+  :config
+  (setq c-default-style '((java-mode . "java")
+						  (awk-mode . "awk")
+						  (other . "linux")))
+)
+
+(use-package cc-styles
+  :defer t
+  :config
+  ;; Default style
+  (c-add-style "linux-tabs-only"
+			   '("linux" (c-offsets-alist (arglist-cont-nonempty
+										   c-lineup-gcc-asm-reg
+										   c-lineup-arglist-tabs-only))))
+)
+#+END_SRC
+
+
+*** Helper for Linux
+From linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
+
+#+BEGIN_SRC emacs-lisp
+(defvar c-syntactic-element)
+(defun c-lineup-arglist-tabs-only (ignored)
+  "Line up argument lists by tabs, not spaces"
+  (let* ((anchor (c-langelem-pos c-syntactic-element))
+		 (column (c-langelem-2nd-pos c-syntactic-element))
+		 (offset (- (1+ column) anchor))
+		 (steps (floor offset c-basic-offset)))
+	(* (max steps 1)
+	   c-basic-offset)))
+#+END_SRC
+** Mode: D-Lang
+#+BEGIN_SRC emacs-lisp
+(use-package d-mode
+  :ensure t
+  :defer t
+  :mode ("\\.d\\'" . d-mode)
+)
+#+END_SRC
+
+** Mode: ELisp
 
 #+BEGIN_SRC emacs-lisp
 (defun my--elisp-setup ()
@@ -4347,15 +4355,6 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
   ;;   (auto-compile-mode 1))
   )
 (add-hook 'emacs-lisp-mode-hook 'my--elisp-setup)
-#+END_SRC
-
-** Mode: D-Lang
-#+BEGIN_SRC emacs-lisp
-(use-package d-mode
-  :ensure t
-  :defer t
-  :mode ("\\.d\\'" . d-mode)
-)
 #+END_SRC
 
 ** Mode: Go
