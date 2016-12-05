@@ -2123,7 +2123,7 @@ Hide minibuffer while helm is active
 
 ** helm-buffer
 #+BEGIN_SRC emacs-lisp
-(use-package help-buffer
+(use-package helm-buffers
   :defer t
   :config
   (setq helm-buffer-max-length 28)
