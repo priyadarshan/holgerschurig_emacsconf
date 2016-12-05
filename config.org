@@ -933,6 +933,7 @@ Use =keyfreq-show= to see what you've used mostly.
 
 #+BEGIN_SRC emacs-lisp
 (use-package keyfreq
+  :if (unless noninteractive)
   :ensure t
   :config
   (defun my-turnon-keyfreq-mode ()
