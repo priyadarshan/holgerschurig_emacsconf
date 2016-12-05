@@ -4439,16 +4439,19 @@ From linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
 ** Mode: Python
 
 #+BEGIN_SRC emacs-lisp
-(eval-when-compile (require 'python))
-(defun my-python-setup ()
-  (interactive)
-  (setq indent-tabs-mode t
-	python-indent-offset 4
-	tab-width 4
-	;; this fixes the weird indentation when entering a colon
-	;; from http://emacs.stackexchange.com/questions/3322/python-auto-indent-problem
-	electric-indent-chars (delq ?: electric-indent-chars)))
-(add-hook 'python-mode-hook 'my-python-setup)
+(use-package python
+  :mode (("\\.lua\\'" . lua-mode))
+  :config
+  (defun my-python-setup ()
+	(interactive)
+	(setq indent-tabs-mode t
+		  python-indent-offset 4
+		  tab-width 4
+		  ;; this fixes the weird indentation when entering a colon
+		  ;; from http://emacs.stackexchange.com/questions/3322/python-auto-indent-problem
+		  electric-indent-chars (delq ?: electric-indent-chars)))
+  (add-hook 'python-mode-hook 'my-python-setup)
+)
 #+END_SRC
 
 ** Mode: Qt project files
