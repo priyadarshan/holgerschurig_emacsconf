@@ -1992,6 +1992,10 @@ minibuffer."
 Very good intro: http://tuhdo.github.io/helm-intro.html
 
 #+BEGIN_SRC emacs-lisp
+(use-package helm-config
+  :defer t
+  :defines (helm-command-map)
+)
 (use-package helm
   :ensure helm
   :diminish helm-mode
