@@ -2865,10 +2865,11 @@ https://github.com/pronobis/helm-flyspell
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-flyspell
+  :ensure t
   :commands helm-flyspell-correct
   :config
   (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
-  )
+)
 #+END_SRC
 
 ** hydra
