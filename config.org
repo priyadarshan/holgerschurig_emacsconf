@@ -4253,7 +4253,7 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
 
 ** Mode: C, C++
 #+BEGIN_SRC emacs-lisp
-(use-package xxx
+(use-package c-mode
   ;; open *.h files normally in c++ mode
   :mode (("\\.h$" . c++-mode)
 		 ("\\.inl\\'" . c++-mode))
