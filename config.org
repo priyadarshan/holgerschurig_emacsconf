@@ -4619,15 +4619,12 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 			  (error "Buffer too short to truncate"))
 		(delete-region (point-min) (point)))))))
 
-  ;; We don't need no banner
-  (setq eshell-banner-message "")
-
   ;; If I ever want my own eshell/foo commands overwrite real commands ...
   (setq eshell-prefer-lisp-functions t)
 
   ;; check if this is ok for my usage
   ;; eshell-visual-commands
- 
+
   (defun my--eshell-hook ()
 	(eshell-read-aliases-list)
 	(setq global-hl-line-mode nil)
@@ -4639,6 +4636,12 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 	(setq-local ml-interactive? t) ;; for mode line
 	(eshell/addpath "~/bin"))
   (add-hook 'eshell-mode-hook 'my--eshell-hook)
+)
+(use-package em-banner
+  :defines (eshell-banner-message)
+  :config
+  ;; We don't need no banner
+  (setq eshell-banner-message "")
 )
 #+END_SRC
 
