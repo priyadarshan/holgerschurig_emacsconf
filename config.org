@@ -419,7 +419,7 @@ http://emacs.stackexchange.com/a/5343/115
 
 #+BEGIN_SRC emacs-lisp
 (use-package paren
-  :if (unless noninteractive)
+  :if (not noninteractive)
   :config
   (show-paren-mode 1)
   (setq show-paren-delay 0)
@@ -429,7 +429,7 @@ http://emacs.stackexchange.com/a/5343/115
 ** Font locking
 #+BEGIN_SRC emacs-lisp
 (use-package font-lock
-  :if (unless noninteractive)
+  :if (not noninteractive)
   :config
   (setq jit-lock-stealth-time 2
 		jit-lock-contextually t  ;; was 'syntax-driven
@@ -830,7 +830,7 @@ Delete identical history entries
 ** Save mini-buffer history
 #+BEGIN_SRC emacs-lisp
 (use-package savehist
-  :if (unless noninteractive)
+  :if (not noninteractive)
   :init
   (defvar savehist-file)
   (setq savehist-file (concat user-emacs-directory "tmp/history.el")
@@ -909,7 +909,7 @@ Add =-difference= as a deferred load to silence the byte-compiler.
 
 #+BEGIN_SRC emacs-lisp
 (use-package server
-  :if (unless noninteractive)
+  :if (not noninteractive)
   :config
   (unless (or (daemonp) (server-running-p))
 	(server-mode 1))
@@ -933,7 +933,7 @@ Use =keyfreq-show= to see what you've used mostly.
 
 #+BEGIN_SRC emacs-lisp
 (use-package keyfreq
-  :if (unless noninteractive)
+  :if (not noninteractive)
   :ensure t
   :config
   (defun my-turnon-keyfreq-mode ()
@@ -1194,7 +1194,7 @@ use + and - after the first expand to expand further / shrink again.
 
 #+BEGIN_SRC emacs-lisp
 (use-package bookmark
-  :if (unless noninteractive)
+  :if (not noninteractive)
   :config
   (setq bookmark-default-file (concat user-emacs-directory "tmp/bookmarks.el"))
   )
@@ -1536,7 +1536,7 @@ If there are two windows displayed, act like =C-x o=."
 
 #+BEGIN_SRC emacs-lisp
 (use-package winner
-  :if (unless noninteractive)
+  :if (not noninteractive)
   :defer 10
   :init
   (winner-mode 1))
@@ -1735,7 +1735,7 @@ Revert all buffers, including dired buffers. And do it silently.
 
 #+BEGIN_SRC emacs-lisp
 (use-package autorevert
-  :if (unless noninteractive)
+  :if (not noninteractive)
   :init
   (global-auto-revert-mode 1)
   :config
@@ -1767,7 +1767,7 @@ list of regular expressions:
 
 #+BEGIN_SRC emacs-lisp
 (use-package uniquify
-  :if (unless noninteractive)
+  :if (not noninteractive)
   :config (setq uniquify-buffer-name-style 'forward))
 #+END_SRC
 
@@ -2001,12 +2001,12 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-config
-  :if (unless noninteractive)
+  :if (not noninteractive)
   :defer t
   :defines (helm-command-map)
 )
 (use-package helm
-  :if (unless noninteractive)
+  :if (not noninteractive)
   :ensure helm
   :diminish helm-mode
   :bind (
@@ -2124,7 +2124,7 @@ Hide minibuffer while helm is active
 ** helm-descbinds
 #+BEGIN_SRC emacs-lisp
 (use-package helm-descbinds
-  :if (unless noninteractive)
+  :if (not noninteractive)
   :ensure t
   :commands helm-descbinds
   :bind (("C-h b" . helm-descbinds)
@@ -2140,7 +2140,7 @@ Hide minibuffer while helm is active
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-bookmark
-  :if (unless noninteractive)
+  :if (not noninteractive)
   :defer t
   :bind ("M-g b" . helm-bookmarks)
 )
@@ -2877,7 +2877,7 @@ https://github.com/pronobis/helm-flyspell
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-flyspell
-  :if (unless noninteractive)
+  :if (not noninteractive)
   :ensure t
   :commands helm-flyspell-correct
   :config
@@ -2907,7 +2907,7 @@ https://github.com/pronobis/helm-flyspell
 
 #+BEGIN_SRC emacs-lisp
 (use-package pdf-tools
-  :if (unless noninteractive)
+  :if (not noninteractive)
     :ensure t
 	:mode ("\\.pdf\\'" . pdf-view-mode)
 
@@ -3960,7 +3960,7 @@ Nice tip from tuhdo, see https://www.emacswiki.org/emacs/CleanAutoIndent
 *** Guess indent mode
 #+BEGIN_SRC emacs-lisp
 (use-package dtrt-indent
-  :if (unless noninteractive)
+  :if (not noninteractive)
   :ensure t
   :config
   (dtrt-indent-mode 1)
@@ -4622,7 +4622,7 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 
 #+BEGIN_SRC emacs-lisp
 (use-package eshell
-  :if (unless noninteractive)
+  :if (not noninteractive)
   :defer t
   :bind ("M-g e" . eshell)
   :commands (eshell/addpath eshell-read-aliases-list)
@@ -4660,7 +4660,7 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
   (add-hook 'eshell-mode-hook 'my--eshell-hook)
 )
 (use-package em-banner
-  :if (unless noninteractive)
+  :if (not noninteractive)
   :defines (eshell-banner-message)
   :config
   ;; We don't need no banner
