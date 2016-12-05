@@ -909,6 +909,7 @@ Add =-difference= as a deferred load to silence the byte-compiler.
 
 #+BEGIN_SRC emacs-lisp
 (use-package server
+  :if (unless noninteractive)
   :config
   (unless (or (daemonp) (server-running-p))
 	(server-mode 1))
