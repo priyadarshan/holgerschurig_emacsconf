@@ -2022,7 +2022,6 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
   (setq helm-candidate-number-limit 200)
-  (setq helm-quick-update t)
 
   ;; Open full helm frame
   ;; (setq helm-full-frame t)
