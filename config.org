@@ -1766,6 +1766,7 @@ list of regular expressions:
 
 #+BEGIN_SRC emacs-lisp
 (use-package uniquify
+  :if (unless noninteractive)
   :config (setq uniquify-buffer-name-style 'forward))
 #+END_SRC
 
