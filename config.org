@@ -429,6 +429,7 @@ http://emacs.stackexchange.com/a/5343/115
 ** Font locking
 #+BEGIN_SRC emacs-lisp
 (use-package font-lock
+  :if (unless noninteractive)
   :config
   (setq jit-lock-stealth-time 2
 		jit-lock-contextually t  ;; was 'syntax-driven
