@@ -4448,7 +4448,9 @@ From  https://raw.githubusercontent.com/chriskonstad/emacs/master/elisp/qt-pro.e
 
 #+BEGIN_SRC emacs-lisp
 (use-package rust-mode
-  :mode (("\\.rs\\'" . rust-mode)))
+  :mode (("\\.rs\\'" . rust-mode))
+  :ensure t
+)
 #+END_SRC
 
 ** Mode: Shell
