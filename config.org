@@ -2900,6 +2900,18 @@ https://github.com/pronobis/helm-flyspell
     :config
     (pdf-tools-install)
 
+	;; silence "the following functions might not be defined at runtime"
+	(declare-function hydra-master/body "config.el" (a b &c))
+	(declare-function pdf-annot-list-annotations "pdf-annot.el" ())
+	(declare-function pdf-annot-delete "pdf-annot.el" (a))
+	(declare-function pdf-annot-attachment-dired "pdf-annot.el" (&regenerate-p))
+	(declare-function pdf-annot-add-markup-annotation "pdf-annot.el" (list-of-edges type &color property-alist))
+	(declare-function pdf-annot-add-text-annotation "pdf-annot.el" (pos &icon property-alist))
+	(declare-function pdf-links-action-perform "pdf-annot.el" (link))
+	(declare-function pdf-links-isearch-link "pdf-annot.el" ())
+	(declare-function pdf-history-backward "pdf-annot.el" (n))
+	(declare-function pdf-history-forward "pdf-annot.el" (n))
+
 	(defhydra hydra-pdftools (:color blue :hint nil)
         "
                                                                       ╭───────────┐
