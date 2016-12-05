@@ -1766,17 +1766,21 @@ list of regular expressions:
 ** recentf
 
 #+BEGIN_SRC emacs-lisp
-(setq recentf-save-file (concat user-emacs-directory "tmp/recentf.el")
-	  recentf-exclude '("^/tmp/"
-						"/.newsrc"
-						"bbdb$"
-						"svn-commit.tmp$"
-						".png$"
-						"COMMIT_EDITMSG" "COMMIT_EDITMSG" "TAG_EDITMSG")
-	  recentf-max-saved-items 1000
-	  recentf-auto-cleanup 300
-	  recentf-max-menu-items 20)
-(recentf-mode 1)
+(use-package recentf
+  :defer 1
+  :config
+  (setq recentf-save-file (concat user-emacs-directory "tmp/recentf.el")
+		recentf-exclude '("^/tmp/"
+						  "/.newsrc"
+						  "bbdb$"
+						  "svn-commit.tmp$"
+						  ".png$"
+						  "COMMIT_EDITMSG" "COMMIT_EDITMSG" "TAG_EDITMSG")
+		recentf-max-saved-items 1000
+		recentf-auto-cleanup 300
+		recentf-max-menu-items 20)
+  (recentf-mode 1)
+)
 #+END_SRC
 
 ** save local variables
