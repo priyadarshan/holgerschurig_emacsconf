@@ -344,7 +344,7 @@ make =freenode-password= known via =(defvar=, so that the
 byte-compiler won't bark at me.
 
 #+BEGIN_SRC emacs-lisp
-(defvar freenode-password)
+(defvar freenode-password nil "Password for the IRC network freenode.net")
 (require 'private nil 'noerror)
 #+END_SRC
 
