@@ -1536,6 +1536,7 @@ If there are two windows displayed, act like =C-x o=."
 
 #+BEGIN_SRC emacs-lisp
 (use-package winner
+  :if (unless noninteractive)
   :defer 10
   :init
   (winner-mode 1))
