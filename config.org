@@ -3811,8 +3811,6 @@ Remove all back-ends from vc-mode, no need to check all these things, I use
   (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
   ;; When calling magit-status, save all buffers without further ado
   (setq magit-save-repository-buffers 'dontask)
-  ;; Save modified buffers without asking
-  (setq magit-save-some-buffers 'dontask)
 
   ;; Anything longer will be highlighted
   (setq git-commit-summary-max-length 70)
