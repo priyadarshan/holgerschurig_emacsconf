@@ -2942,7 +2942,7 @@ https://github.com/pronobis/helm-flyspell
         ("s" pdf-occur)
         ("i" pdf-misc-display-metadata)
         ("u" pdf-view-revert-buffer)
-        ("F" pdf-links-action-perfom)
+        ("F" pdf-links-action-perform)
         ("f" pdf-links-isearch-link)
         ("B" pdf-history-backward :color red)
         ("N" pdf-history-forward :color red)
