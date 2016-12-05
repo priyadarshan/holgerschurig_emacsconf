@@ -2390,7 +2390,6 @@ adapted to helm.
   (setq org-todo-keywords
 	'((sequence "TODO(t)" "STARTED(s)" "|" "DONE(x)")
 	  (sequence "WAIT(w)" "DELE(d)" "|" "CANC(c)"))
-	org-export-with-drawers t
 	)
 
   (setq org-todo-keyword-faces
@@ -2763,6 +2762,8 @@ http://www.suenkler.info/docs/emacs-orgmode/
   :ensure t
   :defer t
   :defines (htmlize-version)
+  :config
+  (setq org-export-with-drawers t)
 )
 #+END_SRC
 
