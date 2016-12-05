@@ -829,10 +829,12 @@ Delete identical history entries
 #+BEGIN_SRC emacs-lisp
 (use-package savehist
   :init
-   (setq savehist-file (concat user-emacs-directory "tmp/history.el")
-	 history-length 1000)
+  (defvar savehist-file)
+  (setq savehist-file (concat user-emacs-directory "tmp/history.el")
+		history-length 1000)
   :config
-  (savehist-mode 1))
+  (savehist-mode 1)
+)
 #+END_SRC
 
 ** Enable some disabled commands
