@@ -2000,10 +2000,12 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-config
+  :if (unless noninteractive)
   :defer t
   :defines (helm-command-map)
 )
 (use-package helm
+  :if (unless noninteractive)
   :ensure helm
   :diminish helm-mode
   :bind (
@@ -2121,6 +2123,7 @@ Hide minibuffer while helm is active
 ** helm-descbinds
 #+BEGIN_SRC emacs-lisp
 (use-package helm-descbinds
+  :if (unless noninteractive)
   :ensure t
   :commands helm-descbinds
   :bind (("C-h b" . helm-descbinds)
@@ -2136,6 +2139,7 @@ Hide minibuffer while helm is active
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-bookmark
+  :if (unless noninteractive)
   :defer t
   :bind ("M-g b" . helm-bookmarks)
 )
@@ -2872,6 +2876,7 @@ https://github.com/pronobis/helm-flyspell
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-flyspell
+  :if (unless noninteractive)
   :ensure t
   :commands helm-flyspell-correct
   :config
