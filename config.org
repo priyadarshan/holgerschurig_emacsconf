@@ -1194,6 +1194,7 @@ use + and - after the first expand to expand further / shrink again.
 
 #+BEGIN_SRC emacs-lisp
 (use-package bookmark
+  :if (unless noninteractive)
   :config
   (setq bookmark-default-file (concat user-emacs-directory "tmp/bookmarks.el"))
   )
