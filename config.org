@@ -419,6 +419,7 @@ http://emacs.stackexchange.com/a/5343/115
 
 #+BEGIN_SRC emacs-lisp
 (use-package paren
+  :if (unless noninteractive)
   :config
   (show-paren-mode 1)
   (setq show-paren-delay 0)
