@@ -2748,14 +2748,6 @@ http://www.suenkler.info/docs/emacs-orgmode/
 )
 #+END_SRC
 
-*** ox-twbs
-#+BEGIN_SRC emacs-lisp
-(use-package ox-twbs
-  :defer t
-  :commands (org-twbs-publish-to-html)
-)
-#+END_SRC
-
 *** htmlize
 #+BEGIN_SRC emacs-lisp
 (use-package htmlize
@@ -2764,6 +2756,14 @@ http://www.suenkler.info/docs/emacs-orgmode/
   :defines (htmlize-version)
   :config
   (setq org-export-with-drawers t)
+)
+#+END_SRC
+
+*** CANC ox-twbs
+#+BEGIN_SRC emacs-lisp
+(use-package ox-twbs
+  :defer t
+  :commands (org-twbs-publish-to-html)
 )
 #+END_SRC
 
