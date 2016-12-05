@@ -968,15 +968,6 @@ Use =keyfreq-show= to see what you've used mostly.
 
 
 * Editing
-
-** CANC Transpose
-http://endlessparentheses.com/transposing-keybinds-in-emacs.html
-
-#+BEGIN_SRC emacs-lisp
-(bind-key "\C-t" #'transpose-lines)
-(bind-key "\C-t" #'transpose-chars ctl-x-map)
-#+END_SRC
-
 ** Undo-Tree
 This lets you use =C-z= (undo-tree-visualize) to visually walk through
 the changes you've made, undo back to a certain point (or redo), and
@@ -993,6 +984,14 @@ go down different branches.
 	(global-undo-tree-mode)
 	(setq undo-tree-visualizer-timestamps t)
 	(setq undo-tree-visualizer-diff t)))
+#+END_SRC
+
+** CANC Transpose
+http://endlessparentheses.com/transposing-keybinds-in-emacs.html
+
+#+BEGIN_SRC emacs-lisp
+(bind-key "\C-t" #'transpose-lines)
+(bind-key "\C-t" #'transpose-chars ctl-x-map)
 #+END_SRC
 
 
