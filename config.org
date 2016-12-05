@@ -3959,6 +3959,7 @@ Nice tip from tuhdo, see https://www.emacswiki.org/emacs/CleanAutoIndent
 *** Guess indent mode
 #+BEGIN_SRC emacs-lisp
 (use-package dtrt-indent
+  :if (unless noninteractive)
   :ensure t
   :config
   (dtrt-indent-mode 1)
