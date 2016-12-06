@@ -303,15 +303,15 @@ Bootstrap use-package:
 ** paradox
 https://github.com/Malabarba/paradox
 
-| Key   | Function                        |
-|-------+---------------------------------|
+| Key | Function                        |
+|-----+---------------------------------|
 | =v=   | visit homepage                  |
 | =l=   | list recent commits             |
 | =f r= | filter by regexp                |
 | =f u= | filter by upgradeable packages  |
 | =f k= | filter by keyword               |
 | =f s= | filter by user-starred packages |
-|-------+---------------------------------|
+|-----+---------------------------------|
 
 #+BEGIN_SRC emacs-lisp
 (use-package paradox
