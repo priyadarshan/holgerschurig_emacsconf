@@ -4035,7 +4035,14 @@ Interactively select compile commands.
 )
 #+END_SRC
 
-** Checking
+** Checking (with flycheck)
+
+| Key     | Function        |
+|---------+-----------------|
+| C-c ! l | list all issues |
+| C-c ! n | next issue      |
+| C-c ! p | previous issue  |
+
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
   :ensure t
