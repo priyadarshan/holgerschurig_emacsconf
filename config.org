@@ -4047,11 +4047,9 @@ Interactively select compile commands.
 (use-package flycheck
   :ensure t
   :commands (flycheck-mode)
-  :config
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-  ;; (setq flycheck-emacs-lisp-checkdoc-variables (cons 'sentence-end-double-space flycheck-emacs-lisp-checkdoc-variables))
 )
 #+END_SRC
+
 ** Auto close compile log if there are no errors
 [[http://www.emacswiki.org/emacs/ModeCompile]]
 
