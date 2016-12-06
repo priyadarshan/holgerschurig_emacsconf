@@ -4050,6 +4050,26 @@ Interactively select compile commands.
 )
 #+END_SRC
 
+Also use helm-flycheck:
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-flycheck
+  :ensure t
+  :bind (("M-g f"   . my-helm-flycheck)
+		 ("C-c ! l" . my-helm-flycheck))
+  :config
+  (defun my-helm-flycheck ()
+	"This function makes sure that flycheck has been finished
+before running helm-flycheck"
+	(interactive)
+	(require 'flycheck)
+	(if flycheck-mode
+		(call-interactively 'helm-flycheck)
+		(flycheck-mode)
+		(message "Just turned flycheck on, wait a bit for errors to appear ...")
+		(run-with-idle-timer 1 nil #'helm-flycheck)))
+)
+#+END_SRC
 ** Auto close compile log if there are no errors
 [[http://www.emacswiki.org/emacs/ModeCompile]]
 
