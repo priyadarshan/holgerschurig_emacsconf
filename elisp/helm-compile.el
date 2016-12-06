@@ -67,7 +67,7 @@ executed the last time.  The latter is used for sorting.
 
 
 (defun helm-compile-sort-command-alist ()
-"Sort helm-compile-commands by the value of their cons elements.
+  "Sort ‘helm-compile-commands’ by the value of their cons elements.
 
 This sorts the entries so that recently used compile commands
 are near the top."
@@ -75,7 +75,7 @@ are near the top."
 												  (not (string< (cdr x) (cdr y)))))))
 
 (defun helm-compile-add-command (cmd)
-"Add CMD to helm-compile-commands if it isn't already in it.
+  "Add CMD to ‘helm-compile-commands’ if it isn't already in it.
 
 It inserts the seconds since 1970 into the value."
   ;; (message "adding command '%s'" cmd)
@@ -85,7 +85,7 @@ It inserts the seconds since 1970 into the value."
 
 
 (defun helm-compile-del-command (cmd)
-  "This deletes CMD from the helm-compile-commands list."
+  "This deletes CMD from the ‘helm-compile-commands’ list."
   (setq helm-compile-commands
 		(delq (assoc cmd helm-compile-commands)
 			  helm-compile-commands)))
@@ -95,7 +95,7 @@ It inserts the seconds since 1970 into the value."
   "Get compilation commands from open buffers.
 
 Searches all open buffers that have a file-name associated and
-adds compile commands from to helm-compile-commands.  Valid forms
+adds compile commands from to ‘helm-compile-commands’.  Valid forms
 for compile commands in the source code are:
 
 - // @compile: make foo
