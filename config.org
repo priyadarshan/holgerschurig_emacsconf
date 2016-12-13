@@ -1243,7 +1243,8 @@ quarter-page wise. This is a bit annoying, because I'll always have to
 chase the cursor when this happens. But there's a cure:
 
 #+BEGIN_SRC emacs-lisp
-(setq scroll-conservatively 101)
+(setq scroll-conservatively most-positive-fixnum
+      scroll-preserve-screen-position t)
 #+END_SRC
 
 
