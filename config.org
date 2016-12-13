@@ -4201,22 +4201,6 @@ before running helm-flycheck"
 		(run-with-idle-timer 1 nil #'helm-flycheck)))
 )
 #+END_SRC
-** Auto close compile log if there are no errors
-[[http://www.emacswiki.org/emacs/ModeCompile]]
-
-#+BEGIN_SRC emacs-lisp
-(defun compile-autoclose (buffer string)
-  (when (string-match "finished" string)
-	(delete-window (get-buffer-window buffer t))
-	(bury-buffer-internal buffer)))
-(use-package compile
-	:diminish compilation-in-progress
-	:config
-	(add-to-list 'compilation-finish-functions 'compile-autoclose)
-	(setq compilation-ask-about-save nil)
-	(setq compilation-scroll-output t))
-#+END_SRC
-
 ** Error navigation
 #+BEGIN_SRC emacs-lisp
 (bind-key "<f8>" 'next-error)
@@ -4589,6 +4573,28 @@ Home page: http://web-mode.org/
   (setq comint-prompt-read-only t)
   ;; Activate isearch
   (setq comint-history-isearch t)
+)
+#+END_SRC
+
+** Package: compile
+[[http://www.emacswiki.org/emacs/ModeCompile]]
+
+#+BEGIN_SRC emacs-lisp
+(defun my-compile-autoclose (buffer string)
+  "Auto close compile log if there are no errors"
+  (when (string-match "finished" string)
+	(delete-window (get-buffer-window buffer t))
+	(bury-buffer-internal buffer)))
+
+(use-package compile
+  :defer
+  :diminish compilation-in-progress
+  :config
+  (add-to-list 'compilation-finish-functions #'my-compile-autoclose)
+
+  (setq compilation-always-kill t)
+  (setq compilation-ask-about-save nil)
+  (setq compilation-scroll-output 'first-error)
 )
 #+END_SRC
 
