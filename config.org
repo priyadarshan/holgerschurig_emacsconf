@@ -2606,6 +2606,14 @@ http://www.suenkler.info/docs/emacs-orgmode/
 #+BEGIN_SRC emacs-lisp
 (use-package org-src
   :defer t
+  :bind (:map org-src-mode-map
+			  ;; F2 used to be save-buffer, but this will happily save a file
+			  ;; "config.org[*Org Src config.org[ emacs-lisp ]*]" which is a bit
+			  ;; awkward
+			  ("F2"      . org-edit-source-save)
+			  ;; normally I'd need C-c ' to exit, but this enables the same exit
+			  ;; method I have in when doing a commit in magit.
+			  ("C-c C-c" . org-edit-src-exit))
   :config
   ;; Open source editor in current window
   (setq org-src-window-setup 'current-window)
@@ -2615,10 +2623,6 @@ http://www.suenkler.info/docs/emacs-orgmode/
   (setq org-src-tab-acts-natively t)
   ;; don't add two indentation spaces into src blocks
   (setq org-src-preserve-indentation t)
-
-  ;; normally I'd need C-c ' to exit, but this enables the same exit
-  ;; method I have in when doing a commit in magit.
-  (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map)
 )
 #+END_SRC
 
