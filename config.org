@@ -2847,16 +2847,15 @@ see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Con
 
 ** elfeed
 
-| Key | Function                     |
-|-----+------------------------------|
-| RET | show article                |
-| G   | update feeds                 |
-| b   | open in browser (browse-url) |
-| q   | quit                         |
-
-| +      | Apply TAG to all selected entries.                          |
-| -      | Remove TAG from all selected entries.                       |
-| S      | Set a new search filter for the elfeed-search buffer.       |
+| Key | Function                                              |
+|-----+-------------------------------------------------------|
+| RET | show article                                          |
+| G   | update feeds                                          |
+| b   | open in browser (browse-url)                          |
+| q   | quit                                                  |
+| +   | Apply TAG to all selected entries.                    |
+| -   | Remove TAG from all selected entries.                 |
+| S   | Set a new search filter for the elfeed-search buffer. |
 
 https://github.com/skeeto/elfeed
 Tips and Tricks: http://nullprogram.com/blog/2013/11/26/
@@ -2874,7 +2873,6 @@ Tips and Tricks: http://nullprogram.com/blog/2013/11/26/
 		  ("http://endlessparentheses.com/atom.xml" emacs)
 		  ("http://nullprogram.com/feed/" emacs)
 		  ("http://planet.emacsen.org/atom.xml" emacs)
-		  ("http://stackexchange.com/feeds/tagsets/152198/emacs?sort=active" emacs)
 		  ("http://www.lunaryorn.com/feed.atom" emacs)
 		  ("http://www.masteringemacs.org/feed/" emacs)
 		  ("https://github.com/milkypostman/melpa/commits/master.atom" github emacs)
@@ -2884,67 +2882,80 @@ Tips and Tricks: http://nullprogram.com/blog/2013/11/26/
 		  ("https://www.reddit.com/r/emacs/.rss" emacs reddit)
 		  ("https://www.reddit.com/r/orgmode/.rss" emacs reddit)
 
-		  ;; check them:
-		  ;; ("http://harryrschwartz.com/atom.xml" blog)
-		  ;; ("http://zinascii.com/writing-feed.xml" blog)
-		  ;; ("http://githubengineering.com/atom.xml" blog)
-		  ;; ("http://blog.smola.org/rss" blog)
-		  ;; ("http://briancarper.net/feed" blog)
-		  ;; ("https://kotka.de/blog/index.rss" blog)
-		  ;; ("http://fiftyfootshadows.net/feed/" blog)
-		  ;; ("http://blag.xkcd.com/feed/" blog)
-		  ;; ("http://youdisappear.net/files/page1.xml" blog music)
-		  ;; ("http://normanmaurer.me/blog.atom" blog)
-		  ;; ("http://blog.mikemccandless.com/feeds/posts/default" elasticsearch blog)
-		  ;; ("http://lethain.com/feeds/all/" blog)
-		  ;; ("http://whatthefuck.computer/rss.xml" blog)
-		  ;; ("http://feeds.feedburner.com/jamesshelley" blog)
-		  ;; ("http://www.marco.org/rss" blog)
-		  ;; ("http://gnuvince.wordpress.com/feed/" blog)
-		  ;; ("http://elliotth.blogspot.com/feeds/posts/default" blog)
-		  ;; ("http://feeds.feedburner.com/Hyperbole-and-a-half" blog)
-		  ;; ("http://lcamtuf.blogspot.com/feeds/posts/default" blog)
-		  ;; ("http://blog.isabel-drost.de/index.php/feed" blog)
-		  ;; ("http://feeds2.feedburner.com/CodersTalk" blog)
-		  ;; ("http://feeds.feedburner.com/codinghorror/" blog)
-		  ;; ("http://lambda-the-ultimate.org/rss.xml" blog)
-		  ;; ("http://danluu.com/atom.xml" blog)
-		  ;; ("http://ferd.ca/feed.rss" blog)
-		  ;; ("http://blog.fsck.com/atom.xml" blog)
-		  ;; ("http://jvns.ca/atom.xml" blog)
-		  ;; ("http://newartisans.com/rss.xml" blog emacs)
-		  ;; ("http://bling.github.io/index.xml" blog emacs)
-		  ;; ("https://rachelbythebay.com/w/atom.xml" blog)
-		  ;; ("http://blog.nullspace.io/feed.xml" blog)
-		  ;; ("http://www.mcfunley.com/feed/atom" blog)
-		  ;; ("https://codewords.recurse.com/feed.xml" blog)
-		  ;; ("http://akaptur.com/atom.xml" blog)
-		  ;; ("http://davidad.github.io/atom.xml" blog)
-		  ;; ("http://www.evanjones.ca/index.rss" blog)
-		  ;; ("http://neverworkintheory.org/feed.xml" blog)
-		  ;; ("http://blog.jessitron.com/feeds/posts/default" blog)
-		  ;; ("http://feeds.feedburner.com/GustavoDuarte?format=xml" blog)
-		  ;; ("http://blog.regehr.org/feed" blog)
-		  ;; ("https://www.snellman.net/blog/rss-index.xml" blog)
-		  ;; ("http://eli.thegreenplace.net/feeds/all.atom.xml" blog)
-		  ;; ("https://idea.popcount.org/rss.xml" blog)
-		  ;; ("https://aphyr.com/posts.atom" blog)
-		  ;; ("http://kamalmarhubi.com/blog/feed.xml" blog)
-		  ;; ("http://maryrosecook.com/blog/feed" blog)
-		  ;; ("http://www.tedunangst.com/flak/rss" blog)
-		  ;; ("http://yosefk.com/blog/feed" blog)
-		  ;; ("http://www.benkuhn.net/rss/" blog)
-		  ;; ("https://emacsgifs.github.io/feed.xml" blog emacs)
+		  ;;("http://stackexchange.com/feeds/tagsets/152198/emacs?sort=active" emacs)
 		  ))
 
-  (setq elfeed-use-curl nil)
+  (setq elfeed-use-curl t)
 
   ;; Entries older than 4 weeks are marked as read
   (add-hook 'elfeed-new-entry-hook
 			(elfeed-make-tagger :before "4 weeks ago"
 								:remove 'unread))
+
+  ;; fetch RSS/Atom feeds in the background
+  ;;
+  ;; A better approach would be to have a checker function that
+  ;; gets the feeds sorted by when they have last been downloaded
+  ;; it would then take one (!) of them and just feed it. That
+  ;; makes the idle function fast and we could increase it's
+  ;; timeout from 15 minutes to a minute or so.
+  (run-with-idle-timer (* 15 60) t #'elfeed-update)
 )
 #+END_SRC
+
+Some more feeds to (eventually) check:
+
+- ("http://harryrschwartz.com/atom.xml" blog)
+- ("http://zinascii.com/writing-feed.xml" blog)
+- ("http://githubengineering.com/atom.xml" blog)
+- ("http://blog.smola.org/rss" blog)
+- ("http://briancarper.net/feed" blog)
+- ("https://kotka.de/blog/index.rss" blog)
+- ("http://fiftyfootshadows.net/feed/" blog)
+- ("http://blag.xkcd.com/feed/" blog)
+- ("http://youdisappear.net/files/page1.xml" blog music)
+- ("http://normanmaurer.me/blog.atom" blog)
+- ("http://blog.mikemccandless.com/feeds/posts/default" elasticsearch blog)
+- ("http://lethain.com/feeds/all/" blog)
+- ("http://whatthefuck.computer/rss.xml" blog)
+- ("http://feeds.feedburner.com/jamesshelley" blog)
+- ("http://www.marco.org/rss" blog)
+- ("http://gnuvince.wordpress.com/feed/" blog)
+- ("http://elliotth.blogspot.com/feeds/posts/default" blog)
+- ("http://feeds.feedburner.com/Hyperbole-and-a-half" blog)
+- ("http://lcamtuf.blogspot.com/feeds/posts/default" blog)
+- ("http://blog.isabel-drost.de/index.php/feed" blog)
+- ("http://feeds2.feedburner.com/CodersTalk" blog)
+- ("http://feeds.feedburner.com/codinghorror/" blog)
+- ("http://lambda-the-ultimate.org/rss.xml" blog)
+- ("http://danluu.com/atom.xml" blog)
+- ("http://ferd.ca/feed.rss" blog)
+- ("http://blog.fsck.com/atom.xml" blog)
+- ("http://jvns.ca/atom.xml" blog)
+- ("http://newartisans.com/rss.xml" blog emacs)
+- ("http://bling.github.io/index.xml" blog emacs)
+- ("https://rachelbythebay.com/w/atom.xml" blog)
+- ("http://blog.nullspace.io/feed.xml" blog)
+- ("http://www.mcfunley.com/feed/atom" blog)
+- ("https://codewords.recurse.com/feed.xml" blog)
+- ("http://akaptur.com/atom.xml" blog)
+- ("http://davidad.github.io/atom.xml" blog)
+- ("http://www.evanjones.ca/index.rss" blog)
+- ("http://neverworkintheory.org/feed.xml" blog)
+- ("http://blog.jessitron.com/feeds/posts/default" blog)
+- ("http://feeds.feedburner.com/GustavoDuarte?format=xml" blog)
+- ("http://blog.regehr.org/feed" blog)
+- ("https://www.snellman.net/blog/rss-index.xml" blog)
+- ("http://eli.thegreenplace.net/feeds/all.atom.xml" blog)
+- ("https://idea.popcount.org/rss.xml" blog)
+- ("https://aphyr.com/posts.atom" blog)
+- ("http://kamalmarhubi.com/blog/feed.xml" blog)
+- ("http://maryrosecook.com/blog/feed" blog)
+- ("http://www.tedunangst.com/flak/rss" blog)
+- ("http://yosefk.com/blog/feed" blog)
+- ("http://www.benkuhn.net/rss/" blog)
+- ("https://emacsgifs.github.io/feed.xml" blog emacs)
+
 ** flyspell
 
 #+BEGIN_SRC emacs-lisp
