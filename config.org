@@ -3110,6 +3110,15 @@ https://github.com/pronobis/helm-flyspell
 #+END_SRC
 
 
+** shr (browser, used by elfeed)
+#+BEGIN_SRC emacs-lisp
+(use-package shr
+  :defer t
+  :config
+  ;; don't use the (ugly)proportional font
+  (setq shr-use-fonts nil)
+)
+#+END_SRC
 
 * Mail & News
 
