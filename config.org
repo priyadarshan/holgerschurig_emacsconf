@@ -4559,60 +4559,6 @@ Home page: http://web-mode.org/
 #+END_SRC
 
 
-** Package: term (for ansi-term)
-This term understands ansi escape sequences.
-
-On Debian, one should install the =ansi-term= debian package so that
-the terminal "eterm-color" is available.
-
-#+BEGIN_SRC emacs-lisp
-(use-package term
-  :bind ("M-g s" . ansi-shell)
-  :commands (ansi-term ansi-shell
-					   term-in-line-mode
-					   term-line-mode
-					   term-char-mode)
-  :defines (term-buffer-maximum-size
-			ml-interactive?
-			show-dir-in-mode-line?)
-  :init
-  (defun ansi-shell ()
-	"Start ansi-term with bash"
-	(interactive)
-	(ansi-term "/bin/bash"))
-  :config
-
-  ;; don't linger around when closing
-  (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
-	(if (memq (process-status proc) '(signal exit))
-		(let ((buffer (process-buffer proc)))
-		  ad-do-it
-		  (kill-buffer buffer))
-	  ad-do-it))
-  (ad-activate 'term-sentinel)
-
-  (defun term-toggle-mode ()
-	(interactive)
-	(if (term-in-line-mode)
-		(term-char-mode)
-	  (term-line-mode)))
-
-  (defun my-term-hook ()
-	(goto-address-mode)
-	;; (bind-key "C-c C-j" #'term-toggle-mode term-mode-map)
-	;; (bind-key "C-c C-k" #'term-toggle-mode term-mode-map)
-	(setq global-hl-line-mode nil)
-	(setq term-buffer-maximum-size 10000)
-	(setq-local ml-interactive? t) ;; for mode line
-	(setq-local show-dir-in-mode-line? t) ;; also mode linec'
-	(setq show-trailing-whitespace nil)
-	;; disable company in favor of shell completion
-	;;(company-mode -1)
-	)
-  (add-hook 'term-mode-hook 'my-term-hook)
-)
-#+END_SRC
-
 ** Package: column-marker
 
 #+BEGIN_SRC emacs-lisp
@@ -4760,6 +4706,60 @@ Nice for elisp faces or CSS files.
   :ensure t
   :defer t
   :commands (rainbow-mode)
+)
+#+END_SRC
+
+** Package: term (for ansi-term)
+This term understands ansi escape sequences.
+
+On Debian, one should install the =ansi-term= debian package so that
+the terminal "eterm-color" is available.
+
+#+BEGIN_SRC emacs-lisp
+(use-package term
+  :bind ("M-g s" . ansi-shell)
+  :commands (ansi-term ansi-shell
+					   term-in-line-mode
+					   term-line-mode
+					   term-char-mode)
+  :defines (term-buffer-maximum-size
+			ml-interactive?
+			show-dir-in-mode-line?)
+  :init
+  (defun ansi-shell ()
+	"Start ansi-term with bash"
+	(interactive)
+	(ansi-term "/bin/bash"))
+  :config
+
+  ;; don't linger around when closing
+  (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
+	(if (memq (process-status proc) '(signal exit))
+		(let ((buffer (process-buffer proc)))
+		  ad-do-it
+		  (kill-buffer buffer))
+	  ad-do-it))
+  (ad-activate 'term-sentinel)
+
+  (defun term-toggle-mode ()
+	(interactive)
+	(if (term-in-line-mode)
+		(term-char-mode)
+	  (term-line-mode)))
+
+  (defun my-term-hook ()
+	(goto-address-mode)
+	;; (bind-key "C-c C-j" #'term-toggle-mode term-mode-map)
+	;; (bind-key "C-c C-k" #'term-toggle-mode term-mode-map)
+	(setq global-hl-line-mode nil)
+	(setq term-buffer-maximum-size 10000)
+	(setq-local ml-interactive? t) ;; for mode line
+	(setq-local show-dir-in-mode-line? t) ;; also mode linec'
+	(setq show-trailing-whitespace nil)
+	;; disable company in favor of shell completion
+	;;(company-mode -1)
+	)
+  (add-hook 'term-mode-hook 'my-term-hook)
 )
 #+END_SRC
 
