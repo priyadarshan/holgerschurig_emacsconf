@@ -4630,7 +4630,6 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 	(add-to-list 'eshell-visual-commands "htop")
 	(add-to-list 'eshell-visual-commands "ncmpcpp")
 	(add-to-list 'eshell-visual-commands "tail")
-	(setq-local ml-interactive? t) ;; for mode line
 	(eshell/addpath "~/bin"))
   (add-hook 'eshell-mode-hook 'my--eshell-hook)
 )
@@ -4723,7 +4722,6 @@ the terminal "eterm-color" is available.
 					   term-line-mode
 					   term-char-mode)
   :defines (term-buffer-maximum-size
-			ml-interactive?
 			show-dir-in-mode-line?)
   :init
   (defun ansi-shell ()
@@ -4753,7 +4751,6 @@ the terminal "eterm-color" is available.
 	;; (bind-key "C-c C-k" #'term-toggle-mode term-mode-map)
 	(setq global-hl-line-mode nil)
 	(setq term-buffer-maximum-size 10000)
-	(setq-local ml-interactive? t) ;; for mode line
 	(setq-local show-dir-in-mode-line? t) ;; also mode linec'
 	(setq show-trailing-whitespace nil)
 	;; disable company in favor of shell completion
