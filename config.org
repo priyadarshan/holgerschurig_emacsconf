@@ -4573,6 +4573,25 @@ Home page: http://web-mode.org/
   )
 #+END_SRC
 
+** Package: comint
+#+BEGIN_SRC emacs-lisp
+(use-package comint
+  :defer t
+  :bind (:map comint-mode-map
+			  ("<down>" . comint-next-input)
+			  ("<up>"   . comint-previous-input)
+			  ("C-n"    . comint-next-input)
+			  ("C-p"    . comint-previous-input)
+			  ("C-r"    . comint-history-isearch-backward))
+
+  :config
+  ;; Make the prompt readonly
+  (setq comint-prompt-read-only t)
+  ;; Activate isearch
+  (setq comint-history-isearch t)
+)
+#+END_SRC
+
 ** Package: dump-jump (goto definition)
 With this package you can goto a definition without any setup (e.g. no
 TAGS file is needed).
