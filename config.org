@@ -2864,6 +2864,7 @@ Tips and Tricks: http://nullprogram.com/blog/2013/11/26/
 
 #+BEGIN_SRC emacs-lisp
 (use-package elfeed
+  :if (string= (system-name) "desktop")
   :ensure t
   :bind ("M-g r" . elfeed)   ; r like "RSS"
   :config
