@@ -152,8 +152,8 @@ the =.org= file is newer, I'll re-create the =.el= file.
 ;; This is GPLv2. If you still don't know the details, read
 ;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-(let ((orgfile (concat user-emacs-directory "config.org"))
-      (elfile (concat user-emacs-directory "config.el")))
+(let ((orgfile (locate-user-emacs-file "config.org"))
+      (elfile (locate-user-emacs-file "config.el")))
   (when (or (not (file-exists-p elfile))
             (file-newer-than-file-p orgfile elfile))
     (my-tangle-config-org orgfile elfile))
@@ -175,8 +175,8 @@ called whenever I save a file. It checks if the file is indeed the
 
 (defun my-tangle-config-org-hook-func ()
   (when (string= "config.org" (buffer-name))
-	(let ((orgfile (concat user-emacs-directory "config.org"))
-		  (elfile (concat user-emacs-directory "config.el")))
+	(let ((orgfile (locate-user-emacs-file "config.org"))
+		  (elfile (locate-user-emacs-file "config.el")))
 	  (my-tangle-config-org orgfile elfile))))
 (add-hook 'after-save-hook #'my-tangle-config-org-hook-func)
 #+END_SRC
@@ -833,7 +833,7 @@ Delete identical history entries
   :if (not noninteractive)
   :init
   (defvar savehist-file)
-  (setq savehist-file (concat user-emacs-directory "tmp/history.el")
+  (setq savehist-file (locate-user-emacs-file "tmp/history.el")
 		history-length 1000)
   :config
   (savehist-mode 1)
@@ -866,7 +866,7 @@ Delete identical history entries
 
 ** Customization
 #+BEGIN_SRC emacs-lisp
-(setq custom-file (concat user-emacs-directory "custom.el"))
+(setq custom-file (locate-user-emacs-file "custom.el"))
 (when (file-exists-p custom-file)
   (load-file custom-file))
 #+END_SRC
@@ -1196,7 +1196,7 @@ use + and - after the first expand to expand further / shrink again.
 (use-package bookmark
   :if (not noninteractive)
   :config
-  (setq bookmark-default-file (concat user-emacs-directory "tmp/bookmarks.el"))
+  (setq bookmark-default-file (locate-user-emacs-file "tmp/bookmarks.el"))
   )
 #+END_SRC
 
@@ -1692,7 +1692,7 @@ Just never create backup files at all
 make-backup-files nil
 
 #+BEGIN_SRC emacs-lisp
-(setq backup-directory-alist (list (cons "." (concat user-emacs-directory "tmp/bak/"))))
+(setq backup-directory-alist (list (cons "." (locate-user-emacs-file "tmp/bak/"))))
 #+END_SRC
 
 Make sure your text files end in a newline
@@ -1705,7 +1705,7 @@ Disable auto-save (#init.el# file-names)
 
 #+BEGIN_SRC emacs-lisp
 (setq auto-save-default nil)
-(setq auto-save-list-file-prefix (concat user-emacs-directory "tmp/auto-save-list/saves-"))
+(setq auto-save-list-file-prefix (locate-user-emacs-file "tmp/auto-save-list/saves-"))
 #+END_SRC
 
 Kill means kill, not asking. Was:
@@ -1777,7 +1777,7 @@ list of regular expressions:
 (use-package recentf
   :defer 1
   :config
-  (setq recentf-save-file (concat user-emacs-directory "tmp/recentf.el")
+  (setq recentf-save-file (locate-user-emacs-file "tmp/recentf.el")
 		recentf-exclude '("^/tmp/"
 						  "/.newsrc"
 						  "bbdb$"
@@ -4126,7 +4126,7 @@ Now try yasnippet again now that it's faster.
   (setq yas-wrap-around-region t)
 
   ;; Set my own
-  ;; (setq yas-snippet-dirs '((concat user-emacs-directory "yasnippet")))
+  ;; (setq yas-snippet-dirs '((locate-user-emacs-file "yasnippet")))
 
   ;; This creates errors when I open ansi-term
   ;; (yas-global-mode 1)
