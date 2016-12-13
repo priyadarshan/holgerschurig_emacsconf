@@ -3231,6 +3231,18 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
 )
 #+END_SRC
 
+** mm-decode
+#+BEGIN_SRC emacs-lisp
+(use-package mm-decode
+  :defer t
+  :config
+
+  ;; Displaying zip/tar inline is a really, really stupid default!
+  (setq mm-inlined-types
+		(cl-remove-if (apply-partially #'string-match-p "\\(x-g?tar\\|zip\\)")
+					  mm-inlined-types))
+)
+#+END_SRC
 
 ** notmuch
 
