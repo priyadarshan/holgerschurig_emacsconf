@@ -214,7 +214,9 @@ We already have part of the package initialization in =init.el=, so here is the 
 
 #+BEGIN_SRC emacs-lisp
 (require 'package)
-(setq package-enable-at-startup nil)
+(setq package-enable-at-startup nil
+      ;; work around package.el bug in Emacs 25
+      package--init-file-ensured t)
 #+END_SRC
 
 Seems that we need certificate pinning before accessing some https sites:
