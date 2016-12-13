@@ -2884,7 +2884,6 @@ Tips and Tricks: http://nullprogram.com/blog/2013/11/26/
 		  ("https://github.com/milkypostman/melpa/commits/master.atom" github emacs)
 		  ("http://oremacs.com/atom.xml" emacs)
 		  ("http://emacsnyc.org/atom.xml" emacs)
-		  ("http://s-expressions.com/feed/" emacs)
 		  ("https://www.reddit.com/r/emacs/.rss" emacs reddit)
 		  ("https://www.reddit.com/r/orgmode/.rss" emacs reddit)
 
