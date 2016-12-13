@@ -2891,6 +2891,7 @@ Tips and Tricks: http://nullprogram.com/blog/2013/11/26/
 		  ))
 
   (setq elfeed-use-curl t)
+  (setq elfeed-search-filter "@1-week-ago +unread")
 
   ;; Entries older than 4 weeks are marked as read
   (add-hook 'elfeed-new-entry-hook
