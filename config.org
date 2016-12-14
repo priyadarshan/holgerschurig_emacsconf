@@ -1771,7 +1771,9 @@ list of regular expressions:
 #+BEGIN_SRC emacs-lisp
 (use-package uniquify
   :if (not noninteractive)
-  :config (setq uniquify-buffer-name-style 'forward))
+  :config
+  (setq uniquify-buffer-name-style 'forward)
+)
 #+END_SRC
 
 ** recentf
