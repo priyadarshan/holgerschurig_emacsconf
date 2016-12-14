@@ -44,6 +44,8 @@
   :type 'string
   :group 'org2hugo)
 
+
+;;* Implementation
 (defun org2hugo-ensure-property (property)
   "Make sure that PROPERTY exists.
 
