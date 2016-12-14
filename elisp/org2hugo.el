@@ -53,7 +53,7 @@ If not, it will be created.
 
 Returns the property name if the property has been created,
 otherwise nil."
-  (if (org-entry-get nil property)
+  (if (org-entry-get nil property t)
 	  nil
 	(progn (org-entry-put nil property "")
 		   property)))
@@ -72,10 +72,10 @@ Returns list of properties that still must be filled in"
   (let ((current-time (format-time-string (org-time-stamp-format t t) (org-current-time)))
 		first)
 	(save-excursion
-	  (unless (org-entry-get nil "TITLE")
+	  (unless (org-entry-get nil "TITLE" t)
 		(org-entry-put nil "TITLE" (nth 4 (org-heading-components))))
 	  (setq first (-first #'identity (mapcar #'org2hugo-ensure-property '("HUGO_TAGS" "HUGO_TOPICS" "HUGO_FILE"))))
-	  (unless (org-entry-get nil "HUGO_DATE")
+	  (unless (org-entry-get nil "HUGO_DATE" t)
 		(org-entry-put nil "HUGO_DATE" current-time)))
 	(when first
 	  (goto-char (org-entry-beginning-position))
