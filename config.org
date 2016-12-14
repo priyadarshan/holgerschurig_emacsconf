@@ -4872,7 +4872,7 @@ First we create this =empty.el= file:
 and then we run emacs on this file:
 
 #+BEGIN_SRC shell :tangle no
-emacs --batch -Q -l empty.el --kil
+emacs --batch -Q -l empty.el --kill
 #+END_SRC
 
 The result will be assigned to =features-when-run-emacs-Q=. And if we
@@ -4899,6 +4899,12 @@ font-render-setting xwidget-internal move-toolbar gtk x-toolkit x
 multi-tty make-network-process emacs))
 
 (message "FEATURES: %s" (set-difference features features-when-run-emacs-Q))
+#+END_SRC
+
+And finally, to find out which modules are loaded by a batch emacs, run
+
+#+BEGIN_SRC shell :tangle no
+emacs --batch -Q -l init.el --kill | fmt
 #+END_SRC
 
 Tata!
