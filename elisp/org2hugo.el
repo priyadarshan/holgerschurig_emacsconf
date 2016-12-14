@@ -119,7 +119,12 @@ Returns list of properties that still must be filled in"
 	  (if (require 'ox-gfm nil t)
 		  (setq backend 'gfm)
 		(require 'ox-md))
-	  (setq blog (org-export-as backend t))
+	  (save-excursion
+		;; we could be in a subsection, so search backwards for our
+		;; properties (which we know are there) and export that
+		;; subtree into the variable BLOG
+		(search-backward ":HUGO_TOPICS:")
+		(setq blog (org-export-as backend t)))
 	  ;; Normalize save file path
 	  (unless (string-match "^[/~]" file)
 		(setq file (concat org2hugo-content-dir file))
