@@ -4701,6 +4701,9 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 
 ** Package: kurecolor
 https://github.com/emacsfodder/kurecolor
+
+This package allows interactive modification of color values.
+
 #+BEGIN_SRC emacs-lisp
 (use-package kurecolor
   :ensure t
