@@ -95,17 +95,23 @@ Returns list of properties that still must be filled in"
   "Export a org mode section towards the blogging software \"hugo\"."
   (interactive)
   (unless (org2hugo-ensure-properties)
-	(let* ((title    (concat "title = \"" (org-entry-get nil "TITLE") "\"\n"))
-		   (date     (concat "date = \"" (format-time-string "%Y-%m-%d" (apply 'encode-time (org-parse-time-string (org-entry-get nil "HUGO_DATE"))) t) "\"\n"))
-		   (topics   (concat "topics = [ \"" (mapconcat 'identity (split-string (org-entry-get nil "HUGO_TOPICS") "\\( *, *\\)" t) "\", \"") "\" ]\n"))
-		   (tags     (concat "tags = [ \"" (mapconcat 'identity (split-string (org-entry-get nil "HUGO_TAGS") "\\( *, *\\)" t) "\", \"") "\" ]\n"))
+	(let* (; get properties
+		   (title    (org-entry-get nil "TITLE" t))
+		   (date     (org-entry-get nil "HUGO_DATE" t))
+		   (topics   (org-entry-get nil "HUGO_TOPICS" t))
+		   (tags     (org-entry-get nil "HUGO_TAGS" t))
+		   ; format properties
+		   (date     (format-time-string "%Y-%m-%d" (apply 'encode-time (org-parse-time-string date)) t))
+		   (topics   (mapconcat 'identity (split-string topics "\\( *, *\\)" t) "\", \""))
+		   (tags     (mapconcat 'identity (split-string tags  "\\( *, *\\)" t) "\", \""))
+		   ;; output properties
 		   (fm (concat "+++\n"
-					   title
-					   date
-					   tags
-					   topics
+					   "title = \"" title "\"\n"
+					   "date = \"" date "\"\n"
+					   "topics = [ \"" topics "\" ]\n"
+					   "tags = [ \"" tags "\" ]\n"
 					   "+++\n\n"))
-		   (file     (org-entry-get nil "HUGO_FILE"))
+		   (file     (org-entry-get nil "HUGO_FILE" t))
 		   (coding-system-for-write buffer-file-coding-system)
 		   (backend  'md)
 		   (blog))
