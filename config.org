@@ -2154,6 +2154,7 @@ Hide minibuffer while helm is active
 ** helm-buffer
 #+BEGIN_SRC emacs-lisp
 (use-package helm-buffers
+  :if (not noninteractive)
   :defer t
   :config
   (setq helm-buffer-max-length 28)
@@ -2163,6 +2164,7 @@ Hide minibuffer while helm is active
 ** helm-files
 #+BEGIN_SRC emacs-lisp
 (use-package helm-files
+  :if (not noninteractive)
   :defer t
   :config
   (setq helm-ff-skip-boring-files t)
@@ -2216,6 +2218,7 @@ Hide minibuffer while helm is active
 ** helm-imenu
 #+BEGIN_SRC emacs-lisp
 (use-package helm-imenu
+  :if (not noninteractive)
   :defer t
   :bind ("M-g i" . helm-imenu)
   :config
@@ -2226,6 +2229,7 @@ Hide minibuffer while helm is active
 ** helm-net
 #+BEGIN_SRC emacs-lisp
 (use-package helm-net
+  :if (not noninteractive)
   :defer t
   :config
   (when (executable-find "curl")
@@ -2240,6 +2244,7 @@ Hide minibuffer while helm is active
 ** helm-ring
 #+BEGIN_SRC emacs-lisp
 (use-package helm-ring
+  :if (not noninteractive)
   :defer t
   :bind (:map helm-command-map
 			  ("g" . helm-all-mark-rings))
@@ -2251,6 +2256,7 @@ https://github.com/ShingoFukuyama/helm-swoop
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-swoop
+  :if (not noninteractive)
   :ensure t
   :commands (helm-swoop helm-swoop-back-to-last-point)
   :bind (("M-s s"  . helm-swoop)
@@ -4192,6 +4198,7 @@ Interactively select compile commands.
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-compile
+  :if (not noninteractive)
   :defer t
   :bind (("S-<f7>" . helm-select-compile-command)
 		 ("<f7>" . helm-compile))
@@ -4217,6 +4224,7 @@ Also use helm-flycheck:
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-flycheck
+  :if (not noninteractive)
   :ensure t
   :bind (("M-g f"   . my-helm-flycheck)
 		 ("C-c ! l" . my-helm-flycheck))
