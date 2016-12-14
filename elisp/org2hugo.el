@@ -3,8 +3,11 @@
 ;; Copyright (C) 2016  Holger Schurig
 
 ;; Author: Holger Schurig <holgerschurig@gmail.com>
+;; Maintainer: Holger Schurig <holgerschurig@gmail.com>
+;; URL: TODO
 ;; Keywords: org, hugo, blogging
 ;; Version: 0.0.1
+;; Package-Requires: ((dash "20160820.501") (org "8.3.4"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -26,7 +29,7 @@
 ;; @compile: (byte-compile-file "org2hugo.el")
 
 ;;; Code:
-
+;;* Requires
 (require 'org)
 (require 'dash)  ;; for --first
 
