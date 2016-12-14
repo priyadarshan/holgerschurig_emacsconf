@@ -3028,16 +3028,18 @@ https://github.com/pronobis/helm-flyspell
 
 #+BEGIN_SRC emacs-lisp
 (use-package hydra
+  :if (not noninteractive)
   :defer t
   :ensure t
   :commands (defhydra
-		  hydra-default-pre
-		  hydra-keyboard-quit
-		  hydra-set-transient-map)
-  )
+			 hydra-default-pre
+			 hydra-keyboard-quit
+			 hydra-set-transient-map)
+)
 (use-package lv
   :defer t
-  :commands (lv-message))
+  :commands (lv-message)
+)
 #+END_SRC
 
 ** pdf-tools
