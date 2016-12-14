@@ -1,4 +1,4 @@
-;;; org2hugo.el --- export org to hugo
+;;; org2hugo.el --- export org to hugo    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016  Holger Schurig
 
@@ -31,7 +31,7 @@
 ;;; Code:
 ;;* Requires
 (require 'org)
-(require 'dash)  ;; for --first
+(require 'dash)  ;; for -first
 
 ;; TODO defcustom!
 (defvar org2hugo-content-dir "~/www.hugo/content/"
@@ -66,7 +66,7 @@ Returns list of properties that still must be filled in"
 	(save-excursion
 	  (unless (org-entry-get nil "TITLE")
 		(org-entry-put nil "TITLE" (nth 4 (org-heading-components))))
-	  (setq first (--first it (mapcar #'org2hugo-ensure-property '("HUGO_TAGS" "HUGO_TOPICS" "HUGO_FILE"))))
+	  (setq first (-first #'identity (mapcar #'org2hugo-ensure-property '("HUGO_TAGS" "HUGO_TOPICS" "HUGO_FILE"))))
 	  (unless (org-entry-get nil "HUGO_DATE")
 		(org-entry-put nil "HUGO_DATE" current-time)))
 	(when first
