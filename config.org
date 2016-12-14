@@ -643,7 +643,7 @@ And finally we build our mode line:
 
 #+BEGIN_SRC emacs-lisp
 (use-package powerline
-  :if (display-graphic-p)
+  :if (and (display-graphic-p) (not noninteractive))
   :ensure t
   :config
   (powerline-default-theme)
@@ -663,7 +663,8 @@ And finally we build our mode line:
   ;; This detects the current state of narrowing. It is a slight
   ;; modification of the original function powerline-narrow from
   ;; powerline.el: It displays a unicode flag as well.
-  (defpowerline my-powerline-narrow
+  ;; (defpowerline my-powerline-narrow
+  (defun my-powerline-narrow (&optional face pad)
 	(let (real-point-min real-point-max)
 	  (save-excursion
 		(save-restriction
