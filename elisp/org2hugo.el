@@ -33,10 +33,16 @@
 (require 'org)
 (require 'dash)  ;; for -first
 
-;; TODO defcustom!
-(defvar org2hugo-content-dir "~/www.hugo/content/"
-  "Path to Hugo's content directory.")
+;;* Customize
+(defgroup org2hugo nil
+  "Blogging from org to hugo."
+  :group 'foo
+  :prefix "org2hugo-")
 
+(defcustom org2hugo-content-dir "~/www.hugo/content/"
+  "Path to Hugo's content directory."
+  :type 'string
+  :group 'org2hugo)
 
 (defun org2hugo-ensure-property (property)
   "Make sure that PROPERTY exists.
