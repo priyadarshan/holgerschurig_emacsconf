@@ -2852,7 +2852,7 @@ see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Con
   :commands dired
   :bind ("C-x C-d" . dired) ;; used to be list-directory, quite useless
   :config
-  (setq dired-listing-switches "1")
+  (setq dired-listing-switches "-laGh1v --group-directories-first")
   ;; revert when revisiting
   (setq dired-auto-revert-buffer t)
   ;; normally, only isearch for files, but not if cursor was navigated away
