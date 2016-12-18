@@ -4838,7 +4838,7 @@ documentation browsers.
   :ensure t
   :bind ("C-c d" . zeal-at-point)
   :config
-  ;; (add-to-list 'zeal-at-point-mode-alist '(perl-mode . "perl"))
+  (add-to-list 'zeal-at-point-mode-alist '(c++-mode . "qt,c++"))
   ;; (add-hook 'rinari-minor-mode-hook (lambda () (setq zeal-at-point-docset "rails")))
 )
 #+END_SRC
