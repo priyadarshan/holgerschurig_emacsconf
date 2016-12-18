@@ -643,7 +643,7 @@ And finally we build our mode line:
 
 #+BEGIN_SRC emacs-lisp
 (use-package powerline
-  :if (display-graphic-p)
+  :if (and (display-graphic-p) (not noninteractive))
   :ensure t
   :config
   (powerline-default-theme)
@@ -663,7 +663,8 @@ And finally we build our mode line:
   ;; This detects the current state of narrowing. It is a slight
   ;; modification of the original function powerline-narrow from
   ;; powerline.el: It displays a unicode flag as well.
-  (defpowerline my-powerline-narrow
+  ;; (defpowerline my-powerline-narrow
+  (defun my-powerline-narrow (&optional face pad)
 	(let (real-point-min real-point-max)
 	  (save-excursion
 		(save-restriction
@@ -1771,7 +1772,9 @@ list of regular expressions:
 #+BEGIN_SRC emacs-lisp
 (use-package uniquify
   :if (not noninteractive)
-  :config (setq uniquify-buffer-name-style 'forward))
+  :config
+  (setq uniquify-buffer-name-style 'forward)
+)
 #+END_SRC
 
 ** recentf
@@ -2159,6 +2162,7 @@ Hide minibuffer while helm is active
 ** helm-buffer
 #+BEGIN_SRC emacs-lisp
 (use-package helm-buffers
+  :if (not noninteractive)
   :defer t
   :config
   (setq helm-buffer-max-length 28)
@@ -2168,6 +2172,7 @@ Hide minibuffer while helm is active
 ** helm-files
 #+BEGIN_SRC emacs-lisp
 (use-package helm-files
+  :if (not noninteractive)
   :defer t
   :config
   (setq helm-ff-skip-boring-files t)
@@ -2221,6 +2226,7 @@ Hide minibuffer while helm is active
 ** helm-imenu
 #+BEGIN_SRC emacs-lisp
 (use-package helm-imenu
+  :if (not noninteractive)
   :defer t
   :bind ("M-g i" . helm-imenu)
   :config
@@ -2231,6 +2237,7 @@ Hide minibuffer while helm is active
 ** helm-net
 #+BEGIN_SRC emacs-lisp
 (use-package helm-net
+  :if (not noninteractive)
   :defer t
   :config
   (when (executable-find "curl")
@@ -2245,6 +2252,7 @@ Hide minibuffer while helm is active
 ** helm-ring
 #+BEGIN_SRC emacs-lisp
 (use-package helm-ring
+  :if (not noninteractive)
   :defer t
   :bind (:map helm-command-map
 			  ("g" . helm-all-mark-rings))
@@ -2256,6 +2264,7 @@ https://github.com/ShingoFukuyama/helm-swoop
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-swoop
+  :if (not noninteractive)
   :ensure t
   :commands (helm-swoop helm-swoop-back-to-last-point)
   :bind (("M-s s"  . helm-swoop)
@@ -2785,6 +2794,12 @@ http://www.suenkler.info/docs/emacs-orgmode/
 )
 #+END_SRC
 
+*** org2hugo
+#+BEGIN_SRC emacs-lisp
+(use-package org2hugo
+  :bind ("M-g h" . org2hugo)
+)
+#+END_SRC
 *** CANC ox-twbs
 #+BEGIN_SRC emacs-lisp
 (use-package ox-twbs
@@ -2844,7 +2859,7 @@ see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Con
   :commands dired
   :bind ("C-x C-d" . dired) ;; used to be list-directory, quite useless
   :config
-  (setq dired-listing-switches "1")
+  (setq dired-listing-switches "-laGh1v --group-directories-first")
   ;; revert when revisiting
   (setq dired-auto-revert-buffer t)
   ;; normally, only isearch for files, but not if cursor was navigated away
@@ -3033,16 +3048,18 @@ https://github.com/pronobis/helm-flyspell
 
 #+BEGIN_SRC emacs-lisp
 (use-package hydra
+  :if (not noninteractive)
   :defer t
   :ensure t
   :commands (defhydra
-		  hydra-default-pre
-		  hydra-keyboard-quit
-		  hydra-set-transient-map)
-  )
+			 hydra-default-pre
+			 hydra-keyboard-quit
+			 hydra-set-transient-map)
+)
 (use-package lv
   :defer t
-  :commands (lv-message))
+  :commands (lv-message)
+)
 #+END_SRC
 
 ** pdf-tools
@@ -3051,27 +3068,28 @@ https://github.com/pronobis/helm-flyspell
 
 #+BEGIN_SRC emacs-lisp
 (use-package pdf-tools
-  :if (not noninteractive)
-    :ensure t
-	:mode ("\\.pdf\\'" . pdf-view-mode)
+  :disabled noninteractive
+  :ensure t
+  :mode ("\\.pdf\\'" . pdf-view-mode)
 
-    :config
-    (pdf-tools-install)
+  :config
+  (pdf-tools-install)
 
-	;; silence "the following functions might not be defined at runtime"
-	(declare-function hydra-master/body "config.el" (a b &c))
-	(declare-function pdf-annot-list-annotations "pdf-annot.el" ())
-	(declare-function pdf-annot-delete "pdf-annot.el" (a))
-	(declare-function pdf-annot-attachment-dired "pdf-annot.el" (&regenerate-p))
-	(declare-function pdf-annot-add-markup-annotation "pdf-annot.el" (list-of-edges type &color property-alist))
-	(declare-function pdf-annot-add-text-annotation "pdf-annot.el" (pos &icon property-alist))
-	(declare-function pdf-links-action-perform "pdf-annot.el" (link))
-	(declare-function pdf-links-isearch-link "pdf-annot.el" ())
-	(declare-function pdf-history-backward "pdf-annot.el" (n))
-	(declare-function pdf-history-forward "pdf-annot.el" (n))
+  ;; silence "the following functions might not be defined at runtime"
+  (declare-function hydra-master/body "config.el" (a b &c))
+  (declare-function pdf-annot-list-annotations "pdf-annot.el" ())
+  (declare-function pdf-annot-delete "pdf-annot.el" (a))
+  (declare-function pdf-annot-attachment-dired "pdf-annot.el" (&regenerate-p))
+  (declare-function pdf-annot-add-markup-annotation "pdf-annot.el" (list-of-edges type &color property-alist))
+  (declare-function pdf-annot-add-text-annotation "pdf-annot.el" (pos &icon property-alist))
+  (declare-function pdf-links-action-perform "pdf-annot.el" (link))
+  (declare-function pdf-links-isearch-link "pdf-annot.el" ())
+  (declare-function pdf-history-backward "pdf-annot.el" (n))
+  (declare-function pdf-history-forward "pdf-annot.el" (n))
 
-	(defhydra hydra-pdftools (:color blue :hint nil)
-        "
+  (message "##HS hydra pdftools")
+  (defhydra hydra-pdftools (:color blue :hint nil)
+	"
                                                                       ╭───────────┐
        Move  History   Scale/Fit     Annotations  Search/Link    Do   │ PDF Tools │
    ╭──────────────────────────────────────────────────────────────────┴───────────╯
@@ -3086,62 +3104,62 @@ https://github.com/pronobis/helm-flyspell
          ^^_G_^^
    --------------------------------------------------------------------------------
         "
-        ("\\" hydra-master/body "back")
-        ("<ESC>" nil "quit")
-        ("al" pdf-annot-list-annotations)
-        ("ad" pdf-annot-delete)
-        ("aa" pdf-annot-attachment-dired)
-        ("am" pdf-annot-add-markup-annotation)
-        ("at" pdf-annot-add-text-annotation)
-        ("y"  pdf-view-kill-ring-save)
-        ("+" pdf-view-enlarge :color red)
-        ("-" pdf-view-shrink :color red)
-        ("0" pdf-view-scale-reset)
-        ("H" pdf-view-fit-height-to-window)
-        ("W" pdf-view-fit-width-to-window)
-        ("P" pdf-view-fit-page-to-window)
-        ("n" pdf-view-next-page-command :color red)
-        ("p" pdf-view-previous-page-command :color red)
-        ("d" pdf-view-dark-minor-mode)
-        ("b" pdf-view-set-slice-from-bounding-box)
-        ("r" pdf-view-reset-slice)
-        ("g" pdf-view-first-page)
-        ("G" pdf-view-last-page)
-        ("e" pdf-view-goto-page)
-        ("o" pdf-outline)
-        ("s" pdf-occur)
-        ("i" pdf-misc-display-metadata)
-        ("u" pdf-view-revert-buffer)
-        ("F" pdf-links-action-perform)
-        ("f" pdf-links-isearch-link)
-        ("B" pdf-history-backward :color red)
-        ("N" pdf-history-forward :color red)
-        ("l" image-forward-hscroll :color red)
-        ("h" image-backward-hscroll :color red))
+	("\\" hydra-master/body "back")
+	("<ESC>" nil "quit")
+	("al" pdf-annot-list-annotations)
+	("ad" pdf-annot-delete)
+	("aa" pdf-annot-attachment-dired)
+	("am" pdf-annot-add-markup-annotation)
+	("at" pdf-annot-add-text-annotation)
+	("y"  pdf-view-kill-ring-save)
+	("+" pdf-view-enlarge :color red)
+	("-" pdf-view-shrink :color red)
+	("0" pdf-view-scale-reset)
+	("H" pdf-view-fit-height-to-window)
+	("W" pdf-view-fit-width-to-window)
+	("P" pdf-view-fit-page-to-window)
+	("n" pdf-view-next-page-command :color red)
+	("p" pdf-view-previous-page-command :color red)
+	("d" pdf-view-dark-minor-mode)
+	("b" pdf-view-set-slice-from-bounding-box)
+	("r" pdf-view-reset-slice)
+	("g" pdf-view-first-page)
+	("G" pdf-view-last-page)
+	("e" pdf-view-goto-page)
+	("o" pdf-outline)
+	("s" pdf-occur)
+	("i" pdf-misc-display-metadata)
+	("u" pdf-view-revert-buffer)
+	("F" pdf-links-action-perform)
+	("f" pdf-links-isearch-link)
+	("B" pdf-history-backward :color red)
+	("N" pdf-history-forward :color red)
+	("l" image-forward-hscroll :color red)
+	("h" image-backward-hscroll :color red))
 
-	(bind-keys :map pdf-view-mode-map
-        ("?"  . hydra-pdftools/body)
-        ("<s-spc>" .  pdf-view-scroll-down-or-next-page)
-        ("g"  . pdf-view-first-page)
-        ("G"  . pdf-view-last-page)
-        ("l"  . image-forward-hscroll)
-        ("h"  . image-backward-hscroll)
-        ("j"  . pdf-view-next-page)
-        ("k"  . pdf-view-previous-page)
-        ("e"  . pdf-view-goto-page)
-        ("u"  . pdf-view-revert-buffer)
-        ("al" . pdf-annot-list-annotations)
-        ("ad" . pdf-annot-delete)
-        ("aa" . pdf-annot-attachment-dired)
-        ("am" . pdf-annot-add-markup-annotation)
-        ("at" . pdf-annot-add-text-annotation)
-        ("y"  . pdf-view-kill-ring-save)
-        ("i"  . pdf-misc-display-metadata)
-        ("s"  . pdf-occur)
-        ("b"  . pdf-view-set-slice-from-bounding-box)
-        ("r"  . pdf-view-reset-slice))
+  (bind-keys :map pdf-view-mode-map
+			 ("?"  . hydra-pdftools/body)
+			 ("<s-spc>" .  pdf-view-scroll-down-or-next-page)
+			 ("g"  . pdf-view-first-page)
+			 ("G"  . pdf-view-last-page)
+			 ("l"  . image-forward-hscroll)
+			 ("h"  . image-backward-hscroll)
+			 ("j"  . pdf-view-next-page)
+			 ("k"  . pdf-view-previous-page)
+			 ("e"  . pdf-view-goto-page)
+			 ("u"  . pdf-view-revert-buffer)
+			 ("al" . pdf-annot-list-annotations)
+			 ("ad" . pdf-annot-delete)
+			 ("aa" . pdf-annot-attachment-dired)
+			 ("am" . pdf-annot-add-markup-annotation)
+			 ("at" . pdf-annot-add-text-annotation)
+			 ("y"  . pdf-view-kill-ring-save)
+			 ("i"  . pdf-misc-display-metadata)
+			 ("s"  . pdf-occur)
+			 ("b"  . pdf-view-set-slice-from-bounding-box)
+			 ("r"  . pdf-view-reset-slice))
 
-    (setq-default pdf-view-display-size 'fit-width)
+  (setq-default pdf-view-display-size 'fit-width)
 )
 
 ;; (use-package org-pdfview
@@ -3233,10 +3251,51 @@ http://dev.mutt.org/trac/wiki/MuttFaq/Editor
 
   ;; When I reply, I don't want to have me in To or Cc
   (setq message-dont-reply-to-names (concat "\\("
-                                          user-mail-address
-                                          ;; Nor the Debian BTS
-                                          ;; "\\|^submit@bugs.debian\\.org$"
-                                          "\\)"))
+											user-mail-address
+											;; Nor the Debian BTS
+											;; "\\|^submit@bugs.debian\\.org$"
+											"\\)"))
+
+  ;; based on http://mbork.pl/2016-02-06_An_attachment_reminder_in_mu4e
+  (defun my-message-attachment-present-p ()
+	"Return t if an attachment is found in the current message."
+	(save-excursion
+	  (save-restriction
+		(widen)
+		(goto-char (point-min))
+		(when (search-forward "<#part" nil t) t))))
+
+  (defvar my-message-attachment-intent-re
+	(regexp-opt '("I attach"
+				  "I have attached"
+				  "I've attached"
+				  "I have included"
+				  "I've included"
+				  "see the attached"
+				  "see the attachment"
+				  "attached file"))
+	"A regex which - if found in the message, and if there is no
+attachment - should launch the no-attachment warning.")
+
+  (defvar my-message-attachment-reminder
+	"Are you sure you want to send this message without any attachment? "
+	"The default question asked when trying to send a message
+containing `my-message-attachment-intent-re' without an
+actual attachment.")
+
+  (defun my-message-warn-if-no-attachments ()
+	"Ask the user if s?he wants to send the message even though
+there are no attachments."
+	(when (and (save-excursion
+				 (save-restriction
+				   (widen)
+				   (goto-char (point-min))
+				   (re-search-forward my-message-attachment-intent-re nil t)))
+			   (not (my-message-attachment-present-p)))
+	  (unless (y-or-n-p my-message-attachment-reminder)
+		(keyboard-quit))))
+
+  (add-hook 'message-send-hook #'my-message-warn-if-no-attachments)
 )
 #+END_SRC
 
@@ -3781,199 +3840,6 @@ both in tree-view and in message-show mode, I bind it to both places.
 
 
 
-* Blogging
-  :PROPERTIES:
-  :TITLE:    Blog from Org-Mode to Hugo
-  :HUGO_TAGS: Emacs, Hugo, org-mode
-  :HUGO_TOPICS: Emacs
-  :HUGO_FILE: en/emacs-blog-from-org-to-hugo.md
-  :HUGO_DATE: [2016-03-31 11:46]
-  :END:
-
-I use the static web-site generator [[https://gohugo.io/][Hugo]] to create my home page. I
-also use [[https://www.gnu.org/software/emacs/][Emacs]] as my main editor. Hugo is good with [[https://help.github.com/categories/writing-on-github/][Markdown]]. Emacs is
-good at Markdown, too. But much better with [[http://orgmode.org/][Org-Mode]].
-
-If you want ...
-
-- export one =.org= file as one web page, look at Giles Paterson
-  [[https://vurt.co.uk/post/blogging-with-emacs-and-hugo/][solution]]
-- export just a subtree of an org-file (e.g. from your org-based Emacs
-  configuration), then look here.
-
-#+HTML: <!--more-->
-
-I wanted a nice way to publish single sub-trees of an org-file to
-Hugo. So I wrote my own "publish this specific subtree" export. The
-interactive function is simply called =hugo=, and I bind it to some
-key combination, in my case to =Alt-g h=, g like go, and h like go. So
-I type "go hugo", more or less.
-
-** Usage
-
-One question is how we store Hugo-specific information. So far I only
-care for the title, tags, topics and, of course, the file name. As I
-don't want to have one-file per blog post, but instead use subtrees of
-my org-file, I need to store this information into org's property
-drawers.
-
-But writing them by hand is tedious. So I added code that ensures that
-all needed properties exists. Before I started blogging this article, 
-my org-mode buffer looked like this:
-
-[[./start.png]]
-
-Then I called the =(hugo)= function and my buffer looked like this:
-
-[[./started.png]]
-
-The cursor is positioned at the first empty field.
-
-(Note that I later changed the code below from =HUGO_CATEGORIES= to
-=HUGO_TOPICS=, because that's how I now have defined my taxonomy in
-Hugo.)
-
-Note that the title and date fields are pre-filled. 
-You can of course change them. Only when everything is filled in ...
-
-[[./ready.png]]
-
-... does the export to Hugo create the markdown file with the properly
-formatted TOML front matter.
-
-** Implementation
-
-Let's start simple. First we define where our contents should be stored:
-
-#+BEGIN_SRC emacs-lisp
-;; This is GPLv2. If you still don't know the details, read
-;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
-
-(defvar hugo-content-dir "~/www.hugo/content/"
-  "Path to Hugo's content directory")
-#+END_SRC
-
-The next two functions care that all needed property drawers exist:
-
-#+BEGIN_SRC emacs-lisp
-;; This is GPLv2. If you still don't know the details, read
-;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
-
-(defun hugo-ensure-property (property)
-  "Make sure that a property exists. If not, it will be created.
-
-Returns the property name if the property has been created,
-otherwise nil."
-  (if (org-entry-get nil property)
-	  nil
-	(progn (org-entry-put nil property "")
-		   property)))
-
-(defun hugo-ensure-properties ()
-  "This ensures that several properties exists. If not, these
-properties will be created in an empty form. In this case, the
-drawer will also be opened and the cursor will be positioned
-at the first element that needs to be filled.
-
-Returns list of properties that still must be filled in"
-  (require 'dash)
-  (let ((current-time (format-time-string (org-time-stamp-format t t) (org-current-time)))
-		first)
-	(save-excursion
-	  (unless (org-entry-get nil "TITLE")
-		(org-entry-put nil "TITLE" (nth 4 (org-heading-components))))
-	  (setq first (--first it (mapcar #'hugo-ensure-property '("HUGO_TAGS" "HUGO_TOPICS" "HUGO_FILE"))))
-	  (unless (org-entry-get nil "HUGO_DATE")
-		(org-entry-put nil "HUGO_DATE" current-time)))
-	(when first
-	  (goto-char (org-entry-beginning-position))
-	  ;; The following opens the drawer
-	  (forward-line 1)
-	  (beginning-of-line 1)
-	  (when (looking-at org-drawer-regexp)
-		(org-flag-drawer nil))
-	  ;; And now move to the drawer property
-	  (search-forward (concat ":" first ":"))
-	  (end-of-line))
-	first))
-#+END_SRC
-
-And this is the main function. It simply gathers all information from org-mode,
-formats it correctly, and writes it out.
-
-In case you have the =ox-gfm.el= elisp package is available, the
-export will use "Github Flavored Markdown". Otherwise, the normal
-markdown export backend will be use. The benefit of ='gfm= is that
-code blocks can be highlighted.
-
-#+BEGIN_SRC emacs-lisp
-;; This is GPLv2. If you still don't know the details, read
-;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
-
-(defun hugo ()
-  (interactive)
-  (unless (hugo-ensure-properties)
-	(let* ((title    (concat "title = \"" (org-entry-get nil "TITLE") "\"\n"))
-		   (date     (concat "date = \"" (format-time-string "%Y-%m-%d" (apply 'encode-time (org-parse-time-string (org-entry-get nil "HUGO_DATE"))) t) "\"\n"))
-		   (topics   (concat "topics = [ \"" (mapconcat 'identity (split-string (org-entry-get nil "HUGO_TOPICS") "\\( *, *\\)" t) "\", \"") "\" ]\n"))
-		   (tags     (concat "tags = [ \"" (mapconcat 'identity (split-string (org-entry-get nil "HUGO_TAGS") "\\( *, *\\)" t) "\", \"") "\" ]\n"))
-		   (fm (concat "+++\n"
-					   title
-					   date
-					   tags
-					   topics
-					   "+++\n\n"))
-		   (file     (org-entry-get nil "HUGO_FILE"))
-		   (coding-system-for-write buffer-file-coding-system)
-		   (backend  'md)
-		   (blog))
-	  ;; try to load org-mode/contrib/lisp/ox-gfm.el and use it as backend
-	  (if (require 'ox-gfm nil t)
-		  (setq backend 'gfm)
-		(require 'ox-md))
-	  (setq blog (org-export-as backend t))
-	  ;; Normalize save file path
-	  (unless (string-match "^[/~]" file)
-		(setq file (concat hugo-content-dir file))
-	  (unless (string-match "\\.md$" file)
-		(setq file (concat file ".md")))
-	  ;; save markdown
-	  (with-temp-buffer
-		(insert fm)
-		(insert blog)
-		(untabify (point-min) (point-max))
-		(write-file file)
-		(message "Exported to %s" file))
-	  ))))
-#+END_SRC
-
-And finally I set my preferred key-binding with =(bind-key)=. I like
-this method over over the standard keybinding methods because it works
-together with =(describe-personal-keybindings)=. And because I'm
-already a [use-package](https://github.com/jwiegley/use-package) user
-it's already loaded anyway :-)
-#+BEGIN_SRC emacs-lisp
-(bind-key "M-g h" #'hugo)
-#+END_SRC
-
-** Images
-
-In this blog post are 3 pictures. My current code does *not* copy them to
-Hugo's contents directory, and I don't really plan this. I don't want to
-maintain images as part of my Emacs configuration. Instead, I added text like
-this into my org-mode buffer and do the rest in my Hugo setup:
-
-#+BEGIN_EXAMPLE
-[[./ready.png]]
-#+END_EXAMPLE
-
-** Separate description (teaser) from main content
-
-In Hugo, you can separate your normal content fromt he teaser at the
-top with a "<!--more-->" marker. Generate this HTML with
-"#+HTML: <!--more-->" in a line by itself.
-
-
 
 
 * Programming
@@ -4194,6 +4060,7 @@ Interactively select compile commands.
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-compile
+  :if (not noninteractive)
   :defer t
   :bind (("S-<f7>" . helm-select-compile-command)
 		 ("<f7>" . helm-compile))
@@ -4219,6 +4086,7 @@ Also use helm-flycheck:
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-flycheck
+  :if (not noninteractive)
   :ensure t
   :bind (("M-g f"   . my-helm-flycheck)
 		 ("C-c ! l" . my-helm-flycheck))
@@ -4703,6 +4571,9 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 
 ** Package: kurecolor
 https://github.com/emacsfodder/kurecolor
+
+This package allows interactive modification of color values.
+
 #+BEGIN_SRC emacs-lisp
 (use-package kurecolor
   :ensure t
@@ -4875,7 +4746,7 @@ First we create this =empty.el= file:
 and then we run emacs on this file:
 
 #+BEGIN_SRC shell :tangle no
-emacs --batch -Q -l empty.el --kil
+emacs --batch -Q -l empty.el --kill
 #+END_SRC
 
 The result will be assigned to =features-when-run-emacs-Q=. And if we
@@ -4902,6 +4773,12 @@ font-render-setting xwidget-internal move-toolbar gtk x-toolkit x
 multi-tty make-network-process emacs))
 
 (message "FEATURES: %s" (set-difference features features-when-run-emacs-Q))
+#+END_SRC
+
+And finally, to find out which modules are loaded by a batch emacs, run
+
+#+BEGIN_SRC shell :tangle no
+emacs --batch -Q -l init.el --kill | fmt
 #+END_SRC
 
 Tata!
