@@ -2012,13 +2012,14 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
   :if (not noninteractive)
   :ensure helm
   :diminish helm-mode
+  :commands (my-helm-mini)
   :bind (
 	 ("C-h a"   . helm-apropos)
 	 ("C-x C-f" . helm-find-files)
 	 ("M-s o"   . helm-occur)
 	 ("M-x"     . helm-M-x)
 	 ("M-y"     . helm-show-kill-ring)
-	 ("C-x C-b" . helm-mini)
+	 ("C-x C-b" . my-helm-mini)
 	 )
   :init
   (require 'helm-config)
@@ -2043,6 +2044,12 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 
   ;; move to end or beginning of source when reaching top or bottom of source.
   (setq helm-move-to-line-cycle-in-source t)
+
+  (defun my-helm-mini()
+	"Like `helm-mini`, but run the dialog in full-screen"
+	(interactive)
+	(let ((helm-full-frame t))
+	  (helm-mini)))
 #+END_SRC
 
 ** Helm faces
