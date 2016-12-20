@@ -2185,12 +2185,12 @@ Hide minibuffer while helm is active
   ;; ignore Emacs save files
   (add-to-list 'helm-boring-file-regexp-list "\\.#")
 
-  ;; Make DEL delete one character or the last path (if before a '/')
+  ;; Make BACKSPACE/DEL delete one character or the last path (if before a '/')
   ;; from https://github.com/hatschipuh/better-helm
   (defun my-dwim-helm-find-files-up-one-level-maybe ()
 	(interactive)
 	(if (looking-back "/" 1)
-	(call-interactively 'helm-find-files-up-one-level)
+		(call-interactively 'helm-find-files-up-one-level)
 	  (delete-char -1)))
   (bind-key "<backspace>" #'my-dwim-helm-find-files-up-one-level-maybe helm-read-file-map)
   (bind-key "<backspace>" #'my-dwim-helm-find-files-up-one-level-maybe helm-find-files-map)
