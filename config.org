@@ -857,7 +857,7 @@ Delete identical history entries
   :defer t
   :config
   (setq browse-url-browser-function 'browse-url-generic
-	browse-url-generic-program "x-www-browser"))
+		browse-url-generic-program "x-www-browser"))
 #+END_SRC
 
 ** Simpler yes or no prompt
@@ -3166,7 +3166,6 @@ https://github.com/pronobis/helm-flyspell
 ;;   :ensure t))
 #+END_SRC
 
-
 ** shr (browser, used by elfeed)
 #+BEGIN_SRC emacs-lisp
 (use-package shr
@@ -3176,6 +3175,8 @@ https://github.com/pronobis/helm-flyspell
   (setq shr-use-fonts nil)
 )
 #+END_SRC
+
+
 
 * Mail & News
 
