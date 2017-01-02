@@ -1,4 +1,4 @@
-;;; helm-compile.el --- use helm with your compile commands           -*- lexical-binding: nil; -*-
+;;; helm-compile.el --- use helm with your compile commands           -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016  Holger Schurig
 
