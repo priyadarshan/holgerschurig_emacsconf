@@ -27,8 +27,8 @@
 ;; done on-the-fly.
 ;;
 ;; However, this module uses helm to prompt you for compile commands
-;; and keeps a history of previous used compile commands. Being helm,
-;; this allows you to easily search through your history. There's also
+;; and keeps a history of previous used compile commands.  Being helm,
+;; this allows you to easily search through your history.  There's also
 ;; an helm action defined so that you
 ;;
 ;; @compile: (byte-compile-file "helm-compile.el")
