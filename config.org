@@ -4535,6 +4535,21 @@ See https://github.com/jacktasia/dumb-jump.
 )
 #+END_SRC
 
+** Package: eros
+
+eros-mode will show you the result of evaluating an elisp command
+as an overlay in your elisp buffer. Try it out with =C-x C-e= now!
+
+- https://www.reddit.com/r/emacs/comments/5iw5ml/eros_evaluation_result_overlays_for_emacs_lisp/
+- https://github.com/xiongtx/eros
+
+#+BEGIN_SRC emacs-lisp
+(use-package eros
+  :commands eros-mode
+  :init
+  (add-hook 'emacs-lisp-mode-hook 'eros-mode))
+#+END_SRC
+
 ** Package: eshell
 https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 
