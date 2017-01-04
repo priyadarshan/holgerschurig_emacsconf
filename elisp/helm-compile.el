@@ -170,7 +170,7 @@ Relead possible commands from open buffers when run with argument."
 		(dummy (helm-build-dummy-source "Or enter new command ..."
 				 :mode-line ""
 				 :action #'helm-compile-default-action)))
-	(helm :sources '(cmds dummy)
+	(helm :sources (append cmds dummy)
 		  :buffer "*helm compile command*"
 		  :prompt "cmd: ")))
 
