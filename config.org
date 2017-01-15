@@ -4206,7 +4206,7 @@ rest of the line is empty.
 
 ** Mode: C, C++
 #+BEGIN_SRC emacs-lisp
-(use-package c-mode
+(use-package cc-mode
   ;; open *.h files normally in c++ mode
   :mode (("\\.h$" . c++-mode)
 		 ("\\.inl\\'" . c++-mode))
