@@ -4215,10 +4215,7 @@ rest of the line is empty.
   ;; This makes things like super_function_for_you a word
   (modify-syntax-entry ?_ "w")
 
-  ;; indent by 4 (almost) everywhere
-  (setq fill-column 78
-		tab-width 4
-		c-basic-offset 4)
+  (setq fill-column 78)
 
   ;; Let RET break and continue a comment
   ;; C doesn't start functions with a ( in the first column
