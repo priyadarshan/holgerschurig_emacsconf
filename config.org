@@ -3374,6 +3374,7 @@ there are no attachments."
 *** notmuch itself
 #+BEGIN_SRC emacs-lisp
 (use-package notmuch
+  :ensure t
   :bind ("M-g n" . notmuch-hello)
   :config
   ;; Change flagged lines to be dark blue in the background, not blue
