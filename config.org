@@ -3902,8 +3902,8 @@ Remove all back-ends from vc-mode, no need to check all these things, I use
   ;; Anything longer will be highlighted
   (setq git-commit-summary-max-length 70)
 
-  ;; don't show a diff when committing
-  (remove-hook 'server-switch-hook 'magit-commit-diff)
+  ;; show a diff when committing
+  (setq magit-commit-show-diff t)
 
   (setq magit-status-sections-hook '(
 			;;magit-insert-status-headers
@@ -4558,9 +4558,11 @@ as an overlay in your elisp buffer. Try it out with =C-x C-e= now!
 
 #+BEGIN_SRC emacs-lisp
 (use-package eros
+  :ensure t
   :commands eros-mode
   :init
-  (add-hook 'emacs-lisp-mode-hook 'eros-mode))
+  (add-hook 'emacs-lisp-mode-hook 'eros-mode)
+)
 #+END_SRC
 
 ** Package: eshell
