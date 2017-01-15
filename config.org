@@ -1414,26 +1414,40 @@ Lets TAB do completion as well
 (setq tab-always-indent 'complete)
 #+END_SRC
 
-** CANC company
+** Company (complete anywhere)
+
+Company is a text completion framework for Emacs. The name stands for
+"complete anything". It uses pluggable back-ends and front-ends to
+retrieve and display completion candidates.
+
+- http://company-mode.github.io/
+
 #+BEGIN_SRC emacs-lisp
 (use-package company
+  :commands (company-complete company-mode)
   :ensure t
   :diminish company-mode
   :bind ("C-<tab>" . company-complete)
   :init
-  (add-hook 'after-init-hook 'global-company-mode)
+  (add-hook 'prog-mode-hook 'company-mode)
   :config
-  (setq company-idle-delay              0.3
+  (setq company-minimum-prefix-length 2
+		company-tooltip-align-annotations t
 		company-tooltip-flip-when-above t
-		company-tooltip-limit           20
-		company-backends '(;; company-bbdb
+		company-tooltip-limit 20)
+
+  (setq company-frontends '(company-pseudo-tooltip-unless-just-one-frontend
+							;; company-echo-metadata-frontend
+							company-preview-if-just-one-frontend))
+
+  (setq company-backends '(;; company-bbdb
 						   ;; company-nxml
-						   company-css
+						   ;; company-css
 						   ;; company-eclim
-						   company-semantic
+						   ;; company-semantic
 						   ;; company-clang
 						   ;; company-xcode
-						   company-cmake
+						   ;; company-cmake
 						   company-capf
 						   company-files
 						   (company-dabbrev-code
@@ -1441,9 +1455,16 @@ Lets TAB do completion as well
 							company-etags
 							company-keywords)
 						   ;; company-oddmuse
-						   company-dabbrev)
-		)
+						   company-dabbrev))
 )
+
+(use-package company-dabbrev
+  :after company
+  :config
+  ;; Always consider the case as important and use as-is
+  (setq-default company-dabbrev-downcase nil)
+)
+
 #+END_SRC
 
 
