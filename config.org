@@ -803,6 +803,7 @@ The following can visualize white space quite neatly:
 	  tab-mark
 	  ;;newline-mark
 	  ))
+  (set-face-attribute 'whitespace-tab nil :background (zenburn-get "bg"))
 )
 #+END_SRC
 
