@@ -4226,9 +4226,17 @@ rest of the line is empty.
   (setq open-paren-in-column-0-is-defun-start nil)
 
   ;; for C and C++ files
+  (defun my-c-mode-tab (&optional arg region)
+	"When at the end of the line, execute `company-complete' else `c-indent-line-or-region'."
+	(interactive)
+	(if (and (eolp) (not region))
+		(company-complete)
+	  (c-indent-line-or-region arg region)))
   (defun my-c-mode-common-setup ()
-	(message "HOOK c-mode-common-setup")
-	(turn-off-auto-fill))
+	(turn-off-auto-fill)
+	(bind-key "<tab>" #'my-c-mode-tab c-mode-map)
+	(bind-key "<tab>" #'my-c-mode-tab c++-mode-map)
+	)
   (add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 
   ;; only for C files
