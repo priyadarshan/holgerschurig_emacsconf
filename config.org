@@ -409,6 +409,9 @@ This is zenburn but with a bit of increased contrast.
     ("zenburn-bg+3"     . "#3B3B3B")))
   :config
   (load-theme 'zenburn t)
+
+  (defun zenburn-get (color)
+	(cdr (assoc (concat "zenburn-" color) zenburn-default-colors-alist)))
 )
 #+END_SRC
 
@@ -2074,6 +2077,10 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 
   ;; move to end or beginning of source when reaching top or bottom of source.
   (setq helm-move-to-line-cycle-in-source t)
+
+  ;; Theme adaption
+  (set-face-attribute 'helm-source-header nil :background "#FFFF30" :foreground "#0b0b0b")
+  (set-face-attribute 'helm-selection     nil :background (zenburn-get "blue-5"))
 
   (defun my-helm-mini()
 	"Like `helm-mini`, but run the dialog in full-screen"
