@@ -1423,6 +1423,19 @@ retrieve and display completion candidates.
 
 - http://company-mode.github.io/
 
+
+You have a list of backends (completion engines) company should try to
+provide completion at point. Company tries each of this backend one
+after the another and the first one that returns any candidates is
+used for completion and the rest of the backends are ignored. So by
+default only one backend is used at a time.
+
+Company provides a way to merge completions from multiple source using
+what it calls grouped backends. Usually the members of
+company-backends are individual backends, but it can also be a list of
+backends in which case the completion from the backends are merged
+provided they return same prefix or the text to be completed.
+
 #+BEGIN_SRC emacs-lisp
 (use-package company
   :commands (company-complete company-mode)
