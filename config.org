@@ -4237,7 +4237,6 @@ rest of the line is empty.
 
   ;; only for C files
   (defun my-c-mode-setup ()
-	(message "HOOK my-c-mode-setup")
 	(when (and buffer-file-name
 			   (string-match "linux" buffer-file-name))
 	  (progn (c-set-style "linux-tabs-only")
