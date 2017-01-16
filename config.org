@@ -2933,6 +2933,9 @@ http://www.suenkler.info/docs/emacs-orgmode/
 					  truncate          ; Truncate buffers to a certain size
 					  ;; unmorse        ; Translate morse code in messages
 					  ;; xdcc           ; Act as an XDCC file-serve
+
+					  ;; External modules
+					  colorize          ; colorize nick names
 					  ))
 
   (setq erc-hide-list '("JOIN" "NICK" "PART" "QUIT" "MODE"))
@@ -2970,6 +2973,16 @@ http://www.suenkler.info/docs/emacs-orgmode/
 )
 #+END_SRC
 
+*** erc-colorize
+#+BEGIN_SRC emacs-lisp
+(use-package erc-colorize
+  :ensure t
+  :defer t
+  :after erc
+  :config
+  (erc-colorize-mode 1)
+)
+#+END_SRC
 *** erc-goodies
 #+BEGIN_SRC emacs-lisp
 (use-package erc-goodies
@@ -2979,6 +2992,16 @@ http://www.suenkler.info/docs/emacs-orgmode/
   ;; Interpret mIRC-style color commands in IRC chats
   (setq erc-interpret-mirc-color t)
   (setq erc-input-line-position -1)
+)
+#+END_SRC
+
+*** erc-pcomplete
+#+BEGIN_SRC emacs-lisp
+(use-package erc-pcomplete
+  :defer t
+  :after erc
+  :config
+  (setq erc-pcomplete-nick-postfix ": ")
 )
 #+END_SRC
 
@@ -2993,16 +3016,6 @@ http://www.suenkler.info/docs/emacs-orgmode/
 									   ;; "#org-mode"
 									   )))
   (setq erc-autojoin-timing 'ident)
-)
-#+END_SRC
-
-*** erc-pcomplete
-#+BEGIN_SRC emacs-lisp
-(use-package erc-pcomplete
-  :defer t
-  :after erc
-  :config
-  (setq erc-pcomplete-nick-postfix ": ")
 )
 #+END_SRC
 *** erc-log
