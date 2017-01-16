@@ -4316,6 +4316,21 @@ From linux/Documentation/CodingStyle, used in coding style "linux-tabs-only"
   :mode ("\\.d\\'" . d-mode)
 )
 #+END_SRC
+** Mode: Diff
+
+The following let the commits from =git diff >foo.diff= stand out more:
+
+#+BEGIN_SRC emacs-lisp
+(use-package diff-mode
+  :defer t
+  :config
+  (defun my-diff-mode-setup ()
+	(hi-lock-line-face-buffer "^commit")
+	)
+  (add-hook 'diff-mode-hook 'my-diff-mode-setup)
+)
+#+END_SRC
+
 ** Mode: Ediff
 http://oremacs.com/2015/01/17/setting-up-ediff/
 
