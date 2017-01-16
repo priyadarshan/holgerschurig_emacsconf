@@ -1731,7 +1731,13 @@ Never show GTK file open dialog
 (setq use-file-dialog nil)
 #+END_SRC
 
-don't add newlines to end of buffer when scrolling, but show them
+Don't create those pesky =.#foo= lockfiles:
+
+#+BEGIN_SRC emacs-lisp
+(setq create-lockfiles nil)
+#+END_SRC
+
+Don't add newlines to end of buffer when scrolling, but show them
 
 #+BEGIN_SRC emacs-lisp
 (setq next-line-add-newlines nil)
