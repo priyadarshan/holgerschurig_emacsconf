@@ -2900,7 +2900,7 @@ http://www.suenkler.info/docs/emacs-orgmode/
 
   (setq erc-modules '(;; autoaway       ; Set away status automatically
 					  autojoin          ; Join channels automatically
-					  ;; button         ; Buttonize URLs, nicknames, and other text
+					  button            ; Buttonize URLs, nicknames, and other text
 					  ;; capab          ; Mark unidentified users on servers supporting CAPAB
 					  completion        ; Complete nicknames and commands
 					  ;; dcc            ; Provide Direct Client-to-Client support
