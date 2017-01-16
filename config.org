@@ -3966,45 +3966,41 @@ That's all, folks.
 
 ** notmuch patch exporting
    :PROPERTIES:
-   :TITLE:    Easy export of Linux patches from Emacs' Notmuch
+   :TITLE:    Export patches from Emacs' Notmuch
    :HUGO_TAGS: Emacs, notmuch
    :HUGO_TOPICS: Emacs
    :HUGO_FILE: en/emacs-notmuch-export-patch.md
-   :HUGO_DATE: [2016-06-01 11:00]
+   :HUGO_DATE: [2017-01-16]
    :END:
 
-I'm reading several Linux related mailing lists. They are full of
-proposed patches, and from time to time a few of them look
-interesting.
+I'm reading several linux-kernel related mailing lists. They are full
+of proposed patches. And from time to time a few of them look
+interesting. So I wanted to have an easy (and fast) solution of
+exporting those patches: with a keystroke, and without the need
+of specifying patch names.
 
-Here I present a function that makes exporting such patches simple.
+*** Format of a patch email
 
-#+HTML: <!--more-->
-
-If you ever contributed a patch to Linux, you'd know that your patch
+If you ever contributed a patch to *Linux*, you'd know that your patch
 must follow some formatting rules, or it might be ignored. Some of those
 rules are import for my purpose:
 
 - if a patch isn't self, consistent, it should have some 1/4 (1 of 4)
   marking in the subject
-- patches should have a [PATCH ...] tag
-- patches cannot have an attachment, they must be inside the e-mail itself.
+- patches must have a [PATCH ...] tag at the start of the subject.
+- patches must be directly in the e-mail text, not in an attachment.
   This effectively means that I don't have to deal with MIME parts.
 
-Here are some examples of patch subjects, just to get you an idea:
+Here are two examples of such email subjects:
 
 #+BEGIN_EXAMPLE
 [PATCH] mmc: host: use pr_err for sdhci_dumpregs
 [PATCH 3/9] clocksource/drivers/rockchip_timer: Convert init function to return error
 #+END_EXAMPLE
 
-We'll massage the subjects into some suitable file name. For this we need the
-variables =subject= and =patchnum=.
+*** Implementation
 
-But we need some more variables. Later, when I create the patch file,
-I want to write some of the message properties into the file. But I
-cannot call =(notmuch-...)= functions inside of
-=(with-current-buffer=. And so I do that now and store it away.
+Let's define some local variables:
 
 #+BEGIN_SRC emacs-lisp
 (defun my-notmuch-export-patch ()
@@ -4017,20 +4013,22 @@ cannot call =(notmuch-...)= functions inside of
 		 (patchnum))
 #+END_SRC
 
-The first step is to extract the patch number.
+The first step is to extract the patch number:
 
 #+BEGIN_SRC emacs-lisp
 	(when (string-match "\\[PATCH.+?0*\\([0-9]+\\)/[0-9]+\\]" filename)
 	  (setq patchnum (string-to-number (match-string 1 filename))))
 #+END_SRC
 
-And now massage to subject to a safe and suitable filename
+We now do the following steps with the raw subject:
 
 - remove the optional [PATCH ...] prefix
-- replace everything that is nota  normal letters or digit with a dash
+- replace everything that are not letters/digits with a dash
 - convert consecutive dashes into one dash
 - make sure we don't have a dash at the start
 - make sure we don't have a dash at the end
+
+So let's do this:
 
 #+BEGIN_SRC emacs-lisp
 	(setq filename (replace-regexp-in-string "\\[PATCH.*\\]" "" filename))
@@ -4040,15 +4038,14 @@ And now massage to subject to a safe and suitable filename
 	(setq filename (replace-regexp-in-string "-$" "" filename))
 #+END_SRC
 
-Now prepend the patchnum, if we have any:
+Prepend the patchnum to the future filename:
 
 #+BEGIN_SRC emacs-lisp
 	(when patchnum
 	  (setq filename (concat (format "%04d" patchnum) "-" filename)))
 #+END_SRC
 
-Currently, I've hard-coded that all paths shouild be written to
-=/tmp/=. Maybe you can do better?
+And prepend a directory as well:
 
 #+BEGIN_SRC emacs-lisp
 	(setq filename (concat "/tmp/" filename ".patch"))
@@ -4057,14 +4054,15 @@ Currently, I've hard-coded that all paths shouild be written to
 And now we need write things out.
 
 First we create a temporary buffer and insert some of message properties
-as a header. Then we call the notmuch program and let it get us mime part
-1 if the message. Because Linux patches must always be part of the body
-and can't contain attachments, this is save for my needs.
+as a header.
 
-The =t= as the 3rd argument to =(call-process= makes the output of the
-notmuch command end in my temporary buffer.
+Then we need to get the actual patch. In a non-MIME-encoded e-mail,
+the text is the (sic!) MIME part 1. We call the notmuch binary to give
+us back this text and insert it into the buffer as well. Note: the =t=
+as the 3rd argument to =(call-process= makes the output of the notmuch
+command end in the current buffer.
 
-All i then need to do is to write the buffer out and kill the temporary
+Finally I write this buffer to a file and kill the buffer.
 buffer.
 
 #+BEGIN_SRC emacs-lisp
@@ -4080,6 +4078,10 @@ buffer.
 		  (write-file filename))
 		(kill-buffer buf)))))
 #+END_SRC
+
+Done!
+
+*** Keybinding
 
 And the last step is to bind this to some keys. As the function works
 both in tree-view and in message-show mode, I bind it to both places.
