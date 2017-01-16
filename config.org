@@ -2888,46 +2888,218 @@ http://www.suenkler.info/docs/emacs-orgmode/
 
 * Single packages
 
-** circe (IRC client)
-see some configuration ideas at https://github.com/jorgenschaefer/circe/wiki/Configuration
+** erc (IRC client)
 
 #+BEGIN_SRC emacs-lisp
-(use-package circe
+;; (require 'erc)
+;; features
+
+(use-package erc
   :defer t
-  :ensure t
-  :commands (circe)
   :config
-  (setq circe-default-part-message "Fire on mainboard error")
-  (setq circe-reduce-lurker-spam t)
-  ;; (circe-set-display-handler "JOIN" (lambda (&rest ignored) nil))
-  ;; (circe-set-display-handler "QUIT" (lambda (&rest ignored) nil))
-  ;; (setq circe-use-cycle-completion t)
-  (setq circe-format-say "{nick}: {body}")
-  (setq circe-server-killed-confirmation 'ask-and-kill-all)
-  ;; Network settings
-  (setq circe-default-ip-family 'ipv4)
-  (setq circe-default-nick "schurig")
-  (setq circe-default-user "schurig")
-  (setq circe-server-auto-join-default-type 'after-auth) ; XXX try after-nick
-  (setq circe-network-options `(("Freenode"
-				  :host "kornbluth.freenode.net"
-				  :port (6667 . 6697)
-				  :channels ("#emacs" "#emacs-circe")
-				  :nickserv-password ,freenode-password)
-				 ))
-  ;; Misc
-  ;; (setq circe-format-server-topic "*** Topic change by {userhost}: {topic-diff}")
-  (use-package lui-autopaste
-	:config
-	(add-hook 'circe-channel-mode-hook 'enable-lui-autopaste)
-	)
+
+  (setq erc-modules '(;; autoaway       ; Set away status automatically
+					  autojoin          ; Join channels automatically
+					  ;; button         ; Buttonize URLs, nicknames, and other text
+					  ;; capab          ; Mark unidentified users on servers supporting CAPAB
+					  completion        ; Complete nicknames and commands
+					  ;; dcc            ; Provide Direct Client-to-Client support
+					  fill              ; Wrap long lines
+					  ;; identd         ; Launch an identd server on port 8113
+					  irccontrols       ; Highlight or remove IRC control characters
+					  keep-place        ; Leave point above un-viewed text
+					  list              ; List channels in a separate buffer
+					  log               ; Save buffers in logs
+					  ;; match          ; Highlight pals, fools, and other keywords
+					  menu              ; Display a menu in ERC buffers
+					  move-to-prompt    ; Move to the prompt when typing text
+					  netsplit          ; Detect netsplit
+					  ;; networks       ; Provide data about IRC networks
+					  noncommands       ; Don’t display non-IRC commands after evaluation
+					  ;; notify         ; Notify when the online status of certain users changes
+					  ;; notifications  ; Send notifications on PRIVMSG or nickname mentions
+					  ;; page           ; Process CTCP PAGE requests from IRC
+					  pcomplete         ; ?
+					  readonly          ; Make displayed lines read-only
+					  ;; replace        ; Replace text in messages
+					  ;; ring           ; Enable an input history
+					  ;; scrolltobottom ; Scroll to the bottom of the buffer
+					  services          ; Identify to Nickserv (IRC Services) automatically
+					  ;; smiley         ; Convert smileys to pretty icons
+					  ;; sound          ; Play sounds when you receive CTCP SOUND requests
+					  stamp             ; Add timestamps to messages
+					  spelling          ; Check spelling
+					  track             ; Track channel activity in the mode-line
+					  truncate          ; Truncate buffers to a certain size
+					  ;; unmorse        ; Translate morse code in messages
+					  ;; xdcc           ; Act as an XDCC file-serve
+					  ))
+
+  (setq erc-hide-list '("JOIN" "NICK" "PART" "QUIT" "MODE"))
+
+  (setq erc-server "irc.freenode.net"
+		erc-nick "schurig"
+		erc-prompt-for-password nil)
+
+  ;; Kill buffers for private queries after quitting the server
+  (setq erc-kill-queries-on-quit t)
+  ;; Kill buffers for server messages after quitting the server
+  (setq erc-kill-server-buffer-on-quit t)
+
+  ;; show all incoming CTCP messages
+  (setq erc-paranoid t)
 )
 
 (defun irc ()
   "Connect to IRC"
   (interactive)
-  (circe "Freenode"))
+  (call-interactively
+   (erc :server (erc-compute-server)
+		:nick (erc-compute-nick))))
 #+END_SRC
+		
+*** erc-backend
+#+BEGIN_SRC emacs-lisp
+(use-package erc-backend
+  :defer t
+  :config
+
+  ;; utf-8 always and forever
+  (setq erc-server-coding-system '(utf-8 . utf-8))
+
+)
+#+END_SRC
+
+*** erc-goodies
+#+BEGIN_SRC emacs-lisp
+(use-package erc-goodies
+  :defer t
+  :after erc
+  :config
+  ;; Interpret mIRC-style color commands in IRC chats
+  (setq erc-interpret-mirc-color t)
+  (setq erc-input-line-position -1)
+)
+#+END_SRC
+
+*** erc-join
+#+BEGIN_SRC emacs-lisp
+(use-package erc-join
+  :defer t
+  :after erc
+  :config
+  (setq erc-autojoin-channels-alist '(("freenode.net"
+									   "#emacs"
+									   ;; "#org-mode"
+									   )))
+  (setq erc-autojoin-timing 'ident)
+)
+#+END_SRC
+
+*** erc-pcomplete
+#+BEGIN_SRC emacs-lisp
+(use-package erc-pcomplete
+  :defer t
+  :after erc
+  :config
+  (setq erc-pcomplete-nick-postfix ": ")
+)
+#+END_SRC
+*** erc-log
+#+BEGIN_SRC emacs-lisp
+(use-package erc-log
+  :disabled t
+  :defer t
+  :after erc
+  :config
+  ;; Set and create logging directory
+  (setq erc-log-channels-directory (locate-user-emacs-file "tmp/erc-logs"))
+  (unless (file-exists-p erc-log-channels-directory)
+	  (mkdir erc-log-channels-directory t))
+
+  ;; Simply file names, but with a date
+  (setq erc-generate-log-file-name-function 'erc-generate-log-file-name-with-date)
+
+  ;; Read log file into buffer upon connect
+  (setq erc-log-insert-log-on-open t)
+
+  ;; save immediately
+  (setq erc-log-write-after-insert t	
+		erc-log-write-after-send t)
+)
+#+END_SRC
+
+*** erc-services
+#+BEGIN_SRC emacs-lisp
+(use-package erc-services
+  :defer t
+  :after erc
+  :config
+  (setq erc-prompt-for-nickserv-password nil)
+  (setq erc-nickserv-passwords
+          `((freenode     (("schurig" . ,freenode-password)
+                           ))
+            ))
+)
+#+END_SRC
+*** erc-spelling
+#+BEGIN_SRC emacs-lisp
+(use-package erc-spelling
+  :defer t
+  :after erc
+  :config
+  (erc-spelling-mode 1)
+
+  ;; set different dictionaries by different servers/channels
+  ;;(setq erc-spelling-dictionaries '(("#emacs" "american")))
+)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;; (require 'erc-autoaway)
+(use-package erc-autoaway
+  :defer t
+  :after erc
+  :config
+  ;; no autoaway
+  (setq erc-autoaway-idle-seconds 600)
+)
+#+END_SRC
+
+*** erc-stamp
+#+BEGIN_SRC emacs-lisp
+(use-package erc-stamp
+  :defer t
+  :config
+  ;; I don't want spaces when several messages have the same timestamp
+  (setq erc-timestamp-only-if-changed-flag nil)
+)
+#+END_SRC
+*** erc-track
+#+BEGIN_SRC emacs-lisp
+(use-package erc-track
+  :defer t
+  :after erc
+  :config
+  ;; exclude boring stuff from tracking
+  (erc-track-mode t)
+  (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
+								  "324" "329" "332" "333" "353" "477"))
+  (setq erc-track-shorten-start 2)
+  (setq erc-track-showcount t)
+)
+#+END_SRC
+
+*** erc-truncate
+#+BEGIN_SRC emacs-lisp
+(use-package erc-truncate
+  :defer t
+  :after erc
+  :config
+  (erc-truncate-mode +1)
+)
+#+END_SRC
+
 
 ** dired
 #+BEGIN_SRC emacs-lisp
