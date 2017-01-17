@@ -3119,8 +3119,19 @@ the \"emacs\" instead of \"#emacs\"."
   :config
   ;; exclude boring stuff from tracking
   (erc-track-mode t)
-  (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
-								  "324" "329" "332" "333" "353" "477"))
+  (setq erc-track-exclude-types '("JOIN"
+								  "NICK"
+								  "PART"
+								  "QUIT"
+								  "MODE"
+								  ;; See https://www.alien.net.au/irc/irc2numerics.html
+								  "324" ; CHANNELMODEIS	RFC1459	<channel> <mode> <mode_params>
+								  "329" ; CREATIONTIME
+								  "332" ; TOPIC	RFC1459	<channel> :<topic>
+								  "333" ; TOPICWHOTIME
+								  "353" ; NAMREPLY	RFC1459 (reply to NAMES)
+								  "477" ; NOCHANMODES	RFC2812	<channel> :<reason>
+								  ))
   (setq erc-track-shorten-start 2)
   (setq erc-track-showcount t)
 )
