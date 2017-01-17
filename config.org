@@ -716,6 +716,8 @@ And finally we build our mode line:
 						  (separator-right (intern (format "powerline-%s-%s"
 														   (powerline-current-separator)
 														   (cdr powerline-default-separator-dir))))
+						  (erc-active (and (boundp 'erc-modified-channels-object) 
+														(> (length erc-modified-channels-object) 0)))
 
 						  (lhs (append (list ;; modified/readonly status
 										(powerline-raw "%*" indi-romod-face 'l)
@@ -760,20 +762,25 @@ And finally we build our mode line:
 												 (list (funcall separator-left major-face mode-line))))
 									 ))
 
-						  (rhs (list ;; (powerline-raw global-mode-string face2 'r)
-									 (funcall separator-right mode-line lincol-face)
+						  (rhs (append (list
+										;; ERC channel tracking status
+										(when erc-active
+										  (funcall separator-right mode-line name-face))
+										(when erc-active
+										  (powerline-raw erc-modified-channels-object name-face))
+										(funcall separator-right (if erc-active name-face mode-line) lincol-face)
 
-									 ;; line number, column number
-									 (powerline-raw "%l:%c " lincol-face 'l)
+										;; line number, column number
+										(powerline-raw "%l:%c " lincol-face 'l)
 
-									 ;; XPM containing the position
-									 (when powerline-display-hud
-									   (powerline-hud my-pl-face1 my-pl-face3))
-									 ))
-							   )
-			 (concat (powerline-render lhs)
-				 (powerline-fill mode-line (powerline-width rhs))
-				 (powerline-render rhs))))))
+										;; XPM containing the position
+										(when powerline-display-hud
+										  (powerline-hud my-pl-face1 my-pl-face3))
+										)))
+						  )
+					 (concat (powerline-render lhs)
+							 (powerline-fill mode-line (powerline-width rhs))
+							 (powerline-render rhs))))))
 )
 #+END_SRC
 
