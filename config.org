@@ -2895,6 +2895,7 @@ http://www.suenkler.info/docs/emacs-orgmode/
 ;; features
 
 (use-package erc
+  :if (not noninteractive)
   :commands (erc)
   :config
 
