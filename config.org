@@ -730,7 +730,7 @@ And finally we build our mode line:
 
 										;; Multilingual environment
 										(when powerline-display-mule-info
-										  (powe3rline-raw mode-line-mule-info mule-face 'l))
+										  (powerline-raw mode-line-mule-info mule-face 'l))
 
 										;; Directory, Buffer
 										(funcall separator-right mule-face name-face)
