@@ -2980,9 +2980,9 @@ http://www.suenkler.info/docs/emacs-orgmode/
   (bind-key "<tab>" #'company-complete erc-mode-map)
 
   ;; change the fill column
-  (defun my-erc-setup ()
+  (defun my-erc-window-setup ()
 	(setq erc-fill-column (- (window-width) 2)))
-  (add-hook 'window-configuration-change-hook #'my-erc-setup)
+  (add-hook 'window-configuration-change-hook #'my-erc-window-setup)
   (my-erc-setup)
 
   ;; private command /ID
