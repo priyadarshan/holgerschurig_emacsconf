@@ -3026,7 +3026,6 @@ http://www.suenkler.info/docs/emacs-orgmode/
 *** erc-log
 #+BEGIN_SRC emacs-lisp
 (use-package erc-log
-  :disabled t
   :defer t
   :after erc
   :config
@@ -3036,7 +3035,16 @@ http://www.suenkler.info/docs/emacs-orgmode/
 	  (mkdir erc-log-channels-directory t))
 
   ;; Simply file names, but with a date
-  (setq erc-generate-log-file-name-function 'erc-generate-log-file-name-with-date)
+  (defun my-erc-generate-log-file-name-with-date (buffer &rest ignore)
+	"This function computes a short log file name.
+The name of the log file is composed of BUFFER and the current date.
+This function is a possible value for `erc-generate-log-file-name-function'.
+
+This function differs from `erc-generate-log-file-name-with-date' by not exporting
+the \"emacs\" instead of \"#emacs\"."
+  (concat (substring (buffer-name buffer) 1) "-" (format-time-string "%Y-%m-%d") ".txt"))
+
+  (setq erc-generate-log-file-name-function #'my-erc-generate-log-file-name-with-date)
 
   ;; Read log file into buffer upon connect
   (setq erc-log-insert-log-on-open t)
