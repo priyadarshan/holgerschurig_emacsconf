@@ -2957,6 +2957,16 @@ http://www.suenkler.info/docs/emacs-orgmode/
 	(setq erc-fill-column (- (window-width) 2)))
   (add-hook 'window-configuration-change-hook #'my-erc-setup)
   (my-erc-setup)
+
+  ;; private command /ID
+  (defun erc-cmd-ID ()
+    "Ghost old \"schurig\" and regain this id."
+	(if (string= (erc-current-nick) "schurig")
+		(message "You're already \"schurig\".")
+	  (progn
+		(erc-message "PRIVMSG" (format "nickserv ghost schurig %s" freenode-password))
+		(erc-cmd-NICK "schurig")
+		(erc-message "PRIVMSG" (format "nickserv identify schurig %s" freenode-password)))))
 )
 
 (defun irc ()
