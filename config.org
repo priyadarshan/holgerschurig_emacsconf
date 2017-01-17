@@ -3005,8 +3005,8 @@ next buffer that has traffic."
   (if (functionp 'erc)
 	  (erc-track-switch-buffer 1)
 	(call-interactively
-	 (erc :server (erc-compute-server)
-		  :nick (erc-compute-nick)))))
+	 (erc-tls :server (erc-compute-server)
+			  :nick (erc-compute-nick)))))
 (bind-key "M-g e" #'irc)
 #+END_SRC
 		
