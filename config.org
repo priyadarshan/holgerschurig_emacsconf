@@ -2899,6 +2899,11 @@ http://www.suenkler.info/docs/emacs-orgmode/
   :commands (erc)
   :config
 
+  ;; Log all traffic to *erc-protocol*. This is useful to find the
+  ;; numbers that you can use in `erc-hide-list' or
+  ;; `erc-track-exclude-types'.
+  ;; (setq erc-debug-irc-protocol t)
+
   (setq erc-modules '(;; autoaway       ; Set away status automatically
 					  autojoin          ; Join channels automatically
 					  button            ; Buttonize URLs, nicknames, and other text
@@ -2939,7 +2944,14 @@ http://www.suenkler.info/docs/emacs-orgmode/
 					  hl-nicks          ; nicely highlight the nicks
 					  ))
 
-  (setq erc-hide-list '("JOIN" "NICK" "PART" "QUIT" "MODE"))
+  (setq erc-hide-list '("JOIN"
+						"NICK"
+						"PART"
+						"QUIT"
+						"MODE"
+						;; See https://www.alien.net.au/irc/irc2numerics.html
+						"353"		    ; NAMREPLY	RFC1459 (reply to NAMES)
+						))
 
   (setq erc-server "irc.freenode.net"
 		erc-nick "schurig"
