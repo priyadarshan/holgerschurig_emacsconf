@@ -2915,7 +2915,6 @@ http://www.suenkler.info/docs/emacs-orgmode/
 					  autojoin          ; Join channels automatically
 					  button            ; Buttonize URLs, nicknames, and other text
 					  ;; capab          ; Mark unidentified users on servers supporting CAPAB
-					  completion        ; Complete nicknames and commands
 					  ;; dcc            ; Provide Direct Client-to-Client support
 					  fill              ; Wrap long lines
 					  ;; identd         ; Launch an identd server on port 8113
@@ -2932,7 +2931,7 @@ http://www.suenkler.info/docs/emacs-orgmode/
 					  ;; notify         ; Notify when the online status of certain users changes
 					  ;; notifications  ; Send notifications on PRIVMSG or nickname mentions
 					  ;; page           ; Process CTCP PAGE requests from IRC
-					  pcomplete         ; ?
+					  pcomplete         ; Complete nicknames and commands
 					  readonly          ; Make displayed lines read-only
 					  ;; replace        ; Replace text in messages
 					  ;; ring           ; Enable an input history
@@ -2971,6 +2970,14 @@ http://www.suenkler.info/docs/emacs-orgmode/
 
   ;; show all incoming CTCP messages
   (setq erc-paranoid t)
+
+  ;; Enable company, but let it get help from pcomplete
+  ;; (this works because I have company-capf active)
+  (defun my-erc-mode-setup ()
+	(company-mode)
+	(add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
+  (add-hook 'erc-mode-hook #'my-erc-mode-setup)
+  (bind-key "<tab>" #'company-complete erc-mode-map)
 
   ;; change the fill column
   (defun my-erc-setup ()
