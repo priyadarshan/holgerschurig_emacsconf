@@ -2895,7 +2895,7 @@ http://www.suenkler.info/docs/emacs-orgmode/
 ;; features
 
 (use-package erc
-  :defer t
+  :commands (erc)
   :config
 
   (setq erc-modules '(;; autoaway       ; Set away status automatically
