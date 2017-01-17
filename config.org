@@ -2914,7 +2914,7 @@ http://www.suenkler.info/docs/emacs-orgmode/
   (setq erc-modules '(;; autoaway       ; Set away status automatically
 					  autojoin          ; Join channels automatically
 					  button            ; Buttonize URLs, nicknames, and other text
-					  ;; capab          ; Mark unidentified users on servers supporting CAPAB
+					  ;; capab-identify ; Mark unidentified users on servers supporting CAPAB
 					  ;; dcc            ; Provide Direct Client-to-Client support
 					  fill              ; Wrap long lines
 					  ;; identd         ; Launch an identd server on port 8113
@@ -2928,8 +2928,8 @@ http://www.suenkler.info/docs/emacs-orgmode/
 					  netsplit          ; Detect netsplit
 					  ;; networks       ; Provide data about IRC networks
 					  noncommands       ; Don’t display non-IRC commands after evaluation
-					  ;; notify         ; Notify when the online status of certain users changes
 					  ;; notifications  ; Send notifications on PRIVMSG or nickname mentions
+					  ;; notify         ; Notify when the online status of certain users changes
 					  ;; page           ; Process CTCP PAGE requests from IRC
 					  pcomplete         ; Complete nicknames and commands
 					  readonly          ; Make displayed lines read-only
@@ -2939,8 +2939,8 @@ http://www.suenkler.info/docs/emacs-orgmode/
 					  services          ; Identify to Nickserv (IRC Services) automatically
 					  ;; smiley         ; Convert smileys to pretty icons
 					  ;; sound          ; Play sounds when you receive CTCP SOUND requests
-					  stamp             ; Add timestamps to messages
 					  spelling          ; Check spelling
+					  stamp             ; Add timestamps to messages
 					  track             ; Track channel activity in the mode-line
 					  truncate          ; Truncate buffers to a certain size
 					  ;; unmorse        ; Translate morse code in messages
