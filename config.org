@@ -3114,7 +3114,7 @@ the \"emacs\" instead of \"#emacs\"."
 *** erc-track
 #+BEGIN_SRC emacs-lisp
 (use-package erc-track
-  :defer t
+  :bind ("M-g e" . erc-track-switch-buffer)
   :after erc
   :config
   ;; exclude boring stuff from tracking
@@ -4861,8 +4861,7 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 (use-package eshell
   :if (not noninteractive)
   :defer t
-  :bind ("M-g e" . eshell)
-  :commands (eshell/addpath eshell-read-aliases-list)
+  :commands (eshell eshell/addpath eshell-read-aliases-list)
   :defines (eshell-visual-commands)
   :config
   (defun eshell/clear ()
