@@ -2933,6 +2933,9 @@ http://www.suenkler.info/docs/emacs-orgmode/
 					  truncate          ; Truncate buffers to a certain size
 					  ;; unmorse        ; Translate morse code in messages
 					  ;; xdcc           ; Act as an XDCC file-serve
+
+					  ;; External Module
+					  hl-nicks          ; nicely highlight the nicks
 					  ))
 
   (setq erc-hide-list '("JOIN" "NICK" "PART" "QUIT" "MODE"))
@@ -2954,12 +2957,6 @@ http://www.suenkler.info/docs/emacs-orgmode/
 	(setq erc-fill-column (- (window-width) 2)))
   (add-hook 'window-configuration-change-hook #'my-erc-setup)
   (my-erc-setup)
-
-  (use-package erc-hl-nicks
-	:ensure t
-	:config
-	(erc-hl-nicks-enable))
-
 )
 
 (defun irc ()
@@ -2991,6 +2988,15 @@ http://www.suenkler.info/docs/emacs-orgmode/
   ;; Interpret mIRC-style color commands in IRC chats
   (setq erc-interpret-mirc-color t)
   (setq erc-input-line-position -1)
+)
+#+END_SRC
+
+*** erc-hl-nicks
+#+BEGIN_SRC emacs-lisp
+(use-package erc-hl-nicks
+  :ensure t
+  :defer t
+  :after erc
 )
 #+END_SRC
 
