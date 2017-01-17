@@ -2983,11 +2983,17 @@ http://www.suenkler.info/docs/emacs-orgmode/
 )
 
 (defun irc ()
-  "Connect to IRC"
+  "IRC hotkey function.
+
+If IRC isn't yet started, then start it. Otherwise switch to the
+next buffer that has traffic."
   (interactive)
-  (call-interactively
-   (erc :server (erc-compute-server)
-		:nick (erc-compute-nick))))
+  (if (functionp 'erc)
+	  (erc-track-switch-buffer 1)
+	(call-interactively
+	 (erc :server (erc-compute-server)
+		  :nick (erc-compute-nick)))))
+(bind-key "M-g e" #'irc)
 #+END_SRC
 		
 *** erc-backend
@@ -3127,7 +3133,7 @@ the \"emacs\" instead of \"#emacs\"."
 *** erc-track
 #+BEGIN_SRC emacs-lisp
 (use-package erc-track
-  :bind ("M-g e" . erc-track-switch-buffer)
+  :defer t
   :after erc
   :config
   ;; exclude boring stuff from tracking
