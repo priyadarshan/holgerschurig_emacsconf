@@ -900,6 +900,7 @@ Use =keyfreq-show= to see what you've used mostly.
 #+BEGIN_SRC emacs-lisp
 (use-package server
   :if (not noninteractive)
+  :commands (server-running-p)
   :config
   (unless (or (daemonp) (server-running-p))
 	(server-mode 1))
