@@ -1636,6 +1636,13 @@ Never show GTK file open dialog
 (setq use-file-dialog nil)
 #+END_SRC
 
+Visit the real file by following symlinks. That's nice for editing config files
+that are managed by =stow=.
+
+#+BEGIN_SRC emacs-lisp
+(setq-default find-file-visit-truename t)
+#+END_SRC
+
 Don't create those pesky =.#foo= lockfiles:
 
 #+BEGIN_SRC emacs-lisp
