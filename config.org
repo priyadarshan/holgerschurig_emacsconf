@@ -1236,55 +1236,6 @@ Deletes whitespace at join."
 (bind-key "C-k" 'kill-and-join-forward)
 #+END_SRC
 
-** TODO Dynamic char deletion
-The following is from Boojum's post in
-[[http://www.reddit.com/r/emacs/comments/b1r8a/remacs_tell_us_about_the_obscure_but_useful/]].
-
-I don't want to kill the comment, just the prefix to it. So that
-
-// The quick brown fox[]
-// jumps over the lazy dog.
-
-becomes
-
-// The quick brown fox[] jumps over the lazy dog.
-
-#+BEGIN_SRC emacs-lisp
-(defun delete-char-dynamic (&optional arg)
-  "If at end of line, intelligently join to the following;
-otherwise delete."
-  (interactive "p")
-  (if (or (not (eolp)) (bolp))
-	  (delete-char arg)
-	(let ((start (point))
-		  (in-comment (eq (get-text-property (point) 'face)
-						  'font-lock-comment-face)))
-	  (forward-char)
-	  (skip-chars-forward " \  ")
-	  (if (and in-comment (looking-at comment-start-skip))
-		  (goto-char (match-end 0)))
-	  (delete-region start (point))
-	  (when (and (not (eolp))
-				 (/= (char-before) ? )
-				 (/= (char-before) ?\  ))
-		(insert-char ?  1)
-		(backward-char)))))
-#+END_SRC
-
-Make delete-selection-mode work with it
-
-#+BEGIN_SRC emacs-lisp
-(put 'delete-char-dynamic 'delete-selection 'supersede)
-#+END_SRC
-
-Rebind DELETE and friends to our version
-
-#+BEGIN_SRC emacs-lisp
-(bind-key "<deletechar>" 'delete-char-dynamic)
-(bind-key "<delete>" 'delete-char-dynamic)
-(bind-key "C-d" 'delete-char-dynamic)
-#+END_SRC
-
 ** X11 clipboard
 #+BEGIN_SRC emacs-lisp
 (when (display-graphic-p)
