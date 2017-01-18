@@ -950,15 +950,6 @@ go down different branches.
 	(setq undo-tree-visualizer-diff t)))
 #+END_SRC
 
-** CANC Transpose
-http://endlessparentheses.com/transposing-keybinds-in-emacs.html
-
-#+BEGIN_SRC emacs-lisp
-(bind-key "\C-t" #'transpose-lines)
-(bind-key "\C-t" #'transpose-chars ctl-x-map)
-#+END_SRC
-
-
 
 * Cursor movement
 First we define code that allows us to bind multiple functions to
