@@ -793,25 +793,6 @@ Delete identical history entries
 (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
-** Set and load customization file
-#+BEGIN_SRC emacs-lisp
-(setq custom-file (locate-user-emacs-file "custom.el"))
-(when (file-exists-p custom-file)
-  (load-file custom-file))
-#+END_SRC
-
-Keep lisp names in the custom buffers, don't capitalize. And kill old
-buffers.
-
-#+BEGIN_SRC emacs-lisp
-(use-package cus-edit
-  :defer t
-  :config
-  (setq custom-unlispify-tag-names nil
-		custom-buffer-done-kill t)
-)
-#+END_SRC
-
 ** Localisation
 A sentence doesn't end with two spaces:
 
@@ -826,6 +807,20 @@ Add =-difference= as a deferred load to silence the byte-compiler.
   :ensure t
   :defer t
   :commands (-difference)
+)
+#+END_SRC
+
+** Package: cus-edit: set and load customization file
+#+BEGIN_SRC emacs-lisp
+(use-package cus-edit
+  :init
+  (setq custom-file (locate-user-emacs-file "custom.el"))
+  (when (file-exists-p custom-file)
+	(load-file custom-file))
+  ;; keep lisp names in the custom buffers, don't capitalize.
+  (setq custom-unlispify-tag-names nil)
+  ;; kill old buffers.
+  (setq custom-buffer-done-kill t)
 )
 #+END_SRC
 
