@@ -1534,6 +1534,8 @@ Insert buffer at current position
 #+END_SRC
 
 ** Protect buffers
+Protect some buffers by only burying them instead of killing.
+
 https://raw.githubusercontent.com/lewang/le_emacs_libs/master/keep-buffers.el
 
 #+BEGIN_SRC emacs-lisp
@@ -1583,8 +1585,6 @@ attached to it:
 #+BEGIN_SRC emacs-lisp
 (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
 #+END_SRC
-
-** Cycle buffers
 
 ** iflipb
 http://www.emacswiki.org/emacs/iflipb
