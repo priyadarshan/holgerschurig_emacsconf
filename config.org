@@ -1434,7 +1434,7 @@ there are several windows open."
 (bind-key "C-x k" 'my--kill-buffer-and-window)
 #+END_SRC
 
-** Window sizing
+** CANC Window sizing
 Note that Alt-Up and Alt-Down are bound differently when in Org-Mode.
 
 #+BEGIN_SRC emacs-lisp
