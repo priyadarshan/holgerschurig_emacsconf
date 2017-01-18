@@ -2876,7 +2876,7 @@ http://www.suenkler.info/docs/emacs-orgmode/
   (defun my-erc-window-setup ()
 	(setq erc-fill-column (- (window-width) 2)))
   (add-hook 'window-configuration-change-hook #'my-erc-window-setup)
-  (my-erc-setup)
+  (my-erc-window-setup)
 
   ;; private command /ID
   (defun erc-cmd-ID ()
