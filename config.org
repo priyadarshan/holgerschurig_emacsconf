@@ -1701,16 +1701,6 @@ Emacs.Font:	terminus 11
 (bind-key "<f2>" 'save-buffer)
 #+END_SRC
 
-** Unique buffer names
-
-#+BEGIN_SRC emacs-lisp
-(use-package uniquify
-  :if (not noninteractive)
-  :config
-  (setq uniquify-buffer-name-style 'forward)
-)
-#+END_SRC
-
 ** recentf
 
 #+BEGIN_SRC emacs-lisp
@@ -1784,6 +1774,16 @@ list of regular expressions:
 #+END_SRC
 
 ** Package: recentf - store all edited file names
+** Package: unquify - unique buffer names
+
+#+BEGIN_SRC emacs-lisp
+(use-package uniquify
+  :if (not noninteractive)
+  :config
+  (setq uniquify-buffer-name-style 'forward)
+)
+#+END_SRC
+
 
 
 * Minibuffer
