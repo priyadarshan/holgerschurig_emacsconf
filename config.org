@@ -2795,14 +2795,10 @@ http://www.suenkler.info/docs/emacs-orgmode/
 ** erc (IRC client)
 
 #+BEGIN_SRC emacs-lisp
-;; (require 'erc)
-;; features
-
 (use-package erc
   :if (not noninteractive)
-  :commands (erc)
+  :commands (erc my-erc-window-setup my-erc-mode-setup)
   :config
-
   ;; Log all traffic to *erc-protocol*. This is useful to find the
   ;; numbers that you can use in `erc-hide-list' or
   ;; `erc-track-exclude-types'.
