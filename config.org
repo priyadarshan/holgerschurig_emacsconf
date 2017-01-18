@@ -2944,6 +2944,9 @@ http://www.suenkler.info/docs/emacs-orgmode/
 									   ;; "#org-mode"
 									   )))
   (setq erc-autojoin-timing 'ident)
+
+  ;; Start ERC in the background
+  (setq erc-join-buffer 'bury)
 )
 #+END_SRC
 *** erc-log
