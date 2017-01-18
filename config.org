@@ -4204,6 +4204,17 @@ And if we ever need it, =C-j= is now newline.
   (setq tabify-regexp "^\t* [ \t]+"))
 #+END_SRC
 
+*** Package: dtrt-indent - guess indent mode
+#+BEGIN_SRC emacs-lisp
+(use-package dtrt-indent
+  :if (not noninteractive)
+  :ensure t
+  :config
+  (dtrt-indent-mode 1)
+  (setq dtrt-indent-verbosity 0)
+)
+#+END_SRC
+
 *** Package: clean-aindent-mode - clean up wrong indentation
 Nice tip from tuhdo, see https://www.emacswiki.org/emacs/CleanAutoIndent
 #+BEGIN_SRC emacs-lisp
@@ -4212,17 +4223,6 @@ Nice tip from tuhdo, see https://www.emacswiki.org/emacs/CleanAutoIndent
   :commands (clean-aindent-mode)
   :config
   (add-hook 'prog-mode-hook #'clean-aindent-mode)
-)
-#+END_SRC
-
-*** dtrt-indent - guess indent mode
-#+BEGIN_SRC emacs-lisp
-(use-package dtrt-indent
-  :if (not noninteractive)
-  :ensure t
-  :config
-  (dtrt-indent-mode 1)
-  (setq dtrt-indent-verbosity 0)
 )
 #+END_SRC
 
