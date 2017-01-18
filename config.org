@@ -4178,16 +4178,6 @@ Remove all back-ends from vc-mode, no need to check all these things, I use
 (setq-default tab-width 4)
 #+END_SRC
 
-*** Package: tabify - only tabify leading whitespace
-#+BEGIN_SRC emacs-lisp
-(use-package tabify
-  :defer t
-  :commands (tabify untabify)
-  :config
-  ;; only initial whitespace
-  (setq tabify-regexp "^\t* [ \t]+"))
-#+END_SRC
-
 *** Deleting past a tab
 Deleting past a tab normally changes tab into spaces. Don't do that,
 kill the tab instead.
@@ -4202,6 +4192,16 @@ And if we ever need it, =C-j= is now newline.
 #+BEGIN_SRC emacs-lisp
 (bind-key "RET" 'newline-and-indent)
 (bind-key "C-j" 'newline)
+#+END_SRC
+
+*** Package: tabify - only tabify leading whitespace
+#+BEGIN_SRC emacs-lisp
+(use-package tabify
+  :defer t
+  :commands (tabify untabify)
+  :config
+  ;; only initial whitespace
+  (setq tabify-regexp "^\t* [ \t]+"))
 #+END_SRC
 
 *** Package: clean-aindent-mode - clean up wrong indentation
