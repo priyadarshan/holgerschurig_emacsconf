@@ -349,7 +349,7 @@ setting of this variable by setq is deliberately ignored. Sigh.
 (setq frame-title-format '(buffer-file-name "%f" ("%b")))
 #+END_SRC
 
-** Window manager interaction
+** CANC Window manager interaction
 Avoid Emacs hanging for a while after changing default font:
 
 #+BEGIN_SRC emacs-lisp
