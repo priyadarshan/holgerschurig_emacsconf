@@ -1399,7 +1399,7 @@ provided they return same prefix or the text to be completed.
 
 * Windows handling
 
-** delete-window
+** Modify (delete-window)
 If only one window in frame, `delete-frame'.
 From http://www.emacswiki.org/emacs/frame-cmds.el
 
@@ -1414,7 +1414,7 @@ From http://www.emacswiki.org/emacs/frame-cmds.el
 	  ad-do-it (selected-window))))
 #+END_SRC
 
-** new kill-buffer-and-window
+** New (kill-buffer-and-window)
 Replacement for interactive `kill-buffer'. We cannot redefine
 `kill-buffer', because other elisp code relies on it's exact
 behavior.
@@ -1437,6 +1437,7 @@ there are several windows open."
 #+END_SRC
 
 ** Window sizing
+Note that Alt-Up and Alt-Down are bound differently when in Org-Mode.
 
 #+BEGIN_SRC emacs-lisp
 (bind-key "<M-down>" 'enlarge-window)
@@ -1489,6 +1490,8 @@ are two windows displayed, act like C-x1:"
 If there is only one window displayed, swap it with previous buffer.
 If there are two windows displayed, act like =C-x o=.
 
+See also Shift-F6 !
+
 #+BEGIN_SRC emacs-lisp
 (defun my-switch-to-buffer ()
   "If there is only one window displayed, swap it with previous buffer.
@@ -1500,19 +1503,18 @@ If there are two windows displayed, act like =C-x o=."
 (bind-key "<f6>" 'my-switch-to-buffer)
 #+END_SRC
 
-** Winner mode
+** Other window
+#+BEGIN_SRC emacs-lisp
+(bind-key "M-o" #'other-window)
+#+END_SRC
 
+** winner: restore old window configurations
 #+BEGIN_SRC emacs-lisp
 (use-package winner
   :if (not noninteractive)
   :defer 10
   :init
   (winner-mode 1))
-#+END_SRC
-
-** Other window
-#+BEGIN_SRC emacs-lisp
-(bind-key "M-o" #'other-window)
 #+END_SRC
 
 
