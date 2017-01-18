@@ -3388,9 +3388,6 @@ https://github.com/pronobis/helm-flyspell
 
   (setq-default pdf-view-display-size 'fit-width)
 )
-
-;; (use-package org-pdfview
-;;   :ensure t))
 #+END_SRC
 
 ** Package: shr - Simple HTML Renderer, used by elfeed)
