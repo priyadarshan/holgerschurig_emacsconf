@@ -1986,6 +1986,449 @@ minibuffer."
 
 
 
+* Misc single packages
+** Package: comint
+#+BEGIN_SRC emacs-lisp
+(use-package comint
+  :defer t
+  :bind (:map comint-mode-map
+			  ("<down>" . comint-next-input)
+			  ("<up>"   . comint-previous-input)
+			  ("C-n"    . comint-next-input)
+			  ("C-p"    . comint-previous-input)
+			  ("C-r"    . comint-history-isearch-backward))
+
+  :config
+  ;; Make the prompt readonly
+  (setq comint-prompt-read-only t)
+  ;; Activate isearch
+  (setq comint-history-isearch t)
+)
+#+END_SRC
+
+** Package: dired
+#+BEGIN_SRC emacs-lisp
+(use-package dired
+  :commands dired
+  :bind ("C-x C-d" . dired) ;; used to be list-directory, quite useless
+  :config
+  (setq dired-listing-switches "-laGh1v --group-directories-first")
+  ;; revert when revisiting
+  (setq dired-auto-revert-buffer t)
+  ;; normally, only isearch for files, but not if cursor was navigated away
+  (setq dired-isearch-filenames 'dwim)
+)
+#+END_SRC
+
+** Package: dired-x
+#+BEGIN_SRC emacs-lisp
+(use-package dired-x
+  :commands dired-jump
+)
+#+END_SRC
+
+** Package: elfeed - RSS feed reader
+
+| Key | Function                                              |
+|-----+-------------------------------------------------------|
+| RET | show article                                          |
+| G   | update feeds                                          |
+| b   | open in browser (browse-url)                          |
+| q   | quit                                                  |
+| +   | Apply TAG to all selected entries.                    |
+| -   | Remove TAG from all selected entries.                 |
+| S   | Set a new search filter for the elfeed-search buffer. |
+
+https://github.com/skeeto/elfeed
+Tips and Tricks: http://nullprogram.com/blog/2013/11/26/
+
+
+#+BEGIN_SRC emacs-lisp
+(use-package elfeed
+  :if (string= (system-name) "desktop")
+  :ensure t
+  :bind ("M-g r" . elfeed)   ; r like "RSS"
+  :config
+  (setq elfeed-feeds
+		'(;; emacs
+		  ("http://emacsredux.com/atom.xml" emacs)
+		  ("http://endlessparentheses.com/atom.xml" emacs)
+		  ("http://nullprogram.com/feed/" emacs)
+		  ("http://planet.emacsen.org/atom.xml" emacs)
+		  ("http://www.lunaryorn.com/feed.atom" emacs)
+		  ("http://www.masteringemacs.org/feed/" emacs)
+		  ("https://github.com/milkypostman/melpa/commits/master.atom" github emacs)
+		  ("http://oremacs.com/atom.xml" emacs)
+		  ("http://emacsnyc.org/atom.xml" emacs)
+		  ;; ("https://www.reddit.com/r/emacs/.rss" emacs reddit)
+		  ;; ("https://www.reddit.com/r/orgmode/.rss" emacs reddit)
+
+		  ;;("http://stackexchange.com/feeds/tagsets/152198/emacs?sort=active" emacs)
+		  ))
+
+  (setq elfeed-use-curl t)
+  (setq elfeed-search-filter "@1-week-ago +unread")
+
+  ;; Entries older than 4 weeks are marked as read
+  (add-hook 'elfeed-new-entry-hook
+			(elfeed-make-tagger :before "4 weeks ago"
+								:remove 'unread))
+
+  ;; fetch RSS/Atom feeds in the background
+  ;;
+  ;; A better approach would be to have a checker function that
+  ;; gets the feeds sorted by when they have last been downloaded
+  ;; it would then take one (!) of them and just feed it. That
+  ;; makes the idle function fast and we could increase it's
+  ;; timeout from 15 minutes to a minute or so.
+  (run-with-idle-timer (* 15 60) t #'elfeed-update)
+
+  (defun elfeed-dead-feeds (years)
+  "Return a list of feeds that haven't posted en entry in YEARS years."
+  (cl-block
+	  (macroexp-let* ((living-feeds (make-hash-table :test 'equal))
+					  (seconds (* years 365.0 24 60 60))
+					  (threshold (- (float-time) seconds)))
+					 (with-elfeed-db-visit (entry feed)
+					   (let ((date (elfeed-entry-date entry)))
+						 (when (> date threshold)
+						   (setf (gethash (elfeed-feed-url feed) living-feeds) t))))
+					 (cl-loop for url in (elfeed-feed-list)
+							  unless (gethash url living-feeds)
+							  collect url))))
+  (elfeed-dead-feeds 1.0)
+)
+#+END_SRC
+
+Some more feeds to (eventually) check:
+
+- ("http://harryrschwartz.com/atom.xml" blog)
+- ("http://zinascii.com/writing-feed.xml" blog)
+- ("http://githubengineering.com/atom.xml" blog)
+- ("http://blog.smola.org/rss" blog)
+- ("http://briancarper.net/feed" blog)
+- ("https://kotka.de/blog/index.rss" blog)
+- ("http://fiftyfootshadows.net/feed/" blog)
+- ("http://blag.xkcd.com/feed/" blog)
+- ("http://youdisappear.net/files/page1.xml" blog music)
+- ("http://normanmaurer.me/blog.atom" blog)
+- ("http://blog.mikemccandless.com/feeds/posts/default" elasticsearch blog)
+- ("http://lethain.com/feeds/all/" blog)
+- ("http://whatthefuck.computer/rss.xml" blog)
+- ("http://feeds.feedburner.com/jamesshelley" blog)
+- ("http://www.marco.org/rss" blog)
+- ("http://gnuvince.wordpress.com/feed/" blog)
+- ("http://elliotth.blogspot.com/feeds/posts/default" blog)
+- ("http://feeds.feedburner.com/Hyperbole-and-a-half" blog)
+- ("http://lcamtuf.blogspot.com/feeds/posts/default" blog)
+- ("http://blog.isabel-drost.de/index.php/feed" blog)
+- ("http://feeds2.feedburner.com/CodersTalk" blog)
+- ("http://feeds.feedburner.com/codinghorror/" blog)
+- ("http://lambda-the-ultimate.org/rss.xml" blog)
+- ("http://danluu.com/atom.xml" blog)
+- ("http://ferd.ca/feed.rss" blog)
+- ("http://blog.fsck.com/atom.xml" blog)
+- ("http://jvns.ca/atom.xml" blog)
+- ("http://newartisans.com/rss.xml" blog emacs)
+- ("http://bling.github.io/index.xml" blog emacs)
+- ("https://rachelbythebay.com/w/atom.xml" blog)
+- ("http://blog.nullspace.io/feed.xml" blog)
+- ("http://www.mcfunley.com/feed/atom" blog)
+- ("https://codewords.recurse.com/feed.xml" blog)
+- ("http://akaptur.com/atom.xml" blog)
+- ("http://davidad.github.io/atom.xml" blog)
+- ("http://www.evanjones.ca/index.rss" blog)
+- ("http://neverworkintheory.org/feed.xml" blog)
+- ("http://blog.jessitron.com/feeds/posts/default" blog)
+- ("http://feeds.feedburner.com/GustavoDuarte?format=xml" blog)
+- ("http://blog.regehr.org/feed" blog)
+- ("https://www.snellman.net/blog/rss-index.xml" blog)
+- ("http://eli.thegreenplace.net/feeds/all.atom.xml" blog)
+- ("https://idea.popcount.org/rss.xml" blog)
+- ("https://aphyr.com/posts.atom" blog)
+- ("http://kamalmarhubi.com/blog/feed.xml" blog)
+- ("http://maryrosecook.com/blog/feed" blog)
+- ("http://www.tedunangst.com/flak/rss" blog)
+- ("http://yosefk.com/blog/feed" blog)
+- ("http://www.benkuhn.net/rss/" blog)
+- ("https://emacsgifs.github.io/feed.xml" blog emacs)
+
+** Package: eshell
+https://www.masteringemacs.org/article/complete-guide-mastering-eshell
+
+#+BEGIN_SRC emacs-lisp
+(use-package eshell
+  :if (not noninteractive)
+  :defer t
+  :commands (eshell eshell/addpath eshell-read-aliases-list)
+  :defines (eshell-visual-commands)
+  :config
+  (defun eshell/clear ()
+	"Deletes the contents of eshell buffer, except the last prompt"
+	(save-excursion
+	  (goto-char eshell-last-output-end)
+	  (let ((lines (count-lines 1 (point)))
+		(inhibit-read-only t))
+	(beginning-of-line)
+	(let ((pos (point)))
+	  (if (bobp)
+		  (if (called-interactively-p 'interactive)
+			  (error "Buffer too short to truncate"))
+		(delete-region (point-min) (point)))))))
+
+  ;; If I ever want my own eshell/foo commands overwrite real commands ...
+  (setq eshell-prefer-lisp-functions t)
+
+  ;; check if this is ok for my usage
+  ;; eshell-visual-commands
+
+  (defun my--eshell-hook ()
+	(eshell-read-aliases-list)
+	(setq global-hl-line-mode nil)
+	(setq show-trailing-whitespace nil)
+	(add-to-list 'eshell-visual-commands "ssh")
+	(add-to-list 'eshell-visual-commands "htop")
+	(add-to-list 'eshell-visual-commands "ncmpcpp")
+	(add-to-list 'eshell-visual-commands "tail")
+	(eshell/addpath "~/bin"))
+  (add-hook 'eshell-mode-hook 'my--eshell-hook)
+)
+(use-package em-banner
+  :if (not noninteractive)
+  :defines (eshell-banner-message)
+  :config
+  ;; We don't need no banner
+  (setq eshell-banner-message "")
+)
+#+END_SRC
+
+** Package: flyspell - background spell checker
+
+#+BEGIN_SRC emacs-lisp
+(use-package flyspell
+ :diminish flyspell-mode
+ :commands (flyspell-mode flyspell-prog-mode)
+ :config
+ (add-to-list 'flyspell-dictionaries-that-consider-dash-as-word-delimiter "german-new8")
+ (setq flyspell-issue-welcome-flag nil)
+ ;; M-Tab is owned by the window manager, correct with C-M-i
+ (setq flyspell-use-meta-tab nil)
+ )
+
+#+END_SRC
+
+Flyspell is in elisp mode. And this in turn loads flyspell directly
+after launching emacs, which is a bit unfortunate.
+
+#+BEGIN_SRC emacs-lisp
+(defun my-flyspell-prog-mode ()
+  (interactive)
+  (unless (string= (buffer-name) "*scratch*")
+	(flyspell-prog-mode)))
+(add-hook 'prog-mode-hook  #'my-flyspell-prog-mode)
+(add-hook 'text-mode-hook  #'flyspell-mode)
+(add-hook 'org-mode-hook   #'flyspell-mode)
+(add-hook 'latex-mode-hook #'flyspell-mode)
+(add-hook 'LaTeX-mode-hook #'flyspell-mode)
+#+END_SRC
+
+#+END_SRC
+
+*** helm-flyspell
+https://github.com/pronobis/helm-flyspell
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-flyspell
+  :if (not noninteractive)
+  :ensure t
+  :commands helm-flyspell-correct
+  :config
+  (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
+)
+#+END_SRC
+
+** Package: hydra - interactive stateful keybindings
+
+#+BEGIN_SRC emacs-lisp
+(use-package hydra
+  :if (not noninteractive)
+  :defer t
+  :ensure t
+  :commands (defhydra
+			 hydra-default-pre
+			 hydra-keyboard-quit
+			 hydra-set-transient-map)
+)
+(use-package lv
+  :defer t
+  :commands (lv-message)
+)
+#+END_SRC
+
+** Package: pdf-tools
+- Home page: https://github.com/politza/pdf-tools
+- Configuration based on https://github.com/abo-abo/hydra/wiki/PDF-Tools, but modified to lazy-load and to bind to *.pdf files
+
+#+BEGIN_SRC emacs-lisp
+(use-package pdf-tools
+  :disabled noninteractive
+  :ensure t
+  :mode ("\\.pdf\\'" . pdf-view-mode)
+
+  :config
+  (pdf-tools-install)
+
+  ;; silence "the following functions might not be defined at runtime"
+  (declare-function hydra-master/body "config.el" (a b &c))
+  (declare-function pdf-annot-list-annotations "pdf-annot.el" ())
+  (declare-function pdf-annot-delete "pdf-annot.el" (a))
+  (declare-function pdf-annot-attachment-dired "pdf-annot.el" (&regenerate-p))
+  (declare-function pdf-annot-add-markup-annotation "pdf-annot.el" (list-of-edges type &color property-alist))
+  (declare-function pdf-annot-add-text-annotation "pdf-annot.el" (pos &icon property-alist))
+  (declare-function pdf-links-action-perform "pdf-annot.el" (link))
+  (declare-function pdf-links-isearch-link "pdf-annot.el" ())
+  (declare-function pdf-history-backward "pdf-annot.el" (n))
+  (declare-function pdf-history-forward "pdf-annot.el" (n))
+
+  (message "##HS hydra pdftools")
+  (defhydra hydra-pdftools (:color blue :hint nil)
+	"
+                                                                      ╭───────────┐
+       Move  History   Scale/Fit     Annotations  Search/Link    Do   │ PDF Tools │
+   ╭──────────────────────────────────────────────────────────────────┴───────────╯
+         ^^_g_^^      _B_    ^↧^    _+_    ^ ^     [_al_] list    [_s_] search    [_u_] revert buffer
+         ^^^↑^^^      ^↑^    _H_    ^↑^  ↦ _W_ ↤ [_am_] markup  [_o_] outline   [_i_] info
+         ^^_p_^^      ^ ^    ^↥^    _0_    ^ ^     [_at_] text    [_F_] link      [_d_] dark mode
+         ^^^↑^^^      ^↓^  ╭─^─^─┐  ^↓^  ╭─^ ^─┐   [_ad_] delete  [_f_] search link
+    _h_ ←pag_e_→ _l_  _N_  │ _P_ │  _-_    _b_     [_aa_] dired
+         ^^^↓^^^      ^ ^  ╰─^─^─╯  ^ ^  ╰─^ ^─╯   [_y_]  yank
+         ^^_n_^^      ^ ^  _r_eset slice box
+         ^^^↓^^^
+         ^^_G_^^
+   --------------------------------------------------------------------------------
+        "
+	("\\" hydra-master/body "back")
+	("<ESC>" nil "quit")
+	("al" pdf-annot-list-annotations)
+	("ad" pdf-annot-delete)
+	("aa" pdf-annot-attachment-dired)
+	("am" pdf-annot-add-markup-annotation)
+	("at" pdf-annot-add-text-annotation)
+	("y"  pdf-view-kill-ring-save)
+	("+" pdf-view-enlarge :color red)
+	("-" pdf-view-shrink :color red)
+	("0" pdf-view-scale-reset)
+	("H" pdf-view-fit-height-to-window)
+	("W" pdf-view-fit-width-to-window)
+	("P" pdf-view-fit-page-to-window)
+	("n" pdf-view-next-page-command :color red)
+	("p" pdf-view-previous-page-command :color red)
+	("d" pdf-view-dark-minor-mode)
+	("b" pdf-view-set-slice-from-bounding-box)
+	("r" pdf-view-reset-slice)
+	("g" pdf-view-first-page)
+	("G" pdf-view-last-page)
+	("e" pdf-view-goto-page)
+	("o" pdf-outline)
+	("s" pdf-occur)
+	("i" pdf-misc-display-metadata)
+	("u" pdf-view-revert-buffer)
+	("F" pdf-links-action-perform)
+	("f" pdf-links-isearch-link)
+	("B" pdf-history-backward :color red)
+	("N" pdf-history-forward :color red)
+	("l" image-forward-hscroll :color red)
+	("h" image-backward-hscroll :color red))
+
+  (bind-keys :map pdf-view-mode-map
+			 ("?"  . hydra-pdftools/body)
+			 ("<s-spc>" .  pdf-view-scroll-down-or-next-page)
+			 ("g"  . pdf-view-first-page)
+			 ("G"  . pdf-view-last-page)
+			 ("l"  . image-forward-hscroll)
+			 ("h"  . image-backward-hscroll)
+			 ("j"  . pdf-view-next-page)
+			 ("k"  . pdf-view-previous-page)
+			 ("e"  . pdf-view-goto-page)
+			 ("u"  . pdf-view-revert-buffer)
+			 ("al" . pdf-annot-list-annotations)
+			 ("ad" . pdf-annot-delete)
+			 ("aa" . pdf-annot-attachment-dired)
+			 ("am" . pdf-annot-add-markup-annotation)
+			 ("at" . pdf-annot-add-text-annotation)
+			 ("y"  . pdf-view-kill-ring-save)
+			 ("i"  . pdf-misc-display-metadata)
+			 ("s"  . pdf-occur)
+			 ("b"  . pdf-view-set-slice-from-bounding-box)
+			 ("r"  . pdf-view-reset-slice))
+
+  (setq-default pdf-view-display-size 'fit-width)
+)
+#+END_SRC
+
+** Package: shr - Simple HTML Renderer, used by elfeed)
+#+BEGIN_SRC emacs-lisp
+(use-package shr
+  :defer t
+  :config
+  ;; don't use the (ugly)proportional font
+  (setq shr-use-fonts nil)
+)
+#+END_SRC
+
+** Package: term - for ansi-term
+This term understands ansi escape sequences.
+
+On Debian, one should install the =ansi-term= debian package so that
+the terminal "eterm-color" is available.
+
+#+BEGIN_SRC emacs-lisp
+(use-package term
+  :bind ("M-g s" . ansi-shell)
+  :commands (ansi-term ansi-shell
+					   term-in-line-mode
+					   term-line-mode
+					   term-char-mode)
+  :defines (term-buffer-maximum-size
+			show-dir-in-mode-line?)
+  :init
+  (defun ansi-shell ()
+	"Start ansi-term with bash"
+	(interactive)
+	(ansi-term "/bin/bash"))
+  :config
+
+  ;; don't linger around when closing
+  (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
+	(if (memq (process-status proc) '(signal exit))
+		(let ((buffer (process-buffer proc)))
+		  ad-do-it
+		  (kill-buffer buffer))
+	  ad-do-it))
+  (ad-activate 'term-sentinel)
+
+  (defun term-toggle-mode ()
+	(interactive)
+	(if (term-in-line-mode)
+		(term-char-mode)
+	  (term-line-mode)))
+
+  (defun my-term-hook ()
+	(goto-address-mode)
+	;; (bind-key "C-c C-j" #'term-toggle-mode term-mode-map)
+	;; (bind-key "C-c C-k" #'term-toggle-mode term-mode-map)
+	(setq global-hl-line-mode nil)
+	(setq term-buffer-maximum-size 10000)
+	(setq-local show-dir-in-mode-line? t) ;; also mode linec'
+	(setq show-trailing-whitespace nil)
+	;; disable company in favor of shell completion
+	;;(company-mode -1)
+	)
+  (add-hook 'term-mode-hook 'my-term-hook)
+)
+#+END_SRC
+
+
 * Package: helm
 Very good intro: http://tuhdo.github.io/helm-intro.html
 
@@ -2797,9 +3240,8 @@ http://www.suenkler.info/docs/emacs-orgmode/
 
 
 
-* Single packages
-
-** Package: erc - IRC client
+* ERC - an IRC client
+** Package: erc
 
 #+BEGIN_SRC emacs-lisp
 (use-package erc
@@ -3092,328 +3534,6 @@ next buffer that has traffic."
 		 )))
 (bind-key "M-g e" #'irc)
 #+END_SRC
-
-** Package: dired
-#+BEGIN_SRC emacs-lisp
-(use-package dired
-  :commands dired
-  :bind ("C-x C-d" . dired) ;; used to be list-directory, quite useless
-  :config
-  (setq dired-listing-switches "-laGh1v --group-directories-first")
-  ;; revert when revisiting
-  (setq dired-auto-revert-buffer t)
-  ;; normally, only isearch for files, but not if cursor was navigated away
-  (setq dired-isearch-filenames 'dwim)
-)
-#+END_SRC
-
-** Package: dired-x
-#+BEGIN_SRC emacs-lisp
-(use-package dired-x
-  :commands dired-jump
-)
-#+END_SRC
-
-** Package: elfeed - RSS feed reader
-
-| Key | Function                                              |
-|-----+-------------------------------------------------------|
-| RET | show article                                          |
-| G   | update feeds                                          |
-| b   | open in browser (browse-url)                          |
-| q   | quit                                                  |
-| +   | Apply TAG to all selected entries.                    |
-| -   | Remove TAG from all selected entries.                 |
-| S   | Set a new search filter for the elfeed-search buffer. |
-
-https://github.com/skeeto/elfeed
-Tips and Tricks: http://nullprogram.com/blog/2013/11/26/
-
-
-#+BEGIN_SRC emacs-lisp
-(use-package elfeed
-  :if (string= (system-name) "desktop")
-  :ensure t
-  :bind ("M-g r" . elfeed)   ; r like "RSS"
-  :config
-  (setq elfeed-feeds
-		'(;; emacs
-		  ("http://emacsredux.com/atom.xml" emacs)
-		  ("http://endlessparentheses.com/atom.xml" emacs)
-		  ("http://nullprogram.com/feed/" emacs)
-		  ("http://planet.emacsen.org/atom.xml" emacs)
-		  ("http://www.lunaryorn.com/feed.atom" emacs)
-		  ("http://www.masteringemacs.org/feed/" emacs)
-		  ("https://github.com/milkypostman/melpa/commits/master.atom" github emacs)
-		  ("http://oremacs.com/atom.xml" emacs)
-		  ("http://emacsnyc.org/atom.xml" emacs)
-		  ;; ("https://www.reddit.com/r/emacs/.rss" emacs reddit)
-		  ;; ("https://www.reddit.com/r/orgmode/.rss" emacs reddit)
-
-		  ;;("http://stackexchange.com/feeds/tagsets/152198/emacs?sort=active" emacs)
-		  ))
-
-  (setq elfeed-use-curl t)
-  (setq elfeed-search-filter "@1-week-ago +unread")
-
-  ;; Entries older than 4 weeks are marked as read
-  (add-hook 'elfeed-new-entry-hook
-			(elfeed-make-tagger :before "4 weeks ago"
-								:remove 'unread))
-
-  ;; fetch RSS/Atom feeds in the background
-  ;;
-  ;; A better approach would be to have a checker function that
-  ;; gets the feeds sorted by when they have last been downloaded
-  ;; it would then take one (!) of them and just feed it. That
-  ;; makes the idle function fast and we could increase it's
-  ;; timeout from 15 minutes to a minute or so.
-  (run-with-idle-timer (* 15 60) t #'elfeed-update)
-
-  (defun elfeed-dead-feeds (years)
-  "Return a list of feeds that haven't posted en entry in YEARS years."
-  (cl-block
-	  (macroexp-let* ((living-feeds (make-hash-table :test 'equal))
-					  (seconds (* years 365.0 24 60 60))
-					  (threshold (- (float-time) seconds)))
-					 (with-elfeed-db-visit (entry feed)
-					   (let ((date (elfeed-entry-date entry)))
-						 (when (> date threshold)
-						   (setf (gethash (elfeed-feed-url feed) living-feeds) t))))
-					 (cl-loop for url in (elfeed-feed-list)
-							  unless (gethash url living-feeds)
-							  collect url))))
-  (elfeed-dead-feeds 1.0)
-)
-#+END_SRC
-
-Some more feeds to (eventually) check:
-
-- ("http://harryrschwartz.com/atom.xml" blog)
-- ("http://zinascii.com/writing-feed.xml" blog)
-- ("http://githubengineering.com/atom.xml" blog)
-- ("http://blog.smola.org/rss" blog)
-- ("http://briancarper.net/feed" blog)
-- ("https://kotka.de/blog/index.rss" blog)
-- ("http://fiftyfootshadows.net/feed/" blog)
-- ("http://blag.xkcd.com/feed/" blog)
-- ("http://youdisappear.net/files/page1.xml" blog music)
-- ("http://normanmaurer.me/blog.atom" blog)
-- ("http://blog.mikemccandless.com/feeds/posts/default" elasticsearch blog)
-- ("http://lethain.com/feeds/all/" blog)
-- ("http://whatthefuck.computer/rss.xml" blog)
-- ("http://feeds.feedburner.com/jamesshelley" blog)
-- ("http://www.marco.org/rss" blog)
-- ("http://gnuvince.wordpress.com/feed/" blog)
-- ("http://elliotth.blogspot.com/feeds/posts/default" blog)
-- ("http://feeds.feedburner.com/Hyperbole-and-a-half" blog)
-- ("http://lcamtuf.blogspot.com/feeds/posts/default" blog)
-- ("http://blog.isabel-drost.de/index.php/feed" blog)
-- ("http://feeds2.feedburner.com/CodersTalk" blog)
-- ("http://feeds.feedburner.com/codinghorror/" blog)
-- ("http://lambda-the-ultimate.org/rss.xml" blog)
-- ("http://danluu.com/atom.xml" blog)
-- ("http://ferd.ca/feed.rss" blog)
-- ("http://blog.fsck.com/atom.xml" blog)
-- ("http://jvns.ca/atom.xml" blog)
-- ("http://newartisans.com/rss.xml" blog emacs)
-- ("http://bling.github.io/index.xml" blog emacs)
-- ("https://rachelbythebay.com/w/atom.xml" blog)
-- ("http://blog.nullspace.io/feed.xml" blog)
-- ("http://www.mcfunley.com/feed/atom" blog)
-- ("https://codewords.recurse.com/feed.xml" blog)
-- ("http://akaptur.com/atom.xml" blog)
-- ("http://davidad.github.io/atom.xml" blog)
-- ("http://www.evanjones.ca/index.rss" blog)
-- ("http://neverworkintheory.org/feed.xml" blog)
-- ("http://blog.jessitron.com/feeds/posts/default" blog)
-- ("http://feeds.feedburner.com/GustavoDuarte?format=xml" blog)
-- ("http://blog.regehr.org/feed" blog)
-- ("https://www.snellman.net/blog/rss-index.xml" blog)
-- ("http://eli.thegreenplace.net/feeds/all.atom.xml" blog)
-- ("https://idea.popcount.org/rss.xml" blog)
-- ("https://aphyr.com/posts.atom" blog)
-- ("http://kamalmarhubi.com/blog/feed.xml" blog)
-- ("http://maryrosecook.com/blog/feed" blog)
-- ("http://www.tedunangst.com/flak/rss" blog)
-- ("http://yosefk.com/blog/feed" blog)
-- ("http://www.benkuhn.net/rss/" blog)
-- ("https://emacsgifs.github.io/feed.xml" blog emacs)
-
-** Package: flyspell - background spell checker
-
-#+BEGIN_SRC emacs-lisp
-(use-package flyspell
- :diminish flyspell-mode
- :commands (flyspell-mode flyspell-prog-mode)
- :config
- (add-to-list 'flyspell-dictionaries-that-consider-dash-as-word-delimiter "german-new8")
- (setq flyspell-issue-welcome-flag nil)
- ;; M-Tab is owned by the window manager, correct with C-M-i
- (setq flyspell-use-meta-tab nil)
- )
-
-#+END_SRC
-
-Flyspell is in elisp mode. And this in turn loads flyspell directly
-after launching emacs, which is a bit unfortunate.
-
-#+BEGIN_SRC emacs-lisp
-(defun my-flyspell-prog-mode ()
-  (interactive)
-  (unless (string= (buffer-name) "*scratch*")
-	(flyspell-prog-mode)))
-(add-hook 'prog-mode-hook  #'my-flyspell-prog-mode)
-(add-hook 'text-mode-hook  #'flyspell-mode)
-(add-hook 'org-mode-hook   #'flyspell-mode)
-(add-hook 'latex-mode-hook #'flyspell-mode)
-(add-hook 'LaTeX-mode-hook #'flyspell-mode)
-#+END_SRC
-
-#+END_SRC
-
-*** helm-flyspell
-https://github.com/pronobis/helm-flyspell
-
-#+BEGIN_SRC emacs-lisp
-(use-package helm-flyspell
-  :if (not noninteractive)
-  :ensure t
-  :commands helm-flyspell-correct
-  :config
-  (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
-)
-#+END_SRC
-
-** Package: hydra - interactive stateful keybindings
-
-#+BEGIN_SRC emacs-lisp
-(use-package hydra
-  :if (not noninteractive)
-  :defer t
-  :ensure t
-  :commands (defhydra
-			 hydra-default-pre
-			 hydra-keyboard-quit
-			 hydra-set-transient-map)
-)
-(use-package lv
-  :defer t
-  :commands (lv-message)
-)
-#+END_SRC
-
-** Package: pdf-tools
-- Home page: https://github.com/politza/pdf-tools
-- Configuration based on https://github.com/abo-abo/hydra/wiki/PDF-Tools, but modified to lazy-load and to bind to *.pdf files
-
-#+BEGIN_SRC emacs-lisp
-(use-package pdf-tools
-  :disabled noninteractive
-  :ensure t
-  :mode ("\\.pdf\\'" . pdf-view-mode)
-
-  :config
-  (pdf-tools-install)
-
-  ;; silence "the following functions might not be defined at runtime"
-  (declare-function hydra-master/body "config.el" (a b &c))
-  (declare-function pdf-annot-list-annotations "pdf-annot.el" ())
-  (declare-function pdf-annot-delete "pdf-annot.el" (a))
-  (declare-function pdf-annot-attachment-dired "pdf-annot.el" (&regenerate-p))
-  (declare-function pdf-annot-add-markup-annotation "pdf-annot.el" (list-of-edges type &color property-alist))
-  (declare-function pdf-annot-add-text-annotation "pdf-annot.el" (pos &icon property-alist))
-  (declare-function pdf-links-action-perform "pdf-annot.el" (link))
-  (declare-function pdf-links-isearch-link "pdf-annot.el" ())
-  (declare-function pdf-history-backward "pdf-annot.el" (n))
-  (declare-function pdf-history-forward "pdf-annot.el" (n))
-
-  (message "##HS hydra pdftools")
-  (defhydra hydra-pdftools (:color blue :hint nil)
-	"
-                                                                      ╭───────────┐
-       Move  History   Scale/Fit     Annotations  Search/Link    Do   │ PDF Tools │
-   ╭──────────────────────────────────────────────────────────────────┴───────────╯
-         ^^_g_^^      _B_    ^↧^    _+_    ^ ^     [_al_] list    [_s_] search    [_u_] revert buffer
-         ^^^↑^^^      ^↑^    _H_    ^↑^  ↦ _W_ ↤ [_am_] markup  [_o_] outline   [_i_] info
-         ^^_p_^^      ^ ^    ^↥^    _0_    ^ ^     [_at_] text    [_F_] link      [_d_] dark mode
-         ^^^↑^^^      ^↓^  ╭─^─^─┐  ^↓^  ╭─^ ^─┐   [_ad_] delete  [_f_] search link
-    _h_ ←pag_e_→ _l_  _N_  │ _P_ │  _-_    _b_     [_aa_] dired
-         ^^^↓^^^      ^ ^  ╰─^─^─╯  ^ ^  ╰─^ ^─╯   [_y_]  yank
-         ^^_n_^^      ^ ^  _r_eset slice box
-         ^^^↓^^^
-         ^^_G_^^
-   --------------------------------------------------------------------------------
-        "
-	("\\" hydra-master/body "back")
-	("<ESC>" nil "quit")
-	("al" pdf-annot-list-annotations)
-	("ad" pdf-annot-delete)
-	("aa" pdf-annot-attachment-dired)
-	("am" pdf-annot-add-markup-annotation)
-	("at" pdf-annot-add-text-annotation)
-	("y"  pdf-view-kill-ring-save)
-	("+" pdf-view-enlarge :color red)
-	("-" pdf-view-shrink :color red)
-	("0" pdf-view-scale-reset)
-	("H" pdf-view-fit-height-to-window)
-	("W" pdf-view-fit-width-to-window)
-	("P" pdf-view-fit-page-to-window)
-	("n" pdf-view-next-page-command :color red)
-	("p" pdf-view-previous-page-command :color red)
-	("d" pdf-view-dark-minor-mode)
-	("b" pdf-view-set-slice-from-bounding-box)
-	("r" pdf-view-reset-slice)
-	("g" pdf-view-first-page)
-	("G" pdf-view-last-page)
-	("e" pdf-view-goto-page)
-	("o" pdf-outline)
-	("s" pdf-occur)
-	("i" pdf-misc-display-metadata)
-	("u" pdf-view-revert-buffer)
-	("F" pdf-links-action-perform)
-	("f" pdf-links-isearch-link)
-	("B" pdf-history-backward :color red)
-	("N" pdf-history-forward :color red)
-	("l" image-forward-hscroll :color red)
-	("h" image-backward-hscroll :color red))
-
-  (bind-keys :map pdf-view-mode-map
-			 ("?"  . hydra-pdftools/body)
-			 ("<s-spc>" .  pdf-view-scroll-down-or-next-page)
-			 ("g"  . pdf-view-first-page)
-			 ("G"  . pdf-view-last-page)
-			 ("l"  . image-forward-hscroll)
-			 ("h"  . image-backward-hscroll)
-			 ("j"  . pdf-view-next-page)
-			 ("k"  . pdf-view-previous-page)
-			 ("e"  . pdf-view-goto-page)
-			 ("u"  . pdf-view-revert-buffer)
-			 ("al" . pdf-annot-list-annotations)
-			 ("ad" . pdf-annot-delete)
-			 ("aa" . pdf-annot-attachment-dired)
-			 ("am" . pdf-annot-add-markup-annotation)
-			 ("at" . pdf-annot-add-text-annotation)
-			 ("y"  . pdf-view-kill-ring-save)
-			 ("i"  . pdf-misc-display-metadata)
-			 ("s"  . pdf-occur)
-			 ("b"  . pdf-view-set-slice-from-bounding-box)
-			 ("r"  . pdf-view-reset-slice))
-
-  (setq-default pdf-view-display-size 'fit-width)
-)
-#+END_SRC
-
-** Package: shr - Simple HTML Renderer, used by elfeed)
-#+BEGIN_SRC emacs-lisp
-(use-package shr
-  :defer t
-  :config
-  ;; don't use the (ugly)proportional font
-  (setq shr-use-fonts nil)
-)
-#+END_SRC
-
 
 
 * Mail & News
@@ -4729,25 +4849,6 @@ Home page: http://web-mode.org/
   )
 #+END_SRC
 
-** Package: comint
-#+BEGIN_SRC emacs-lisp
-(use-package comint
-  :defer t
-  :bind (:map comint-mode-map
-			  ("<down>" . comint-next-input)
-			  ("<up>"   . comint-previous-input)
-			  ("C-n"    . comint-next-input)
-			  ("C-p"    . comint-previous-input)
-			  ("C-r"    . comint-history-isearch-backward))
-
-  :config
-  ;; Make the prompt readonly
-  (setq comint-prompt-read-only t)
-  ;; Activate isearch
-  (setq comint-history-isearch t)
-)
-#+END_SRC
-
 ** Package: compile
 [[http://www.emacswiki.org/emacs/ModeCompile]]
 
@@ -4803,55 +4904,6 @@ as an overlay in your elisp buffer. Try it out with =C-x C-e= now!
   :commands eros-mode
   :init
   (add-hook 'emacs-lisp-mode-hook 'eros-mode)
-)
-#+END_SRC
-
-** Package: eshell
-https://www.masteringemacs.org/article/complete-guide-mastering-eshell
-
-#+BEGIN_SRC emacs-lisp
-(use-package eshell
-  :if (not noninteractive)
-  :defer t
-  :commands (eshell eshell/addpath eshell-read-aliases-list)
-  :defines (eshell-visual-commands)
-  :config
-  (defun eshell/clear ()
-	"Deletes the contents of eshell buffer, except the last prompt"
-	(save-excursion
-	  (goto-char eshell-last-output-end)
-	  (let ((lines (count-lines 1 (point)))
-		(inhibit-read-only t))
-	(beginning-of-line)
-	(let ((pos (point)))
-	  (if (bobp)
-		  (if (called-interactively-p 'interactive)
-			  (error "Buffer too short to truncate"))
-		(delete-region (point-min) (point)))))))
-
-  ;; If I ever want my own eshell/foo commands overwrite real commands ...
-  (setq eshell-prefer-lisp-functions t)
-
-  ;; check if this is ok for my usage
-  ;; eshell-visual-commands
-
-  (defun my--eshell-hook ()
-	(eshell-read-aliases-list)
-	(setq global-hl-line-mode nil)
-	(setq show-trailing-whitespace nil)
-	(add-to-list 'eshell-visual-commands "ssh")
-	(add-to-list 'eshell-visual-commands "htop")
-	(add-to-list 'eshell-visual-commands "ncmpcpp")
-	(add-to-list 'eshell-visual-commands "tail")
-	(eshell/addpath "~/bin"))
-  (add-hook 'eshell-mode-hook 'my--eshell-hook)
-)
-(use-package em-banner
-  :if (not noninteractive)
-  :defines (eshell-banner-message)
-  :config
-  ;; We don't need no banner
-  (setq eshell-banner-message "")
 )
 #+END_SRC
 
@@ -4921,58 +4973,6 @@ Nice for elisp faces or CSS files.
   :ensure t
   :defer t
   :commands (rainbow-mode)
-)
-#+END_SRC
-
-** Package: term - for ansi-term
-This term understands ansi escape sequences.
-
-On Debian, one should install the =ansi-term= debian package so that
-the terminal "eterm-color" is available.
-
-#+BEGIN_SRC emacs-lisp
-(use-package term
-  :bind ("M-g s" . ansi-shell)
-  :commands (ansi-term ansi-shell
-					   term-in-line-mode
-					   term-line-mode
-					   term-char-mode)
-  :defines (term-buffer-maximum-size
-			show-dir-in-mode-line?)
-  :init
-  (defun ansi-shell ()
-	"Start ansi-term with bash"
-	(interactive)
-	(ansi-term "/bin/bash"))
-  :config
-
-  ;; don't linger around when closing
-  (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
-	(if (memq (process-status proc) '(signal exit))
-		(let ((buffer (process-buffer proc)))
-		  ad-do-it
-		  (kill-buffer buffer))
-	  ad-do-it))
-  (ad-activate 'term-sentinel)
-
-  (defun term-toggle-mode ()
-	(interactive)
-	(if (term-in-line-mode)
-		(term-char-mode)
-	  (term-line-mode)))
-
-  (defun my-term-hook ()
-	(goto-address-mode)
-	;; (bind-key "C-c C-j" #'term-toggle-mode term-mode-map)
-	;; (bind-key "C-c C-k" #'term-toggle-mode term-mode-map)
-	(setq global-hl-line-mode nil)
-	(setq term-buffer-maximum-size 10000)
-	(setq-local show-dir-in-mode-line? t) ;; also mode linec'
-	(setq show-trailing-whitespace nil)
-	;; disable company in favor of shell completion
-	;;(company-mode -1)
-	)
-  (add-hook 'term-mode-hook 'my-term-hook)
 )
 #+END_SRC
 
