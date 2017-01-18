@@ -4281,34 +4281,6 @@ Now try yasnippet again now that it's faster.
 #+BEGIN_SRC emacs-lisp
 (bind-key "C-c c" 'comment-dwim)
 #+END_SRC
-
-** Package: helm-compile - interactive interface to select compile commands
-Interactively select compile commands.
-
-#+BEGIN_SRC emacs-lisp
-(use-package helm-compile
-  :if (not noninteractive)
-  :defer t
-  :bind (("S-<f7>" . helm-select-compile-command)
-		 ("<f7>" . helm-compile))
-)
-#+END_SRC
-
-** Package: flycheck - compile-checking on-the-fly
-
-| Key     | Function        |
-|---------+-----------------|
-| C-c ! l | list all issues |
-| C-c ! n | next issue      |
-| C-c ! p | previous issue  |
-
-#+BEGIN_SRC emacs-lisp
-(use-package flycheck
-  :ensure t
-  :commands (flycheck-mode)
-)
-#+END_SRC
-
 *** Package: helm-flycheck
 #+BEGIN_SRC emacs-lisp
 (use-package helm-flycheck
@@ -4370,6 +4342,33 @@ rest of the line is empty.
   )
 (add-hook 'c-mode-common-hook 'my-smart-parens-setup)
 ;; (add-hook 'emacs-lisp-mode-hook 'my-smart-parens-setup)
+#+END_SRC
+
+** Package: helm-compile - interactive interface to select compile commands
+Interactively select compile commands.
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-compile
+  :if (not noninteractive)
+  :defer t
+  :bind (("S-<f7>" . helm-select-compile-command)
+		 ("<f7>" . helm-compile))
+)
+#+END_SRC
+
+** Package: flycheck - compile-checking on-the-fly
+
+| Key     | Function        |
+|---------+-----------------|
+| C-c ! l | list all issues |
+| C-c ! n | next issue      |
+| C-c ! p | previous issue  |
+
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck
+  :ensure t
+  :commands (flycheck-mode)
+)
 #+END_SRC
 
 
