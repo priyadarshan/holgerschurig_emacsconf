@@ -794,16 +794,6 @@ Delete identical history entries
 (put 'narrow-to-region 'disabled nil)
 #+END_SRC
 
-** Default browser
-
-#+BEGIN_SRC emacs-lisp
-(use-package browse-url
-  :defer t
-  :config
-  (setq browse-url-browser-function 'browse-url-generic
-		browse-url-generic-program "x-www-browser"))
-#+END_SRC
-
 ** Simpler yes or no prompt
 
 #+BEGIN_SRC emacs-lisp
@@ -811,7 +801,7 @@ Delete identical history entries
 (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
-** Customization
+** Set and load customization file
 #+BEGIN_SRC emacs-lisp
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (when (file-exists-p custom-file)
@@ -837,7 +827,7 @@ A sentence doesn't end with two spaces:
 (setq sentence-end-double-space nil)
 #+END_SRC
 
-** Dash
+** dash: provide emacs functions
 Add =-difference= as a deferred load to silence the byte-compiler.
 #+BEGIN_SRC emacs-lisp
 (use-package dash
@@ -847,33 +837,17 @@ Add =-difference= as a deferred load to silence the byte-compiler.
 )
 #+END_SRC
 
-** Emacs server
-
-- always start the emacs-server, except when run in daemon mode
-- already Disable prompt asking you if you want to kill a buffer
-  with a live process attached to it.
-  http://stackoverflow.com/questions/268088/how-to-remove-the-prompt-for-killing-emacsclient-buffers
+** browse-url: setup default browser
 
 #+BEGIN_SRC emacs-lisp
-(use-package server
-  :if (not noninteractive)
+(use-package browse-url
+  :defer t
   :config
-  (unless (or (daemonp) (server-running-p))
-	(server-mode 1))
-  (add-hook 'server-switch-hook 'raise-frame)
-)
+  (setq browse-url-browser-function 'browse-url-generic
+		browse-url-generic-program "x-www-browser"))
 #+END_SRC
 
-A good way to start emacsclient is with this line in =/etc/bash.bashrc=:
-
-#+BEGIN_EXAMPLE
-alias e="emacsclient --no-wait --alternate-editor=\"\" --create-frame"
-#+END_EXAMPLE
-
-May may also set the environment variables =EDITOR= and/or =VISUAL=,
-but then you better omit the "=--no-wait=" option.
-
-** Keyfreq
+** keyfreq
 Idea from http://blog.binchen.org/posts/how-to-be-extremely-efficient-in-emacs.html
 
 Use =keyfreq-show= to see what you've used mostly.
@@ -916,11 +890,49 @@ Use =keyfreq-show= to see what you've used mostly.
   (my-turnon-keyfreq-mode)
 )
 #+END_SRC
+** savehist: save mini-buffer history
+#+BEGIN_SRC emacs-lisp
+(use-package savehist
+  :if (not noninteractive)
+  :init
+  (defvar savehist-file)
+  (setq savehist-file (locate-user-emacs-file "tmp/history.el")
+		history-length 1000)
+  :config
+  (savehist-mode 1)
+)
+#+END_SRC
+
+** server: emacs server
+
+- always start the emacs-server, except when run in daemon mode
+- already Disable prompt asking you if you want to kill a buffer
+  with a live process attached to it.
+  http://stackoverflow.com/questions/268088/how-to-remove-the-prompt-for-killing-emacsclient-buffers
+
+#+BEGIN_SRC emacs-lisp
+(use-package server
+  :if (not noninteractive)
+  :config
+  (unless (or (daemonp) (server-running-p))
+	(server-mode 1))
+  (add-hook 'server-switch-hook 'raise-frame)
+)
+#+END_SRC
+
+A good way to start emacsclient is with this line in =/etc/bash.bashrc=:
+
+#+BEGIN_EXAMPLE
+alias e="emacsclient --no-wait --alternate-editor=\"\" --create-frame"
+#+END_EXAMPLE
+
+May may also set the environment variables =EDITOR= and/or =VISUAL=,
+but then you better omit the "=--no-wait=" option.
 
 
 
 * Editing
-** Undo-Tree
+** undo-tree: treat undo history as a tree
 This lets you use =C-z= (undo-tree-visualize) to visually walk through
 the changes you've made, undo back to a certain point (or redo), and
 go down different branches.
