@@ -2863,6 +2863,9 @@ http://www.suenkler.info/docs/emacs-orgmode/
   ;; show all incoming CTCP messages
   (setq erc-paranoid t)
 
+  ;; Show OPS as ops
+  (setq erc-format-nick-function #'erc-format-@nick)
+
   ;; Enable company, but let it get help from pcomplete
   ;; (this works because I have company-capf active)
   (defun my-erc-mode-setup ()
