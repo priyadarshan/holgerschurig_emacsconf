@@ -3551,8 +3551,8 @@ there are no attachments."
 )
 #+END_SRC
 
-** notmuch - full-text indexing e-mail client
-*** Package: notmuch itself
+** notmuch
+*** Package: notmuch  - full-text indexing e-mail client
 #+BEGIN_SRC emacs-lisp
 (use-package notmuch
   :ensure t
