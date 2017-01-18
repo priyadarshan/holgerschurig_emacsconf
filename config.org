@@ -1384,16 +1384,17 @@ provided they return same prefix or the text to be completed.
 						   company-dabbrev
 						   ))
 )
+#+END_SRC
 
+** company-dabbrev: dabbrev-like company-mode completion backend
+#+BEGIN_SRC emacs-lisp
 (use-package company-dabbrev
   :after company
   :config
   ;; Always consider the case as important and use as-is
   (setq-default company-dabbrev-downcase nil)
 )
-
 #+END_SRC
-
 
 
 * Windows handling
