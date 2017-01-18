@@ -1689,27 +1689,6 @@ Emacs.Font:	terminus 11
 (add-hook 'after-save-hook 'merge-x-resources)
 #+END_SRC
 
-** Autorevert
-Revert all buffers, including dired buffers. And do it silently.
-
-#+BEGIN_SRC emacs-lisp
-(use-package autorevert
-  :if (not noninteractive)
-  :init
-  (global-auto-revert-mode 1)
-  :config
-  (setq global-auto-revert-non-file-buffers t
-		auto-revert-verbose nil)
-)
-#+END_SRC
-
-Don't ask when running revert-buffer when reverting files in this
-list of regular expressions:
-
-#+BEGIN_SRC emacs-lisp
-(setq revert-without-query '(""))
-#+END_SRC
-
 ** Decompress compressed files
 
 #+BEGIN_SRC emacs-lisp
@@ -1782,6 +1761,29 @@ into the file.
 (add-to-list 'safe-local-variable-values '(ispell-dictionary . german-new8))
 #+END_SRC
 
+** Package: autorevert - reload changed files
+Revert all buffers, including dired buffers. And do it silently.
+
+#+BEGIN_SRC emacs-lisp
+(use-package autorevert
+  :if (not noninteractive)
+  :diminish auto-revert-mode
+  :init
+  (global-auto-revert-mode 1)
+  :config
+  (setq global-auto-revert-non-file-buffers t
+		auto-revert-verbose nil)
+)
+#+END_SRC
+
+Don't ask when running revert-buffer when reverting files in this
+list of regular expressions:
+
+#+BEGIN_SRC emacs-lisp
+(setq revert-without-query '(""))
+#+END_SRC
+
+** Package: recentf - store all edited file names
 
 
 * Minibuffer
