@@ -4640,8 +4640,7 @@ From  https://raw.githubusercontent.com/chriskonstad/emacs/master/elisp/qt-pro.e
 )
 #+END_SRC
 
-** Mode: Shell
-
+** Package: sh-script - mayor mode for editing shell scripts
 #+BEGIN_SRC emacs-lisp
 (defun my-shell-tab-setup ()
   (interactive)
@@ -4649,8 +4648,11 @@ From  https://raw.githubusercontent.com/chriskonstad/emacs/master/elisp/qt-pro.e
   (setq tab-width 4)
   (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84))
   (bind-key "C-i" 'self-insert-command text-mode-map))
-(add-hook 'shell-mode-hook 'my-shell-tab-setup)
-(add-hook 'sh-mode-hook    'my-shell-tab-setup)
+(use-package sh-script
+  :defer t
+  :config
+  (add-hook 'sh-mode-hook    'my-shell-tab-setup)
+)
 #+END_SRC
 
 ** Package: toml-mode - mayor mode for Hugo's configuration
