@@ -1120,7 +1120,48 @@ rather than line counts."
 (bind-key "M-g M-g" 'my-goto-line)
 #+END_SRC
 
-** expand-region
+** Mouse scrolling
+Make the mouse wheel scroll smoother.
+
+#+BEGIN_SRC emacs-lisp
+(setq mouse-wheel-scroll-amount '(2 ((shift) . 1) ((control) . nil))
+	  mouse-wheel-progressive-speed nil)
+#+END_SRC
+
+** Smooth scrolling
+Normally, at the top-of-screen or bottom-of-screen, emacs would scroll
+quarter-page wise. This is a bit annoying, because I'll always have to
+chase the cursor when this happens. But there's a cure:
+
+#+BEGIN_SRC emacs-lisp
+(setq scroll-conservatively most-positive-fixnum
+      scroll-preserve-screen-position t)
+#+END_SRC
+
+** avy: jump to characters
+
+#+BEGIN_SRC emacs-lisp
+(use-package avy
+  :ensure t
+  :bind ("C-ö" . avy-goto-char-timer)
+  :config
+  (setq avy-keys (append (number-sequence ?a ?z)
+						 (number-sequence ?0 ?9)))
+  (setq avy-style 'at-full)
+  (setq avy-all-windows nil)
+  (setq avy-highlight-first t))
+#+END_SRC
+
+** bookmark: set bookmarks, maybe annotate them, jump to them later
+#+BEGIN_SRC emacs-lisp
+(use-package bookmark
+  :if (not noninteractive)
+  :config
+  (setq bookmark-default-file (locate-user-emacs-file "tmp/bookmarks.el"))
+  )
+#+END_SRC
+
+** expand-region: increase selected region by semantic units
 Home page: https://github.com/magnars/expand-region.el
 
 C-+ Expand region increases the selected region by semantic units.
@@ -1136,31 +1177,7 @@ use + and - after the first expand to expand further / shrink again.
   (setq expand-region-reset-fast-key    "<ESC><ESC>"))
 #+END_SRC
 
-** bookmark
-
-#+BEGIN_SRC emacs-lisp
-(use-package bookmark
-  :if (not noninteractive)
-  :config
-  (setq bookmark-default-file (locate-user-emacs-file "tmp/bookmarks.el"))
-  )
-#+END_SRC
-
-** avy (alternative to ace-jump-mode)
-
-#+BEGIN_SRC emacs-lisp
-(use-package avy
-  :ensure t
-  :bind ("C-ö" . avy-goto-char-timer)
-  :config
-  (setq avy-keys (append (number-sequence ?a ?z)
-						 (number-sequence ?0 ?9)))
-  (setq avy-style 'at-full)
-  (setq avy-all-windows nil)
-  (setq avy-highlight-first t))
-#+END_SRC
-
-** smartscan
+** smartscan: jumps between other symbols found at point
 This makes =M-n= and =M-p= look for the symbol at point. This is
 very un-intrusive, no pop-up, no nothing,
 
@@ -1171,24 +1188,6 @@ very un-intrusive, no pop-up, no nothing,
   :config
   (global-smartscan-mode t)
   )
-#+END_SRC
-
-** Mouse scrolling
-Smooth scrolling (default is 5).
-
-#+BEGIN_SRC emacs-lisp
-(setq mouse-wheel-scroll-amount '(2 ((shift) . 1) ((control) . nil))
-	  mouse-wheel-progressive-speed nil)
-#+END_SRC
-
-** Smooth scrolling
-Normally, at the top-of-screen or bottom-of-screen, emacs would scroll
-quarter-page wise. This is a bit annoying, because I'll always have to
-chase the cursor when this happens. But there's a cure:
-
-#+BEGIN_SRC emacs-lisp
-(setq scroll-conservatively most-positive-fixnum
-      scroll-preserve-screen-position t)
 #+END_SRC
 
 
@@ -1242,7 +1241,7 @@ Deletes whitespace at join."
 (bind-key "C-k" 'kill-and-join-forward)
 #+END_SRC
 
-** Dynamic char deletion
+** TODO Dynamic char deletion
 The following is from Boojum's post in
 [[http://www.reddit.com/r/emacs/comments/b1r8a/remacs_tell_us_about_the_obscure_but_useful/]].
 
@@ -1292,7 +1291,6 @@ Rebind DELETE and friends to our version
 #+END_SRC
 
 ** X11 clipboard
-
 #+BEGIN_SRC emacs-lisp
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
@@ -1305,7 +1303,7 @@ Paste at text-cursor, not at mouse-cursor:
 (setq mouse-yank-at-point t)
 #+END_SRC
 
-** Package avy-zap: delete up to a character
+** avy-zap: delete up to a character
 This makes =M-z= ask via avy to which character text should be
 deleted. The character itself will stay. If you use =M-Z=, then this
 character will be gone, too.
