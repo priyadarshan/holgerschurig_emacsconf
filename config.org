@@ -524,7 +524,6 @@ Mark =\todo= in LaTeX mode:
   :if (not noninteractive)
   :config
   (setq jit-lock-stealth-time 1
-		jit-lock-chunk-size 1000
 		jit-lock-defer-time 0.05
 		jit-lock-contextually t
 		jit-lock-stealth-nice 0.3)
