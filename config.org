@@ -356,39 +356,6 @@ Avoid Emacs hanging for a while after changing default font:
 (modify-frame-parameters nil '((wait-for-wm . nil)))
 #+END_SRC
 
-** Theme
-
-This is zenburn but with a bit of increased contrast.
-
-#+BEGIN_SRC emacs-lisp
-(use-package zenburn-theme
-  :ensure t
-  :init
-  ;; The following colores are derived from zenburn's original colors,
-  ;; but I reduced their brightness with my-kurecolor (M-g k j j j j)
-  (defvar zenburn-override-colors-alist
-  '(("zenburn-bg-05"    . "#040404")
-    ("zenburn-bg"       . "#0B0B0B")
-    ("zenburn-bg+05"    . "#151515")
-    ("zenburn-bg+1"     . "#1B1B1B")
-    ("zenburn-bg+2"     . "#2B2B2B")
-    ("zenburn-bg+3"     . "#3B3B3B")))
-  :config
-  (load-theme 'zenburn t)
-
-  (defun zenburn-get (color)
-	(cdr (assoc (concat "zenburn-" color) zenburn-default-colors-alist)))
-)
-#+END_SRC
-
-You may also put something like this into =~/.Xresources= to define
-the font:
-
-#+BEGIN_EXAMPLE
-Emacs.geometry: 120x55
-Emacs.Font:     Terminus 11
-#+END_EXAMPLE
-
 ** Blend fringe
 http://emacs.stackexchange.com/a/5343/115
 
@@ -398,31 +365,100 @@ http://emacs.stackexchange.com/a/5343/115
 					  :background (face-background 'default))
 #+END_SRC
 
-** Let parenthesis behave
+** Line truncation
+Don't display continuation lines
 
 #+BEGIN_SRC emacs-lisp
-(use-package paren
-  :if (not noninteractive)
-  :config
-  (show-paren-mode 1)
-  (setq show-paren-delay 0)
-)
+(setq-default truncate-lines t)
 #+END_SRC
 
-** Font locking
+Do `M-x toggle-truncate-lines` to toggle truncation mode.
+`truncate-partial-width-windows' has to be nil for
+`toggle-truncate-lines' to work in split windows
+
+#+BEGIN_SRC emacs-lisp
+(setq truncate-partial-width-windows nil)
+#+END_SRC
+
+** Show trailing whitespace
+
+#+BEGIN_SRC emacs-lisp
+(defun my--show-trailing-whitespace ()
+  (interactive)
+  (setq show-trailing-whitespace t))
+(defun my--hide-trailing-whitespace ()
+  (interactive)
+  (message "hide trailing whitespace")
+  (setq show-trailing-whitespace nil))
+(add-hook 'prog-mode-hook 'my--show-trailing-whitespace)
+#+END_SRC
+
+** Buffers without toolbar, extra frame etc
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'special-display-buffer-names "*Backtrace*")
+(add-to-list 'special-display-frame-alist '(tool-bar-lines . 0))
+#+END_SRC
+
+** Settings for text vs. windowing systems
+#+BEGIN_SRC emacs-lisp
+(if window-system
+	;; X11, Windows, etc
+	(progn
+	  ;; Windowing systems are fast enought
+	  (column-number-mode t)
+	  ;; Turn off blinking
+	  (blink-cursor-mode -1)
+	  )
+  ;; Text mode
+  (progn
+	;; No "very" visible cursor
+	(setq visible-cursor nil)))
+#+END_SRC
+
+** No audible bell
+#+BEGIN_SRC emacs-lisp
+(setq visible-bell t)
+#+END_SRC
+
+** Let emacs react faster to keystrokes
+#+BEGIN_SRC emacs-lisp
+(setq echo-keystrokes 0.1)
+(setq idle-update-delay 0.35)
+#+END_SRC
+
+** Line and column numbers
+Show line and column numbers in the mode-line:
+
+#+BEGIN_SRC emacs-lisp
+(line-number-mode 1)
+(column-number-mode 1)
+#+END_SRC
+
+** Unhighlight if out of focus
+I got the idea from here: http://amitp.blogspot.de/2013/05/emacs-highlight-active-buffer.html
+
+#+BEGIN_SRC emacs-lisp
+(defun highlight-focus:app-focus-in ()
+  (global-font-lock-mode 1)
+  ;;(set-face-attribute 'default nil :foreground "white")
+)
+(defun highlight-focus:app-focus-out ()
+  (global-font-lock-mode -1)
+  ;;(set-face-attribute 'default nil :foreground "#555555")
+)
+(add-hook 'focus-in-hook  #'highlight-focus:app-focus-in)
+(add-hook 'focus-out-hook #'highlight-focus:app-focus-out)
+#+END_SRC
+** font-lock: syntax highlighting
 #+BEGIN_SRC emacs-lisp
 (use-package font-lock
   :if (not noninteractive)
   :config
-  (setq jit-lock-stealth-time 2
-		jit-lock-contextually t  ;; was 'syntax-driven
-		jit-lock-stealth-nice 0.3
-		font-lock-maximum-decoration 2)
+  (setq font-lock-maximum-decoration 2)
   (setq-default font-lock-multiline t)
 )
 #+END_SRC
-
-** Highlight keywords
+*** Highlight keywords
 
 See https://www.emacswiki.org/emacs/AddKeywords for the example and
 https://www.emacswiki.org/emacs-test/RegularExpression for regular
@@ -457,83 +493,30 @@ Mark =\todo= in LaTeX mode:
 #+BEGIN_SRC emacs-lisp :tangle no
 (font-lock-add-keywords 'latex-mode '(("\\(\\\\todo\\)" 1 'font-lock-warning-face prepend)))
 #+END_SRC
-
-** Line truncation
-Don't display continuation lines
-
+** jit-locking: just-in-time fontification
 #+BEGIN_SRC emacs-lisp
-(setq-default truncate-lines t)
+(use-package jit-lock
+  :if (not noninteractive)
+  :config
+  (setq jit-lock-stealth-time 1
+		jit-lock-chunk-size 1000
+		jit-lock-defer-time 0.05
+		jit-lock-contextually t
+		jit-lock-stealth-nice 0.3)
+)
 #+END_SRC
 
-Do `M-x toggle-truncate-lines` to toggle truncation mode.
-`truncate-partial-width-windows' has to be nil for `toggle-truncate-lines'
-to work in split windows
-
+** paren: let parenthesis behave
 #+BEGIN_SRC emacs-lisp
-(setq truncate-partial-width-windows nil)
+(use-package paren
+  :if (not noninteractive)
+  :config
+  (show-paren-mode 1)
+  (setq show-paren-delay 0)
+)
 #+END_SRC
 
-** Show trailing whitespace
-
-#+BEGIN_SRC emacs-lisp
-(defun my--show-trailing-whitespace ()
-  (interactive)
-  (setq show-trailing-whitespace t))
-(defun my--hide-trailing-whitespace ()
-  (interactive)
-  (message "hide trailing whitespace")
-  (setq show-trailing-whitespace nil))
-(add-hook 'prog-mode-hook 'my--show-trailing-whitespace)
-#+END_SRC
-
-** Buffers without toolbar, extra frame etc
-
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'special-display-buffer-names "*Backtrace*")
-(add-to-list 'special-display-frame-alist '(tool-bar-lines . 0))
-#+END_SRC
-
-** Misc settings for text vs. windowing systems
-
-#+BEGIN_SRC emacs-lisp
-(if window-system
-	;; X11, Windows, etc
-	(progn
-	  ;; Windowing systems are fast enought
-	  (column-number-mode t)
-	  ;; Turn off blinking
-	  (blink-cursor-mode -1)
-	  )
-  ;; Text mode
-  (progn
-	;; No "very" visible cursor
-	(setq visible-cursor nil)))
-#+END_SRC
-
-** No audible bell
-
-#+BEGIN_SRC emacs-lisp
-(setq visible-bell t)
-#+END_SRC
-
-** Let emacs react faster to keystrokes
-
-#+BEGIN_SRC emacs-lisp
-(setq echo-keystrokes 0.1)
-(setq idle-update-delay 0.35)
-#+END_SRC
-
-** Mode line setup
-Show line and column numbers in the mode-line
-
-#+BEGIN_SRC emacs-lisp
-(line-number-mode 1)
-(column-number-mode 1)
-#+END_SRC
-
-
-** Powerline mode line
-
+** powerline: a much more powerful mode-line
 *** Powerline faces
 Without this we have some proportional font on Windows:
 
@@ -598,29 +581,6 @@ in the mode-line isn't too long.
 
 *** finally the mode line
 And finally we build our mode line:
-
-- [X] buffer-read-only
-- [X] buffer-modified-p
-- [X] narrow-status
-- [-] buffer size
-- [-] mule environment
-- [ ] unread mail
-- [ ] directory
-- [ ] projectile-project-name
-- [ ] buffer name
-- [-] which function information?
-- [X] major mode
-- [X] minor mode
-- [X] process status
-- [X] line number
-- [X] column number
-- [-] percent
-- [?] flycheck status
-- [?] battery status
-
-- [?] global-mode-string?
-- [?] GIT branch?
-- [?] time?
 
 #+BEGIN_SRC emacs-lisp
 (use-package powerline
@@ -749,15 +709,14 @@ And finally we build our mode line:
 							 (powerline-render rhs))))))
 )
 #+END_SRC
-
-
-** Whitespace
+** white-space: visualize tabs, (hard) spaces, newlines
 The following can visualize white space quite neatly:
 
 #+BEGIN_SRC emacs-lisp
 (use-package whitespace
   :defer t
   :bind ("C-c w" . global-whitespace-mode)
+  :after zenburn
   :config
   (setq whitespace-style
 	'(face
@@ -780,58 +739,54 @@ The following can visualize white space quite neatly:
 )
 #+END_SRC
 
-** Unhighlight if out of focus
-I got the idea from here: http://amitp.blogspot.de/2013/05/emacs-highlight-active-buffer.html
+** zenburn-theme: low contrast theme
+I increased the contrast of zenburn to make it more appealing.
 
 #+BEGIN_SRC emacs-lisp
-(defun highlight-focus:app-focus-in ()
-  (global-font-lock-mode 1)
-  ;;(set-face-attribute 'default nil :foreground "white")
+(use-package zenburn-theme
+  :ensure t
+  :init
+  ;; The following colores are derived from zenburn's original colors,
+  ;; but I reduced their brightness with my-kurecolor (M-g k j j j j)
+  (defvar zenburn-override-colors-alist
+  '(("zenburn-bg-05"    . "#040404")
+    ("zenburn-bg"       . "#0B0B0B")
+    ("zenburn-bg+05"    . "#151515")
+    ("zenburn-bg+1"     . "#1B1B1B")
+    ("zenburn-bg+2"     . "#2B2B2B")
+    ("zenburn-bg+3"     . "#3B3B3B")))
+  :config
+  (load-theme 'zenburn t)
+
+  (defun zenburn-get (color)
+	(cdr (assoc (concat "zenburn-" color) zenburn-default-colors-alist)))
 )
-(defun highlight-focus:app-focus-out ()
-  (global-font-lock-mode -1)
-  ;;(set-face-attribute 'default nil :foreground "#555555")
-)
-(add-hook 'focus-in-hook  #'highlight-focus:app-focus-in)
-(add-hook 'focus-out-hook #'highlight-focus:app-focus-out)
 #+END_SRC
 
+You may also put something like this into =~/.Xresources= to define
+the font:
 
-* Misc settings
+#+BEGIN_EXAMPLE
+Emacs.geometry: 120x55
+Emacs.Font:     Terminus 11
+#+END_EXAMPLE
 
-** Emacs internals
 
+* None-Visual settings
+** Limit message logs
 #+BEGIN_SRC emacs-lisp
 (setq message-log-max 10000)
 #+END_SRC
-
-Use new byte codes from Emacs 24.4
-
+** CANC Advice redefinition behavior
 #+BEGIN_SRC emacs-lisp
-(setq byte-compile--use-old-handlers nil)
 (setq ad-redefinition-action 'accept)
 #+END_SRC
-
 
 ** History
 Delete identical history entries
 #+BEGIN_SRC emacs-lisp
 (setq history-delete-duplicates t)
 #+END_SRC
-
-** Save mini-buffer history
-#+BEGIN_SRC emacs-lisp
-(use-package savehist
-  :if (not noninteractive)
-  :init
-  (defvar savehist-file)
-  (setq savehist-file (locate-user-emacs-file "tmp/history.el")
-		history-length 1000)
-  :config
-  (savehist-mode 1)
-)
-#+END_SRC
-
 ** Enable some disabled commands
 
 #+BEGIN_SRC emacs-lisp
