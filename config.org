@@ -309,7 +309,6 @@ byte-compiler won't bark at me.
 #+END_SRC
 
 
-
 * Visual elements
 
 ** GUI elements
