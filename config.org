@@ -4281,26 +4281,6 @@ Now try yasnippet again now that it's faster.
 #+BEGIN_SRC emacs-lisp
 (bind-key "C-c c" 'comment-dwim)
 #+END_SRC
-*** Package: helm-flycheck
-#+BEGIN_SRC emacs-lisp
-(use-package helm-flycheck
-  :if (not noninteractive)
-  :ensure t
-  :bind (("M-g f"   . my-helm-flycheck)
-		 ("C-c ! l" . my-helm-flycheck))
-  :config
-  (defun my-helm-flycheck ()
-	"This function makes sure that flycheck has been finished
-before running helm-flycheck"
-	(interactive)
-	(require 'flycheck)
-	(if flycheck-mode
-		(call-interactively 'helm-flycheck)
-		(flycheck-mode)
-		(message "Just turned flycheck on, wait a bit for errors to appear ...")
-		(run-with-idle-timer 1 nil #'helm-flycheck)))
-)
-#+END_SRC
 ** Error navigation
 #+BEGIN_SRC emacs-lisp
 (bind-key "<f8>" 'next-error)
@@ -4368,6 +4348,27 @@ Interactively select compile commands.
 (use-package flycheck
   :ensure t
   :commands (flycheck-mode)
+)
+#+END_SRC
+
+*** Package: helm-flycheck
+#+BEGIN_SRC emacs-lisp
+(use-package helm-flycheck
+  :if (not noninteractive)
+  :ensure t
+  :bind (("M-g f"   . my-helm-flycheck)
+		 ("C-c ! l" . my-helm-flycheck))
+  :config
+  (defun my-helm-flycheck ()
+	"This function makes sure that flycheck has been finished
+before running helm-flycheck"
+	(interactive)
+	(require 'flycheck)
+	(if flycheck-mode
+		(call-interactively 'helm-flycheck)
+		(flycheck-mode)
+		(message "Just turned flycheck on, wait a bit for errors to appear ...")
+		(run-with-idle-timer 1 nil #'helm-flycheck)))
 )
 #+END_SRC
 
