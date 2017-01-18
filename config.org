@@ -336,6 +336,13 @@ Emacs.verticalScrollBars: off
 Emacs.toolBar: off
 #+END_EXAMPLE
 
+** Hide mouse while editing
+As soon as you type a character (i.E. moving the cursor isn't enough)
+the mouse will be hidden.
+
+#+BEGIN_SRC emacs-lisp
+(setq make-pointer-invisible t)
+#+END_SRC
 ** Disable greeting
 Disabling greeting in the echo area is rather nasty, because a simple
 setting of this variable by setq is deliberately ignored. Sigh.
