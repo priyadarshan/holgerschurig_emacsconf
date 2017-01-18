@@ -382,14 +382,14 @@ Do `M-x toggle-truncate-lines` to toggle truncation mode.
 ** Show trailing whitespace
 
 #+BEGIN_SRC emacs-lisp
-(defun my--show-trailing-whitespace ()
+(defun my-show-trailing-whitespace ()
   (interactive)
   (setq show-trailing-whitespace t))
-(defun my--hide-trailing-whitespace ()
+(defun my-hide-trailing-whitespace ()
   (interactive)
   (message "hide trailing whitespace")
   (setq show-trailing-whitespace nil))
-(add-hook 'prog-mode-hook 'my--show-trailing-whitespace)
+(add-hook 'prog-mode-hook 'my-show-trailing-whitespace)
 #+END_SRC
 
 ** Buffers without toolbar, extra frame etc
