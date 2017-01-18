@@ -2797,7 +2797,7 @@ http://www.suenkler.info/docs/emacs-orgmode/
 #+BEGIN_SRC emacs-lisp
 (use-package erc
   :if (not noninteractive)
-  :commands (erc my-erc-window-setup my-erc-mode-setup)
+  :commands (my-erc-window-setup my-erc-mode-setup)
   :config
   ;; Log all traffic to *erc-protocol*. This is useful to find the
   ;; numbers that you can use in `erc-hide-list' or
@@ -2888,19 +2888,6 @@ http://www.suenkler.info/docs/emacs-orgmode/
 		(erc-cmd-NICK "schurig")
 		(erc-message "PRIVMSG" (format "nickserv identify schurig %s" freenode-password)))))
 )
-
-(defun irc ()
-  "IRC hotkey function.
-
-If IRC isn't yet started, then start it. Otherwise switch to the
-next buffer that has traffic."
-  (interactive)
-  (if (functionp 'erc)
-	  (erc-track-switch-buffer 1)
-	(call-interactively
-	 (erc-tls :server (erc-compute-server)
-			  :nick (erc-compute-nick)))))
-(bind-key "M-g e" #'irc)
 #+END_SRC
 		
 *** erc-backend
@@ -3042,6 +3029,7 @@ the \"emacs\" instead of \"#emacs\"."
 (use-package erc-track
   :defer t
   :after erc
+  :commands (erc-track-switch-buffer)
   :config
   ;; exclude boring stuff from tracking
   (erc-track-mode t)
@@ -3073,6 +3061,25 @@ the \"emacs\" instead of \"#emacs\"."
 )
 #+END_SRC
 
+*** Start function
+
+#+BEGIN_SRC emacs-lisp
+(defun irc ()
+  "IRC hotkey function.
+
+If IRC isn't yet started, then start it. Otherwise switch to the
+next buffer that has traffic."
+  (interactive)
+  (if (featurep 'erc)
+	  (erc-track-switch-buffer 1)
+	(message "Starting ERC ...")
+	(erc :server (erc-compute-server)
+		 :port 6667
+		 :nick (erc-compute-nick)
+		 :full-name (erc-compute-full-name)
+		 )))
+(bind-key "M-g e" #'irc)
+#+END_SRC
 
 ** dired
 #+BEGIN_SRC emacs-lisp
