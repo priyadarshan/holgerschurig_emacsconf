@@ -1025,14 +1025,9 @@ command from COMMANDS."
 	(beginning-of-defun)
 	(goto-char (point-min))
 	(goto-char my--previous-position)))
-#+END_SRC
 
-(substitute-key-definition 'move-beginning-of-line 'my-home (current-global-map))
-
-#+BEGIN_SRC emacs-lisp
 (bind-key "C-a" 'my-home)
 (bind-key "<home>" 'my-home)
-
 
 (defun my-end ()
   "Depending on how many times it was called moves the point to:
@@ -1048,6 +1043,7 @@ command from COMMANDS."
 	(end-of-defun)
 	(goto-char (point-max))
 	(goto-char my--previous-position)))
+
 (bind-key "C-e" 'my-end)
 (bind-key "<end>" 'my-end)
 #+END_SRC
