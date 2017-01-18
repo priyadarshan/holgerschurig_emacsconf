@@ -1716,7 +1716,7 @@ Emacs.Font:	terminus 11
 (bind-key "<f2>" 'save-buffer)
 #+END_SRC
 
-** sudo-open
+** Command: (sudo-edit)
 From http://emacsredux.com/blog/2013/04/21/edit-files-as-root/
 #+BEGIN_SRC emacs-lisp
 (defun sudo-edit (&optional arg)
@@ -1844,7 +1844,7 @@ Allow to easily search for the last yanked string:
 (bind-key "C-y" 'isearch-yank-kill isearch-mode-map)
 #+END_SRC
 
-** Command: my-grep
+** Command: (my-grep)
 Prompts you for an expression, defaulting to the symbol that your
 cursor is on, and greps for that in the current directory and all
 subdirectories:
@@ -1928,7 +1928,7 @@ This is from https://www.emacswiki.org/emacs/DescribeThingAtPoint
 
 * Miscelleanous functions
 
-** dos2unix
+** Command: (dos2unix)
 
 #+BEGIN_SRC emacs-lisp
 (defun dos2unix()
@@ -1938,7 +1938,7 @@ This is from https://www.emacswiki.org/emacs/DescribeThingAtPoint
   (while (search-forward "\r" nil t) (replace-match "")))
 #+END_SRC
 
-** 822date
+** Command: (822date)
 Inserts something like "Fri,  1 Dec 2006 15:41:36 +0100"
 
 #+BEGIN_SRC emacs-lisp
@@ -1948,14 +1948,14 @@ Inserts something like "Fri,  1 Dec 2006 15:41:36 +0100"
   (insert (format-time-string "%a, %e %b %Y %H:%M:%S %z")))
 #+END_SRC
 
-** Calculate region
+** Command: (calc-region)
 From https://www.reddit.com/r/emacs/comments/445w6s/whats_some_small_thing_in_your_dotemacs_that_you/:
 
 Write some expression, e.g. =2+2*4= and then press C-=.
 
 #+BEGIN_SRC emacs-lisp
 
-(defun calc-eval-region (arg)
+(defun calc-region (arg)
   "Evaluate an expression in calc and communicate the result.
 
 If the region is active evaluate that, otherwise search backwards
@@ -1981,7 +1981,7 @@ minibuffer."
 	  (pcase arg
 	((or 1 4) (insert value))
 	(-1 (message value))))))
-(bind-key "C-=" #'calc-eval-region)
+(bind-key "C-=" #'calc-region)
 #+END_SRC
 
 
@@ -3074,7 +3074,7 @@ the \"emacs\" instead of \"#emacs\"."
 )
 #+END_SRC
 
-*** Start function
+*** Command: (irc)
 
 #+BEGIN_SRC emacs-lisp
 (defun irc ()
