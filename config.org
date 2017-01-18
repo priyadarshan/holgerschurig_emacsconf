@@ -314,22 +314,30 @@ byte-compiler won't bark at me.
 
 ** GUI elements
 
-Disable toolbars and the scroll-bar
+Disable toolbars:
 
 #+BEGIN_SRC emacs-lisp
-(tool-bar-mode -1)
+(when (functionp 'tool-bar-mode)
+  (tool-bar-mode -1))
+#+END_SRC
+
+Disable scroll-bar (except on Windows):
+
+#+BEGIN_SRC emacs-lisp
 (unless (eq system-type 'windows-nt)
   (scroll-bar-mode -1))
 #+END_SRC
 
-You may also put something like this into =~/.Xresources= to enable/disable
-certain things as soon as Emacs starts, e.g. before this script executes:
+You may also put something like this into =~/.Xresources= to
+enable/disable certain things as soon as Emacs starts, e.g. before
+this script executes:
 
 #+BEGIN_EXAMPLE
 Emacs.verticalScrollBars: off
 Emacs.toolBar: off
 #+END_EXAMPLE
 
+** Disable greeting
 Disabling greeting in the echo area is rather nasty, because a simple
 setting of this variable by setq is deliberately ignored. Sigh.
 
