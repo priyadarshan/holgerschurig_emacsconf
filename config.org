@@ -1626,15 +1626,6 @@ http://www.emacswiki.org/emacs/iflipb
 		  my-iflipb-ing-internal))))
 #+END_SRC
 
-** ace-jump-buffer DISABLED
-
-#+BEGIN_SRC emacs-lisp
-(use-package ace-jump-buffer
-  :disabled t
-  :bind ("C-c C-j" . ace-jump-buffer)
-  )
-#+END_SRC
-
 
 * File opening/saving
 
