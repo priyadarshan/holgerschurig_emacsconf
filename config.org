@@ -4842,7 +4842,7 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 )
 #+END_SRC
 
-** Package: kurecolor
+** Package: kurecolor - a hydra to modify color definitions
 https://github.com/emacsfodder/kurecolor
 
 This package allows interactive modification of color values.
@@ -4899,7 +4899,7 @@ Convert      _ch_ ^^ RGB → Hex       _cr_ ^^ Hex → RGB       _cR_ ^^ Hex →
 )
 #+END_SRC
 
-** Package: rainbow-mode
+** Package: rainbow-mode - show colors directly in the editor
 Rainbow-mode turns color codes inside the editor into real colors.
 Nice for elisp faces or CSS files.
 
@@ -4911,7 +4911,7 @@ Nice for elisp faces or CSS files.
 )
 #+END_SRC
 
-** Package: term (for ansi-term)
+** Package: term - for ansi-term
 This term understands ansi escape sequences.
 
 On Debian, one should install the =ansi-term= debian package so that
@@ -4963,7 +4963,7 @@ the terminal "eterm-color" is available.
 )
 #+END_SRC
 
-** Package: zeal-at-point - a documentation browser
+** Package: zeal-at-point - documentation browser
 I got the idea from this [[https://www.reddit.com/r/emacs/comments/4xa253/browser_for_api_documentation_inside_emacs/][reddit]] post: [[http://zealdocs.org/][Zeal]] and [[https://github.com/jinzhu/zeal-at-point][zeal-at-point]] are nice
 documentation browsers.
 #+BEGIN_SRC emacs-lisp
