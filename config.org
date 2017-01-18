@@ -4963,17 +4963,6 @@ the terminal "eterm-color" is available.
 )
 #+END_SRC
 
-** Package: whitespace
-Here we set =C-c w= and =C-c C-w= to whitespace-mode. Note that the
-former used to be subword-mode, but I rarely want to move by subwords.
-
-#+BEGIN_SRC emacs-lisp
-(use-package whitespace
-  :defer t
-  :bind ("C-c w" . whitespace-mode)
-)
-#+END_SRC
-
 ** Package: zeal-at-point - a documentation browser
 I got the idea from this [[https://www.reddit.com/r/emacs/comments/4xa253/browser_for_api_documentation_inside_emacs/][reddit]] post: [[http://zealdocs.org/][Zeal]] and [[https://github.com/jinzhu/zeal-at-point][zeal-at-point]] are nice
 documentation browsers.
