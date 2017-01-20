@@ -1311,7 +1311,8 @@ provided they return same prefix or the text to be completed.
   (setq company-minimum-prefix-length 2
 		company-tooltip-align-annotations t
 		company-tooltip-flip-when-above t
-		company-tooltip-limit 20)
+		company-tooltip-limit 20
+		company-idle-delay nil)
 
   (setq company-frontends '(company-pseudo-tooltip-unless-just-one-frontend
 							;; company-echo-metadata-frontend
