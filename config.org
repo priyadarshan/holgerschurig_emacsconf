@@ -4502,7 +4502,7 @@ before running helm-flycheck"
   (defun my-c-mode-tab (&optional arg region)
 	"When at the end of the line, execute `company-complete' else `c-indent-line-or-region'."
 	(interactive)
-	(if (and (eolp) (not region))
+	(if (and (eolp) (not region) (not (bolp)))
 		(company-complete)
 	  (c-indent-line-or-region arg region)))
   (defun my-c-mode-common-setup ()
