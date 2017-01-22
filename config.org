@@ -3368,6 +3368,9 @@ http://www.suenkler.info/docs/emacs-orgmode/
   (setq erc-autojoin-channels-alist '(("freenode.net"
 									   "#emacs"
 									   ;; "#org-mode"
+									   )
+									  ("oftc.net"
+									   "#awesome"
 									   )))
   (setq erc-autojoin-timing 'ident)
 
@@ -3492,8 +3495,8 @@ the \"emacs\" instead of \"#emacs\"."
 *** Command: (irc)
 
 #+BEGIN_SRC emacs-lisp
-(defun irc ()
-  "IRC hotkey function.
+(defun freenode ()
+  "Open Freenode IRC session.
 
 If IRC isn't yet started, then start it. Otherwise switch to the
 next buffer that has traffic."
@@ -3506,7 +3509,22 @@ next buffer that has traffic."
 		 :nick (erc-compute-nick)
 		 :full-name (erc-compute-full-name)
 		 )))
-(bind-key "M-g e" #'irc)
+(bind-key "M-g e" #'freenode)
+
+(defun oftc ()
+  "Open OFTC IRC session.
+
+If IRC isn't yet started, then start it. Otherwise switch to the
+next buffer that has traffic."
+  (interactive)
+  (if (featurep 'erc)
+	  (erc-track-switch-buffer 1)
+	(message "Starting ERC ...")
+	(erc :server "irc.oftc.net"
+		 :port 6667
+		 :nick (erc-compute-nick)
+		 :full-name (erc-compute-full-name)
+		 )))
 #+END_SRC
 
 
