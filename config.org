@@ -4244,6 +4244,8 @@ Remove all back-ends from vc-mode, no need to check all these things, I use
 			magit-insert-unpushed-to-upstream
 			magit-insert-unpushed-to-pushremote))
 
+  ;; make [MASTER] appear at the end of the summary line
+  (setq magit-log-show-refname-after-summary t)
 
   ;; Bind M-g in magit mode to a function that visits the project on github
   (defun my-magit-browse-github ()
