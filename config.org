@@ -4021,6 +4021,7 @@ That's all, folks.
 #+BEGIN_SRC emacs-lisp
 (use-package notmuch-tree
   :defer t
+  :commands (notmuch-tree)
   :config
   (setq notmuch-tree-result-format
 		'(("date" . "%12s  ")
