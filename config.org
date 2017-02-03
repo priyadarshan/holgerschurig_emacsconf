@@ -446,38 +446,12 @@ I got the idea from here: http://amitp.blogspot.de/2013/05/emacs-highlight-activ
 #+BEGIN_SRC emacs-lisp
 (defun highlight-focus:app-focus-in ()
   (global-font-lock-mode 1)
-  ;;(set-face-attribute 'default nil :foreground "white")
 )
 (defun highlight-focus:app-focus-out ()
   (global-font-lock-mode -1)
-  ;;(set-face-attribute 'default nil :foreground "#555555")
 )
 (add-hook 'focus-in-hook  #'highlight-focus:app-focus-in)
 (add-hook 'focus-out-hook #'highlight-focus:app-focus-out)
-#+END_SRC
-
-** Theme: low contrast theme
-I increased the contrast of zenburn to make it more appealing.
-
-#+BEGIN_SRC emacs-lisp
-(use-package zenburn-theme
-  :ensure t
-  :init
-  ;; The following colores are derived from zenburn's original colors,
-  ;; but I reduced their brightness with my-kurecolor (M-g k j j j j)
-  (defvar zenburn-override-colors-alist
-  '(("zenburn-bg-05"    . "#040404")
-    ("zenburn-bg"       . "#0B0B0B")
-    ("zenburn-bg+05"    . "#151515")
-    ("zenburn-bg+1"     . "#1B1B1B")
-    ("zenburn-bg+2"     . "#2B2B2B")
-    ("zenburn-bg+3"     . "#3B3B3B")))
-  :config
-  (load-theme 'zenburn t)
-
-  (defun zenburn-get (color)
-	(cdr (assoc (concat "zenburn-" color) zenburn-default-colors-alist)))
-)
 #+END_SRC
 
 ** Package: font-lock - syntax highlighting
@@ -765,7 +739,6 @@ The following can visualize white space quite neatly:
 	  tab-mark
 	  ;;newline-mark
 	  ))
-  (set-face-attribute 'whitespace-tab nil :background (zenburn-get "bg"))
 )
 #+END_SRC
 
@@ -2453,10 +2426,6 @@ Very good intro: http://tuhdo.github.io/helm-intro.html
 
   ;; move to end or beginning of source when reaching top or bottom of source.
   (setq helm-move-to-line-cycle-in-source t)
-
-  ;; Theme adaption
-  (set-face-attribute 'helm-source-header nil :background "#FFFF30" :foreground "#0b0b0b")
-  (set-face-attribute 'helm-selection     nil :background (zenburn-get "blue-5"))
 
   (defun my-helm-mini()
 	"Like `helm-mini`, but run the dialog in full-screen"
