@@ -524,7 +524,7 @@ Mark =\todo= in LaTeX mode:
 #+BEGIN_SRC emacs-lisp :tangle no
 (font-lock-add-keywords 'latex-mode '(("\\(\\\\todo\\)" 1 'font-lock-warning-face prepend)))
 #+END_SRC
-** Package: jit-locking - just-in-time fontification
+** CANC Package: jit-locking - just-in-time fontification
 #+BEGIN_SRC emacs-lisp
 (use-package jit-lock
   :if (not noninteractive)
