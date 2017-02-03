@@ -453,17 +453,7 @@ I got the idea from here: http://amitp.blogspot.de/2013/05/emacs-highlight-activ
 (add-hook 'focus-in-hook  #'highlight-focus:app-focus-in)
 (add-hook 'focus-out-hook #'highlight-focus:app-focus-out)
 #+END_SRC
-
-** Package: font-lock - syntax highlighting
-#+BEGIN_SRC emacs-lisp
-(use-package font-lock
-  :if (not noninteractive)
-  :config
-  (setq font-lock-maximum-decoration 2)
-  (setq-default font-lock-multiline t)
-)
-#+END_SRC
-*** Highlight keywords
+** Highlight keywords
 
 See https://www.emacswiki.org/emacs/AddKeywords for the example and
 https://www.emacswiki.org/emacs-test/RegularExpression for regular
@@ -497,6 +487,16 @@ Mark =\todo= in LaTeX mode:
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (font-lock-add-keywords 'latex-mode '(("\\(\\\\todo\\)" 1 'font-lock-warning-face prepend)))
+#+END_SRC
+
+** Package: font-lock - syntax highlighting
+#+BEGIN_SRC emacs-lisp
+(use-package font-lock
+  :if (not noninteractive)
+  :config
+  (setq font-lock-maximum-decoration 2)
+  (setq-default font-lock-multiline t)
+)
 #+END_SRC
 ** CANC Package: jit-locking - just-in-time fontification
 #+BEGIN_SRC emacs-lisp
