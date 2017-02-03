@@ -3019,6 +3019,21 @@ http://www.suenkler.info/docs/emacs-orgmode/
 (use-package ox-gfm
   :ensure t
   :defer t
+  :config
+
+  ;; The language for my source codes is ofte "emacs-lisp". However,
+  ;; Hugo colorizes them weird, so I re-define org-gfm-src-block
+  ;; to convert "emacs-lisp" to "lisp":
+  ;;
+  (defun org-gfm-src-block (src-block contents info)
+	"Transcode SRC-BLOCK element into Github Flavored Markdown
+format. CONTENTS is nil.  INFO is a plist used as a communication
+channel."
+	(let* ((lang (org-element-property :language src-block))
+		   (code (org-export-format-code-default src-block info))
+		   (prefix (concat "```" (if (string= lang "emacs-lisp") "lisp" lang) "\n"))
+		   (suffix "```"))
+	  (concat prefix code suffix)))
 )
 #+END_SRC
 *** Package: ox-html
