@@ -1952,6 +1952,10 @@ minibuffer."
   (setq dired-listing-switches "-laGh1v --group-directories-first")
   ;; revert when revisiting
   (setq dired-auto-revert-buffer t)
+)
+(use-package dired-aux
+  :defer t
+  :config
   ;; normally, only isearch for files, but not if cursor was navigated away
   (setq dired-isearch-filenames 'dwim)
 )
