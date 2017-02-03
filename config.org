@@ -1803,7 +1803,12 @@ Tips and Tricks: http://nullprogram.com/blog/2013/11/26/
   ;; makes the idle function fast and we could increase it's
   ;; timeout from 15 minutes to a minute or so.
   (run-with-idle-timer (* 15 60) t #'elfeed-update)
+)
+#+END_SRC
 
+An example on how to prune old feeds:
+
+#+BEGIN_SRC emacs-lisp :tangle no
   (defun elfeed-dead-feeds (years)
   "Return a list of feeds that haven't posted en entry in YEARS years."
   (cl-block
@@ -1818,7 +1823,6 @@ Tips and Tricks: http://nullprogram.com/blog/2013/11/26/
 							  unless (gethash url living-feeds)
 							  collect url))))
   (elfeed-dead-feeds 1.0)
-)
 #+END_SRC
 
 Some more feeds to (eventually) check:
