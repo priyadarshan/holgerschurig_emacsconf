@@ -2581,7 +2581,7 @@ adapted to helm.
   (setq org-blank-before-new-entry '((heading . t) (plain-list-item . auto)))
 
   ;; Default modes I want to have enabled in org-mode
-  (add-hook 'org-mode-hook #'visual-line-mode)
+  ;; (add-hook 'org-mode-hook #'visual-line-mode)
   (add-hook 'org-mode-hook #'toggle-word-wrap)
 
   ;; make enter open the link
