@@ -2659,6 +2659,8 @@ adapted to helm.
 
 #+BEGIN_SRC emacs-lisp
 (use-package org
+  :ensure t
+  :pin "gnu"
   :bind (("C-c l" . org-store-link)
 		 ("C-c o" . org-open-at-point-global)
 		 ;; This used to be org-shift{up/down}, but I'm not working
