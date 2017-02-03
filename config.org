@@ -433,14 +433,50 @@ Do `M-x toggle-truncate-lines` to toggle truncation mode.
 #+END_SRC
 
 ** Mode line
-Show line and column numbers in the mode-line:
+:PROPERTIES:
+:TITLE:    Tayloring the built-in Emacs Mode line
+:HUGO_TAGS: Emacs
+:HUGO_TOPICS: Emacs
+:HUGO_FILE: en/emacs-tayloring-the-built-in-mode-line.md
+:HUGO_DATE: [2017-02-03]
+:END:
+
+For some time, I used [[https://github.com/Malabarba/smart-mode-line][smart-mode-line]]. And then [[https://github.com/milkypostman/powerline][powerline]]. And than,
+for just some hours, I tried [[https://github.com/TheBB/spaceline][spaceline]], because powerline was a tad to
+unwieldy for me. After all those experiments with fancy mode-lines I
+wondered "What don't I just customization the built-in mode-line to my
+need, it can't be hard!"
+
+#+HTML: <!--more-->
+
+So, here's a teaser on how the result might look:
+
+[[./example.png]]
+
+It's plain, but also much less complex than my [[https://bitbucket.org/holgerschurig/emacsconf/src/98558d622df3e45e12114e0654691a18ad52c007/config.org?at=master&fileviewer=file-view-default#config.org-523][powerline setup]].
+
+*** Show line and column numbers in the mode-line
+
+The first thing is quite straightforward, I want to have column
+numbers. Omitting them is probably a remnant from the 1980s, when
+computers were as slow as molasses.
+
 #+BEGIN_SRC emacs-lisp
 (column-number-mode 1)
 #+END_SRC
 
-http://www.lunaryorn.com/posts/make-your-emacs-mode-line-more-useful.html
+*** Faces
 
-First, some faces:
+My "design" (if one can use that word for my poor skills) is based
+around blue:
+
+- the buffer name, as it is (for me) the most important part of the
+  mode line, needs to stand out.
+- the directory, not as important as the buffer name, but still
+  interesting, needs to stand out, too. Just not as much.
+- the mouse-over highlighting with boxes was ugly, I use some bluish
+  background instead
+- and finally, the inactive mode line might blend into the background.
 
 #+BEGIN_SRC emacs-lisp
 (set-face-attribute 'mode-line           nil :background "light blue")
@@ -454,7 +490,16 @@ First, some faces:
 (set-face-attribute 'mode-line-inactive  nil :inherit 'default)
 #+END_SRC
 
-When a pure position --- without some percentage or Top/Bot indicators:
+*** Simplify the cursor position
+
+I redefine =mode-line-position= to only contain the pure position. I
+have no need for a proportional position (percentage) nor for texts
+like "Bot", "Top" or "All". When I was a new emacs user, they confused
+me for quite some time :-)
+
+So, for documentation purposes I kept the elements of the original value
+of =mode-line-position= here, just uncommented. And I also added explanation
+for the various %-escaped elements:
 
 #+BEGIN_SRC emacs-lisp
 (setq mode-line-position
@@ -468,7 +513,12 @@ When a pure position --- without some percentage or Top/Bot indicators:
 			  (line-number-mode ("%l" (column-number-mode ":%c")))))
 #+END_SRC
 
-I want more than just the buffer name, I want also a part of the directory:
+*** Directory shortening
+
+Before the buffer-id, I want to place the directory. But not the whole
+directory, but shortened version. (I didn't write this function, I
+have it from some internet web page, unsure from where. It's used
+quite often, try too google for "defun shorten-directory" ...)
 
 #+BEGIN_SRC emacs-lisp
 (defun shorten-directory (dir max-length)
@@ -483,7 +533,19 @@ I want more than just the buffer name, I want also a part of the directory:
 	   (when path
 		 (setq output (concat ".../" output)))
 	   output))
+#+END_SRC
 
+*** Directory name
+
+Some buffers however don't have files (and thus no directories, too),
+e.g. the =*scratch*= buffer. In such cases the result of =(buffer-file-name)= is
+=nil=. In such a case I omit the shortened directory.
+
+But no matter if we emit a directory name, we always emit a starting
+space. This space get's propertized with the rest, and let our
+directory / buffer-id stand out nicely.
+
+#+BEGIN_SRC emacs-lisp
 (defvar mode-line-directory
   '(:propertize
 	(:eval (if (buffer-file-name) (concat " " (shorten-directory default-directory 20)) " "))
@@ -492,14 +554,18 @@ I want more than just the buffer name, I want also a part of the directory:
 (put 'mode-line-directory 'risky-local-variable t)
 #+END_SRC
 
-And for the buffer indication I want exactly one trailing space:
+Having an empty space before directory part calls for an space after the buffer id:
 
 #+BEGIN_SRC emacs-lisp
 (setq-default mode-line-buffer-identification
   (propertized-buffer-identification "%b "))
 #+END_SRC
 
-And now bind everything together:
+*** Binding it together
+
+The final =mode-line-format= is a simpler version of the built-on. I
+however deleted some items that I don't need. For documentation, I
+kept them here but just commented them out.
 
 #+BEGIN_SRC emacs-lisp
 (setq-default mode-line-format
