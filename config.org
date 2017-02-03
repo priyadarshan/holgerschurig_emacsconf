@@ -4125,6 +4125,8 @@ And if we ever need it, =C-j= is now newline.
   :config
   (dtrt-indent-mode 1)
   (setq dtrt-indent-verbosity 0)
+  ;; dtrt-indent plays games with global-mode-string, urgh
+  (delq 'dtrt-indent-mode-line-info global-mode-string)
 )
 #+END_SRC
 
