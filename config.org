@@ -4649,7 +4649,7 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
   ;; (unless (string= (buffer-name) "*scratch*")
   ;;   (auto-compile-mode 1))
   )
-(use-package emacs-lisp
+(use-package elisp-mode
   :defer t
   :config
   (add-hook 'emacs-lisp-mode-hook 'my--elisp-setup)
