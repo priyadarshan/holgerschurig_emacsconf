@@ -432,12 +432,95 @@ Do `M-x toggle-truncate-lines` to toggle truncation mode.
 (setq idle-update-delay 0.35)
 #+END_SRC
 
-** Line and column numbers
+** Mode line
 Show line and column numbers in the mode-line:
+#+BEGIN_SRC emacs-lisp
+(column-number-mode 1)
+#+END_SRC
+
+http://www.lunaryorn.com/posts/make-your-emacs-mode-line-more-useful.html
+
+First, some faces:
 
 #+BEGIN_SRC emacs-lisp
-(line-number-mode 1)
-(column-number-mode 1)
+(set-face-attribute 'mode-line           nil :background "light blue")
+(set-face-attribute 'mode-line-buffer-id nil :background "blue" :foreground "white")
+(defface mode-line-directory
+  '((t :background "blue" :foreground "gray"))
+  "Face used for buffer identification parts of the mode line."
+  :group 'mode-line-faces
+  :group 'basic-faces)
+(set-face-attribute 'mode-line-highlight nil :box nil :background "deep sky blue")
+(set-face-attribute 'mode-line-inactive  nil :inherit 'default)
+#+END_SRC
+
+When a pure position --- without some percentage or Top/Bot indicators:
+
+#+BEGIN_SRC emacs-lisp
+(setq mode-line-position
+			'(;; %p print percent of buffer above top of window, o Top, Bot or All
+			  ;; (-3 "%p")
+			  ;; %I print the size of the buffer, with kmG etc
+			  ;; (size-indication-mode ("/" (-4 "%I")))
+			  ;; " "
+			  ;; %l print the current line number
+			  ;; %c print the current column
+			  (line-number-mode ("%l" (column-number-mode ":%c")))))
+#+END_SRC
+
+I want more than just the buffer name, I want also a part of the directory:
+
+#+BEGIN_SRC emacs-lisp
+(defun shorten-directory (dir max-length)
+  "Show up to `max-length' characters of a directory name `dir'."
+  (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
+			   (output ""))
+	   (when (and path (equal "" (car path)))
+		 (setq path (cdr path)))
+	   (while (and path (< (length output) (- max-length 4)))
+		 (setq output (concat (car path) "/" output))
+		 (setq path (cdr path)))
+	   (when path
+		 (setq output (concat ".../" output)))
+	   output))
+
+(defvar mode-line-directory
+  '(:propertize
+	(:eval (if (buffer-file-name) (concat " " (shorten-directory default-directory 20)) " "))
+				face mode-line-directory)
+  "Formats the current directory.")
+(put 'mode-line-directory 'risky-local-variable t)
+#+END_SRC
+
+And for the buffer indication I want exactly one trailing space:
+
+#+BEGIN_SRC emacs-lisp
+(setq-default mode-line-buffer-identification
+  (propertized-buffer-identification "%b "))
+#+END_SRC
+
+And now bind everything together:
+
+#+BEGIN_SRC emacs-lisp
+(setq-default mode-line-format
+	  '("%e"
+		mode-line-front-space
+		;; mode-line-mule-info -- I'm always on utf-8
+		mode-line-client
+		mode-line-modified
+		;; mode-line-remote -- no need to indicate this specially
+		;; mode-line-frame-identification -- this is for text-mode emacs only
+		" "
+		mode-line-directory
+		mode-line-buffer-identification
+		" "
+		mode-line-position
+		;;(vc-mode vc-mode)  -- I use magit, not vc-mode
+		(flycheck-mode flycheck-mode-line)
+		" "
+		mode-line-modes
+		mode-line-misc-info
+		mode-line-end-spaces))
 #+END_SRC
 
 ** Unhighlight if out of focus
