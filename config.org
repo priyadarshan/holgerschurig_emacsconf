@@ -3014,6 +3014,13 @@ http://www.suenkler.info/docs/emacs-orgmode/
 )
 #+END_SRC
 
+*** Package: ox-gfm
+#+BEGIN_SRC emacs-lisp
+(use-package ox-gfm
+  :ensure t
+  :defer t
+)
+#+END_SRC
 *** Package: ox-html
 #+BEGIN_SRC emacs-lisp
 (use-package ox-html
