@@ -4595,7 +4595,9 @@ http://oremacs.com/2015/01/17/setting-up-ediff/
 #+BEGIN_SRC emacs-lisp
 (defun my--elisp-setup ()
   ;; Setup imenu TODO
-  (add-to-list 'imenu-generic-expression '(""  "^;;;_ \\(.*\\)" 1) t)
+  (add-to-list 'imenu-generic-expression
+			   '("Used Packages"
+				 "\\(^\\s-*(use-package +\\)\\(\\_<.+\\_>\\)" 2))
   ;; automatically give help about function syntax
   (eldoc-mode t)
   ;; "-" is almost always part of a function- or variable-name
