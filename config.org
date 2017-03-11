@@ -2080,6 +2080,7 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 
 #+BEGIN_SRC emacs-lisp
 (use-package flyspell
+  :if (eq system-type 'gnu/linux)
   :diminish flyspell-mode
   :commands (flyspell-mode flyspell-prog-mode)
   :config
@@ -2099,11 +2100,12 @@ after launching emacs, which is a bit unfortunate.
   (interactive)
   (unless (string= (buffer-name) "*scratch*")
 	(flyspell-prog-mode)))
-(add-hook 'prog-mode-hook  #'my-flyspell-prog-mode)
-(add-hook 'text-mode-hook  #'flyspell-mode)
-(add-hook 'org-mode-hook   #'flyspell-mode)
-(add-hook 'latex-mode-hook #'flyspell-mode)
-(add-hook 'LaTeX-mode-hook #'flyspell-mode)
+(when (eq system-type 'gnu/linux)
+  (add-hook 'prog-mode-hook  #'my-flyspell-prog-mode)
+  (add-hook 'text-mode-hook  #'flyspell-mode)
+  (add-hook 'org-mode-hook   #'flyspell-mode)
+  (add-hook 'latex-mode-hook #'flyspell-mode)
+  (add-hook 'LaTeX-mode-hook #'flyspell-mode))
 #+END_SRC
 
 #+END_SRC
@@ -2113,7 +2115,7 @@ https://github.com/pronobis/helm-flyspell
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-flyspell
-  :if (not noninteractive)
+  :if (and (not noninteractive) (eq system-type 'gnu/linux))
   :ensure t
   :commands helm-flyspell-correct
   :config
