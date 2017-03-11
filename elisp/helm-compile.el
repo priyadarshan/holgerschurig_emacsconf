@@ -37,8 +37,6 @@
 
 
 (require 'helm-source)    ;; helm-build-sync-source
-(require 'magit-git)      ;; for magit-toplevel
-(require 'magit-process)  ;; for magit-process-file
 
 
 ;; Normally this is "make -k" and that's quite useless
@@ -201,12 +199,13 @@ selected with helm's help."
 	;; (message "compile command: %s" compile-command)
 	(if (string= (substring compile-command 0 1) "(")
 		(eval (car (read-from-string compile-command)))
-	  (progn
-		(let ((default-directory (or (magit-toplevel) default-directory)))
-		  (compile compile-command))))))
-
-
-
+	  (let ((default-directory (or (locate-dominating-file "." ".git")
+								   (locate-dominating-file "." ".svn")
+								   (locate-dominating-file "." "CMakeLists.txt")
+								   (locate-dominating-file "." "GNUmakefile")
+								   (locate-dominating-file "." "Makefile")
+								   default-directory)))
+		(compile compile-command)))))
 
 (provide 'helm-compile)
 ;;; helm-compile.el ends here
