@@ -2080,14 +2080,14 @@ https://www.masteringemacs.org/article/complete-guide-mastering-eshell
 
 #+BEGIN_SRC emacs-lisp
 (use-package flyspell
- :diminish flyspell-mode
- :commands (flyspell-mode flyspell-prog-mode)
- :config
- (add-to-list 'flyspell-dictionaries-that-consider-dash-as-word-delimiter "german-new8")
- (setq flyspell-issue-welcome-flag nil)
- ;; M-Tab is owned by the window manager, correct with C-M-i
- (setq flyspell-use-meta-tab nil)
- )
+  :diminish flyspell-mode
+  :commands (flyspell-mode flyspell-prog-mode)
+  :config
+  (add-to-list 'flyspell-dictionaries-that-consider-dash-as-word-delimiter "german-new8")
+  (setq flyspell-issue-welcome-flag nil)
+  ;; M-Tab is owned by the window manager, correct with C-M-i
+  (setq flyspell-use-meta-tab nil)
+  )
 
 #+END_SRC
 
